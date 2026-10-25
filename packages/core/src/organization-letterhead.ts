@@ -1,5 +1,6 @@
 import type { OrganizationLawyer, OrganizationSettings } from "@rakazo/contracts";
 import { formatRnc } from "@rakazo/contracts";
+import { approvedDraftFooterLine } from "./draft-footer.js";
 
 /**
  * Letterhead for drafts, invoices, contracts, and letters.
@@ -9,10 +10,10 @@ import { formatRnc } from "@rakazo/contracts";
  *    record; document rendering reads the same one.
  * 2. Build `organizationLetterhead(settings, { logoDataUrl })`.
  * 3. Before export, call `assertNamedApprover(letterhead, lawyerId)` with a lawyer
- *    whose `mayApproveDrafts` is true. Review time and the draft-to-final diff
- *    are recorded beside that check when export exists.
- * 4. Render with `renderDraftDocumentHtml`, which requires that lawyer, or place
- *    `headerHtml` and `footerHtml` in another template and call the same check.
+ *    whose `mayApproveDrafts` is true. The review record stores the open time,
+ *    the approval time, and the diff from the agent draft to the final text.
+ * 4. Render with `renderDraftDocumentHtml`, which requires that lawyer. Pass
+ *    `approvedAt` so the footer names who approved the draft and when.
  *
  * `accentColor` is for these documents. The app UI keeps ALMA branding.
  * The document says "Borrador para revisión".
@@ -163,8 +164,20 @@ export function renderDraftDocumentHtml(input: {
   bodyHtml: string;
   letterhead: OrganizationLetterhead;
   reviewingLawyerId: string;
+  /** Set only after the named lawyer has approved. Adds the approval sentence to the footer. */
+  approvedAt?: Date;
 }): string {
   const lawyer = assertNamedApprover(input.letterhead, input.reviewingLawyerId);
   const accent = input.letterhead.accentColor ?? "#111111";
-  return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><title>${escapeHtml(input.title)}</title></head><body style="margin:32px;color:#111111;font-family:Georgia,serif">${input.letterhead.headerHtml}<article><p style="margin-top:20px;letter-spacing:0.04em;text-transform:uppercase;color:${accent}">Borrador para revisión</p><h1 style="font-size:22px;font-weight:normal">${escapeHtml(input.title)}</h1>${input.bodyHtml}<p>Revisión: ${escapeHtml(lawyer.name)} · CARD ${escapeHtml(lawyer.cardNumber)}</p></article>${input.letterhead.footerHtml}</body></html>`;
+  const approval = input.approvedAt
+    ? `<p>${escapeHtml(
+        approvedDraftFooterLine({
+          name: lawyer.name,
+          cardNumber: lawyer.cardNumber,
+          approvedAt: input.approvedAt,
+        }),
+      )}</p>`
+    : "";
+  const footer = input.letterhead.footerHtml.replace("</footer>", `${approval}</footer>`);
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"/><title>${escapeHtml(input.title)}</title></head><body style="margin:32px;color:#111111;font-family:Georgia,serif">${input.letterhead.headerHtml}<article><p style="margin-top:20px;letter-spacing:0.04em;text-transform:uppercase;color:${accent}">Borrador para revisión</p><h1 style="font-size:22px;font-weight:normal">${escapeHtml(input.title)}</h1>${input.bodyHtml}<p>Revisión: ${escapeHtml(lawyer.name)} · CARD ${escapeHtml(lawyer.cardNumber)}</p></article>${footer}</body></html>`;
 }

@@ -65,6 +65,7 @@ describe("organization settings permissions", () => {
       bankAccount: "",
       invoiceFooter: "",
       accentColor: null,
+      minimumReviewSeconds: 60,
       lawyers: [],
     });
     await expect(update).rejects.toMatchObject({ code: "FORBIDDEN" });

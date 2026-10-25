@@ -16,6 +16,7 @@ import {
   createThreadMessageInTransaction,
   crossSpaceCommunicationAllowed,
   runAsSystem,
+  unapprovedDraftBlocksText,
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
 import { MessagingSendError } from "./chat-sdk-surface.js";
@@ -404,6 +405,53 @@ async function sendConnectInvite(
   }
 }
 
+async function outboundSpaceId(
+  deps: MessagingDeliveryDeps,
+  row: { sourceMessageId?: string | null },
+  identity?: { spaceId: string } | null,
+): Promise<string | null> {
+  if (identity?.spaceId) return identity.spaceId;
+  const table = (deps.prisma as { reviewDraft?: { findMany?: unknown } }).reviewDraft;
+  if (typeof table?.findMany !== "function" || !row.sourceMessageId) return null;
+  if (typeof deps.prisma.message.findUnique !== "function") return null;
+  try {
+    const message = await deps.prisma.message.findUnique({
+      where: { id: row.sourceMessageId },
+      select: { thread: { select: { spaceId: true } } },
+    });
+    return message?.thread?.spaceId ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** An unapproved draft does not leave through a messaging provider. A lookup failure holds the send. */
+async function outboundDraftBlocked(
+  deps: MessagingDeliveryDeps,
+  input: {
+    spaceId: string | null;
+    body: string;
+    sourceMessageId?: string | null;
+    artifactId?: string | null;
+    attachment?: Uint8Array;
+  },
+): Promise<boolean> {
+  if (!input.spaceId) return false;
+  const attachmentText = input.attachment
+    ? new TextDecoder("utf-8", { fatal: false }).decode(input.attachment)
+    : "";
+  try {
+    return await unapprovedDraftBlocksText(deps.prisma, {
+      spaceId: input.spaceId,
+      texts: [input.body, attachmentText],
+      messageIds: input.sourceMessageId ? [input.sourceMessageId] : [],
+      artifactIds: input.artifactId ? [input.artifactId] : [],
+    });
+  } catch {
+    return true;
+  }
+}
+
 async function drain(deps: MessagingDeliveryDeps, context: AdapterContext): Promise<void> {
   const now = Date.now();
   const pending = await deps.prisma.messagingOutbound.findMany({
@@ -437,6 +485,19 @@ async function drain(deps: MessagingDeliveryDeps, context: AdapterContext): Prom
     try {
       if (row.kind === "group" || row.kind === "intro") {
         if (!row.threadId) {
+          await deps.prisma.messagingOutbound.update({
+            where: { id: row.id },
+            data: { status: "failed" },
+          });
+          continue;
+        }
+        if (
+          await outboundDraftBlocked(deps, {
+            spaceId: await outboundSpaceId(deps, row),
+            body: row.body,
+            sourceMessageId: row.sourceMessageId,
+          })
+        ) {
           await deps.prisma.messagingOutbound.update({
             where: { id: row.id },
             data: { status: "failed" },
@@ -518,6 +579,21 @@ async function drain(deps: MessagingDeliveryDeps, context: AdapterContext): Prom
           userId: artifact.userId,
         });
         attachment = { name: artifact.name, mimeType: artifact.mimeType, data };
+      }
+      if (
+        await outboundDraftBlocked(deps, {
+          spaceId: identity.spaceId,
+          body: row.body,
+          sourceMessageId: row.sourceMessageId,
+          artifactId,
+          attachment: attachment?.data,
+        })
+      ) {
+        await deps.prisma.messagingOutbound.update({
+          where: { id: row.id },
+          data: { status: "failed" },
+        });
+        continue;
       }
       const sent = await deps.messaging.sendToThread(
         { threadId, body: row.body, ...(attachment ? { attachment } : {}) },

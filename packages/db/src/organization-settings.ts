@@ -85,6 +85,7 @@ export interface OrganizationSettingsState {
   bankAccount: string;
   invoiceFooter: string;
   accentColor: string | null;
+  minimumReviewSeconds: number;
   lawyers: OrganizationLawyerState[];
 }
 
@@ -114,6 +115,7 @@ export function emptyOrganizationSettingsState(): OrganizationSettingsState {
     bankAccount: "",
     invoiceFooter: "",
     accentColor: null,
+    minimumReviewSeconds: 60,
     lawyers: [],
   };
 }
@@ -134,6 +136,7 @@ export function organizationSettingsSnapshot(state: OrganizationSettingsState) {
     bankAccount: state.bankAccount,
     invoiceFooter: state.invoiceFooter,
     accentColor: state.accentColor,
+    minimumReviewSeconds: state.minimumReviewSeconds,
     lawyers: [...state.lawyers]
       .sort((left, right) => left.id.localeCompare(right.id))
       .map((lawyer) => ({
@@ -231,6 +234,7 @@ export function planOrganizationSettingsChange(
       bankAccount: update.bankAccount,
       invoiceFooter: update.invoiceFooter,
       accentColor: update.accentColor,
+      minimumReviewSeconds: update.minimumReviewSeconds,
       lawyers: [...byId.values()],
     },
     create,
@@ -263,6 +267,7 @@ function profileFields(state: OrganizationSettingsState) {
     bankAccount: state.bankAccount,
     invoiceFooter: state.invoiceFooter,
     accentColor: state.accentColor,
+    minimumReviewSeconds: state.minimumReviewSeconds,
   };
 }
 
@@ -290,6 +295,7 @@ export async function loadOrganizationSettings(
       bankAccount: profile.bankAccount,
       invoiceFooter: profile.invoiceFooter,
       accentColor: profile.accentColor,
+      minimumReviewSeconds: profile.minimumReviewSeconds ?? 60,
       lawyers: profile.lawyers.map((lawyer) => ({
         id: lawyer.id,
         name: lawyer.name,

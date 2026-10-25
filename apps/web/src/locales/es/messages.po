@@ -589,9 +589,17 @@ msgstr "Avanzado..."
 msgid "Agent computer"
 msgstr "Computadora del agente"
 
+#: src/pages/DraftReview.tsx
+msgid "Agent draft"
+msgstr "Borrador del agente"
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Agents:"
 msgstr "Agentes:"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "All"
+msgstr "Todos"
 
 #: src/pages/Artifacts.tsx
 #: src/pages/shell/agent-import.tsx
@@ -746,6 +754,12 @@ msgstr "Aplicar"
 msgid "Approval boundaries"
 msgstr "Límites de aprobación"
 
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Approval log"
+msgstr "Registro de aprobación"
+
 #: src/pages/ModelSettingsOverlay.tsx
 msgid "Approval model"
 msgstr "Modelo de aprobación"
@@ -755,6 +769,7 @@ msgstr "Modelo de aprobación"
 msgid "Approvals"
 msgstr "Aprobaciones"
 
+#: src/pages/DraftReview.tsx
 #: src/pages/MessagingSettingsOverlay.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
@@ -763,6 +778,11 @@ msgstr "Aprobar"
 #: src/pages/shell/message-cards.tsx
 msgid "Approve this server to let your agent use its tools."
 msgstr "Aprueba este servidor para que tu agente use sus herramientas."
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Approved"
+msgstr "Aprobado"
 
 #: src/pages/BotContextMenu.tsx
 msgid "Archive"
@@ -1598,6 +1618,10 @@ msgstr "Copiar"
 msgid "Copy .env example"
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Copy document"
+msgstr "Copiar documento"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "Copiar prompt"
@@ -1769,6 +1793,14 @@ msgstr "No se pudo descargar {0}. Inténtalo de nuevo."
 msgid "Could not download {name}. Try again."
 msgstr "No se pudo descargar {name}. Inténtalo de nuevo."
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not export the approval log"
+msgstr "No se pudo exportar el registro de aprobación"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not export this draft"
+msgstr "No se pudo exportar este borrador"
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not install connector"
 msgstr "No se pudo instalar el conector"
@@ -1803,6 +1835,10 @@ msgstr ""
 msgid "Could not load credentials."
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Could not load drafts"
+msgstr "No se pudieron cargar los borradores"
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not load integrations"
 msgstr "No se pudieron cargar las integraciones"
@@ -1832,6 +1868,10 @@ msgstr "No se pudieron cargar las opciones de inicio de sesión"
 #: src/pages/KnowledgeSection.tsx
 msgid "Could not load skill"
 msgstr "No se pudo cargar la habilidad"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not load the approval log"
+msgstr "No se pudo cargar el registro de aprobación"
 
 #: src/pages/Artifacts.tsx
 msgid "Could not load this artifact."
@@ -1880,6 +1920,10 @@ msgstr "No se pudo alcanzar el servidor"
 #: src/pages/shell/agent-import.tsx
 msgid "Could not read these files"
 msgstr "No se pudieron leer estos archivos"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not record the draft"
+msgstr "No se pudo registrar el borrador"
 
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/ScratchpadSection.tsx
@@ -1978,6 +2022,10 @@ msgstr "No se pudo guardar esa voz"
 #: src/pages/shell/bot-credentials.tsx
 msgid "Could not save the credential"
 msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not save the draft"
+msgstr "No se pudo guardar el borrador"
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2427,9 +2475,10 @@ msgid "Downgrade at renewal"
 msgstr ""
 
 #: src/pages/Artifacts.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/KnowledgeSection.tsx
 msgid "Download"
-msgstr ""
+msgstr "Descargar"
 
 #. placeholder {0}: props.name
 #: src/components/ArtifactFileCard.tsx
@@ -2444,9 +2493,19 @@ msgstr "Descargar {name}"
 msgid "Downloading…"
 msgstr ""
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Draft"
+msgstr "Borrador"
+
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Draft skill"
 msgstr "Habilidad en borrador"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Drafts for review"
+msgstr "Borradores para revisión"
 
 #: src/pages/shell/avatar-studio-popover.tsx
 msgid "Drag, drop, or paste an image"
@@ -2482,6 +2541,10 @@ msgstr "Editar nombre"
 #: src/pages/BotContextMenu.tsx
 msgid "Edit Profile"
 msgstr "Editar perfil"
+
+#: src/pages/DraftReview.tsx
+msgid "Edited version"
+msgstr "Versión editada"
 
 #: src/pages/Auth.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
@@ -2631,6 +2694,10 @@ msgstr "caducado"
 msgid "Export"
 msgstr "Exportar"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Export this week's list from the CRM and drop it in the shared folder"
 msgstr "Exporta la lista de esta semana desde el CRM y déjala en la carpeta compartida"
@@ -2696,6 +2763,10 @@ msgstr "Archivos o carpetas del equipo"
 msgid "Files or folders, one per line"
 msgstr "Archivos o carpetas, uno por línea"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Filter"
+msgstr "Filtrar"
+
 #: src/pages/GroupPanel.tsx
 msgid "Filter bots"
 msgstr ""
@@ -2754,8 +2825,9 @@ msgid "Free"
 msgstr "Gratis"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "From"
-msgstr ""
+msgstr "Desde"
 
 #. placeholder {0}: filters.dateRange.from
 #: src/pages/ActivityList.tsx
@@ -2774,6 +2846,10 @@ msgstr "ID de gateway"
 #: src/pages/SettingsOverlay.tsx
 msgid "General"
 msgstr "General"
+
+#: src/pages/DraftReview.tsx
+msgid "Generated"
+msgstr "Generado"
 
 #: src/components/SidebarFooter.tsx
 msgid "Get the mobile app"
@@ -2945,8 +3021,9 @@ msgid "In progress"
 msgstr ""
 
 #: src/lib/ticket-status.ts
+#: src/pages/DraftReview.tsx
 msgid "In review"
-msgstr ""
+msgstr "En revisión"
 
 #: src/pages/BillingSettingsPanel.tsx
 msgid "Inactive"
@@ -3130,6 +3207,10 @@ msgstr "Última comprobación {0}: sin cambios"
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Lawyer"
+msgstr "Abogado"
 
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
@@ -3472,6 +3553,10 @@ msgstr ""
 msgid "Minimize call"
 msgstr "Minimizar llamada"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Minimum review time (seconds)"
+msgstr "Tiempo mínimo de revisión (segundos)"
+
 #: src/pages/RoutineSchedule.tsx
 msgid "minute"
 msgstr "minuto"
@@ -3490,6 +3575,8 @@ msgid "Mode"
 msgstr "Modo"
 
 #: src/pages/AccountSettingsOverlay.tsx
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
@@ -3516,6 +3603,10 @@ msgstr "ID del modelo"
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Opciones del modelo"
+
+#: src/pages/DraftReview.tsx
+msgid "Model version"
+msgstr "Versión del modelo"
 
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
@@ -4271,6 +4362,10 @@ msgstr "Reconectar OAuth"
 msgid "Reconnecting"
 msgstr "Reconectando"
 
+#: src/pages/DraftReview.tsx
+msgid "Record draft"
+msgstr "Registrar borrador"
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "Es posible que la grabación haya comenzado, pero la vista no se pudo actualizar"
@@ -4353,6 +4448,15 @@ msgstr "Actualizando…"
 #: src/lib/user-error.ts
 msgid "Registration is closed"
 msgstr "El registro está cerrado"
+
+#: src/pages/DraftReview.tsx
+msgid "Reject"
+msgstr "Rechazar"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Rejected"
+msgstr "Rechazado"
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Release control"
@@ -5125,8 +5229,9 @@ msgstr "Iniciando…"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Board.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Steps"
@@ -5261,6 +5366,10 @@ msgstr "Se eliminarán el bot y lo que añadió su importación."
 #: src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "Se agotó el tiempo de conexión."
+
+#: src/pages/DraftReview.tsx
+msgid "The minimum review time has not elapsed."
+msgstr "No ha transcurrido el tiempo mínimo de revisión."
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -5437,13 +5546,15 @@ msgid "Timing may differ"
 msgstr "El horario puede variar"
 
 #: src/pages/Board.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Title"
 msgstr "Título"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "To"
-msgstr ""
+msgstr "Hasta"
 
 #. placeholder {0}: filters.dateRange.to
 #: src/pages/ActivityList.tsx

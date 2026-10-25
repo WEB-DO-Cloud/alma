@@ -589,9 +589,17 @@ msgstr ""
 msgid "Agent computer"
 msgstr "Agent bilgisayarı"
 
+#: src/pages/DraftReview.tsx
+msgid "Agent draft"
+msgstr ""
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Agents:"
 msgstr "Agent'lar:"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "All"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 #: src/pages/shell/agent-import.tsx
@@ -746,6 +754,12 @@ msgstr "Uygula"
 msgid "Approval boundaries"
 msgstr "Onay sınırları"
 
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Approval log"
+msgstr ""
+
 #: src/pages/ModelSettingsOverlay.tsx
 msgid "Approval model"
 msgstr "Onay modeli"
@@ -755,6 +769,7 @@ msgstr "Onay modeli"
 msgid "Approvals"
 msgstr "Onaylar"
 
+#: src/pages/DraftReview.tsx
 #: src/pages/MessagingSettingsOverlay.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
@@ -763,6 +778,11 @@ msgstr "Onayla"
 #: src/pages/shell/message-cards.tsx
 msgid "Approve this server to let your agent use its tools."
 msgstr "Agent'ının bu sunucunun araçlarını kullanabilmesi için sunucuyu onayla."
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Approved"
+msgstr ""
 
 #: src/pages/BotContextMenu.tsx
 msgid "Archive"
@@ -1598,6 +1618,10 @@ msgstr "Kopyala"
 msgid "Copy .env example"
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Copy document"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "İstemi kopyala"
@@ -1769,6 +1793,14 @@ msgstr "{0} indirilemedi. Tekrar dene."
 msgid "Could not download {name}. Try again."
 msgstr "{name} indirilemedi. Tekrar dene."
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not export the approval log"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not export this draft"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not install connector"
 msgstr "Bağlayıcı kurulamadı"
@@ -1803,6 +1835,10 @@ msgstr ""
 msgid "Could not load credentials."
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Could not load drafts"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not load integrations"
 msgstr "Entegrasyonlar yüklenemedi"
@@ -1832,6 +1868,10 @@ msgstr "Giriş seçenekleri yüklenemedi"
 #: src/pages/KnowledgeSection.tsx
 msgid "Could not load skill"
 msgstr "Beceri yüklenemedi"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not load the approval log"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 msgid "Could not load this artifact."
@@ -1880,6 +1920,10 @@ msgstr "Sunucuya ulaşılamadı"
 #: src/pages/shell/agent-import.tsx
 msgid "Could not read these files"
 msgstr "Bu dosyalar okunamadı"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not record the draft"
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/ScratchpadSection.tsx
@@ -1977,6 +2021,10 @@ msgstr "Bu ses kaydedilemedi"
 
 #: src/pages/shell/bot-credentials.tsx
 msgid "Could not save the credential"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not save the draft"
 msgstr ""
 
 #: src/pages/shell/message-cards.tsx
@@ -2427,6 +2475,7 @@ msgid "Downgrade at renewal"
 msgstr ""
 
 #: src/pages/Artifacts.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/KnowledgeSection.tsx
 msgid "Download"
 msgstr ""
@@ -2444,9 +2493,19 @@ msgstr "{name} indir"
 msgid "Downloading…"
 msgstr ""
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Draft"
+msgstr ""
+
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Draft skill"
 msgstr "Taslak beceri"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Drafts for review"
+msgstr ""
 
 #: src/pages/shell/avatar-studio-popover.tsx
 msgid "Drag, drop, or paste an image"
@@ -2482,6 +2541,10 @@ msgstr "Adı düzenle"
 #: src/pages/BotContextMenu.tsx
 msgid "Edit Profile"
 msgstr "Profili Düzenle"
+
+#: src/pages/DraftReview.tsx
+msgid "Edited version"
+msgstr ""
 
 #: src/pages/Auth.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
@@ -2631,6 +2694,10 @@ msgstr "süresi doldu"
 msgid "Export"
 msgstr "Dışa aktar"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Export CSV"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Export this week's list from the CRM and drop it in the shared folder"
 msgstr "Bu haftanın listesini CRM'den dışa aktar ve ortak klasöre bırak"
@@ -2696,6 +2763,10 @@ msgstr "Bilgisayardaki dosya veya klasörler"
 msgid "Files or folders, one per line"
 msgstr "Dosya veya klasörler, her satıra bir tane"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Filter"
+msgstr ""
+
 #: src/pages/GroupPanel.tsx
 msgid "Filter bots"
 msgstr ""
@@ -2754,6 +2825,7 @@ msgid "Free"
 msgstr ""
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "From"
 msgstr ""
 
@@ -2774,6 +2846,10 @@ msgstr "Ağ geçidi kimliği"
 #: src/pages/SettingsOverlay.tsx
 msgid "General"
 msgstr "Genel"
+
+#: src/pages/DraftReview.tsx
+msgid "Generated"
+msgstr ""
 
 #: src/components/SidebarFooter.tsx
 msgid "Get the mobile app"
@@ -2945,6 +3021,7 @@ msgid "In progress"
 msgstr ""
 
 #: src/lib/ticket-status.ts
+#: src/pages/DraftReview.tsx
 msgid "In review"
 msgstr ""
 
@@ -3129,6 +3206,10 @@ msgstr "Son kontrol {0}: değişiklik yok"
 
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
+msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Lawyer"
 msgstr ""
 
 #: src/pages/MessagingSettingsOverlay.tsx
@@ -3472,6 +3553,10 @@ msgstr ""
 msgid "Minimize call"
 msgstr ""
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Minimum review time (seconds)"
+msgstr ""
+
 #: src/pages/RoutineSchedule.tsx
 msgid "minute"
 msgstr "dakika"
@@ -3490,6 +3575,8 @@ msgid "Mode"
 msgstr "Mod"
 
 #: src/pages/AccountSettingsOverlay.tsx
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
@@ -3516,6 +3603,10 @@ msgstr "Model kimliği"
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Model seçenekleri"
+
+#: src/pages/DraftReview.tsx
+msgid "Model version"
+msgstr ""
 
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
@@ -4271,6 +4362,10 @@ msgstr "OAuth'u yeniden bağla"
 msgid "Reconnecting"
 msgstr "Yeniden bağlanıyor"
 
+#: src/pages/DraftReview.tsx
+msgid "Record draft"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr ""
@@ -4353,6 +4448,15 @@ msgstr ""
 #: src/lib/user-error.ts
 msgid "Registration is closed"
 msgstr "Kayıt kapalı"
+
+#: src/pages/DraftReview.tsx
+msgid "Reject"
+msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Rejected"
+msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Release control"
@@ -5125,6 +5229,7 @@ msgstr "Başlatılıyor…"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Board.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "Status"
 msgstr ""
 
@@ -5261,6 +5366,10 @@ msgstr "Bot ve içe aktarmanın eklediği her şey kaldırılacak."
 #: src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "Bağlantı zaman aşımına uğradı."
+
+#: src/pages/DraftReview.tsx
+msgid "The minimum review time has not elapsed."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -5437,11 +5546,13 @@ msgid "Timing may differ"
 msgstr "Zamanlama farklı olabilir"
 
 #: src/pages/Board.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Title"
 msgstr "Başlık"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "To"
 msgstr ""
 

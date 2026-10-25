@@ -1916,6 +1916,8 @@ model OrganizationProfile {
   invoiceFooter  String       @default("")
   /// Hex color for generated documents only. The product UI does not use it.
   accentColor    String?
+  /// Base seconds a lawyer must keep a draft open before approval. Longer drafts take longer.
+  minimumReviewSeconds Int    @default(60)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   lawyers        OrganizationLawyer[]
@@ -1969,4 +1971,64 @@ model OrganizationSettingsAudit {
 
   @@index([organizationId, createdAt])
   @@map("organization_settings_audits")
+}
+
+/// An agent draft for a named lawyer to review. The original text is never rewritten.
+/// Finished drafts are not deleted. No foreign keys, so the row outlives the space it came from.
+model ReviewDraft {
+  id                String    @id
+  organizationId    String
+  spaceId           String
+  createdByUserId   String
+  title             String
+  /// generated, in_review, approved, or rejected.
+  status            String
+  originalText      String
+  editedText        String
+  originalHash      String
+  finalHash         String?
+  model             String
+  modelVersion      String
+  sourceMessageId   String?
+  sourceArtifactId  String?
+  openedAt          DateTime?
+  openedByUserId    String?
+  approvedAt        DateTime?
+  rejectedAt        DateTime?
+  approverLawyerId  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([organizationId, status, createdAt])
+  @@index([sourceMessageId])
+  @@index([sourceArtifactId])
+  @@map("review_drafts")
+}
+
+/// Append-only record of who approved or rejected a draft, and the diff they approved.
+/// No foreign keys and no updates, so a later edit of the lawyer or the draft cannot rewrite it.
+model DraftApprovalLog {
+  id                String   @id
+  draftId           String
+  organizationId    String
+  /// approved or rejected.
+  action            String
+  approverLawyerId  String
+  approverName      String
+  cardNumber        String
+  userId            String
+  openedAt          DateTime
+  approvedAt        DateTime?
+  reviewDurationMs  Int
+  model             String
+  modelVersion      String
+  originalHash      String
+  finalHash         String
+  diff              Json
+  createdAt         DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([draftId])
+  @@index([approverLawyerId, createdAt])
+  @@map("draft_approval_logs")
 }

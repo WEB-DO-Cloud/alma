@@ -20,6 +20,7 @@ const settings: OrganizationSettings = {
   bankAccount: "123-456",
   invoiceFooter: "Pago a 15 días",
   accentColor: "#1F4B3A",
+  minimumReviewSeconds: 60,
   logo: { id: "logo-1", mimeType: "image/png", dataUrl: "data:image/png;base64,aaaa" },
   lawyers: [
     {
@@ -71,6 +72,22 @@ describe("organization letterhead", () => {
     expect(html.toLowerCase()).not.toContain("ai lawyer");
     expect(() => assertNamedApprover(letterhead, "lawyer-2")).toThrow(DraftApprovalError);
     expect(() => assertNamedApprover(letterhead, "missing")).toThrow(DraftApprovalError);
+  });
+
+  it("adds the approval sentence to the footer once a named lawyer has approved", () => {
+    const letterhead = organizationLetterhead(settings);
+    const html = renderDraftDocumentHtml({
+      title: "Contrato",
+      bodyHtml: "<p>Cláusula</p>",
+      letterhead,
+      reviewingLawyerId: "lawyer-1",
+      approvedAt: new Date("2026-10-26T15:00:00.000Z"),
+    });
+    expect(html).toContain("Núñez");
+    expect(html).toContain(
+      "Borrador preparado con asistencia de software y revisado y aprobado por Lic. María Núñez, CARD 12345, el 26 de octubre de 2026.",
+    );
+    expect(html.toLowerCase()).not.toContain("abogado ia");
   });
 
   it("escapes firm text that could break the document", () => {

@@ -51,6 +51,12 @@ const WelcomePage = lazyComponent(() =>
 const ArtifactsPage = lazyComponent(() =>
   import("./pages/Artifacts").then((module) => module.ArtifactsPage),
 );
+const DraftReviewPage = lazyComponent(() =>
+  import("./pages/DraftReview").then((module) => module.DraftReviewPage),
+);
+const DraftApprovalLogPage = lazyComponent(() =>
+  import("./pages/DraftApprovalLog").then((module) => module.DraftApprovalLogPage),
+);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 
 function SsoCallbackPage() {
@@ -198,6 +204,9 @@ function SessionApp() {
               <Route path="/onboarding/:step?" element={<OnboardingPage />} />
               <Route path="/app" element={<ShellPage />} />
               <Route path="/app/g/:groupId" element={<ShellPage />} />
+              <Route path="/app/drafts" element={<DraftReviewPage />} />
+              <Route path="/app/drafts/:draftId" element={<DraftReviewPage />} />
+              <Route path="/app/draft-approvals" element={<DraftApprovalLogPage />} />
               <Route path="/app/artifacts" element={<ArtifactsPage />} />
               <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />
               {ticketBoardEnabled ? <Route path="/app/board" element={<BoardPage />} /> : null}

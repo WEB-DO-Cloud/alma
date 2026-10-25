@@ -50,6 +50,7 @@ import {
   resolveBusyBotName,
   toComputerStatus,
 } from "../computer-status.js";
+import { refuseUnapprovedDraftContent, textFromBase64 } from "../draft-egress.js";
 import type { RouterDeps } from "../router.js";
 import { addScreenProxyCapability } from "../screen-proxy.js";
 import type { RouterContext } from "./context.js";
@@ -545,6 +546,9 @@ export function computerRoutes(ctx: RouterContext) {
             throw error;
           }
         }
+        await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+          texts: [content],
+        });
         return { path: input.path, content };
       }),
       downloadFile: authed.computer.downloadFile.handler(async ({ context, input }) => {
@@ -576,7 +580,11 @@ export function computerRoutes(ctx: RouterContext) {
             }
             throw error;
           });
-        return { path: input.path, contentBase64: Buffer.from(bytes).toString("base64") };
+        const contentBase64 = Buffer.from(bytes).toString("base64");
+        await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+          texts: [textFromBase64(contentBase64)],
+        });
+        return { path: input.path, contentBase64 };
       }),
       uploadFile: authed.computer.uploadFile.handler(async ({ context, input }) => {
         let bot = await repos.getBot(context.actor, input.botId);

@@ -589,9 +589,17 @@ msgstr "מתקדם..."
 msgid "Agent computer"
 msgstr "מחשב הסוכן"
 
+#: src/pages/DraftReview.tsx
+msgid "Agent draft"
+msgstr ""
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Agents:"
 msgstr "סוכנים:"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "All"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 #: src/pages/shell/agent-import.tsx
@@ -746,6 +754,12 @@ msgstr "החלה"
 msgid "Approval boundaries"
 msgstr "גבולות אישור"
 
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Approval log"
+msgstr ""
+
 #: src/pages/ModelSettingsOverlay.tsx
 msgid "Approval model"
 msgstr "מודל אישור"
@@ -755,6 +769,7 @@ msgstr "מודל אישור"
 msgid "Approvals"
 msgstr "אישורים"
 
+#: src/pages/DraftReview.tsx
 #: src/pages/MessagingSettingsOverlay.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
@@ -763,6 +778,11 @@ msgstr "אישור"
 #: src/pages/shell/message-cards.tsx
 msgid "Approve this server to let your agent use its tools."
 msgstr "יש לאשר את השרת הזה כדי שהסוכן יוכל להשתמש בכלים שלו."
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Approved"
+msgstr ""
 
 #: src/pages/BotContextMenu.tsx
 msgid "Archive"
@@ -1598,6 +1618,10 @@ msgstr "העתקה"
 msgid "Copy .env example"
 msgstr "העתקת דוגמת .env"
 
+#: src/pages/DraftReview.tsx
+msgid "Copy document"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "העתקת ההנחיה"
@@ -1769,6 +1793,14 @@ msgstr "לא ניתן להוריד את {0}. אפשר לנסות שוב."
 msgid "Could not download {name}. Try again."
 msgstr "לא ניתן להוריד את {name}. אפשר לנסות שוב."
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not export the approval log"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not export this draft"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not install connector"
 msgstr "לא ניתן להתקין את החיבור"
@@ -1803,6 +1835,10 @@ msgstr "לא ניתן לטעון את הבוטים. יש לטעון מחדש כ�
 msgid "Could not load credentials."
 msgstr "לא ניתן לטעון את פרטי הגישה."
 
+#: src/pages/DraftReview.tsx
+msgid "Could not load drafts"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not load integrations"
 msgstr "לא ניתן לטעון את האינטגרציות"
@@ -1832,6 +1868,10 @@ msgstr "לא ניתן לטעון את אפשרויות ההתחברות"
 #: src/pages/KnowledgeSection.tsx
 msgid "Could not load skill"
 msgstr "לא ניתן לטעון את המיומנות"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not load the approval log"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 msgid "Could not load this artifact."
@@ -1880,6 +1920,10 @@ msgstr "אין גישה לשרת"
 #: src/pages/shell/agent-import.tsx
 msgid "Could not read these files"
 msgstr "לא ניתן לקרוא את הקבצים האלה"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not record the draft"
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/ScratchpadSection.tsx
@@ -1978,6 +2022,10 @@ msgstr "לא ניתן לשמור את הקול"
 #: src/pages/shell/bot-credentials.tsx
 msgid "Could not save the credential"
 msgstr "לא ניתן לשמור את פרטי הגישה"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not save the draft"
+msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2427,6 +2475,7 @@ msgid "Downgrade at renewal"
 msgstr ""
 
 #: src/pages/Artifacts.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/KnowledgeSection.tsx
 msgid "Download"
 msgstr "הורדה"
@@ -2444,9 +2493,19 @@ msgstr "הורדת {name}"
 msgid "Downloading…"
 msgstr "מוריד…"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Draft"
+msgstr ""
+
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Draft skill"
 msgstr "טיוטת מיומנות"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Drafts for review"
+msgstr ""
 
 #: src/pages/shell/avatar-studio-popover.tsx
 msgid "Drag, drop, or paste an image"
@@ -2482,6 +2541,10 @@ msgstr "עריכת שם"
 #: src/pages/BotContextMenu.tsx
 msgid "Edit Profile"
 msgstr "עריכת פרופיל"
+
+#: src/pages/DraftReview.tsx
+msgid "Edited version"
+msgstr ""
 
 #: src/pages/Auth.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
@@ -2631,6 +2694,10 @@ msgstr "פג תוקף"
 msgid "Export"
 msgstr "ייצוא"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Export CSV"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Export this week's list from the CRM and drop it in the shared folder"
 msgstr "לייצא את הרשימה של השבוע מה-CRM ולשים אותה בתיקייה המשותפת"
@@ -2696,6 +2763,10 @@ msgstr ""
 msgid "Files or folders, one per line"
 msgstr ""
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Filter"
+msgstr ""
+
 #: src/pages/GroupPanel.tsx
 msgid "Filter bots"
 msgstr ""
@@ -2754,6 +2825,7 @@ msgid "Free"
 msgstr "חינם"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "From"
 msgstr "מתאריך"
 
@@ -2774,6 +2846,10 @@ msgstr "Gateway ID"
 #: src/pages/SettingsOverlay.tsx
 msgid "General"
 msgstr "כללי"
+
+#: src/pages/DraftReview.tsx
+msgid "Generated"
+msgstr ""
 
 #: src/components/SidebarFooter.tsx
 msgid "Get the mobile app"
@@ -2945,6 +3021,7 @@ msgid "In progress"
 msgstr "בתהליך"
 
 #: src/lib/ticket-status.ts
+#: src/pages/DraftReview.tsx
 msgid "In review"
 msgstr "בבדיקה"
 
@@ -3130,6 +3207,10 @@ msgstr ""
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "מאוחר יותר"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Lawyer"
+msgstr ""
 
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
@@ -3472,6 +3553,10 @@ msgstr "מזעור הבוטים"
 msgid "Minimize call"
 msgstr ""
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Minimum review time (seconds)"
+msgstr ""
+
 #: src/pages/RoutineSchedule.tsx
 msgid "minute"
 msgstr "דקה"
@@ -3490,6 +3575,8 @@ msgid "Mode"
 msgstr "מצב"
 
 #: src/pages/AccountSettingsOverlay.tsx
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
@@ -3516,6 +3603,10 @@ msgstr "מזהה מודל"
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "אפשרויות מודל"
+
+#: src/pages/DraftReview.tsx
+msgid "Model version"
+msgstr ""
 
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
@@ -4271,6 +4362,10 @@ msgstr "חיבור OAuth מחדש"
 msgid "Reconnecting"
 msgstr "מתחבר מחדש"
 
+#: src/pages/DraftReview.tsx
+msgid "Record draft"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "ייתכן שההקלטה התחילה, אבל לא ניתן היה לרענן את התצוגה"
@@ -4353,6 +4448,15 @@ msgstr "מרענן…"
 #: src/lib/user-error.ts
 msgid "Registration is closed"
 msgstr "ההרשמה סגורה"
+
+#: src/pages/DraftReview.tsx
+msgid "Reject"
+msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Rejected"
+msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Release control"
@@ -5125,6 +5229,7 @@ msgstr "מתחיל…"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Board.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "Status"
 msgstr "סטטוס"
 
@@ -5261,6 +5366,10 @@ msgstr "הבוט ומה שהייבוא שלו הוסיף יוסרו."
 #: src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "תם הזמן הקצוב לחיבור."
+
+#: src/pages/DraftReview.tsx
+msgid "The minimum review time has not elapsed."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -5437,11 +5546,13 @@ msgid "Timing may differ"
 msgstr "התזמון עשוי להשתנות"
 
 #: src/pages/Board.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Title"
 msgstr "כותרת"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "To"
 msgstr "עד"
 

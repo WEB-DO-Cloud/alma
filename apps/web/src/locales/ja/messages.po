@@ -589,9 +589,17 @@ msgstr "詳細設定..."
 msgid "Agent computer"
 msgstr "エージェントのコンピューター"
 
+#: src/pages/DraftReview.tsx
+msgid "Agent draft"
+msgstr ""
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Agents:"
 msgstr "エージェント:"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "All"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 #: src/pages/shell/agent-import.tsx
@@ -746,6 +754,12 @@ msgstr "適用"
 msgid "Approval boundaries"
 msgstr "承認の範囲"
 
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Approval log"
+msgstr ""
+
 #: src/pages/ModelSettingsOverlay.tsx
 msgid "Approval model"
 msgstr "承認モデル"
@@ -755,6 +769,7 @@ msgstr "承認モデル"
 msgid "Approvals"
 msgstr "承認"
 
+#: src/pages/DraftReview.tsx
 #: src/pages/MessagingSettingsOverlay.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
@@ -763,6 +778,11 @@ msgstr "承認"
 #: src/pages/shell/message-cards.tsx
 msgid "Approve this server to let your agent use its tools."
 msgstr "このサーバーを承認すると、エージェントがそのツールを使用できるようになります。"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Approved"
+msgstr ""
 
 #: src/pages/BotContextMenu.tsx
 msgid "Archive"
@@ -1598,6 +1618,10 @@ msgstr "コピー"
 msgid "Copy .env example"
 msgstr ".env の例をコピー"
 
+#: src/pages/DraftReview.tsx
+msgid "Copy document"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "プロンプトをコピー"
@@ -1769,6 +1793,14 @@ msgstr "{0}をダウンロードできませんでした。もう一度お試し
 msgid "Could not download {name}. Try again."
 msgstr "{name}をダウンロードできませんでした。もう一度お試しください。"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not export the approval log"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not export this draft"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not install connector"
 msgstr "コネクタをインストールできませんでした"
@@ -1803,6 +1835,10 @@ msgstr "ボットを読み込めませんでした。再読み込みしてもう
 msgid "Could not load credentials."
 msgstr "認証情報を読み込めませんでした。"
 
+#: src/pages/DraftReview.tsx
+msgid "Could not load drafts"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not load integrations"
 msgstr "連携を読み込めませんでした"
@@ -1832,6 +1868,10 @@ msgstr "ログイン方法を読み込めませんでした"
 #: src/pages/KnowledgeSection.tsx
 msgid "Could not load skill"
 msgstr "スキルを読み込めませんでした"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not load the approval log"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 msgid "Could not load this artifact."
@@ -1880,6 +1920,10 @@ msgstr "サーバーに接続できませんでした"
 #: src/pages/shell/agent-import.tsx
 msgid "Could not read these files"
 msgstr "これらのファイルを読み込めませんでした"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not record the draft"
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/ScratchpadSection.tsx
@@ -1978,6 +2022,10 @@ msgstr "そのボイスを保存できませんでした"
 #: src/pages/shell/bot-credentials.tsx
 msgid "Could not save the credential"
 msgstr "認証情報を保存できませんでした"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not save the draft"
+msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2427,6 +2475,7 @@ msgid "Downgrade at renewal"
 msgstr "更新時にダウングレード"
 
 #: src/pages/Artifacts.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/KnowledgeSection.tsx
 msgid "Download"
 msgstr "ダウンロード"
@@ -2444,9 +2493,19 @@ msgstr "{name}をダウンロード"
 msgid "Downloading…"
 msgstr "ダウンロード中…"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Draft"
+msgstr ""
+
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Draft skill"
 msgstr "スキルの下書き"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Drafts for review"
+msgstr ""
 
 #: src/pages/shell/avatar-studio-popover.tsx
 msgid "Drag, drop, or paste an image"
@@ -2482,6 +2541,10 @@ msgstr "名前を編集"
 #: src/pages/BotContextMenu.tsx
 msgid "Edit Profile"
 msgstr "プロフィールを編集"
+
+#: src/pages/DraftReview.tsx
+msgid "Edited version"
+msgstr ""
 
 #: src/pages/Auth.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
@@ -2631,6 +2694,10 @@ msgstr "期限切れ"
 msgid "Export"
 msgstr "エクスポート"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Export CSV"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Export this week's list from the CRM and drop it in the shared folder"
 msgstr "今週のリストをCRMからエクスポートして共有フォルダに入れる"
@@ -2696,6 +2763,10 @@ msgstr "コンピューター上のファイルまたはフォルダ"
 msgid "Files or folders, one per line"
 msgstr "ファイルまたはフォルダ（1行に1つ）"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Filter"
+msgstr ""
+
 #: src/pages/GroupPanel.tsx
 msgid "Filter bots"
 msgstr "ボットを絞り込む"
@@ -2754,6 +2825,7 @@ msgid "Free"
 msgstr "無料"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "From"
 msgstr "開始日"
 
@@ -2774,6 +2846,10 @@ msgstr "ゲートウェイID"
 #: src/pages/SettingsOverlay.tsx
 msgid "General"
 msgstr "一般"
+
+#: src/pages/DraftReview.tsx
+msgid "Generated"
+msgstr ""
 
 #: src/components/SidebarFooter.tsx
 msgid "Get the mobile app"
@@ -2945,6 +3021,7 @@ msgid "In progress"
 msgstr "進行中"
 
 #: src/lib/ticket-status.ts
+#: src/pages/DraftReview.tsx
 msgid "In review"
 msgstr "レビュー中"
 
@@ -3130,6 +3207,10 @@ msgstr "前回の確認 {0}: 変更なし"
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "後で"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Lawyer"
+msgstr ""
 
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
@@ -3472,6 +3553,10 @@ msgstr "ボットを最小化"
 msgid "Minimize call"
 msgstr "通話を最小化"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Minimum review time (seconds)"
+msgstr ""
+
 #: src/pages/RoutineSchedule.tsx
 msgid "minute"
 msgstr "分"
@@ -3490,6 +3575,8 @@ msgid "Mode"
 msgstr "モード"
 
 #: src/pages/AccountSettingsOverlay.tsx
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
@@ -3516,6 +3603,10 @@ msgstr "モデルID"
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "モデルのオプション"
+
+#: src/pages/DraftReview.tsx
+msgid "Model version"
+msgstr ""
 
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
@@ -4271,6 +4362,10 @@ msgstr "OAuthを再接続"
 msgid "Reconnecting"
 msgstr "再接続中"
 
+#: src/pages/DraftReview.tsx
+msgid "Record draft"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "録画は開始された可能性がありますが、表示を更新できませんでした"
@@ -4353,6 +4448,15 @@ msgstr "更新中…"
 #: src/lib/user-error.ts
 msgid "Registration is closed"
 msgstr "新規登録は締め切られています"
+
+#: src/pages/DraftReview.tsx
+msgid "Reject"
+msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Rejected"
+msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Release control"
@@ -5125,6 +5229,7 @@ msgstr "開始中…"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Board.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "Status"
 msgstr "ステータス"
 
@@ -5261,6 +5366,10 @@ msgstr "ボットと、そのインポートで追加されたものが削除さ
 #: src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "接続がタイムアウトしました。"
+
+#: src/pages/DraftReview.tsx
+msgid "The minimum review time has not elapsed."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -5437,11 +5546,13 @@ msgid "Timing may differ"
 msgstr "実行タイミングが異なる場合があります"
 
 #: src/pages/Board.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Title"
 msgstr "タイトル"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "To"
 msgstr "終了日"
 

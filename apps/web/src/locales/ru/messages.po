@@ -589,9 +589,17 @@ msgstr "Расширенные..."
 msgid "Agent computer"
 msgstr "Компьютер агента"
 
+#: src/pages/DraftReview.tsx
+msgid "Agent draft"
+msgstr ""
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Agents:"
 msgstr "Агенты:"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "All"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 #: src/pages/shell/agent-import.tsx
@@ -746,6 +754,12 @@ msgstr "Применить"
 msgid "Approval boundaries"
 msgstr "Границы одобрения"
 
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Approval log"
+msgstr ""
+
 #: src/pages/ModelSettingsOverlay.tsx
 msgid "Approval model"
 msgstr "Модель проверки действий"
@@ -755,6 +769,7 @@ msgstr "Модель проверки действий"
 msgid "Approvals"
 msgstr "Подтверждения"
 
+#: src/pages/DraftReview.tsx
 #: src/pages/MessagingSettingsOverlay.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
@@ -763,6 +778,11 @@ msgstr "Утвердить"
 #: src/pages/shell/message-cards.tsx
 msgid "Approve this server to let your agent use its tools."
 msgstr "Одобрите этот сервер, чтобы ваш агент мог использовать его инструменты."
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Approved"
+msgstr ""
 
 #: src/pages/BotContextMenu.tsx
 msgid "Archive"
@@ -1598,6 +1618,10 @@ msgstr "Копировать"
 msgid "Copy .env example"
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Copy document"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "Скопировать промпт"
@@ -1769,6 +1793,14 @@ msgstr "Не удалось загрузить {0}. Попробуйте еще 
 msgid "Could not download {name}. Try again."
 msgstr "Не удалось загрузить {name}. Попробуйте еще раз."
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not export the approval log"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not export this draft"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not install connector"
 msgstr "Не удалось установить коннектор"
@@ -1803,6 +1835,10 @@ msgstr "Не удалось загрузить ботов. Обновите ст
 msgid "Could not load credentials."
 msgstr ""
 
+#: src/pages/DraftReview.tsx
+msgid "Could not load drafts"
+msgstr ""
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Could not load integrations"
 msgstr "Не удалось загрузить интеграции"
@@ -1832,6 +1868,10 @@ msgstr "Не удалось загрузить способы входа"
 #: src/pages/KnowledgeSection.tsx
 msgid "Could not load skill"
 msgstr "Не удалось загрузить навык"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Could not load the approval log"
+msgstr ""
 
 #: src/pages/Artifacts.tsx
 msgid "Could not load this artifact."
@@ -1880,6 +1920,10 @@ msgstr "Не удалось связаться с сервером"
 #: src/pages/shell/agent-import.tsx
 msgid "Could not read these files"
 msgstr "Не удалось прочитать эти файлы"
+
+#: src/pages/DraftReview.tsx
+msgid "Could not record the draft"
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/ScratchpadSection.tsx
@@ -1977,6 +2021,10 @@ msgstr "Не удалось сохранить этот голос"
 
 #: src/pages/shell/bot-credentials.tsx
 msgid "Could not save the credential"
+msgstr ""
+
+#: src/pages/DraftReview.tsx
+msgid "Could not save the draft"
 msgstr ""
 
 #: src/pages/shell/message-cards.tsx
@@ -2427,6 +2475,7 @@ msgid "Downgrade at renewal"
 msgstr ""
 
 #: src/pages/Artifacts.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/KnowledgeSection.tsx
 msgid "Download"
 msgstr ""
@@ -2444,9 +2493,19 @@ msgstr "Скачать {name}"
 msgid "Downloading…"
 msgstr "Скачивание…"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Draft"
+msgstr ""
+
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Draft skill"
 msgstr "Черновик навыка"
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Drafts for review"
+msgstr ""
 
 #: src/pages/shell/avatar-studio-popover.tsx
 msgid "Drag, drop, or paste an image"
@@ -2482,6 +2541,10 @@ msgstr "Изменить имя"
 #: src/pages/BotContextMenu.tsx
 msgid "Edit Profile"
 msgstr "Редактировать профиль"
+
+#: src/pages/DraftReview.tsx
+msgid "Edited version"
+msgstr ""
 
 #: src/pages/Auth.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
@@ -2631,6 +2694,10 @@ msgstr "истёк срок"
 msgid "Export"
 msgstr "Экспорт"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Export CSV"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Export this week's list from the CRM and drop it in the shared folder"
 msgstr "Экспортируйте список этой недели из CRM и поместите его в общую папку."
@@ -2696,6 +2763,10 @@ msgstr "Файлы или папки на компьютере"
 msgid "Files or folders, one per line"
 msgstr "Файлы или папки, по одному на строку"
 
+#: src/pages/DraftApprovalLog.tsx
+msgid "Filter"
+msgstr ""
+
 #: src/pages/GroupPanel.tsx
 msgid "Filter bots"
 msgstr ""
@@ -2754,6 +2825,7 @@ msgid "Free"
 msgstr "Бесплатно"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "From"
 msgstr ""
 
@@ -2774,6 +2846,10 @@ msgstr "ID шлюза"
 #: src/pages/SettingsOverlay.tsx
 msgid "General"
 msgstr "Общие"
+
+#: src/pages/DraftReview.tsx
+msgid "Generated"
+msgstr ""
 
 #: src/components/SidebarFooter.tsx
 msgid "Get the mobile app"
@@ -2945,6 +3021,7 @@ msgid "In progress"
 msgstr ""
 
 #: src/lib/ticket-status.ts
+#: src/pages/DraftReview.tsx
 msgid "In review"
 msgstr ""
 
@@ -3130,6 +3207,10 @@ msgstr "Последняя проверка {0}: без изменений"
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "Позже"
+
+#: src/pages/DraftApprovalLog.tsx
+msgid "Lawyer"
+msgstr ""
 
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
@@ -3472,6 +3553,10 @@ msgstr "Свернуть ботов"
 msgid "Minimize call"
 msgstr "Свернуть звонок"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Minimum review time (seconds)"
+msgstr ""
+
 #: src/pages/RoutineSchedule.tsx
 msgid "minute"
 msgstr "минута"
@@ -3490,6 +3575,8 @@ msgid "Mode"
 msgstr "Режим"
 
 #: src/pages/AccountSettingsOverlay.tsx
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
@@ -3516,6 +3603,10 @@ msgstr "Идентификатор модели"
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Варианты модели"
+
+#: src/pages/DraftReview.tsx
+msgid "Model version"
+msgstr ""
 
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/SettingsOverlay.tsx
@@ -4271,6 +4362,10 @@ msgstr "Переподключить OAuth"
 msgid "Reconnecting"
 msgstr "Повторное подключение"
 
+#: src/pages/DraftReview.tsx
+msgid "Record draft"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "Возможно, запись началась, но не удалось обновить представление."
@@ -4353,6 +4448,15 @@ msgstr "Обновление…"
 #: src/lib/user-error.ts
 msgid "Registration is closed"
 msgstr "Регистрация закрыта"
+
+#: src/pages/DraftReview.tsx
+msgid "Reject"
+msgstr ""
+
+#: src/pages/DraftApprovalLog.tsx
+#: src/pages/DraftReview.tsx
+msgid "Rejected"
+msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Release control"
@@ -5125,6 +5229,7 @@ msgstr "Запуск…"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Board.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "Status"
 msgstr ""
 
@@ -5261,6 +5366,10 @@ msgstr "Бот и всё, что добавил его импорт, будут 
 #: src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "Время ожидания соединения истекло."
+
+#: src/pages/DraftReview.tsx
+msgid "The minimum review time has not elapsed."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -5437,11 +5546,13 @@ msgid "Timing may differ"
 msgstr "Время запуска может отличаться"
 
 #: src/pages/Board.tsx
+#: src/pages/DraftReview.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Title"
 msgstr "Заголовок"
 
 #: src/pages/ActivityList.tsx
+#: src/pages/DraftApprovalLog.tsx
 msgid "To"
 msgstr ""
 

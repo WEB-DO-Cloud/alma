@@ -76,6 +76,7 @@ async function present(
     bankAccount: loaded.state.bankAccount,
     invoiceFooter: loaded.state.invoiceFooter,
     accentColor: loaded.state.accentColor,
+    minimumReviewSeconds: loaded.state.minimumReviewSeconds,
     logo,
     lawyers: lawyers.map((lawyer) => ({
       id: lawyer.id,

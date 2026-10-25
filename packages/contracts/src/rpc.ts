@@ -118,6 +118,20 @@ import {
   VoiceInfoSchema,
   VoiceStatusSchema,
 } from "./domain.js";
+import {
+  DraftApprovalLogEntrySchema,
+  DraftApprovalLogFilterSchema,
+  DraftCopySourceResultSchema,
+  DraftCopySourceSchema,
+  DraftStatusSchema,
+  ReviewDraftApproveSchema,
+  ReviewDraftCreateSchema,
+  ReviewDraftExportSchema,
+  ReviewDraftRejectSchema,
+  ReviewDraftSaveSchema,
+  ReviewDraftSchema,
+  ReviewDraftSummarySchema,
+} from "./draft-review.js";
 import { ComputerCommandSchema, ProductEventSchema } from "./events.js";
 import { Id, IsoDate } from "./ids.js";
 import {
@@ -1186,6 +1200,25 @@ export const appContract = {
     get: oc.output(OrganizationSettingsSchema),
     update: oc.input(OrganizationSettingsUpdateSchema).output(OrganizationSettingsSchema),
     uploadLogo: oc.input(OrganizationLogoUploadSchema).output(OrganizationSettingsSchema),
+  },
+  /** Agent drafts stay in the firm until a named lawyer approves them. */
+  drafts: {
+    list: oc
+      .input(z.object({ status: DraftStatusSchema.optional() }))
+      .output(z.array(ReviewDraftSummarySchema)),
+    get: oc.input(z.object({ draftId: Id })).output(ReviewDraftSchema),
+    create: oc.input(ReviewDraftCreateSchema).output(ReviewDraftSchema),
+    open: oc.input(z.object({ draftId: Id })).output(ReviewDraftSchema),
+    save: oc.input(ReviewDraftSaveSchema).output(ReviewDraftSchema),
+    approve: oc.input(ReviewDraftApproveSchema).output(ReviewDraftSchema),
+    reject: oc.input(ReviewDraftRejectSchema).output(ReviewDraftSchema),
+    export: oc.input(z.object({ draftId: Id })).output(ReviewDraftExportSchema),
+    copySource: oc.input(DraftCopySourceSchema).output(DraftCopySourceResultSchema),
+  },
+  /** Append-only approval records. Owners and admins only. */
+  draftApprovals: {
+    list: oc.input(DraftApprovalLogFilterSchema).output(z.array(DraftApprovalLogEntrySchema)),
+    exportCsv: oc.input(DraftApprovalLogFilterSchema).output(z.object({ csv: z.string() })),
   },
 };
 
