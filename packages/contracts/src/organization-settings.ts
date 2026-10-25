@@ -134,6 +134,7 @@ export const OrganizationSettingsUpdateSchema = z
     bankAccount: boundedText(64),
     invoiceFooter: boundedText(500),
     accentColor: AccentColorSchema,
+    minimumReviewSeconds: z.number().int().min(30).max(1800).default(60),
     lawyers: z.array(OrganizationLawyerInputSchema).max(MAX_ORGANIZATION_LAWYERS),
   })
   .superRefine((input, ctx) => {
@@ -197,6 +198,8 @@ export const OrganizationSettingsSchema = z.object({
   bankAccount: z.string(),
   invoiceFooter: z.string(),
   accentColor: z.string().nullable(),
+  /** Base seconds a lawyer must keep a draft open. Longer drafts add more time. */
+  minimumReviewSeconds: z.number().int().min(30).max(1800),
   logo: OrganizationLogoSchema.nullable(),
   lawyers: z.array(OrganizationLawyerSchema),
 });

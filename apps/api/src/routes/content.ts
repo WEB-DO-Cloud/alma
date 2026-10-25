@@ -3,7 +3,7 @@ import type { UsageOperationKind } from "@rakazo/adapter-kit";
 import { resolveBotWorkspacePath } from "@rakazo/adapters";
 import type { ExportManifest } from "@rakazo/contracts";
 import { attachmentMaxBytes } from "@rakazo/contracts";
-import { AttachmentValidationError } from "@rakazo/core";
+import { AttachmentValidationError, collectTextLeaves } from "@rakazo/core";
 import { IsolationError, parseComputerMode } from "@rakazo/db";
 import {
   ArtifactListCursorError,
@@ -15,6 +15,7 @@ import {
   listArtifactVersions,
   listSpaceArtifacts,
 } from "../artifacts.js";
+import { refuseUnapprovedDraftContent, textFromBase64 } from "../draft-egress.js";
 import { listSpaceRuns } from "../runs.js";
 import { querySpaceSearch } from "../search.js";
 import { loadAllMessages } from "../thread-message-pages.js";
@@ -86,25 +87,40 @@ export function contentRoutes(ctx: RouterContext) {
           const group = await groupRepos.getGroupTarget(context.actor, input.groupId);
           const contextBotId = group.members[0]?.bot.id;
           if (!contextBotId) throw new IsolationError();
-          return getSpaceArtifact(deps, context.actor, {
+          const artifact = await getSpaceArtifact(deps, context.actor, {
             artifactId: input.artifactId,
             groupId: input.groupId,
             contextBotId,
           });
+          await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+            texts: [textFromBase64(artifact.contentBase64)],
+            artifactIds: [artifact.id],
+          });
+          return artifact;
         }
         await repos.getBot(context.actor, input.botId!);
         try {
-          return await getOwnedArtifact(deps, context.actor, {
+          const artifact = await getOwnedArtifact(deps, context.actor, {
             botId: input.botId!,
             artifactId: input.artifactId,
           });
+          await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+            texts: [textFromBase64(artifact.contentBase64)],
+            artifactIds: [artifact.id],
+          });
+          return artifact;
         } catch (error) {
           if (error instanceof IsolationError) throw error;
           throw error;
         }
       }),
       getById: authed.artifacts.getById.handler(async ({ context, input }) => {
-        return getSpaceArtifactById(deps, context.actor, input);
+        const artifact = await getSpaceArtifactById(deps, context.actor, input);
+        await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+          texts: [textFromBase64(artifact.contentBase64)],
+          artifactIds: [artifact.id],
+        });
+        return artifact;
       }),
       remove: authed.artifacts.remove.handler(async ({ context, input }) => {
         return deleteArtifactFamily(deps, context.actor, { familyId: input.artifactId });
@@ -227,6 +243,10 @@ export function contentRoutes(ctx: RouterContext) {
           })(),
           loadAllMessages(deps.prisma, bot.thread.id, EXPORT_MESSAGE_PAGE_SIZE),
         ]);
+        await refuseUnapprovedDraftContent(deps.prisma, context.actor.spaceId, {
+          texts: collectTextLeaves({ memory, routines, files, history }),
+          messageIds: history.flatMap((message) => (message.id ? [message.id] : [])),
+        });
         return {
           version: 1 as const,
           exportedAt: new Date().toISOString(),

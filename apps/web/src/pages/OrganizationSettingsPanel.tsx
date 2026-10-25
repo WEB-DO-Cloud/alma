@@ -28,6 +28,7 @@ type Draft = {
   bankAccount: string;
   invoiceFooter: string;
   accentColor: string;
+  minimumReviewSeconds: number;
   lawyers: DraftLawyer[];
   logo: OrganizationSettings["logo"];
 };
@@ -46,6 +47,7 @@ function draftFrom(settings: OrganizationSettings): Draft {
     bankAccount: settings.bankAccount,
     invoiceFooter: settings.invoiceFooter,
     accentColor: settings.accentColor ?? "",
+    minimumReviewSeconds: settings.minimumReviewSeconds ?? 60,
     logo: settings.logo,
     lawyers: settings.lawyers.map((lawyer) => ({ ...lawyer, key: lawyer.id })),
   };
@@ -139,6 +141,7 @@ export function OrganizationSettingsPanel() {
       bankAccount: draft.bankAccount,
       invoiceFooter: draft.invoiceFooter,
       accentColor: draft.accentColor,
+      minimumReviewSeconds: draft.minimumReviewSeconds,
       lawyers: draft.lawyers.map(({ id, name, cardNumber, email, mayApproveDrafts }) => ({
         ...(id ? { id } : {}),
         name,
@@ -352,6 +355,30 @@ export function OrganizationSettingsPanel() {
           <p className="text-[12.5px] text-muted-foreground">
             <Trans>Named lawyers who may approve drafts for review.</Trans>
           </p>
+          <Field>
+            <FieldLabel htmlFor={`${baseId}-review-seconds`}>
+              <Trans>Minimum review time (seconds)</Trans>
+            </FieldLabel>
+            <Input
+              id={`${baseId}-review-seconds`}
+              data-testid="organization-minimum-review"
+              type="number"
+              min={30}
+              max={1800}
+              value={draft.minimumReviewSeconds}
+              onChange={(event) =>
+                patch({ minimumReviewSeconds: Number(event.target.value) || 60 })
+              }
+            />
+          </Field>
+          <div className="flex gap-4 text-[13px]">
+            <a href="/app/drafts" className="underline">
+              <Trans>Drafts for review</Trans>
+            </a>
+            <a href="/app/draft-approvals" className="underline">
+              <Trans>Approval log</Trans>
+            </a>
+          </div>
           {draft.lawyers.map((lawyer, index) => (
             <div
               key={lawyer.key}

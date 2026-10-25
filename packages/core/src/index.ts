@@ -53,6 +53,8 @@ export * from "./model-oauth.js";
 export * from "./model-probe.js";
 export * from "./model-providers.js";
 export * from "./model-role-settings.js";
+export * from "./draft-footer.js";
+export * from "./draft-review.js";
 export * from "./organization-letterhead.js";
 export * from "./passkey-offer.js";
 export * from "./password-policy.js";

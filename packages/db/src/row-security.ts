@@ -147,6 +147,8 @@ export const ROW_SECURITY_MODELS: ReadonlySet<string> = new Set([
   "OrganizationLawyer",
   "OrganizationLogo",
   "OrganizationSettingsAudit",
+  "ReviewDraft",
+  "DraftApprovalLog",
 ]);
 
 /**

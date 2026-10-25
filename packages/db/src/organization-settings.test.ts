@@ -84,6 +84,7 @@ describe("organization settings changes", () => {
       bankAccount: "",
       invoiceFooter: "",
       accentColor: "#1F4B3A",
+      minimumReviewSeconds: 60,
       lawyers: [
         {
           id: "lawyer-1",

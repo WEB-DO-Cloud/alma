@@ -67,6 +67,13 @@ describe("organization settings update", () => {
     });
   });
 
+  it("defaults the minimum review time and rejects a review that is too short", () => {
+    expect(OrganizationSettingsUpdateSchema.parse(firm).minimumReviewSeconds).toBe(60);
+    expect(
+      OrganizationSettingsUpdateSchema.safeParse({ ...firm, minimumReviewSeconds: 10 }).success,
+    ).toBe(false);
+  });
+
   it("rejects an RNC that is not 9 or 11 digits", () => {
     expect(OrganizationSettingsUpdateSchema.safeParse({ ...firm, rnc: "1234" }).success).toBe(
       false,

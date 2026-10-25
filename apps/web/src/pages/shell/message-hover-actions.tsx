@@ -15,6 +15,7 @@ import { Copy, MessageSquareDot, MoreHorizontal, Reply, Smile } from "lucide-rea
 import { useState } from "react";
 import { MessageHoverMetadata } from "../../components/MessageHoverMetadata";
 import { copyableMessageText } from "../../lib/message-text";
+import { rpc } from "../../lib/rpc";
 
 export function MessageHoverActions({
   message,
@@ -41,7 +42,10 @@ export function MessageHoverActions({
   function copyMessage() {
     const text = copyableMessageText(message);
     if (!text || !navigator.clipboard) return;
-    void navigator.clipboard.writeText(text).catch(() => undefined);
+    void rpc.drafts
+      .copySource({ messageId: message.id })
+      .then((decision) => navigator.clipboard.writeText(decision.text ?? text))
+      .catch(() => undefined);
   }
 
   const iconButtonClass =
