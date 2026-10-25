@@ -11,6 +11,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Brain,
+  Building2,
   ChevronLeft,
   ChevronRight,
   CloudDownload,
@@ -41,6 +42,7 @@ import {
 import { BillingSettingsPanel } from "./BillingSettingsPanel";
 import { MemorySettingsOverlay } from "./MemorySettingsOverlay";
 import { ModelSettingsOverlay } from "./ModelSettingsOverlay";
+import { OrganizationSettingsPanel } from "./OrganizationSettingsPanel";
 import { SpaceSettingsPanel } from "./SpaceSettingsPanel";
 import type { SettingsSpace } from "./shell/dialogs";
 import type { SettingsSection } from "./shell-overlay";
@@ -79,6 +81,7 @@ export function SettingsOverlay({
   onSandboxProviderChange,
   messagingEnabled = false,
   onOpenMessaging,
+  canManageOrganization = false,
   memoryConfig,
   onMemoryConfigChange,
   onClose,
@@ -106,6 +109,8 @@ export function SettingsOverlay({
   onSandboxProviderChange?: (sandboxProvider: string) => void;
   messagingEnabled?: boolean;
   onOpenMessaging?: () => void;
+  /** Owners and admins of the firm. Absent until the account payload includes it. */
+  canManageOrganization?: boolean;
   memoryConfig: SpaceMemoryConfig | null | undefined;
   onMemoryConfigChange: (config: SpaceMemoryConfig | null) => void;
   onClose: () => void;
@@ -126,7 +131,8 @@ export function SettingsOverlay({
   const section =
     (requestedSection === "computer" && !showComputer) ||
     (requestedSection === "billing" && !billingEnabled) ||
-    (requestedSection === "updates" && !showUpdates)
+    (requestedSection === "updates" && !showUpdates) ||
+    (requestedSection === "organization" && !canManageOrganization)
       ? "general"
       : requestedSection;
   const panelBusy = memoryBusy || voiceBusy;
@@ -176,6 +182,9 @@ export function SettingsOverlay({
 
   const navItems: NavItem[] = [
     { id: "general", label: t`General`, icon: Settings },
+    ...(canManageOrganization
+      ? [{ id: "organization" as const, label: t`Organization`, icon: Building2 }]
+      : []),
     { id: "models", label: t`Models`, icon: Cpu },
     { id: "voice", label: t`Voice`, icon: Volume2 },
     { id: "confirmations", label: t`Approvals`, icon: ShieldCheck },
@@ -215,7 +224,7 @@ export function SettingsOverlay({
       nav.removeEventListener("scroll", measure);
       observer?.disconnect();
     };
-  }, [section, showComputer, billingEnabled, showUpdates, i18n.locale]);
+  }, [section, showComputer, billingEnabled, showUpdates, canManageOrganization, i18n.locale]);
 
   function scrollSections(direction: number) {
     const nav = navRef.current;
@@ -370,6 +379,9 @@ export function SettingsOverlay({
                     : "rk-scroll overflow-y-auto overscroll-contain px-6 pb-6 pt-6 sm:px-8 sm:pb-8"
                 }`}
               >
+                {section === "organization" && canManageOrganization ? (
+                  <OrganizationSettingsPanel />
+                ) : null}
                 {section === "general" ? (
                   <GeneralSettingsPanels
                     email={email}

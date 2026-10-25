@@ -1616,6 +1616,11 @@ export const MeSchema = z.object({
   billingEnabled: z.boolean(),
   /** True until a user of a billing deployment answers or skips the signup survey. Absent from older servers. */
   needsSignupSurvey: z.boolean().optional(),
+  /**
+   * True when this member is an owner or admin of the space's organization.
+   * Absent from servers that predate organization settings.
+   */
+  canManageOrganization: z.boolean().optional(),
 });
 export type Me = z.infer<typeof MeSchema>;
 
