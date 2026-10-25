@@ -126,6 +126,11 @@ import {
 } from "./integration-settings.js";
 import { ModelHeadersSchema } from "./model-headers.js";
 import { ModelRoleSchema, ModelRoleUpdateSchema, ModelRoleViewSchema } from "./model-roles.js";
+import {
+  OrganizationLogoUploadSchema,
+  OrganizationSettingsSchema,
+  OrganizationSettingsUpdateSchema,
+} from "./organization-settings.js";
 import { MessageReactionSchema } from "./reactions.js";
 import { RoutineWatchSchema } from "./routine-watch.js";
 import { RoutineHistorySchema, RoutineRunCursorSchema, RunsListOutputSchema } from "./runs.js";
@@ -1175,6 +1180,12 @@ export const appContract = {
     remove: oc
       .input(z.object({ botId: Id, name: StoredBotSecretName }))
       .output(z.object({ ok: z.literal(true) })),
+  },
+  /** Firm details printed on drafts for review. Owners and admins only. */
+  organization: {
+    get: oc.output(OrganizationSettingsSchema),
+    update: oc.input(OrganizationSettingsUpdateSchema).output(OrganizationSettingsSchema),
+    uploadLogo: oc.input(OrganizationLogoUploadSchema).output(OrganizationSettingsSchema),
   },
 };
 

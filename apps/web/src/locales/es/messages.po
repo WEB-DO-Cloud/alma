@@ -502,6 +502,10 @@ msgstr "Añadir encabezado"
 msgid "Add item"
 msgstr "Agregar elemento"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Add lawyer"
+msgstr "Añadir abogado"
+
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Add MCP server"
@@ -560,6 +564,10 @@ msgstr ""
 #: src/pages/PluginsOverlay.tsx
 msgid "Adding…"
 msgstr "Agregando…"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Address"
+msgstr "Dirección"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/McpServersOverlay.tsx
@@ -872,6 +880,14 @@ msgstr "Atrás"
 msgid "Back to sign in"
 msgstr "Volver a iniciar sesión"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Bank"
+msgstr "Banco"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Bank account"
+msgstr "Cuenta bancaria"
+
 #: src/pages/memory-providers/ConnectionModeFields.tsx
 msgid "Base URL"
 msgstr "URL base"
@@ -1066,6 +1082,10 @@ msgstr "cancelado"
 msgid "Cancelled"
 msgstr "Cancelado"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "CARD number"
+msgstr "Número de CARD"
+
 #: src/pages/Artifacts.tsx
 msgid "Card view"
 msgstr ""
@@ -1131,6 +1151,10 @@ msgstr "Regístrate."
 #: src/lib/model-connection-preflight.ts
 msgid "Check the API key or sign-in, then test again."
 msgstr "Revisa la clave de API o el inicio de sesión y vuelve a probar."
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Check the responsible lawyers."
+msgstr "Revisa los abogados responsables."
 
 #: src/lib/model-connection-preflight.ts
 msgid "Check the server URL and network, then test again."
@@ -1198,6 +1222,10 @@ msgstr "Elegir carpeta"
 #: src/components/ModelCredits.tsx
 msgid "Choose how to use Rakazo"
 msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "City and province"
+msgstr "Ciudad y provincia"
 
 #: src/lib/localized-provider-hint.ts
 msgid "Claude subscription"
@@ -1510,6 +1538,10 @@ msgstr "La prueba de conexión falló."
 msgid "Connection to {0} is still pending. You can close this and check again."
 msgstr "La conexión con {0} sigue pendiente. Puedes cerrar esto y volver a comprobar."
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Contact"
+msgstr "Contacto"
+
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/import-status.ts
 msgid "Contains code to run"
@@ -1784,6 +1816,10 @@ msgstr "No se pudieron cargar los servidores MCP"
 msgid "Could not load model settings"
 msgstr "No se pudo cargar la configuración de modelos"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not load organization settings"
+msgstr "No se pudieron cargar los datos de la organización"
+
 #: src/pages/RoutineRunHistory.tsx
 msgid "Could not load run history"
 msgstr "No se pudo cargar el historial de ejecuciones"
@@ -1911,6 +1947,10 @@ msgstr "No se pudo guardar el grupo"
 msgid "Could not save model"
 msgstr "No se pudo guardar el modelo"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not save organization settings"
+msgstr "No se pudieron guardar los datos de la organización"
+
 #: src/pages/shell/use-routine-editor.ts
 msgid "Could not save routine"
 msgstr "No se pudo guardar la rutina"
@@ -2011,6 +2051,10 @@ msgstr "No se pudo actualizar la reacción"
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Could not update the default memory scope"
 msgstr "No se pudo actualizar el alcance de memoria predeterminado"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not upload the logo"
+msgstr "No se pudo subir el logotipo"
 
 #: src/components/ComputersUnavailableHint.tsx
 msgid "Could not verify computer setup ({failureMessage}). Fix the connection, then check again."
@@ -2354,6 +2398,18 @@ msgstr "Documentación"
 msgid "Document changed. Reopen to edit the latest version."
 msgstr "El documento ha cambiado. Vuelve a abrirlo para editar la última versión."
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Document color"
+msgstr "Color de los documentos"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Documents"
+msgstr "Documentos"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Documents only"
+msgstr "Solo en documentos"
+
 #: src/pages/Auth.tsx
 msgid "Don’t have an account?"
 msgstr "¿No tienes una cuenta?"
@@ -2428,6 +2484,7 @@ msgid "Edit Profile"
 msgstr "Editar perfil"
 
 #: src/pages/Auth.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 msgid "Email"
 msgstr "Correo"
 
@@ -2460,6 +2517,10 @@ msgstr ""
 msgid "Enter a password"
 msgstr "Introduce una contraseña"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Enter a phone number."
+msgstr "Escribe un teléfono."
+
 #: src/pages/shell/bot-credentials.tsx
 msgid "Enter a username and password"
 msgstr ""
@@ -2486,6 +2547,10 @@ msgstr "Introduce un número entero del 1 al 1000 para el límite de imágenes."
 #: src/lib/model-connection-preflight.ts
 msgid "Enter an API key before testing."
 msgstr "Introduce una clave de API antes de probar."
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Enter an email address."
+msgstr "Escribe un correo."
 
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
@@ -2674,6 +2739,10 @@ msgstr "Terminado."
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "Finalizando conexión MCP…"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Firm"
+msgstr "Bufete"
 
 #: src/pages/Auth.tsx
 msgid "Forgot password?"
@@ -2971,6 +3040,14 @@ msgstr "Unidad del intervalo"
 msgid "Invalid code"
 msgstr "Código no válido"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Invoice note"
+msgstr "Nota de factura"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Invoices"
+msgstr "Facturas"
+
 #: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Isolated"
@@ -3057,6 +3134,10 @@ msgstr ""
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
 msgstr "Salir"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Legal name"
+msgstr "Razón social"
 
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Lets bots save and recall facts by meaning, alongside MEMORY.md."
@@ -3159,6 +3240,10 @@ msgstr ""
 msgid "Log out"
 msgstr "Cerrar sesión"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Logo"
+msgstr "Logotipo"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Looks like it contains a key"
 msgstr "Parece contener una clave"
@@ -3249,6 +3334,10 @@ msgstr "Máximo de imágenes por solicitud"
 #: src/pages/Onboarding.tsx
 msgid "Maximum output tokens"
 msgstr "Máximo de tokens de salida"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "May approve drafts"
+msgstr "Puede aprobar borradores para revisión"
 
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "MCP endpoint"
@@ -3501,6 +3590,7 @@ msgstr "Silenciado"
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/model-settings/providers-section.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/bot-credentials.tsx
@@ -3527,6 +3617,10 @@ msgstr "Nombra esta rutina"
 #: src/pages/shell/create-bot-dialog.tsx
 msgid "Name your Bot"
 msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Named lawyers who may approve drafts for review."
+msgstr "Abogados identificados que pueden aprobar borradores para revisión."
 
 #: src/lib/roster-status.ts
 msgid "Needs an answer"
@@ -3893,6 +3987,10 @@ msgstr "Valor de encabezado opcional"
 msgid "Or paste an API key"
 msgstr "O pega una clave de API"
 
+#: src/pages/SettingsOverlay.tsx
+msgid "Organization"
+msgstr "Organización"
+
 #: src/pages/memory-providers/SupermemorySettingsForm.tsx
 msgid "Organization API key"
 msgstr "Clave de API de organización"
@@ -4002,6 +4100,10 @@ msgstr "Personalidad"
 msgid "Personal"
 msgstr ""
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Phone"
+msgstr "Teléfono"
+
 #: src/components/call/VoiceChatCard.tsx
 msgid "Phone call"
 msgstr "Llamada telefónica"
@@ -4046,6 +4148,10 @@ msgstr "Reproduciendo…"
 #: src/pages/KnowledgeSection.tsx
 msgid "Plugin"
 msgstr "Plugin"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "PNG, JPG, or SVG up to 1 MB."
+msgstr "PNG, JPG o SVG de hasta 1 MB."
 
 #: src/pages/RoutineEditor.tsx
 msgid "Post \"No changes\" in chat"
@@ -4259,6 +4365,7 @@ msgstr "Recargar"
 #: src/components/ApprovalRulesSettings.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/ModelRoleSettings.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 #: src/pages/shell/bot-credentials.tsx
@@ -4426,6 +4533,10 @@ msgstr ""
 msgid "Resize panel"
 msgstr "Cambiar tamaño del panel"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Responsible lawyers"
+msgstr "Abogados responsables"
+
 #: src/components/DesktopUpdates.tsx
 msgid "Restart to update"
 msgstr ""
@@ -4486,6 +4597,14 @@ msgstr "Revisa la configuración del proveedor y vuelve a probar."
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Revoke"
 msgstr "Revocar"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "RNC"
+msgstr "RNC"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "RNC must be 9 digits (company) or 11 digits (cédula)."
+msgstr "El RNC debe tener 9 dígitos (empresa) u 11 dígitos (cédula)."
 
 #: src/pages/ExternalConversationSettings.tsx
 msgid "Room guidance"
@@ -4557,6 +4676,7 @@ msgstr ""
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -4579,6 +4699,7 @@ msgstr "Guardar el espacio de trabajo e instalar el software actual."
 #: src/components/AskCard.tsx
 #: src/components/teach/SkillDraftCard.tsx
 #: src/pages/ExternalConversationSettings.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 msgid "Saved"
 msgstr "Guardado"
 
@@ -5375,6 +5496,10 @@ msgstr ""
 msgid "Top up anytime"
 msgstr ""
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Trade name"
+msgstr "Nombre comercial"
+
 #: src/components/composer/HoldToTalk.tsx
 msgid "Transcribing…"
 msgstr "Transcribiendo…"
@@ -5546,6 +5671,10 @@ msgstr "Usar {hostLabel}"
 msgid "Use {oauthEnvReference} for the access token."
 msgstr "Usa {oauthEnvReference} para el token de acceso."
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Use a color like #1F4B3A."
+msgstr "Usa un color como #1F4B3A."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Use a found model"
@@ -5664,9 +5793,17 @@ msgstr ""
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Website"
+msgstr "Sitio web"
+
 #: src/pages/shell/bot-credentials.tsx
 msgid "Website login"
 msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Website must start with http:// or https://."
+msgstr "El sitio web debe empezar por http:// o https://."
 
 #: src/lib/billing.ts
 msgid "week"

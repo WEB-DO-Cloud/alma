@@ -182,6 +182,8 @@ model Organization {
   spaces       Space[]
   billing      BillingAccount?
   modelCredits ModelCreditAccount?
+  profile      OrganizationProfile?
+  logos        OrganizationLogo[]
 
   @@unique([slug])
   @@map("organization")
@@ -1891,4 +1893,80 @@ model MessagingInstallSession {
   expiresAt DateTime
   @@index([expiresAt])
   @@map("messaging_install_sessions")
+}
+
+/// Firm details printed on drafts for review. One row per organization.
+/// Application code updates it in place and keeps the previous values in the audit log.
+model OrganizationProfile {
+  organizationId String       @id
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  legalName      String       @default("")
+  tradeName      String       @default("")
+  /// Digits only: 9 (company RNC) or 11 (cédula). Empty until the firm sets one.
+  rnc            String       @default("")
+  logoId         String?      @unique
+  logo           OrganizationLogo? @relation(fields: [logoId], references: [id])
+  addressLine    String       @default("")
+  cityProvince   String       @default("")
+  phone          String       @default("")
+  email          String       @default("")
+  website        String       @default("")
+  bankName       String       @default("")
+  bankAccount    String       @default("")
+  invoiceFooter  String       @default("")
+  /// Hex color for generated documents only. The product UI does not use it.
+  accentColor    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  lawyers        OrganizationLawyer[]
+
+  @@map("organization_profiles")
+}
+
+/// A named lawyer of the firm. Archived instead of deleted so approval history can name them later.
+model OrganizationLawyer {
+  id               String              @id
+  organizationId   String
+  profile          OrganizationProfile @relation(fields: [organizationId], references: [organizationId], onDelete: Restrict)
+  name             String
+  /// Colegio de Abogados membership number.
+  cardNumber       String
+  email            String
+  mayApproveDrafts Boolean             @default(false)
+  archivedAt       DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([organizationId, archivedAt])
+  @@map("organization_lawyers")
+}
+
+/// Logo bytes live in the deployment's file storage. Rows are insert-only.
+model OrganizationLogo {
+  id              String               @id
+  organizationId  String
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  mimeType        String
+  byteSize        Int
+  storageKey      String
+  createdByUserId String
+  createdAt       DateTime             @default(now())
+  profile         OrganizationProfile?
+
+  @@index([organizationId, createdAt])
+  @@map("organization_logos")
+}
+
+/// Append-only record of organization settings changes. No foreign keys, so it outlives the rows it describes.
+model OrganizationSettingsAudit {
+  id             String   @id
+  organizationId String
+  actorUserId    String
+  action         String
+  before         Json
+  after          Json
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+  @@map("organization_settings_audits")
 }

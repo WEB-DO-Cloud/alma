@@ -27,6 +27,7 @@ import type {
 import type { Auth } from "@rakazo/auth";
 import type { BoardEvents, PrismaClient, ThreadEvents } from "@rakazo/db";
 import type { BillingService } from "./billing.js";
+import type { OrganizationLogoStore } from "./organization-logo-store.js";
 import { accountRoutes } from "./routes/account.js";
 import { boardsRoutes } from "./routes/boards.js";
 import { botsRoutes } from "./routes/bots.js";
@@ -38,6 +39,7 @@ import { mcpRoutes } from "./routes/mcp.js";
 import { memoryRoutes } from "./routes/memory.js";
 import { messagingRoutes } from "./routes/messaging.js";
 import { modelsRoutes } from "./routes/models.js";
+import { organizationRoutes } from "./routes/organization.js";
 import { routinesRoutes } from "./routes/routines.js";
 import { spacesRoutes } from "./routes/spaces.js";
 import { threadsRoutes } from "./routes/threads.js";
@@ -93,6 +95,8 @@ export interface RouterDeps {
   connectors: ConnectorRegistry;
   remoteConnectors?: RemoteConnectorDependencies;
   artifacts: ArtifactStore;
+  /** Firm logos. Defaults to the deployment file storage under `dataDir`. */
+  organizationLogos?: OrganizationLogoStore;
   dataDir: string;
   /** Present when the external messaging surface is enabled. */
   messagingInstallations?: MessagingInstallations;
@@ -148,5 +152,6 @@ export function createRouter(deps: RouterDeps) {
     ...connectionsRoutes(ctx),
     ...messagingRoutes(ctx),
     ...contentRoutes(ctx),
+    ...organizationRoutes(ctx),
   });
 }

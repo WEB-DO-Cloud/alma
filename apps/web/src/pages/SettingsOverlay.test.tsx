@@ -82,6 +82,9 @@ vi.mock("../lib/rpc", () => ({
   }),
 }));
 vi.mock("./BillingSettingsPanel", () => ({ BillingSettingsPanel: () => null }));
+vi.mock("./OrganizationSettingsPanel", () => ({
+  OrganizationSettingsPanel: () => <div data-testid="organization-settings" />,
+}));
 vi.mock("./MemorySettingsOverlay", () => ({
   MemorySettingsOverlay: ({
     config,
@@ -267,6 +270,34 @@ it("shows no space label or switcher when there is only one space", async () => 
   });
   try {
     expect(container.querySelector('[data-testid="settings-space"]')).toBeNull();
+  } finally {
+    await cleanup();
+  }
+});
+
+it("shows organization settings to an organization admin", async () => {
+  const { container, cleanup } = await render({
+    canManageOrganization: true,
+    section: "organization",
+  });
+  try {
+    expect(container.querySelector('[data-testid="settings-nav-organization"]')).not.toBeNull();
+    expect(
+      container.querySelector("[data-settings-section]")?.getAttribute("data-settings-section"),
+    ).toBe("organization");
+    expect(container.querySelector('[data-testid="organization-settings"]')).not.toBeNull();
+  } finally {
+    await cleanup();
+  }
+});
+
+it("hides organization settings from other members", async () => {
+  const { container, cleanup } = await render({ section: "organization" });
+  try {
+    expect(container.querySelector('[data-testid="settings-nav-organization"]')).toBeNull();
+    expect(
+      container.querySelector("[data-settings-section]")?.getAttribute("data-settings-section"),
+    ).toBe("general");
   } finally {
     await cleanup();
   }

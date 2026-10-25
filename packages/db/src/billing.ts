@@ -1,6 +1,7 @@
 import type { BillingSubscriptionSnapshot } from "@rakazo/adapter-kit";
 import type { BillingAccount, PrismaClient } from "./client.js";
 import { Prisma } from "./client.js";
+import { organizationRoleForMember } from "./organization-settings.js";
 
 /** Subscription states that let an organization use the product. */
 const ACCESS_STATUSES = new Set(["trialing", "active", "past_due"]);
@@ -128,19 +129,9 @@ export async function organizationForMember(
   prisma: PrismaClient,
   input: { spaceId: string; userId: string },
 ): Promise<{ organizationId: string; isOwner: boolean } | null> {
-  const space = await prisma.space.findUnique({
-    where: { id: input.spaceId },
-    select: { organizationId: true },
-  });
-  if (!space) return null;
-  const member = await prisma.member.findUnique({
-    where: {
-      organizationId_userId: { organizationId: space.organizationId, userId: input.userId },
-    },
-    select: { role: true },
-  });
-  if (!member) return null;
-  return { organizationId: space.organizationId, isOwner: isOwnerRole(member.role) };
+  const found = await organizationRoleForMember(prisma, input);
+  if (!found) return null;
+  return { organizationId: found.organizationId, isOwner: isOwnerRole(found.role) };
 }
 
 /** Organizations the user owns that have a billing customer. */

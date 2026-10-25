@@ -7,6 +7,7 @@ import {
 } from "@rakazo/adapters";
 import type { Actor, Me } from "@rakazo/contracts";
 import { attachmentMaxBytes, canonicalPiProviderId } from "@rakazo/contracts";
+import { actorCanManageOrganization } from "@rakazo/db";
 import type { RouterDeps } from "../router.js";
 
 export function computerContext(actor: Actor, botId: string, operationId: string): AdapterContext {
@@ -27,12 +28,13 @@ function hostCredentials(active: boolean, provider: string) {
 }
 
 export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
-  const [user, setup] = await Promise.all([
+  const [user, setup, canManageOrganization] = await Promise.all([
     deps.prisma.user.findUniqueOrThrow({
       where: { id: actor.userId },
       include: { signupSurvey: { select: { userId: true } } },
     }),
     modelSetup(deps, actor),
+    actorCanManageOrganization(deps.prisma, actor),
   ]);
   return {
     ticketBoardEnabled: deps.env.ticketBoardEnabled === true,
@@ -62,6 +64,7 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     billingEnabled: Boolean(deps.billing),
     // Only billing deployments ask; self-hosted installs never see the survey.
     needsSignupSurvey: Boolean(deps.billing) && !user.signupSurvey,
+    canManageOrganization,
   };
 }
 

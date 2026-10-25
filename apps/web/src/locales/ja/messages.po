@@ -502,6 +502,10 @@ msgstr "ヘッダーを追加"
 msgid "Add item"
 msgstr "項目を追加"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Add lawyer"
+msgstr ""
+
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Add MCP server"
@@ -560,6 +564,10 @@ msgstr "追加済み"
 #: src/pages/PluginsOverlay.tsx
 msgid "Adding…"
 msgstr "追加中…"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Address"
+msgstr ""
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/McpServersOverlay.tsx
@@ -872,6 +880,14 @@ msgstr "戻る"
 msgid "Back to sign in"
 msgstr "ログインに戻る"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Bank"
+msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Bank account"
+msgstr ""
+
 #: src/pages/memory-providers/ConnectionModeFields.tsx
 msgid "Base URL"
 msgstr "ベースURL"
@@ -1066,6 +1082,10 @@ msgstr "キャンセル済み"
 msgid "Cancelled"
 msgstr "キャンセル済み"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "CARD number"
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "Card view"
 msgstr "カード表示"
@@ -1131,6 +1151,10 @@ msgstr "状況を確認してください。"
 #: src/lib/model-connection-preflight.ts
 msgid "Check the API key or sign-in, then test again."
 msgstr "APIキーまたはログイン情報を確認してから、もう一度テストしてください。"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Check the responsible lawyers."
+msgstr ""
 
 #: src/lib/model-connection-preflight.ts
 msgid "Check the server URL and network, then test again."
@@ -1198,6 +1222,10 @@ msgstr "フォルダを選択"
 #: src/components/ModelCredits.tsx
 msgid "Choose how to use Rakazo"
 msgstr "Rakazoの使い方を選択"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "City and province"
+msgstr ""
 
 #: src/lib/localized-provider-hint.ts
 msgid "Claude subscription"
@@ -1510,6 +1538,10 @@ msgstr "接続テストに失敗しました。"
 msgid "Connection to {0} is still pending. You can close this and check again."
 msgstr "{0}への接続はまだ保留中です。閉じてから後で再確認できます。"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Contact"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/import-status.ts
 msgid "Contains code to run"
@@ -1784,6 +1816,10 @@ msgstr "MCPサーバーを読み込めませんでした"
 msgid "Could not load model settings"
 msgstr "モデル設定を読み込めませんでした"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not load organization settings"
+msgstr ""
+
 #: src/pages/RoutineRunHistory.tsx
 msgid "Could not load run history"
 msgstr "実行履歴を読み込めませんでした"
@@ -1911,6 +1947,10 @@ msgstr "グループを保存できませんでした"
 msgid "Could not save model"
 msgstr "モデルを保存できませんでした"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not save organization settings"
+msgstr ""
+
 #: src/pages/shell/use-routine-editor.ts
 msgid "Could not save routine"
 msgstr "ルーティンを保存できませんでした"
@@ -2011,6 +2051,10 @@ msgstr "リアクションを更新できませんでした"
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Could not update the default memory scope"
 msgstr "デフォルトのメモリ範囲を更新できませんでした"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Could not upload the logo"
+msgstr ""
 
 #: src/components/ComputersUnavailableHint.tsx
 msgid "Could not verify computer setup ({failureMessage}). Fix the connection, then check again."
@@ -2354,6 +2398,18 @@ msgstr "ドキュメント"
 msgid "Document changed. Reopen to edit the latest version."
 msgstr "ドキュメントが変更されました。最新版を編集するには開き直してください。"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Document color"
+msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Documents"
+msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Documents only"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Don’t have an account?"
 msgstr "アカウントをお持ちでないですか？"
@@ -2428,6 +2484,7 @@ msgid "Edit Profile"
 msgstr "プロフィールを編集"
 
 #: src/pages/Auth.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 msgid "Email"
 msgstr "メールアドレス"
 
@@ -2460,6 +2517,10 @@ msgstr "対応する場合… 無視する場合…"
 msgid "Enter a password"
 msgstr "パスワードを入力してください"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Enter a phone number."
+msgstr ""
+
 #: src/pages/shell/bot-credentials.tsx
 msgid "Enter a username and password"
 msgstr "ユーザー名とパスワードを入力してください"
@@ -2486,6 +2547,10 @@ msgstr "画像の上限には1〜1000の整数を入力してください。"
 #: src/lib/model-connection-preflight.ts
 msgid "Enter an API key before testing."
 msgstr "テストする前にAPIキーを入力してください。"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Enter an email address."
+msgstr ""
 
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
@@ -2674,6 +2739,10 @@ msgstr "完了しました。"
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "MCP接続を完了しています…"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Firm"
+msgstr ""
 
 #: src/pages/Auth.tsx
 msgid "Forgot password?"
@@ -2971,6 +3040,14 @@ msgstr "間隔の単位"
 msgid "Invalid code"
 msgstr "無効なコード"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Invoice note"
+msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Invoices"
+msgstr ""
+
 #: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/shell/bot-panel.tsx
 msgid "Isolated"
@@ -3057,6 +3134,10 @@ msgstr "後で"
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Leave"
 msgstr "退出"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Legal name"
+msgstr ""
 
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Lets bots save and recall facts by meaning, alongside MEMORY.md."
@@ -3159,6 +3240,10 @@ msgstr "ローカルコンピューターへのアクセスには最新のデス
 msgid "Log out"
 msgstr "ログアウト"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Logo"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Looks like it contains a key"
 msgstr "キーが含まれているようです"
@@ -3249,6 +3334,10 @@ msgstr "リクエストあたりの最大画像数"
 #: src/pages/Onboarding.tsx
 msgid "Maximum output tokens"
 msgstr "最大出力トークン数"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "May approve drafts"
+msgstr ""
 
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "MCP endpoint"
@@ -3501,6 +3590,7 @@ msgstr "ミュート中"
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/model-settings/providers-section.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/bot-credentials.tsx
@@ -3527,6 +3617,10 @@ msgstr "ルーティンに名前を付ける"
 #: src/pages/shell/create-bot-dialog.tsx
 msgid "Name your Bot"
 msgstr "ボットに名前を付ける"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Named lawyers who may approve drafts for review."
+msgstr ""
 
 #: src/lib/roster-status.ts
 msgid "Needs an answer"
@@ -3893,6 +3987,10 @@ msgstr "ヘッダー値（任意）"
 msgid "Or paste an API key"
 msgstr "またはAPIキーを貼り付け"
 
+#: src/pages/SettingsOverlay.tsx
+msgid "Organization"
+msgstr ""
+
 #: src/pages/memory-providers/SupermemorySettingsForm.tsx
 msgid "Organization API key"
 msgstr "組織のAPIキー"
@@ -4002,6 +4100,10 @@ msgstr "ペルソナ"
 msgid "Personal"
 msgstr "個人"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Phone"
+msgstr ""
+
 #: src/components/call/VoiceChatCard.tsx
 msgid "Phone call"
 msgstr "電話"
@@ -4046,6 +4148,10 @@ msgstr "再生中…"
 #: src/pages/KnowledgeSection.tsx
 msgid "Plugin"
 msgstr "プラグイン"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "PNG, JPG, or SVG up to 1 MB."
+msgstr ""
 
 #: src/pages/RoutineEditor.tsx
 msgid "Post \"No changes\" in chat"
@@ -4259,6 +4365,7 @@ msgstr "再読み込み"
 #: src/components/ApprovalRulesSettings.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/ModelRoleSettings.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 #: src/pages/shell/bot-credentials.tsx
@@ -4426,6 +4533,10 @@ msgstr "ボットサイドバーのサイズを変更"
 msgid "Resize panel"
 msgstr "パネルのサイズを変更"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Responsible lawyers"
+msgstr ""
+
 #: src/components/DesktopUpdates.tsx
 msgid "Restart to update"
 msgstr "再起動してアップデート"
@@ -4486,6 +4597,14 @@ msgstr "プロバイダー設定を確認して、もう一度テストしてく
 #: src/pages/MessagingSettingsOverlay.tsx
 msgid "Revoke"
 msgstr "取り消す"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "RNC"
+msgstr ""
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "RNC must be 9 digits (company) or 11 digits (cédula)."
+msgstr ""
 
 #: src/pages/ExternalConversationSettings.tsx
 msgid "Room guidance"
@@ -4557,6 +4676,7 @@ msgstr "このボットがこのプロバイダーから検証済みのメッセ
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -4579,6 +4699,7 @@ msgstr "ワークスペースを保存して、最新のソフトウェアをイ
 #: src/components/AskCard.tsx
 #: src/components/teach/SkillDraftCard.tsx
 #: src/pages/ExternalConversationSettings.tsx
+#: src/pages/OrganizationSettingsPanel.tsx
 msgid "Saved"
 msgstr "保存しました"
 
@@ -5375,6 +5496,10 @@ msgstr "ツール"
 msgid "Top up anytime"
 msgstr "いつでもチャージ可能"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Trade name"
+msgstr ""
+
 #: src/components/composer/HoldToTalk.tsx
 msgid "Transcribing…"
 msgstr "文字起こし中…"
@@ -5546,6 +5671,10 @@ msgstr "{hostLabel}を使用"
 msgid "Use {oauthEnvReference} for the access token."
 msgstr "アクセストークンには{oauthEnvReference}を使用してください。"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Use a color like #1F4B3A."
+msgstr ""
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Use a found model"
@@ -5664,9 +5793,17 @@ msgstr "Web、デスクトップ、モバイルアプリ"
 msgid "Webhook"
 msgstr "Webhook"
 
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Website"
+msgstr ""
+
 #: src/pages/shell/bot-credentials.tsx
 msgid "Website login"
 msgstr "Webサイトのログイン"
+
+#: src/pages/OrganizationSettingsPanel.tsx
+msgid "Website must start with http:// or https://."
+msgstr ""
 
 #: src/lib/billing.ts
 msgid "week"
