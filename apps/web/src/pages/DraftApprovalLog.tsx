@@ -1,7 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { DraftApprovalLogEntry } from "@rakazo/contracts";
 import { Button, Field, FieldLabel, Input } from "@rakazo/ui-web";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import { rpc } from "../lib/rpc";
 
 export function DraftApprovalLogPage() {
@@ -13,6 +13,19 @@ export function DraftApprovalLogPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [action, setAction] = useState<"" | "approved" | "rejected">("approved");
+  const [managed, setManaged] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void rpc
+      .me()
+      .then((me) => {
+        if (active) setManaged(me.managedModel === true);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function filter() {
     const fromIso = from ? new Date(`${from}T00:00:00.000Z`).toISOString() : undefined;
@@ -148,9 +161,11 @@ export function DraftApprovalLogPage() {
             <th className="py-2 pr-3">
               <Trans>Approved</Trans>
             </th>
-            <th className="py-2 pr-3">
-              <Trans>Model</Trans>
-            </th>
+            {managed ? null : (
+              <th className="py-2 pr-3">
+                <Trans>Model</Trans>
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -160,9 +175,11 @@ export function DraftApprovalLogPage() {
               <td className="py-2 pr-3">{row.approverName}</td>
               <td className="py-2 pr-3">{row.cardNumber}</td>
               <td className="py-2 pr-3">{row.approvedAt ?? row.createdAt}</td>
-              <td className="py-2 pr-3">
-                {row.model} {row.modelVersion}
-              </td>
+              {managed ? null : (
+                <td className="py-2 pr-3">
+                  {row.model} {row.modelVersion}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

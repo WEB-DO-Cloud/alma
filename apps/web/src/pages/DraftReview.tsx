@@ -65,9 +65,16 @@ function DraftList() {
   const [modelVersion, setModelVersion] = useState("");
   const [originalText, setOriginalText] = useState("");
   const [pending, setPending] = useState(false);
+  const [managed, setManaged] = useState(false);
 
   useEffect(() => {
     let active = true;
+    void rpc
+      .me()
+      .then((me) => {
+        if (active) setManaged(me.managedModel === true);
+      })
+      .catch(() => undefined);
     rpc.drafts
       .list({})
       .then((list) => {
@@ -87,7 +94,12 @@ function DraftList() {
     setPending(true);
     setError(null);
     try {
-      const created = await rpc.drafts.create({ title, originalText, model, modelVersion });
+      const created = await rpc.drafts.create({
+        title,
+        originalText,
+        model: managed ? "operator" : model,
+        modelVersion: managed ? "operator" : modelVersion,
+      });
       window.location.assign(`/app/drafts/${created.id}`);
     } catch {
       setError(t`Could not record the draft`);
@@ -135,28 +147,32 @@ function DraftList() {
             required
           />
         </Field>
-        <Field>
-          <FieldLabel>
-            <Trans>Model</Trans>
-          </FieldLabel>
-          <Input
-            value={model}
-            maxLength={200}
-            onChange={(event) => setModel(event.target.value)}
-            required
-          />
-        </Field>
-        <Field>
-          <FieldLabel>
-            <Trans>Model version</Trans>
-          </FieldLabel>
-          <Input
-            value={modelVersion}
-            maxLength={120}
-            onChange={(event) => setModelVersion(event.target.value)}
-            required
-          />
-        </Field>
+        {managed ? null : (
+          <>
+            <Field>
+              <FieldLabel>
+                <Trans>Model</Trans>
+              </FieldLabel>
+              <Input
+                value={model}
+                maxLength={200}
+                onChange={(event) => setModel(event.target.value)}
+                required
+              />
+            </Field>
+            <Field>
+              <FieldLabel>
+                <Trans>Model version</Trans>
+              </FieldLabel>
+              <Input
+                value={modelVersion}
+                maxLength={120}
+                onChange={(event) => setModelVersion(event.target.value)}
+                required
+              />
+            </Field>
+          </>
+        )}
         <Field>
           <FieldLabel>
             <Trans>Agent draft</Trans>

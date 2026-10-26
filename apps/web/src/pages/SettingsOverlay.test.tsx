@@ -67,18 +67,25 @@ vi.mock("./AccountSettingsOverlay", () => ({
   UpdatesSettingsPanel: () => null,
   UsageSettingsPanel: () => null,
 }));
-const { memoryConfigs, memoryConfigChange, providerConfig, updaterStatus } = vi.hoisted(() => ({
-  memoryConfigs: [] as unknown[],
-  memoryConfigChange: { current: (_config: unknown) => {} },
-  providerConfig: vi.fn(async (_spaceId: string): Promise<unknown> => null),
-  updaterStatus: vi.fn(async (): Promise<unknown> => ({ installKind: "compose" })),
-}));
+const { memoryConfigs, memoryConfigChange, providerConfig, updaterStatus, accountMe } = vi.hoisted(
+  () => ({
+    memoryConfigs: [] as unknown[],
+    memoryConfigChange: { current: (_config: unknown) => {} },
+    providerConfig: vi.fn(async (_spaceId: string): Promise<unknown> => null),
+    updaterStatus: vi.fn(async (): Promise<unknown> => ({ installKind: "compose" })),
+    accountMe: { managedModel: false, managedVoice: false },
+  }),
+);
 vi.mock("../lib/rpc", () => ({
-  rpc: { updater: { status: updaterStatus } },
-  createSpaceRpc: () => ({ memory: { providerConfig: () => providerConfig("") } }),
+  rpc: { updater: { status: updaterStatus }, me: async () => accountMe },
+  createSpaceRpc: () => ({
+    memory: { providerConfig: () => providerConfig("") },
+    me: async () => accountMe,
+  }),
   selectedSpaceId: () => null,
   rpcForSpace: (spaceId: string) => ({
     memory: { providerConfig: () => providerConfig(spaceId) },
+    me: async () => accountMe,
   }),
 }));
 vi.mock("./BillingSettingsPanel", () => ({ BillingSettingsPanel: () => null }));
@@ -448,6 +455,23 @@ it("shows Updates in the desktop app", async () => {
   try {
     expect(updatesNav(container)).not.toBeNull();
   } finally {
+    await cleanup();
+  }
+});
+
+it("hides model and voice settings when the operator manages them", async () => {
+  accountMe.managedModel = true;
+  const { container, cleanup } = await render({ section: "models" });
+  try {
+    await vi.waitFor(() =>
+      expect(container.querySelector('[data-testid="settings-nav-models"]')).toBeNull(),
+    );
+    expect(container.querySelector('[data-testid="settings-nav-voice"]')).toBeNull();
+    expect(
+      container.querySelector("[data-settings-section]")?.getAttribute("data-settings-section"),
+    ).toBe("general");
+  } finally {
+    accountMe.managedModel = false;
     await cleanup();
   }
 });

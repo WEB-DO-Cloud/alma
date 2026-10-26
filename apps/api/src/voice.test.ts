@@ -7,6 +7,7 @@ import { createLogger, createTestSink, installLogger } from "@rakazo/logging";
 import { Hono } from "hono";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  currentVoiceStatus,
   disconnectVoiceCredential,
   fishSpeechModelValue,
   MAX_SPEAK_REQUEST_BYTES,
@@ -891,6 +892,83 @@ it("refuses a private speech server for a user who is not the deployment owner",
   } finally {
     vi.restoreAllMocks();
   }
+});
+
+describe("managed xAI transcription", () => {
+  const actor = { userId: "user", spaceId: "space" } as Actor;
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+  });
+
+  it("transcribes through the operator key without a user credential", async () => {
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "xai-test-key");
+    const fetchMock = vi.fn(async (url: string, init: RequestInit) => {
+      expect(String(url)).toBe("https://api.x.ai/v1/stt");
+      const form = init.body as FormData;
+      expect([...form.keys()].at(-1)).toBe("file");
+      expect(form.get("model")).toBe("grok-voice-transcribe-2.0");
+      expect(form.get("format")).toBe("true");
+      expect(form.get("language")).toBe("es");
+      expect((init.headers as Record<string, string>).authorization).toBe("Bearer xai-test-key");
+      return new Response(JSON.stringify({ text: "El saldo es $100." }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const app = new Hono();
+    mountVoiceHttpRoutes(app, {} as VoiceDeps, async () => actor);
+    const response = await app.request("/api/voice/transcribe", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        audioBase64: Buffer.from([1, 2, 3]).toString("base64"),
+        mimeType: "audio/webm",
+        language: "es-DO",
+      }),
+    });
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ text: "El saldo es $100." });
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("answers in Spanish when the operator key is missing", async () => {
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const app = new Hono();
+    mountVoiceHttpRoutes(app, {} as VoiceDeps, async () => actor);
+    const response = await app.request("/api/voice/transcribe", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ audioBase64: Buffer.from([1]).toString("base64") }),
+    });
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "No se pudo transcribir." });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("refuses a voice connection and hides the saved provider", async () => {
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "xai-test-key");
+    await expect(
+      persistVoiceCredential({} as VoiceDeps, actor, {
+        provider: "elevenlabs",
+        plaintext: "secret-key-value",
+      }),
+    ).rejects.toThrow("Esta opción no está disponible.");
+    expect(currentVoiceStatus({ provider: "elevenlabs", voiceId: "rachel" })).toEqual({
+      configured: true,
+      ready: true,
+      transcribe: true,
+      provider: null,
+      voiceId: "",
+    });
+  });
 });
 
 it.each([

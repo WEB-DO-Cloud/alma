@@ -628,6 +628,11 @@ export interface AgentRuntimeCapabilities {
   compaction: boolean;
   tools: boolean;
   scripted: boolean;
+  /**
+   * Set when the server, not the member, chooses the model. The executor uses
+   * this pair for every bot and does not require a member credential.
+   */
+  managed?: { provider: string; id: string };
 }
 
 export interface VoiceInfo {

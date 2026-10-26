@@ -9,6 +9,7 @@ import {
   forgetBotSecret,
   hasActiveComputerControl,
   listBotSecretMetadata,
+  managedModelActive,
   normalizeSecretDestination,
   pageUrlOrigin,
   screenLeaseIdForRun,
@@ -316,15 +317,18 @@ export function botsRoutes(ctx: RouterContext) {
           });
           if (!section) throw new IsolationError();
         }
-        const modelChange = await validateBotModelChange(botModelValidation(context.actor), {
-          userId: context.actor.userId,
-          spaceId: context.actor.spaceId,
-          provider:
-            input.modelProvider !== undefined ? input.modelProvider : existing.modelProvider,
-          model: input.modelId !== undefined ? input.modelId : existing.modelId,
-          thinkingLevel: input.thinkingLevel,
-          current: { provider: existing.modelProvider, model: existing.modelId },
-        });
+        const ignoreModel = managedModelActive();
+        const modelChange = ignoreModel
+          ? { ok: true as const }
+          : await validateBotModelChange(botModelValidation(context.actor), {
+              userId: context.actor.userId,
+              spaceId: context.actor.spaceId,
+              provider:
+                input.modelProvider !== undefined ? input.modelProvider : existing.modelProvider,
+              model: input.modelId !== undefined ? input.modelId : existing.modelId,
+              thinkingLevel: input.thinkingLevel,
+              current: { provider: existing.modelProvider, model: existing.modelId },
+            });
         if (!modelChange.ok) throw new ORPCError("BAD_REQUEST", { message: modelChange.error });
         const thinkingLevel = input.thinkingLevel;
         if (!existing.thread) throw new IsolationError();
@@ -349,10 +353,10 @@ export function botsRoutes(ctx: RouterContext) {
             sectionId: input.sectionId,
             voiceId: input.voiceId,
             autoSpeak: input.autoSpeak,
-            ...(input.modelProvider !== undefined
+            ...(!ignoreModel && input.modelProvider !== undefined
               ? { modelProvider: input.modelProvider, modelId: input.modelId ?? null }
               : {}),
-            ...(input.thinkingLevel !== undefined ? { thinkingLevel } : {}),
+            ...(!ignoreModel && input.thinkingLevel !== undefined ? { thinkingLevel } : {}),
             ...(input.teamChatAmbientEnabled !== undefined
               ? { teamChatAmbientEnabled: input.teamChatAmbientEnabled }
               : {}),

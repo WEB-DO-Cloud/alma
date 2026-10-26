@@ -24,6 +24,7 @@ vi.mock("expo-router", () => ({
     }, [callback, mocks.focused]);
   },
   useLocalSearchParams: () => ({}),
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn(), back: vi.fn() }),
 }));
 vi.mock("./call-sounds", () => ({
   loadCallSoundsEnabled: mocks.calls,

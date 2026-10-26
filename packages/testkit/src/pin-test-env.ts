@@ -27,6 +27,8 @@ if (dom) {
 if (!process.env.VERIFY_PROVIDERS) {
   process.env.RAKAZO_LIVE_MODEL_CATALOG = "off";
   process.env.AGENT_RUNTIME = "scripted";
+  process.env.ALMA_MANAGED_MODEL = "0";
+  delete process.env.ALMA_VOICE_PROVIDER;
   process.env.SANDBOX_PROVIDER = "fake";
   process.env.CLOUD_AGENT_PROVIDER = "emulator";
   process.env.MEDIA_GENERATION_PROVIDER = "disabled";

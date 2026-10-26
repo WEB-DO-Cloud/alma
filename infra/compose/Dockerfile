@@ -38,6 +38,13 @@ RUN pnpm --filter @rakazo/db generate
 RUN pnpm --filter @rakazo/api --filter @rakazo/worker build
 RUN RAKAZO_ALLOW_DEV_SECRETS=1 pnpm --filter @rakazo/web build
 RUN install -d -m 750 -o node -g node /data /app/apps/web/node_modules/.vite-temp /app/apps/web/asset-archive
+# Optional. The default image does not download grok. Device login is
+# `docker compose exec api grok login --device-auth` with GROK_HOME on /data.
+ARG INSTALL_GROK_CLI=0
+RUN if [ "$INSTALL_GROK_CLI" = "1" ]; then \
+      curl -fsSL https://x.ai/cli/install.sh | bash; \
+      if [ -x /root/.local/bin/grok ]; then install -m 755 /root/.local/bin/grok /usr/local/bin/grok; fi; \
+    fi
 ARG GIT_SHA
 ENV NODE_ENV=production
 ENV GIT_SHA=$GIT_SHA

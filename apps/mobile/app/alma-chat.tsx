@@ -1,7 +1,7 @@
 import { ChatMarkdown } from "@rakazo/chat-ui/native";
 import { darkTokens } from "@rakazo/ui-tokens";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AlmaScreen, almaColors } from "../components/alma-screen";
@@ -11,6 +11,7 @@ import { isMockMode, mockChat, mockSendChat } from "../lib/alma-mock";
 import { rpc } from "../lib/api";
 import { listen, stop as stopDictation } from "../lib/dictation";
 import { useI18n } from "../lib/i18n";
+import { transcribeFromMicrophone } from "../lib/server-dictation";
 
 function textOf(blocks: Array<{ kind: string; text?: string }>): string {
   return blocks
@@ -28,6 +29,7 @@ export default function AlmaChat() {
   const [botId, setBotId] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dictateAbort = useRef<AbortController | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -93,13 +95,7 @@ export default function AlmaChat() {
     }
   }
 
-  function dictate() {
-    if (listening) {
-      stopDictation();
-      setListening(false);
-      return;
-    }
-    setListening(true);
+  function dictateOnDevice() {
     void listen({
       lang: locale === "es" ? "es-DO" : "en-US",
       onInterim: setDraft,
@@ -109,6 +105,37 @@ export default function AlmaChat() {
       },
       onGiveUp: () => setListening(false),
     });
+  }
+
+  function dictate() {
+    if (listening) {
+      dictateAbort.current?.abort();
+      stopDictation();
+      setListening(false);
+      return;
+    }
+    setListening(true);
+    void rpc<{ transcribe?: boolean }>("voice/status")
+      .then(async (status) => {
+        if (!status.transcribe) {
+          dictateOnDevice();
+          return;
+        }
+        const controller = new AbortController();
+        dictateAbort.current = controller;
+        try {
+          const text = await transcribeFromMicrophone({
+            language: locale === "es" ? "es" : locale,
+            signal: controller.signal,
+          });
+          if (!controller.signal.aborted) setDraft(text);
+          setListening(false);
+        } catch {
+          if (controller.signal.aborted) return;
+          dictateOnDevice();
+        }
+      })
+      .catch(() => dictateOnDevice());
   }
 
   return (

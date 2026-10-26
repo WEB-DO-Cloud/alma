@@ -29,27 +29,38 @@ export function SpaceSettingOverrides({
   const queries = useSpaceQueries();
   const queryClient = useQueryClient();
   const overrides = useQuery(queries.spaceSettings.overrides.queryOptions());
+  const account = useQuery(queries.me.queryOptions()).data;
+  const hideModels = account?.managedModel === true;
+  const hideVoice = hideModels || account?.managedVoice === true;
   const [pending, setPending] = useState<SpaceSetting | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
   const settings: { id: SpaceSetting; label: string; panel: () => ReactNode }[] = [
-    {
-      id: "models",
-      label: t`Models`,
-      panel: () => <ModelSettingsOverlay embedded scope="space" onClose={onClose} />,
-    },
-    {
-      id: "voice",
-      label: t`Voice`,
-      panel: () => (
-        <VoiceSettingsOverlay
-          embedded
-          scope="space"
-          onClose={onClose}
-          onBusyChange={onBusyChange}
-        />
-      ),
-    },
+    ...(hideModels
+      ? []
+      : [
+          {
+            id: "models" as const,
+            label: t`Models`,
+            panel: () => <ModelSettingsOverlay embedded scope="space" onClose={onClose} />,
+          },
+        ]),
+    ...(hideVoice
+      ? []
+      : [
+          {
+            id: "voice" as const,
+            label: t`Voice`,
+            panel: () => (
+              <VoiceSettingsOverlay
+                embedded
+                scope="space"
+                onClose={onClose}
+                onBusyChange={onBusyChange}
+              />
+            ),
+          },
+        ]),
     {
       id: "confirmations",
       label: t`Approvals`,

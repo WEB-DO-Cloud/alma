@@ -29,10 +29,13 @@ import type { BillingService } from "../billing.js";
 import type { RouterDeps } from "../router.js";
 import { withSerializableRetry } from "../serializable-retry.js";
 import {
+  assertVoiceWritable,
+  currentVoiceStatus,
   disconnectVoiceCredential,
-  listVoiceCatalog,
+  listedVoiceCatalog,
   loadDefaultVoiceCredential,
   loadVoiceCredential,
+  managedVoiceEnabled,
   persistVoiceCredential,
   prepareVoice,
   toVoiceCredential,
@@ -195,13 +198,14 @@ export function accountRoutes(ctx: RouterContext) {
     },
     voice: {
       catalog: authed.voice.catalog.handler(async () =>
-        listVoiceCatalog({ allowPrivateEndpoint: deps.env?.mcpAllowPrivateEndpoint }),
+        listedVoiceCatalog({ allowPrivateEndpoint: deps.env?.mcpAllowPrivateEndpoint }),
       ),
       status: authed.voice.status.handler(async ({ context, input }) => {
         const cred = await findDefaultVoiceCredential(deps.prisma, context.actor, input?.scope);
-        return toVoiceStatus(cred);
+        return currentVoiceStatus(cred);
       }),
       credentials: authed.voice.credentials.handler(async ({ context, input }) => {
+        if (managedVoiceEnabled()) return [];
         const target = await voicePreferenceTarget(deps.prisma, context.actor, input?.scope);
         const [rows, preferences] = await Promise.all([
           deps.prisma.userVoiceCredential.findMany({
@@ -240,6 +244,7 @@ export function accountRoutes(ctx: RouterContext) {
         disconnectVoiceCredential(deps, context.actor, { provider: input.provider }),
       ),
       setVoice: authed.voice.setVoice.handler(async ({ context, input }) => {
+        assertVoiceWritable();
         const cred = await withSerializableRetry(() =>
           deps.prisma.$transaction(
             async (tx) => {
@@ -267,6 +272,7 @@ export function accountRoutes(ctx: RouterContext) {
         updateVoiceSpeechModel(deps, context.actor, input),
       ),
       voices: authed.voice.voices.handler(async ({ context, input }) => {
+        if (managedVoiceEnabled()) return [];
         // A named provider lists its voices even before the copy has a default voice.
         const row = input.provider
           ? await loadVoiceCredential(deps, context.actor, input.provider, input.scope)

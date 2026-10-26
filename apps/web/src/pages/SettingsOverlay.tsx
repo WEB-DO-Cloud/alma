@@ -30,7 +30,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApprovalRulesSettings } from "../components/ApprovalRulesSettings";
 import { computersAreUnavailable } from "../components/ComputersUnavailableHint";
 import { desktopBridge } from "../lib/desktop";
-import { spaceQueries, useQueryUserId, writeSaved } from "../lib/query";
+import { spaceQueries, useQueryUserId, useSpaceQueries, writeSaved } from "../lib/query";
 import { SpaceRpcProvider } from "../lib/space-rpc";
 import { errorText } from "../lib/user-error";
 import {
@@ -127,12 +127,17 @@ export function SettingsOverlay({
   const recoveryHoldTimer = useRef<number | undefined>(undefined);
   const showComputer = keepComputerRecovery || computersAreUnavailable(sandboxProvider);
   const showUpdates = Boolean(desktopBridge()?.update);
+  const account = useQuery(useSpaceQueries().me.queryOptions()).data;
+  const hideModels = account?.managedModel === true;
+  const hideVoice = hideModels || account?.managedVoice === true;
   // A section that isn't available yet (billing before its flag loads) shows General until it is.
   const section =
     (requestedSection === "computer" && !showComputer) ||
     (requestedSection === "billing" && !billingEnabled) ||
     (requestedSection === "updates" && !showUpdates) ||
-    (requestedSection === "organization" && !canManageOrganization)
+    (requestedSection === "organization" && !canManageOrganization) ||
+    (requestedSection === "models" && hideModels) ||
+    (requestedSection === "voice" && hideVoice)
       ? "general"
       : requestedSection;
   const panelBusy = memoryBusy || voiceBusy;
@@ -185,8 +190,8 @@ export function SettingsOverlay({
     ...(canManageOrganization
       ? [{ id: "organization" as const, label: t`Organization`, icon: Building2 }]
       : []),
-    { id: "models", label: t`Models`, icon: Cpu },
-    { id: "voice", label: t`Voice`, icon: Volume2 },
+    ...(hideModels ? [] : [{ id: "models" as const, label: t`Models`, icon: Cpu }]),
+    ...(hideVoice ? [] : [{ id: "voice" as const, label: t`Voice`, icon: Volume2 }]),
     { id: "confirmations", label: t`Approvals`, icon: ShieldCheck },
     { id: "space", label: t`Space`, icon: Lock },
     { id: "memory", label: t`Memory`, icon: Brain },
