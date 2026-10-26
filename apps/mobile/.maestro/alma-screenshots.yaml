@@ -7,17 +7,31 @@ name: ALMA sample-mode screenshots
       notifications: deny
 
 # A cold API 34 emulator can show a launcher ANR over the healthy app.
+# "Close app" kills the launcher and covers ALMA with the home screen, so wait
+# and bring the sample app forward again.
 - extendedWaitUntil:
     visible: "Borradores para revisión|Pixel Launcher isn't responding"
-    timeout: 60000
+    timeout: 90000
 - runFlow:
     when:
       visible: "Pixel Launcher isn't responding"
     commands:
-      - tapOn: "Close app"
+      - tapOn:
+          id: "android:id/aerr_wait"
+      - launchApp
+- extendedWaitUntil:
+    visible: "Borradores para revisión|Pixel Launcher isn't responding"
+    timeout: 90000
+- runFlow:
+    when:
+      visible: "Pixel Launcher isn't responding"
+    commands:
+      - tapOn:
+          id: "android:id/aerr_close"
+      - launchApp
 - extendedWaitUntil:
     visible: "Borradores para revisión"
-    timeout: 30000
+    timeout: 90000
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 04-alma-home
 
