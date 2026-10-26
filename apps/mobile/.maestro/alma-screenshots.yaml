@@ -334,22 +334,31 @@ name: ALMA sample-mode screenshots
 - extendedWaitUntil:
     visible: "Usar datos de ejemplo|Use sample data"
     timeout: 10000
-- openLink: "alma:///sign-in"
+# Logged-out visitors land on create-account unless the link asks for sign-in.
+- openLink: "alma:///sign-in?mode=in"
 - extendedWaitUntil:
-    visible: "Iniciar sesión en ALMA|Sign in to ALMA"
+    visible: "Iniciar sesión en ALMA|Sign in to ALMA|Crea tu cuenta de ALMA|Create your ALMA account"
     timeout: 20000
+- runFlow:
+    when:
+      visible: "Crea tu cuenta de ALMA|Create your ALMA account"
+    commands:
+      - tapOn:
+          text: "^Iniciar sesión$|^Sign in$"
+          index: 0
+      - extendedWaitUntil:
+          visible: "Iniciar sesión en ALMA|Sign in to ALMA"
+          timeout: 10000
 - extendedWaitUntil:
     visible: "^Correo$|^Email$|No se pudieron cargar las opciones de acceso|Could not load sign-in options"
     timeout: 20000
 - hideKeyboard
 - takeScreenshot: 01-sign-in
-- runFlow:
-    when:
-      visible: "^Crear cuenta$|^Sign up$"
-    commands:
-      - tapOn: "^Crear cuenta$|^Sign up$"
-      - extendedWaitUntil:
-          visible: "Crea tu cuenta de ALMA|Create your ALMA account"
-          timeout: 15000
-      - hideKeyboard
-      - takeScreenshot: 02-sign-up
+- tapOn:
+    text: "^Crear cuenta$|^Sign up$"
+    index: 0
+- extendedWaitUntil:
+    visible: "Crea tu cuenta de ALMA|Create your ALMA account"
+    timeout: 15000
+- hideKeyboard
+- takeScreenshot: 02-sign-up
