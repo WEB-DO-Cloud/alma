@@ -2802,10 +2802,14 @@ const ROUTINE_RETRY_DELAY_MS = 12 * 60_000;
 const ROUTINE_RETRY_NEXT_RUN_WINDOW_MS = 30 * 60_000;
 const MISSING_MODEL_MESSAGE = "Connect a model in Settings before running bots.";
 
-function runtimeFallbackModel(runtime: AgentRuntime) {
-  const capabilities = runtime.describe().capabilities;
-  if (capabilities.scripted) return { provider: "scripted", id: "scripted" };
-  return capabilities.managed ?? null;
+function managedFromRuntime(runtime: AgentRuntime | undefined) {
+  return runtime?.describe().capabilities.managed;
+}
+
+function runtimeFallbackModel(runtime: AgentRuntime | undefined) {
+  const capabilities = runtime?.describe().capabilities;
+  if (capabilities?.scripted) return { provider: "scripted", id: "scripted" };
+  return capabilities?.managed ?? null;
 }
 
 export interface ExecutorDeps {
@@ -3152,7 +3156,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
     /** The connection a role row is pinned to. */
     credentialId?: string,
   ): Promise<AgentRunRequest["model"]> => {
-    const managed = deps.runtime.describe().capabilities.managed;
+    const managed = managedFromRuntime(deps.runtime);
     if (managed) return { provider: managed.provider, id: managed.id };
     const hostedProvider = (await modelCreditBillingEnabled(deps))
       ? resolveDeploymentModel().provider
@@ -3231,7 +3235,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
       spaceId: string;
       botId?: string;
     }): Promise<AgentRunRequest["model"]> {
-      const managed = deps.runtime.describe().capabilities.managed;
+      const managed = managedFromRuntime(deps.runtime);
       if (managed) return { provider: managed.provider, id: managed.id };
       const override = scope.botId
         ? await deps.prisma.bot.findFirst({
@@ -4163,7 +4167,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
         }
         const runDeployment = deps.deploymentModelConfigured ? resolveDeploymentModel() : null;
         const runtimeFallback = runtimeFallbackModel(deps.runtime);
-        const managed = deps.runtime.describe().capabilities.managed ?? null;
+        const managed = managedFromRuntime(deps.runtime) ?? null;
         const pinError =
           !managed &&
           run.modelPinned &&
@@ -8662,7 +8666,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
             } else if (
               event.type === "usage" &&
               !event.accounted &&
-              !deps.runtime.describe().capabilities.managed
+              !managedFromRuntime(deps.runtime)
             ) {
               await recordUsage(deps.prisma, event, {
                 spaceId: run.spaceId,
@@ -10546,7 +10550,7 @@ async function modelCreditBillingEnabled(deps: ExecutorDeps): Promise<boolean> {
 
 async function resolveModelKey(...args: Parameters<typeof resolveModelKeyMaterial>) {
   const [deps, userId, spaceId, , provider, modelId] = args;
-  const managed = deps.runtime?.describe().capabilities.managed;
+  const managed = managedFromRuntime(deps.runtime);
   const billingEnabled = await modelCreditBillingEnabled(deps);
   const scope = { userId, spaceId };
   if (billingEnabled && (await hasHostedModelCredits(deps.prisma, scope, provider))) {

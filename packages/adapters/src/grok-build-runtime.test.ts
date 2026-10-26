@@ -63,16 +63,15 @@ it("streams text from a fake grok and denies its tools", async () => {
   const { runtime, home } = await fixture("stream");
   const events = [];
   for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
-  expect(events).toEqual([
-    { type: "text", text: "hola" },
-    { type: "done" },
-  ]);
+  expect(events).toEqual([{ type: "text", text: "hola" }, { type: "done" }]);
   const argv = JSON.parse(await readFile(path.join(home, "argv.json"), "utf8")) as Array<{
     argv: string[];
     cwd: string;
   }>;
   expect(argv).toHaveLength(1);
-  expect(argv[0]?.argv).toEqual(expect.arrayContaining(["--tools", "", "--disallowed-tools", "--max-turns", "1", "-s"]));
+  expect(argv[0]?.argv).toEqual(
+    expect.arrayContaining(["--tools", "", "--disallowed-tools", "--max-turns", "1", "-s"]),
+  );
   expect(argv[0]?.cwd).toContain("scratch");
   expect(argv[0]?.argv.includes("-s")).toBe(true);
 });
@@ -82,10 +81,7 @@ it("shows the Spanish sentence when grok rejects the session and does not log th
   const { runtime } = await fixture("auth", { XAI_API_KEY: "xai-test-fixture" });
   const events = [];
   for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
-  expect(events).toEqual([
-    { type: "text", text: ALMA_UNAVAILABLE_MESSAGE },
-    { type: "done" },
-  ]);
+  expect(events).toEqual([{ type: "text", text: ALMA_UNAVAILABLE_MESSAGE }, { type: "done" }]);
   expect(error).toHaveBeenCalledWith("alma.managed-model.auth-rejected", expect.any(Object));
   expect(JSON.stringify(error.mock.calls)).not.toContain("xai-test-fixture");
 });
@@ -110,10 +106,7 @@ it("resumes with -r when the session id is already in use", async () => {
   const { runtime, home } = await fixture("busy");
   const events = [];
   for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
-  expect(events).toEqual([
-    { type: "text", text: "seguido" },
-    { type: "done" },
-  ]);
+  expect(events).toEqual([{ type: "text", text: "seguido" }, { type: "done" }]);
   const argv = JSON.parse(await readFile(path.join(home, "argv.json"), "utf8")) as Array<{
     argv: string[];
   }>;
