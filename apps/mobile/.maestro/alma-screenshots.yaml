@@ -1,15 +1,323 @@
 appId: do.alma.app
-name: ALMA mock screenshots
+name: ALMA sample-mode screenshots
 ---
 - launchApp:
     clearState: true
+    permissions:
+      notifications: deny
+
+# A cold API 34 emulator can show a launcher ANR over the healthy app.
+- extendedWaitUntil:
+    visible: "Borradores para revisión|Pixel Launcher isn't responding"
+    timeout: 60000
+- runFlow:
+    when:
+      visible: "Pixel Launcher isn't responding"
+    commands:
+      - tapOn: "Close app"
 - extendedWaitUntil:
     visible: "Borradores para revisión"
     timeout: 30000
 - assertVisible: "Datos de ejemplo"
-- takeScreenshot: alma-home
+- takeScreenshot: 04-alma-home
+
 - tapOn: "Borradores para revisión"
 - extendedWaitUntil:
     visible: "Instancia de entrega"
     timeout: 20000
-- takeScreenshot: alma-drafts
+- assertVisible: "Resumen de audiencia"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 05-drafts
+
+# A reader draft has no approve action. Capture it before the timed draft starts its clock.
+- tapOn: "Resumen de audiencia"
+- extendedWaitUntil:
+    visible: "Resumen preparado por ALMA"
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 06-draft-review-reader
+- tapOn: "Atrás"
+
+- openLink: "alma:///draft-approvals"
+- extendedWaitUntil:
+    visible: "Todavía no hay aprobaciones."
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 07-draft-approvals-empty
+
+- openLink: "alma:///drafts"
+- extendedWaitUntil:
+    visible: "Instancia de entrega"
+    timeout: 20000
+- tapOn: "Instancia de entrega"
+- extendedWaitUntil:
+    visible: "Borrador de ALMA"
+    timeout: 20000
+- assertVisible: "Edición del abogado"
+- assertVisible: "Tiempo mínimo de revisión"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 08-draft-review-diff
+- scrollUntilVisible:
+    element: "He revisado este borrador"
+    direction: DOWN
+- extendedWaitUntil:
+    visible: "Tiempo mínimo de revisión 0:00"
+    timeout: 20000
+- tapOn: "He revisado este borrador y asumo la responsabilidad profesional de su contenido"
+- takeScreenshot: 09-draft-review-ready
+- tapOn: "Aprobar borrador"
+- extendedWaitUntil:
+    visible: "Aprobado por Lcda. Ejemplo"
+    timeout: 20000
+- takeScreenshot: 10-draft-review-approved
+
+- openLink: "alma:///draft-approvals"
+- extendedWaitUntil:
+    visible: "Aprobado por Lcda. Ejemplo"
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 11-draft-approvals
+
+- openLink: "alma:///alma-chat"
+- extendedWaitUntil:
+    visible: "Puedo dejar un borrador listo para su revisión."
+    timeout: 20000
+- assertVisible: "Voz"
+- assertVisible: "Enviar"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 12-alma-chat
+- tapOn: "Escriba a ALMA"
+- inputText: "Revise la instancia"
+- hideKeyboard
+- assertVisible: "Revise la instancia"
+- takeScreenshot: 13-alma-chat-typed
+- tapOn: "Enviar"
+- extendedWaitUntil:
+    visible: "Dejé el resultado en Borradores para revisión."
+    timeout: 20000
+- takeScreenshot: 14-alma-chat-sent
+- tapOn: "Voz"
+- extendedWaitUntil:
+    visible: "While using the app|Only this time|^Allow$|Escuchando…|Escriba a ALMA"
+    timeout: 10000
+- runFlow:
+    when:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+- runFlow:
+    when:
+      visible: "Only this time"
+    commands:
+      - tapOn: "Only this time"
+- runFlow:
+    when:
+      visible: "^Allow$"
+    commands:
+      - tapOn: "Allow"
+- extendedWaitUntil:
+    visible: "Escuchando…|Escriba a ALMA|^Voz$"
+    timeout: 8000
+- takeScreenshot: 15-alma-chat-dictate
+- runFlow:
+    when:
+      visible: "Escuchando…"
+    commands:
+      - tapOn: "Escuchando…"
+
+- openLink: "alma:///alma-computer"
+- extendedWaitUntil:
+    visible: "Preparar borrador de instancia"
+    timeout: 20000
+- assertVisible: "Solo lectura"
+- assertVisible: "La computadora no está en pantalla."
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 16-alma-computer
+- tapOn: "^Detener$"
+- extendedWaitUntil:
+    visible: "^Detenido$"
+    timeout: 20000
+- takeScreenshot: 17-alma-computer-stopped
+
+- openLink: "alma:///firm"
+- extendedWaitUntil:
+    visible: "Bufete Ejemplo"
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- assertVisible: "Estos datos se editan en la web del bufete."
+- takeScreenshot: 18-firm
+- scrollUntilVisible:
+    element: "Lcda. Ejemplo"
+    direction: DOWN
+- assertVisible: "Puede aprobar borradores"
+- takeScreenshot: 19-firm-lawyers
+
+- openLink: "alma:///about"
+- extendedWaitUntil:
+    visible: "ALMA no sustituye el criterio profesional de quien revisa."
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- assertVisible: "do.alma.app"
+- takeScreenshot: 20-about
+- tapOn: "^Servidor$"
+- extendedWaitUntil:
+    visible: "10.0.2.2"
+    timeout: 15000
+- assertVisible:
+    id: "server-address"
+- takeScreenshot: 03-server
+- back
+
+- openLink: "alma:///account"
+- extendedWaitUntil:
+    visible: "^Inicio$"
+    timeout: 20000
+- assertVisible: "Borradores para revisión"
+- takeScreenshot: 21-settings-account
+- scrollUntilVisible:
+    element: "Delete account"
+    direction: DOWN
+- takeScreenshot: 22-settings-account-more
+
+- openLink: "alma:///language"
+- extendedWaitUntil:
+    visible: "^Español$"
+    timeout: 15000
+- assertVisible: "^English$"
+- takeScreenshot: 23-settings-language
+
+- openLink: "alma:///signup-survey"
+- extendedWaitUntil:
+    visible: "How will you use ALMA?"
+    timeout: 15000
+- takeScreenshot: 24-settings-signup-survey
+
+- openLink: "alma:///models"
+- extendedWaitUntil:
+    visible: "Could not load model settings|Main model"
+    timeout: 20000
+- takeScreenshot: 25-settings-models
+
+- openLink: "alma:///voice"
+- extendedWaitUntil:
+    visible: "This device|Could not load voice settings"
+    timeout: 20000
+- takeScreenshot: 26-settings-voice
+
+- openLink: "alma:///approvals"
+- extendedWaitUntil:
+    visible: "Never ask|Ask|Something went wrong"
+    timeout: 20000
+- takeScreenshot: 27-settings-approvals
+
+- openLink: "alma:///integrations"
+- extendedWaitUntil:
+    visible: "Search apps|Could not load integrations|^Integrations$"
+    timeout: 20000
+- takeScreenshot: 28-settings-integrations
+
+- openLink: "alma:///messaging"
+- extendedWaitUntil:
+    visible: "^Messaging$"
+    timeout: 15000
+- takeScreenshot: 29-settings-messaging
+
+- openLink: "alma:///ai-data-sharing"
+- extendedWaitUntil:
+    visible: "Could not load permissions|AI models|No AI services configured"
+    timeout: 20000
+- runFlow:
+    when:
+      visible: "^Cancel$"
+    commands:
+      - tapOn: "^Cancel$"
+- takeScreenshot: 30-settings-ai-data-sharing
+
+- openLink: "alma:///artifacts"
+- extendedWaitUntil:
+    visible: "No artifacts yet|Could not load artifacts"
+    timeout: 20000
+- takeScreenshot: 31-artifacts
+
+- openLink: "alma:///billing"
+- extendedWaitUntil:
+    visible: "Could not load billing|^Credits$|^Billing$"
+    timeout: 20000
+- runFlow:
+    when:
+      visible: "Could not load billing"
+    commands:
+      - tapOn: "^OK$"
+- takeScreenshot: 32-settings-billing
+
+- openLink: "alma:///archived-bots"
+- extendedWaitUntil:
+    visible: "^Archived$"
+    timeout: 15000
+- takeScreenshot: 33-settings-archived
+
+- openLink: "alma:///change-password"
+- extendedWaitUntil:
+    visible: "Current password"
+    timeout: 15000
+- takeScreenshot: 34-settings-change-password
+
+- openLink: "alma:///model-picker"
+- extendedWaitUntil:
+    visible: "Could not load model settings"
+    timeout: 15000
+- takeScreenshot: 35-settings-model-picker
+
+- openLink: "alma:///space"
+- extendedWaitUntil:
+    visible: "^Space$"
+    timeout: 15000
+- takeScreenshot: 36-settings-space
+
+- openLink: "alma:///new-space"
+- extendedWaitUntil:
+    visible: "Customer support|Create space|^Nombre$"
+    timeout: 15000
+- takeScreenshot: 37-new-space
+
+- openLink: "alma:///new-group"
+- extendedWaitUntil:
+    visible: "New group chat"
+    timeout: 15000
+- takeScreenshot: 38-new-group
+
+- openLink: "alma:///search"
+- extendedWaitUntil:
+    visible: "^Search$"
+    timeout: 15000
+- takeScreenshot: 39-search
+
+# Sample mode replaces sign-in with home. Turn sample data off, then capture the form.
+# A local capabilities stub lets the email and password fields render.
+- openLink: "alma:///about"
+- extendedWaitUntil:
+    visible: "Usar el servidor|Use the server"
+    timeout: 20000
+- tapOn: "Usar el servidor|Use the server"
+- extendedWaitUntil:
+    visible: "Usar datos de ejemplo|Use sample data"
+    timeout: 10000
+- openLink: "alma:///sign-in"
+- extendedWaitUntil:
+    visible: "Iniciar sesión en ALMA|Sign in to ALMA"
+    timeout: 20000
+- extendedWaitUntil:
+    visible: "^Correo$|^Email$|No se pudieron cargar las opciones de acceso|Could not load sign-in options"
+    timeout: 20000
+- hideKeyboard
+- takeScreenshot: 01-sign-in
+- runFlow:
+    when:
+      visible: "^Crear cuenta$|^Sign up$"
+    commands:
+      - tapOn: "^Crear cuenta$|^Sign up$"
+      - extendedWaitUntil:
+          visible: "Crea tu cuenta de ALMA|Create your ALMA account"
+          timeout: 15000
+      - hideKeyboard
+      - takeScreenshot: 02-sign-up
