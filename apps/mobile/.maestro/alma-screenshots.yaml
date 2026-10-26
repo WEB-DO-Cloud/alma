@@ -157,10 +157,15 @@ name: ALMA sample-mode screenshots
 - assertVisible: "Datos de ejemplo"
 - assertVisible: "Estos datos se editan en la web del bufete."
 - takeScreenshot: 18-firm
-- scrollUntilVisible:
-    element: "Lcda. Ejemplo"
-    direction: DOWN
-- assertVisible: "Puede aprobar borradores"
+- swipe:
+    start: "50%,80%"
+    end: "50%,30%"
+- swipe:
+    start: "50%,80%"
+    end: "50%,30%"
+- extendedWaitUntil:
+    visible: "Lcda. Ejemplo"
+    timeout: 10000
 - takeScreenshot: 19-firm-lawyers
 
 - openLink: "alma:///about"
@@ -185,9 +190,12 @@ name: ALMA sample-mode screenshots
     timeout: 20000
 - assertVisible: "Borradores para revisión"
 - takeScreenshot: 21-settings-account
-- scrollUntilVisible:
-    element: "Delete account"
-    direction: DOWN
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
 - takeScreenshot: 22-settings-account-more
 
 - openLink: "alma:///language"
