@@ -11,18 +11,27 @@ on:
         options:
           - rakazo
           - alma
+  # A push to the preview branch starts the capture. workflow_dispatch stays
+  # available for a manual rerun once the workflow is on the default branch.
+  push:
+    branches:
+      - cursor/alma-ui-preview
+    paths:
+      - .github/workflows/mobile-android-screenshots.yml
+      - .github/scripts/capture-alma-ui-preview.sh
+      - apps/mobile/.maestro/alma-screenshots.yaml
 
 permissions:
   contents: read
 
 concurrency:
-  group: mobile-android-screenshots-${{ github.ref }}-${{ github.event.inputs.suite }}
+  group: mobile-android-screenshots-${{ github.head_ref || github.ref }}-${{ github.event.inputs.suite || 'pr' }}
   cancel-in-progress: true
 
 jobs:
   screenshots:
     name: Capture Android UI
-    if: ${{ github.event.inputs.suite != 'alma' && !contains(github.ref, 'cursor/alma-ui-preview') }}
+    if: ${{ github.event.inputs.suite != 'alma' && !contains(github.ref, 'cursor/alma-ui-preview') && github.head_ref != 'cursor/alma-ui-preview' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     services:
@@ -176,7 +185,7 @@ jobs:
 
   alma-preview:
     name: Capture ALMA sample screens
-    if: ${{ github.event.inputs.suite == 'alma' || contains(github.ref, 'cursor/alma-ui-preview') }}
+    if: ${{ github.event.inputs.suite == 'alma' || contains(github.ref, 'cursor/alma-ui-preview') || github.head_ref == 'cursor/alma-ui-preview' }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
