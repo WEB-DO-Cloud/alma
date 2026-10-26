@@ -609,7 +609,7 @@ export function OnboardingPage() {
               // step when the import brought a usable connection.
               void rpc
                 .me()
-                .then((me) => setAfterSurvey(me.needsModel ? "model" : "bot"))
+                .then((me) => setAfterSurvey(me.managedModel || !me.needsModel ? "bot" : "model"))
                 .catch(() => undefined)
                 .finally(() => {
                   setImportedBotId(bot.id);
