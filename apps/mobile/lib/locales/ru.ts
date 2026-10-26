@@ -571,8 +571,8 @@ export const RU_MESSAGES: Record<string, string> = {
   "Photo library": "Библиотека фотографий",
   Pin: "Закрепить",
   "Please try again.": "Повторите попытку.",
-  "Point this app at your self-hosted Rakazo origin, the same HTTPS URL you open in a browser.":
-    "Направьте это приложение на свой собственный источник Rakazo, тот же URL-адрес HTTPS, который вы открываете в браузере.",
+  "Point this app at your self-hosted ALMA origin, the same HTTPS URL you open in a browser.":
+    "Направьте это приложение на свой собственный источник ALMA, тот же URL-адрес HTTPS, который вы открываете в браузере.",
   Private: "Личный",
   Profile: "Профиль",
   Providers: "Провайдеры",
@@ -636,10 +636,10 @@ export const RU_MESSAGES: Record<string, string> = {
   "Show more": "Показать ещё",
   "Show {label}": "Показать {label}",
   "Sign in": "Войти",
-  "Sign in to Rakazo": "Войти в Rakazo",
+  "Sign in to ALMA": "Войти в ALMA",
   "Sign out": "Выйти",
   "Sign up": "Зарегистрироваться",
-  "Sign up for Rakazo": "Зарегистрироваться в Rakazo",
+  "Create your ALMA account": "Создайте аккаунт ALMA",
   "Sign-in": "Вход",
   "Sign-up": "Регистрация",
   "Sign-in did not return a session": "Вход не вернул сессию",
@@ -672,7 +672,7 @@ export const RU_MESSAGES: Record<string, string> = {
   Team: "Команда",
   "Team Computer": "Командный компьютер",
   "That doesn’t look like a URL": "Это не похоже на URL",
-  "That URL did not look like a Rakazo server": "Этот адрес не похож на сервер Rakazo",
+  "That URL did not look like an ALMA server": "Этот адрес не похож на сервер ALMA",
   "That URL is missing a host": "Для этого URL-адреса отсутствует хост",
   "The server changed while starting the request": "Сервер изменился при запуске запроса",
   "This permanently deletes your account, bots, conversations, memories, files, and saved connections. This cannot be undone.":
@@ -762,7 +762,9 @@ export const RU_MESSAGES: Record<string, string> = {
   "Open in full window": "Открыть в полном окне",
   "OpenAPI JSON": "OpenAPI JSON",
   "Paste the OpenAI-compatible address from your server. Rakazo adds /v1 if needed.":
-    "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости Rakazo добавляет /v1.",
+    "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
+  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
+    "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
   Paused: "Приостановлено",
   Prompt: "Промпт",
   "Recording a live demonstration needs desktop or web with the full computer view. You can still ask this bot to run saved skills from chat.":
@@ -778,8 +780,8 @@ export const RU_MESSAGES: Record<string, string> = {
   "Delete {name} and its {count} bots?": "Удалить {name} и его ботов ({count})?",
   "This removes every message and stops current work. The bot, computer, memory, and routines are kept.":
     "Это удалит все сообщения и остановит текущую работу. Бот, компьютер, память и задачи сохранятся.",
-  "This subscription sign-in is not available in Rakazo yet. Use a deployment credential or choose another provider.":
-    "Вход по этой подписке пока недоступен в Rakazo. Используйте учётные данные развёртывания или выберите другого провайдера.",
+  "This subscription sign-in is not available in ALMA yet. Use a deployment credential or choose another provider.":
+    "Вход по этой подписке пока недоступен в ALMA. Используйте учётные данные развёртывания или выберите другого провайдера.",
   "Tool sources": "Источники инструментов",
   Tools: "Инструменты",
   Uninstall: "Удалить",
@@ -886,7 +888,7 @@ export const RU_MESSAGES: Record<string, string> = {
   "AI models": "Модели ИИ",
   Memory: "Память",
   "Privacy policies": "Политики конфиденциальности",
-  Rakazo: "Rakazo",
+  ALMA: "ALMA",
   "Withdraw all permissions": "Отозвать все разрешения",
   "Withdraw all permissions?": "Отозвать все разрешения?",
   "New mobile actions won't send data to these services. Runs already in progress and routines keep going until you stop them.":
@@ -1005,7 +1007,7 @@ export const RU_MESSAGES: Record<string, string> = {
   "Use my subscription or API key": "Использовать свою подписку или API-ключ",
   "Monthly credits expire at renewal. Top-ups do not expire.":
     "Ежемесячные кредиты истекают при продлении. Разовые пополнения не сгорают.",
-  "Use Rakazo credits": "Использовать кредиты Rakazo",
+  "Use ALMA credits": "Использовать кредиты ALMA",
   "1 unread": "1 непрочитанный",
   "{count} unread": "Непрочитанных: {count}",
   "{count} need attention": "Требуют внимания: {count}",
@@ -1013,12 +1015,11 @@ export const RU_MESSAGES: Record<string, string> = {
   "{label}, below": "{label}, ниже",
   Work: "Работа",
   Both: "И то, и другое",
-  "How will you use Rakazo?": "Как вы будете использовать Rakazo?",
-  "What do you most want Rakazo to help with?":
-    "С чем Rakazo должен помогать вам в первую очередь?",
+  "How will you use ALMA?": "Как вы будете использовать ALMA?",
+  "What do you most want ALMA to help with?": "С чем ALMA должен помогать вам в первую очередь?",
   "How big is your team?": "Сколько человек в вашей команде?",
   "How did you hear about us?": "Как вы о нас узнали?",
-  "Welcome to Rakazo": "Добро пожаловать в Rakazo",
+  "Welcome to ALMA": "Добро пожаловать в ALMA",
   Messaging: "Сообщения",
   Unlink: "Отвязать",
   "Connect a chat app": "Подключить чат-приложение",

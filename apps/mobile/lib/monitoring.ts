@@ -8,6 +8,7 @@ import {
   sanitizeMonitoringEvent,
 } from "@rakazo/logging/monitoring";
 import type * as NativeSentry from "@sentry/react-native";
+import { mobileReportingEnabled } from "./sentry-policy";
 import type { StartupErrorStorage } from "./startup-error";
 import {
   clearStartupError,
@@ -138,7 +139,7 @@ export function configureMobileMonitoring(
       if (configRequest === request) configRequest = undefined;
     }
     if (current !== generation) return;
-    if (!config.dsn) {
+    if (!config.dsn || !mobileReportingEnabled(config.dsn)) {
       configured = true;
       errors.install(undefined);
       pendingStartupError = undefined;

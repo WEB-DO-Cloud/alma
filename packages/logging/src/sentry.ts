@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { CORRELATION_TAG_KEYS } from "./monitoring.js";
+import { CORRELATION_TAG_KEYS, isVendorSentryDsn } from "./monitoring.js";
 import { isMonitoringUserId, monitoringPseudonymSecret, monitoringUserId } from "./pseudonym.js";
 import { redactSensitiveText } from "./redaction.js";
 import { errorSummary } from "./serialize-error.js";
@@ -29,6 +29,12 @@ export function sentryConfigFromEnv(source: NodeJS.ProcessEnv = process.env): {
   if (!dsn) return {};
   if (!isValidDsn(dsn)) {
     return { warning: "Error reporting is disabled; SENTRY_DSN is not a valid DSN." };
+  }
+  if (isVendorSentryDsn(dsn)) {
+    return {
+      warning:
+        "Error reporting is disabled; SENTRY_DSN points at hosted Sentry. Use a self-hosted collector.",
+    };
   }
   return {
     config: {

@@ -8,6 +8,7 @@ import type {
   NotificationProvider,
 } from "@rakazo/adapter-kit";
 import { pushReceiptJob } from "@rakazo/adapter-kit";
+import { sanitizePushPayload } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
 import { combineSignals } from "./connector-safety.js";
 import { credentialDigest } from "./credential-digest.js";
@@ -169,10 +170,11 @@ export class ExpoPushProvider implements NotificationProvider {
   async deliver(message: NotificationMessage, context: AdapterContext): Promise<ExpoPushDelivery> {
     const token = await this.deliverableToken(context.userId);
     if (!token) return "undeliverable";
+    const notice = sanitizePushPayload(message);
     const payload = {
       to: token,
-      title: capped(message.title, MAX_PUSH_TITLE_CHARS),
-      body: capped(message.body, MAX_PUSH_BODY_CHARS),
+      title: capped(notice.title, MAX_PUSH_TITLE_CHARS),
+      body: capped(notice.body, MAX_PUSH_BODY_CHARS),
       collapseId: message.threadId,
       tag: message.threadId,
       ...(message.badge === undefined ? {} : { badge: message.badge }),

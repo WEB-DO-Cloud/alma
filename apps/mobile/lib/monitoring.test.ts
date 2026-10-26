@@ -602,4 +602,22 @@ describe("mobile monitoring", () => {
       tags: { "mobile.platform": "ios" },
     });
   });
+
+  it("does not start Sentry for a hosted DSN or when reporting is switched off", async () => {
+    const monitor = await import("./monitoring");
+    await monitor.configureMobileMonitoring(
+      "https://app.example.com",
+      {},
+      response({ dsn: "https://key@o123.ingest.sentry.io/8" }),
+    );
+    expect(sdk.init).not.toHaveBeenCalled();
+
+    vi.stubEnv("EXPO_PUBLIC_SENTRY_ENABLED", "0");
+    await monitor.configureMobileMonitoring(
+      "https://app.example.com",
+      { authorization: "Bearer next" },
+      response({ dsn: "https://key@errors.example.com/8" }),
+    );
+    expect(sdk.init).not.toHaveBeenCalled();
+  });
 });

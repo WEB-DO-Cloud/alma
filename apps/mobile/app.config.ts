@@ -1,5 +1,11 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
 
+declare function require(id: string): {
+  sentryUploadAllowed: (env: NodeJS.ProcessEnv) => boolean;
+};
+
+const { sentryUploadAllowed } = require("./lib/sentry-upload.cjs");
+
 const RELEASE_PROFILES = new Set(["production", "android-apk", "diagnostic"]);
 
 export default ({ config }: ConfigContext): ExpoConfig => {
@@ -42,8 +48,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     result = { ...result, android: { ...result.android, googleServicesFile } };
   }
 
-  // Native crash handling autolinks; upload build hooks are optional and require credentials.
-  if (process.env.SENTRY_AUTH_TOKEN) {
+  // Upload hooks talk to hosted Sentry unless SENTRY_URL is a self-hosted collector.
+  if (sentryUploadAllowed(process.env)) {
     result = {
       ...result,
       plugins: [

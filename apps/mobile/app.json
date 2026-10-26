@@ -1,9 +1,8 @@
 {
   "expo": {
-    "name": "Rakazo",
-    "slug": "rakazo",
-    "owner": "inbox-zero",
-    "scheme": "rakazo",
+    "name": "ALMA",
+    "slug": "alma",
+    "scheme": ["alma", "rakazo"],
     "version": "1.0.9",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
@@ -14,7 +13,7 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#FCFCFC",
+          "backgroundColor": "#141414",
           "dark": {
             "backgroundColor": "#141414"
           }
@@ -26,14 +25,14 @@
         "expo-audio",
         {
           "enableBackgroundPlayback": false,
-          "microphonePermission": "Rakazo uses the microphone for voice calls with your bots."
+          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
         }
       ],
       [
         "expo-speech-recognition",
         {
-          "speechRecognitionPermission": "Rakazo turns your speech into messages during voice calls.",
-          "microphonePermission": "Rakazo uses the microphone for voice calls with your bots."
+          "speechRecognitionPermission": "ALMA turns your speech into a message.",
+          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
         }
       ],
       "expo-localization",
@@ -48,9 +47,9 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Rakazo uses your photo library so you can attach images to a bot message.",
-          "cameraPermission": "Rakazo uses the camera so you can attach photos to a bot message.",
-          "microphonePermission": "Rakazo uses the microphone for voice calls with your bots."
+          "photosPermission": "ALMA uses your photo library so you can attach an image to a message.",
+          "cameraPermission": "ALMA uses the camera so you can attach a photo to a message.",
+          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
         }
       ],
       "expo-sharing",
@@ -59,24 +58,25 @@
       "./plugins/with-lan-cleartext"
     ],
     "ios": {
-      "bundleIdentifier": "com.rakazo.app",
+      "bundleIdentifier": "do.alma.app",
       "buildNumber": "1",
       "supportsTablet": false,
-      "icon": "../../packages/ui-tokens/assets/Rakazo.icon",
+      "icon": "./assets/icon.png",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSCameraUsageDescription": "Rakazo uses the camera so you can attach photos to a bot message.",
-        "NSPhotoLibraryUsageDescription": "Rakazo uses your photo library so you can attach images to a bot message.",
-        "NSLocalNetworkUsageDescription": "Rakazo connects to a self-hosted Rakazo server on your local network.",
+        "NSCameraUsageDescription": "ALMA uses the camera so you can attach a photo to a message.",
+        "NSPhotoLibraryUsageDescription": "ALMA uses your photo library so you can attach an image to a message.",
+        "NSLocalNetworkUsageDescription": "ALMA connects to your firm's server on the local network.",
+        "CFBundleDisplayName": "ALMA",
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
         }
       }
     },
     "android": {
-      "package": "com.rakazo.app",
+      "package": "do.alma.app",
       "versionCode": 10,
       "softwareKeyboardLayoutMode": "resize",
       "icon": "./assets/icon.png",
@@ -91,16 +91,13 @@
     },
     "extra": {
       "router": {},
-      "supportsRTL": true,
-      "eas": {
-        "projectId": "07f7eb04-45e3-47fe-9374-99a2f991131e"
-      }
+      "supportsRTL": true
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/07f7eb04-45e3-47fe-9374-99a2f991131e"
+      "enabled": false
     }
   }
 }

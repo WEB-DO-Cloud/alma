@@ -1,0 +1,207 @@
+---
+format_version: "13"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: other
+
+meta:
+  bitrise.io:
+    stack: osx-xcode-27.1.x
+
+workflows:
+  mobile-tests:
+    description: Unit tests for the mobile app and the privacy checks it depends on.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Run mobile unit tests
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                # The privacy checks import the database package. Generate does not connect.
+                DATABASE_URL="${DATABASE_URL:-postgres://rakazo:rakazo@127.0.0.1:5433/rakazo}" pnpm db:generate
+                pnpm --filter @rakazo/mobile test
+                pnpm exec vitest run \
+                  packages/core/src/push-notice.test.ts \
+                  packages/adapters/src/expo-push.test.ts \
+                  packages/logging/src/sentry.test.ts \
+                  apps/api/src/monitoring.test.ts \
+                  apps/api/src/app-association.test.ts
+
+  android-debug:
+    description: Debug APK. No store upload.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Build the Android debug APK
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane android debug
+      - deploy-to-bitrise-io@2: {}
+
+  android-apk:
+    description: Signed release APK for internal sharing. No Play upload.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Build the signed Android APK
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane android apk
+      - deploy-to-bitrise-io@2: {}
+
+  android-aab:
+    description: Signed Android App Bundle. No Play upload.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Build the signed Android App Bundle
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane android aab
+      - deploy-to-bitrise-io@2: {}
+
+  ios-simulator:
+    description: iOS simulator build. No signing and no store upload.
+    meta:
+      bitrise.io:
+        stack: osx-xcode-27.1.x
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Build the iOS simulator app
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane ios simulator
+      - deploy-to-bitrise-io@2: {}
+
+  ios-archive:
+    description: Signed iOS archive. Uses match unless BITRISE_USE_UPLOADED_SIGNING is true. No store upload.
+    meta:
+      bitrise.io:
+        stack: osx-xcode-27.1.x
+    steps:
+      - git-clone@8: {}
+      - certificate-and-profile-installer@1:
+          run_if: '{{enveq "BITRISE_USE_UPLOADED_SIGNING" "true"}}'
+      - script@1:
+          title: Archive the iOS app
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane ios archive
+      - deploy-to-bitrise-io@2: {}
+
+  manual-testflight:
+    description: Manual only. Uploads to TestFlight and does not submit for App Store review.
+    meta:
+      bitrise.io:
+        stack: osx-xcode-27.1.x
+    steps:
+      - git-clone@8: {}
+      - certificate-and-profile-installer@1:
+          run_if: '{{enveq "BITRISE_USE_UPLOADED_SIGNING" "true"}}'
+      - script@1:
+          title: Upload to TestFlight
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane ios beta
+      - deploy-to-bitrise-io@2: {}
+
+  manual-play-internal:
+    description: Manual only. Uploads to the Play internal track and does not promote the release.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Upload to the Play internal track
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                corepack prepare pnpm@9.15.0 --activate
+                pnpm install --frozen-lockfile
+                cd apps/mobile
+                gem install bundler --no-document
+                bundle install
+                bundle exec fastlane android internal
+      - deploy-to-bitrise-io@2: {}
+
+trigger_map:
+  - push_branch: main
+    workflow: mobile-tests
+  - pull_request_source_branch: "*"
+    workflow: mobile-tests

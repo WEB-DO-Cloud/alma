@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { DE_MESSAGES } from "./locales/de";
+import { ES_MESSAGES } from "./locales/es";
 import { JA_MESSAGES } from "./locales/ja";
 import { NL_MESSAGES } from "./locales/nl";
 import { RU_MESSAGES } from "./locales/ru";
@@ -12,6 +13,7 @@ import {
 } from "./ui-locale";
 
 const catalogs: Partial<Record<UiLocale, Record<string, string>>> = {
+  es: ES_MESSAGES,
   "zh-CN": ZH_MESSAGES,
   ru: RU_MESSAGES,
   de: DE_MESSAGES,

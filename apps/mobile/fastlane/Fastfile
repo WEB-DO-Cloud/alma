@@ -1,0 +1,305 @@
+# frozen_string_literal: true
+
+default_platform(:ios)
+
+APP_IDENTIFIER = "do.alma.app"
+PACKAGE_NAME = "do.alma.app"
+MOBILE_ROOT = File.expand_path("..", __dir__)
+REPO_ROOT = File.expand_path("../../..", __dir__)
+
+def ci?
+  ENV["CI"] == "true" || ENV["BITRISE_IO"] == "true"
+end
+
+def api_key_env?
+  %w[APP_STORE_CONNECT_API_KEY_ID APP_STORE_CONNECT_API_KEY_ISSUER_ID APP_STORE_CONNECT_API_KEY].all? do |name|
+    !ENV[name].to_s.empty?
+  end
+end
+
+def app_store_api_key!
+  unless api_key_env?
+    UI.user_error!("Set APP_STORE_CONNECT_API_KEY_ID, APP_STORE_CONNECT_API_KEY_ISSUER_ID, and APP_STORE_CONNECT_API_KEY.")
+  end
+  content = ENV.fetch("APP_STORE_CONNECT_API_KEY")
+  app_store_connect_api_key(
+    key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ID"),
+    issuer_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ISSUER_ID"),
+    key_content: content,
+    is_key_content_base64: !content.include?("BEGIN PRIVATE KEY"),
+    in_house: false
+  )
+end
+
+def require_match_password!
+  return unless ENV["MATCH_PASSWORD"].to_s.empty?
+
+  UI.user_error!("MATCH_PASSWORD must be set outside the repo (a Bitrise secret). It is never stored in git.")
+end
+
+def sync_certificates(type)
+  require_match_password!
+  options = {
+    type: type,
+    readonly: ci?,
+    app_identifier: APP_IDENTIFIER,
+  }
+  options[:api_key] = app_store_api_key! if ci? || api_key_env?
+  match(options)
+end
+
+def bump_version!
+  number = ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+  UI.user_error!("Set BITRISE_BUILD_NUMBER or ALMA_BUILD_NUMBER before bumping.") if number.to_s.empty?
+  Dir.chdir(MOBILE_ROOT) { sh("node", "scripts/bump-native.mjs", number) }
+end
+
+def prebuild!(platform)
+  Dir.chdir(REPO_ROOT) do
+    sh("pnpm", "install", "--frozen-lockfile") unless ENV["BITRISE_IO"] == "true"
+    sh("pnpm", "--filter", "@rakazo/mobile", "exec", "expo", "prebuild", "--non-interactive", "--platform", platform)
+  end
+end
+
+def ios_workspace
+  configured = ENV["ALMA_IOS_WORKSPACE"].to_s
+  return configured unless configured.empty?
+
+  matches = Dir[File.join(MOBILE_ROOT, "ios/*.xcworkspace")]
+  UI.user_error!("expo prebuild did not create an iOS workspace.") if matches.empty?
+  matches.fetch(0)
+end
+
+def ios_scheme
+  scheme = ENV["ALMA_IOS_SCHEME"].to_s
+  scheme.empty? ? "ALMA" : scheme
+end
+
+def deploy_dir
+  dir = ENV["BITRISE_DEPLOY_DIR"].to_s
+  dir.empty? ? File.join(MOBILE_ROOT, "dist") : dir
+end
+
+def publish_files!(pattern)
+  require "fileutils"
+  dest = deploy_dir
+  FileUtils.mkdir_p(dest)
+  files = Dir[pattern]
+  UI.user_error!("No artifacts matched #{pattern}.") if files.empty?
+  files.each { |file| FileUtils.cp(file, dest) }
+  files
+end
+
+def materialize_android_keystore!
+  password = ENV["ANDROID_KEYSTORE_PASSWORD"].to_s
+  alias_name = ENV["ANDROID_KEY_ALIAS"].to_s
+  key_password = ENV["ANDROID_KEY_PASSWORD"].to_s
+  if [password, alias_name, key_password].any?(&:empty?)
+    UI.user_error!("Set ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD.")
+  end
+
+  path = ENV["ANDROID_KEYSTORE_PATH"].to_s
+  encoded = ENV["ANDROID_KEYSTORE_BASE64"].to_s
+  if path.empty? && encoded.empty?
+    UI.user_error!("Set ANDROID_KEYSTORE_PATH or ANDROID_KEYSTORE_BASE64.")
+  end
+  if path.empty?
+    require "base64"
+    path = File.join(MOBILE_ROOT, "android/app/alma-upload.jks")
+    File.binwrite(path, Base64.decode64(encoded))
+  end
+  path
+end
+
+def configure_android_release_signing!
+  keystore = materialize_android_keystore!
+  gradle_path = File.join(MOBILE_ROOT, "android/app/build.gradle")
+  text = File.read(gradle_path)
+  signing = <<~GRADLE
+        release {
+            storeFile file(#{keystore.dump})
+            storePassword #{ENV.fetch("ANDROID_KEYSTORE_PASSWORD").dump}
+            keyAlias #{ENV.fetch("ANDROID_KEY_ALIAS").dump}
+            keyPassword #{ENV.fetch("ANDROID_KEY_PASSWORD").dump}
+        }
+  GRADLE
+  patched = text.sub(/signingConfigs \{\n        debug \{.*?\n        \}/m) do |block|
+    "#{block}\n#{signing.rstrip}"
+  end
+  patched = patched.sub(/release \{\n            signingConfig signingConfigs\.debug/) do
+    "release {\n            signingConfig signingConfigs.release"
+  end
+  if patched == text
+    UI.user_error!("Could not attach a release signingConfig to the prebuild Gradle file.")
+  end
+  File.write(gradle_path, patched)
+end
+
+def gradle!(task)
+  Dir.chdir(File.join(MOBILE_ROOT, "android")) { sh("./gradlew", task, "--no-daemon") }
+end
+
+def capture_mock_screenshots
+  UI.user_error!("Install Maestro and boot a simulator or emulator before the screenshots lane.") if `which maestro`.strip.empty?
+  ENV["EXPO_PUBLIC_ALMA_MOCK"] = "1"
+  ENV["EXPO_PUBLIC_DEFAULT_UI_LOCALE"] = "es"
+  sh("maestro", "test", File.join(MOBILE_ROOT, ".maestro/alma-screenshots.yaml"))
+end
+
+lane :release do
+  unless ENV["ALMA_STORE_RELEASE_APPROVED"] == "yes"
+    UI.user_error!("Refusing the release lane. ALMA_STORE_RELEASE_APPROVED is not yes. Use ios beta (TestFlight) or android internal (Play internal track).")
+  end
+  UI.user_error!("This repository does not submit for App Store review or promote a build to Play production, beta, or alpha.")
+end
+
+platform :ios do
+  desc "Download Apple certificates from the private match repo. Read-only on CI."
+  lane :certificates do
+    sync_certificates("appstore")
+    sync_certificates("development")
+  end
+
+  desc "Write the CI build number into app.json before prebuild."
+  lane :bump do
+    bump_version!
+  end
+
+  desc "Capture Spanish mock-mode screenshots. Requires a booted simulator and Maestro."
+  lane :screenshots do
+    capture_mock_screenshots
+  end
+
+  desc "Upload App Store metadata only. Does not upload a binary or submit for review."
+  lane :metadata do
+    deliver(
+      api_key: app_store_api_key!,
+      metadata_path: File.join(__dir__, "metadata"),
+      languages: ["es-ES", "en-US"],
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      submit_for_review: false,
+      force: true,
+      automatic_release: false,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+
+  desc "Build a simulator app. No signing."
+  lane :simulator do
+    bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+    prebuild!("ios")
+    gym(
+      workspace: ios_workspace,
+      scheme: ios_scheme,
+      configuration: "Debug",
+      destination: "generic/platform=iOS Simulator",
+      skip_archive: true,
+      skip_package_ipa: true,
+      derived_data_path: File.join(deploy_dir, "DerivedData")
+    )
+  end
+
+  desc "Archive a signed iOS build. Does not upload it."
+  lane :archive do
+    bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+    prebuild!("ios")
+    sync_certificates("appstore") unless ENV["BITRISE_USE_UPLOADED_SIGNING"] == "true"
+    gym(
+      workspace: ios_workspace,
+      scheme: ios_scheme,
+      export_method: "app-store",
+      output_directory: deploy_dir,
+      output_name: "ALMA.ipa",
+      clean: true
+    )
+  end
+
+  desc "Upload an archive to TestFlight only. Does not submit for App Store review."
+  lane :beta do
+    archive
+    ipa = File.join(deploy_dir, "ALMA.ipa")
+    upload_to_testflight(
+      api_key: app_store_api_key!,
+      ipa: ipa,
+      skip_submission: true,
+      skip_waiting_for_build_processing: true,
+      distribute_external: false
+    )
+  end
+end
+
+platform :android do
+  desc "Write the CI build number into app.json before prebuild."
+  lane :bump do
+    bump_version!
+  end
+
+  desc "Capture Spanish mock-mode screenshots. Requires a booted emulator and Maestro."
+  lane :screenshots do
+    capture_mock_screenshots
+  end
+
+  desc "Upload Play listing text to the internal track only. Does not upload a binary."
+  lane :metadata do
+    json = ENV["SUPPLY_JSON_KEY_DATA"].to_s
+    UI.user_error!("Set SUPPLY_JSON_KEY_DATA to the Play service-account JSON.") if json.empty?
+    supply(
+      track: "internal",
+      package_name: PACKAGE_NAME,
+      json_key_data: json,
+      metadata_path: File.join(__dir__, "metadata/android"),
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_changelogs: true
+    )
+  end
+
+  desc "Debug APK from Expo prebuild. No upload keystore."
+  lane :debug do
+    bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+    prebuild!("android")
+    gradle!("assembleDebug")
+    publish_files!(File.join(MOBILE_ROOT, "android/app/build/outputs/apk/debug/*.apk"))
+  end
+
+  desc "Signed release APK for internal sharing. Does not upload to Play."
+  lane :apk do
+    bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+    prebuild!("android")
+    configure_android_release_signing!
+    gradle!("assembleRelease")
+    publish_files!(File.join(MOBILE_ROOT, "android/app/build/outputs/apk/release/*.apk"))
+  end
+
+  desc "Signed release AAB. Does not upload to Play."
+  lane :aab do
+    bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
+    prebuild!("android")
+    configure_android_release_signing!
+    gradle!("bundleRelease")
+    publish_files!(File.join(MOBILE_ROOT, "android/app/build/outputs/bundle/release/*.aab"))
+  end
+
+  desc "Upload the AAB to the Play internal track only."
+  lane :internal do
+    aab
+    built = Dir[File.join(MOBILE_ROOT, "android/app/build/outputs/bundle/release/*.aab")].fetch(0)
+    json = ENV["SUPPLY_JSON_KEY_DATA"].to_s
+    UI.user_error!("Set SUPPLY_JSON_KEY_DATA to the Play service-account JSON.") if json.empty?
+    supply(
+      track: "internal",
+      package_name: PACKAGE_NAME,
+      aab: built,
+      json_key_data: json,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_changelogs: true,
+      release_status: "completed"
+    )
+  end
+end

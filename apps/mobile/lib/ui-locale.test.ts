@@ -19,6 +19,9 @@ describe("normalizeUiLocale", () => {
     expect(normalizeUiLocale("nl-BE")).toBe("nl");
     expect(normalizeUiLocale("ja")).toBe("ja");
     expect(normalizeUiLocale("ja-JP")).toBe("ja");
+    expect(normalizeUiLocale("es")).toBe("es");
+    expect(normalizeUiLocale("es-DO")).toBe("es");
+    expect(normalizeUiLocale("es-ES")).toBe("es");
   });
 
   it("does not fold Traditional Chinese into Simplified", () => {

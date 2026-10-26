@@ -1,5 +1,20 @@
 import { redactSensitiveText } from "./redaction.js";
 
+/** Hosted Sentry (US). A self-hosted collector does not use these names. */
+const VENDOR_SENTRY_HOST = /(^|\.)(sentry\.io|sentry-cdn\.com)$/i;
+
+export function isVendorSentryHost(hostname: string): boolean {
+  return VENDOR_SENTRY_HOST.test(hostname.trim().toLowerCase());
+}
+
+export function isVendorSentryDsn(dsn: string): boolean {
+  try {
+    return isVendorSentryHost(new URL(dsn).hostname);
+  } catch {
+    return false;
+  }
+}
+
 /** Shared by log sinks and client adapters; these names are also the collector tags. */
 export const CORRELATION_TAG_KEYS = [
   "request.id",

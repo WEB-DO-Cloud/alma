@@ -34,6 +34,12 @@ describe("sentry sink", () => {
       "not a valid DSN",
     );
     expect(sentryConfigFromEnv({ SENTRY_DSN: "not a dsn" }).warning).toBeDefined();
+    expect(sentryConfigFromEnv({ SENTRY_DSN: "https://key@o123.ingest.sentry.io/7" }).config).toBe(
+      undefined,
+    );
+    expect(
+      sentryConfigFromEnv({ SENTRY_DSN: "https://key@o123.ingest.sentry.io/7" }).warning,
+    ).toContain("self-hosted");
     expect(
       sentryConfigFromEnv({
         SENTRY_DSN: DSN,
