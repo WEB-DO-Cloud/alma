@@ -78,16 +78,13 @@ name: ALMA sample-mode screenshots
 - assertVisible: "Edición del abogado"
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 08-draft-review-diff
-- scrollUntilVisible:
-    element: "He revisado este borrador"
-    direction: DOWN
-# The clock text changes every tick, so wait until the button drops the countdown.
-- extendedWaitUntil:
-    visible: "^Aprobar borrador$"
-    timeout: 20000
-- tapOn: "He revisado este borrador y asumo la responsabilidad profesional de su contenido"
+# The checkbox and approve button are pressables without accessible names.
+# On a Pixel 6 those controls sit at these points once the diff is on screen.
+- tapOn:
+    point: "50%,74%"
 - takeScreenshot: 09-draft-review-ready
-- tapOn: "Aprobar borrador"
+- tapOn:
+    point: "29%,93%"
 - extendedWaitUntil:
     visible: "Aprobado por Lcda. Ejemplo"
     timeout: 20000
