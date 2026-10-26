@@ -2,10 +2,11 @@
  * Placeholder ALMA mark. Final store art is still pending.
  * Colors follow the dark token background (#141414) and white foreground.
  */
-import { deflateSync } from "node:zlib";
+
 import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deflateSync } from "node:zlib";
 
 const assets = join(dirname(fileURLToPath(import.meta.url)), "..", "assets");
 
@@ -89,7 +90,10 @@ function filled(background) {
 writeFileSync(join(assets, "icon.png"), png(1024, 1024, filled([20, 20, 20, 255])));
 writeFileSync(join(assets, "adaptive-icon.png"), png(1024, 1024, filled([0, 0, 0, 0])));
 writeFileSync(join(assets, "monochrome-icon.png"), png(1024, 1024, filled([0, 0, 0, 0])));
-writeFileSync(join(assets, "icon-background.png"), png(1024, 1024, () => [20, 20, 20, 255]));
+writeFileSync(
+  join(assets, "icon-background.png"),
+  png(1024, 1024, () => [20, 20, 20, 255]),
+);
 writeFileSync(join(assets, "splash-icon.png"), png(1024, 1024, filled([0, 0, 0, 0])));
 writeFileSync(join(assets, "favicon.png"), png(64, 64, filled([20, 20, 20, 255])));
 writeFileSync(

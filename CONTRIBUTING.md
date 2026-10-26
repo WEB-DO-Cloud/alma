@@ -1,6 +1,6 @@
-# Contributing to Rakazo
+# Contributing to ALMA
 
-Thanks for helping improve Rakazo. Keep changes focused and testable.
+Thanks for helping improve ALMA. Keep changes focused and testable.
 
 ## Run locally
 

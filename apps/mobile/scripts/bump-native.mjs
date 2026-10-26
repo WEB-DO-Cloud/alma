@@ -2,7 +2,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const buildNumber = process.argv[2] ?? process.env.BITRISE_BUILD_NUMBER ?? process.env.ALMA_BUILD_NUMBER;
+const buildNumber =
+  process.argv[2] ?? process.env.BITRISE_BUILD_NUMBER ?? process.env.ALMA_BUILD_NUMBER;
 if (!buildNumber || !/^\d+$/.test(buildNumber) || Number(buildNumber) < 1) {
   console.error("Pass a positive integer build number, or set BITRISE_BUILD_NUMBER.");
   process.exit(1);

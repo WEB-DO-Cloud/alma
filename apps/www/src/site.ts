@@ -1,7 +1,6 @@
-export const SITE_NAME = "Rakazo";
+export const SITE_NAME = "ALMA";
 export const SITE_URL = "https://rakazo.com";
-export const SITE_DESCRIPTION =
-  "Rakazo is an open source Grok Bot alternative for persistent AI teammates that do real work. Your keys, your model, your machine.";
+export const SITE_DESCRIPTION = "ALMA AI prepares drafts for review.";
 
 export const APP_URL = "https://app.rakazo.com";
 export const GITHUB_URL = "https://github.com/elie222/rakazo";

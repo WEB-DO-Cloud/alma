@@ -44,7 +44,6 @@ const copy = {
     noAdvice: "ALMA no sustituye el criterio profesional de quien revisa.",
     attribution:
       "ALMA incluye software de Rakazo, publicado bajo la licencia Apache-2.0. Copyright de los autores de Rakazo.",
-    pendingArt: "El ícono de la tienda es un marcador. La pieza final está pendiente.",
     responsible: "Abogada responsable",
     card: "CARD",
     openChat: "Abrir el chat",
@@ -108,7 +107,6 @@ const copy = {
     noAdvice: "ALMA does not replace the professional judgment of the person who reviews.",
     attribution:
       "ALMA includes Rakazo software, published under the Apache-2.0 license. Copyright the Rakazo authors.",
-    pendingArt: "The store icon is a placeholder. Final art is pending.",
     responsible: "Responsible lawyer",
     card: "CARD",
     openChat: "Open chat",
@@ -140,6 +138,6 @@ export function almaText(key: AlmaCopyKey, locale: string): string {
   return copy.en[key];
 }
 
-export function almaCatalog(locale: string): typeof copy.en {
+export function almaCatalog(locale: string): { readonly [K in AlmaCopyKey]: string } {
   return locale === "es" || locale.toLowerCase().startsWith("es") ? copy.es : copy.en;
 }
