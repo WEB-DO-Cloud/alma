@@ -4,7 +4,9 @@
 *   **Date:** 2026-10-26
 *   **Method:** [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) review passes. Each reviewer was a fresh session. Each session was told to read only the design document, its persona, and the matching standard. Reviewers did not receive the application source.
 
-Passes: zoom out, comprehension, design critic, structural, style, implementation readiness. The Planned additions section was in the document for every pass.
+Passes: zoom out, comprehension, design critic, structural, style, implementation readiness. The Planned additions section was in the document for the passes that produced the resolutions below.
+
+An earlier zoom-out, comprehension, design-critic, and style pass read the document before that section and before the clock, release-lane, Sentry, and push corrections. Their blockers on those four points are the same gaps the later passes reported. The follow-up below closes the sentences those earlier passes still left inconsistent: the Goals wait and log fields, the Goals push sentence, the architecture diagram's Sentry host, and the reject path. Requests to drop the computer screen, the block formula, self-hosted error reporting, or `drafts/save` describe the product that is already built. They were not removed.
 
 ## Resolutions applied to the document
 

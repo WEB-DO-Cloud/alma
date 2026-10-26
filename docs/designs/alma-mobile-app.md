@@ -20,9 +20,9 @@ The phone has to be usable before a firm API is online, so a labeled sample mode
 
 ## Goals
 
-*   A signed-in lawyer can open a draft, see insertions and deletions against the original text, wait out the firm's minimum review time, check the fixed Spanish confirmation, and approve or reject. The approval log stores the lawyer's name, card number, the time the draft was open, the model, and hashes of the original and final text.
+*   A signed-in lawyer can open a draft, see insertions and deletions against the original text, wait out `requiredReviewDurationMs` (the firm's `minimumReviewSeconds` times the block count in CUJ 1), check the fixed Spanish confirmation, and approve or reject. The approval log stores the lawyer's name, the card number from that lawyer's row, `openedAt`, `approvedAt`, the model already stored on the draft, both SHA-256 hashes, and the diff.
 *   Someone who is not an approver can read a draft and cannot approve it.
-*   A push notification that leaves the phone is always the title `ALMA` and the body `Hay un borrador pendiente de revisión`. The phone then loads the draft from the firm API.
+*   A push the server sends is always the visible title `ALMA` and the body `Hay un borrador pendiente de revisión`. A tap opens the thread named in the payload data. It does not open a draft by title.
 *   Error reporting to hosted `sentry.io` stays off. A self-hosted collector can be used. `EXPO_PUBLIC_SENTRY_ENABLED=0` turns reporting off even then.
 *   Visible product wording is "borradores para revisión" and the store name `ALMA - Asistente Privado`. The app does not call itself a lawyer or give legal advice.
 *   iOS and Android release builds run on Bitrise through fastlane. TestFlight and the Play internal track are manual workflows. Nothing in this repository submits an App Store review or promotes a Play release.
@@ -57,7 +57,7 @@ The phone has to be usable before a firm API is online, so a labeled sample mode
 
 *   **Given**: The signed-in user is not linked to an approver.
 *   **When**: They open a draft.
-*   **Then**: Approve and Reject stay disabled. The API would reject an approve call from this user.
+*   **Then**: Approve and Reject stay disabled. `drafts/approve` and `drafts/reject` both call `requireLawyer`. The API rejects either call from this user.
 
 ### CUJ 3: A push arrives
 
@@ -101,16 +101,17 @@ Push text: packages/core sanitizePushPayload
            (always the same title and body)
 
 Errors: phone reporting stays off unless the API offers a
-        self-hosted DSN that is not sentry.io
+        self-hosted DSN. sentry.io, sentry-cdn.com, and their
+        subdomains are refused.
 ```
 
 The ALMA home is `apps/mobile/app/alma.tsx`. From there the lawyer opens drafts, chat, the read-only computer, the approval history, read-only firm details, and About. With sample mode on, the root layout replaces `/` and `/sign-in` with `/alma`.
 
 The review screen is `apps/mobile/app/draft-review.tsx`. It renders `diffDraftText` from `packages/core/src/draft-review.ts`. Insertions and deletions are separate text styles. `reviewGate` in `apps/mobile/lib/alma-review.ts` enables Approve only when the user may approve, a lawyer id is present, the draft is not already finished, no request is in flight, the remaining seconds are zero, and the confirmation checkbox is checked. Reject is available to an approver before the timer ends, and after, until the draft is finished. The checkbox label is the constant `DRAFT_CONFIRMATION`. That Spanish sentence is not translated. The API stores `confirmation: true`. It does not store the sentence. The sentence exists so the lawyer sees the same words the product requires.
 
-Firm details on the phone are read-only. The screen says they are edited on the firm web app. Switching space calls `selectSpace` when sample mode is off.
+Firm details on the phone are read-only. The screen says `Estos datos se editan en la web del bufete.` Switching space calls `selectSpace` when sample mode is off.
 
-Chat uses the existing thread stack. ALMA chat copy says the result stays a draft for review.
+Chat uses the existing thread stack. The empty chat says `Escriba o dicte. ALMA deja el resultado como borrador para revisión.` About says `ALMA prepara borradores para revisión. Un abogado del bufete los revisa y aprueba antes de que salgan.` and `ALMA no sustituye el criterio profesional de quien revisa.`
 
 ### Compliance constraints
 
