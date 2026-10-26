@@ -23,7 +23,7 @@ There is no Spanish marketing page. The Spanish one-line sentence is not a secon
 
 ## Party name
 
-The six files named in the design use `ALMA INTELIGENCIA, S.R.L.` The Delaware street lines are gone. The governing-law paragraph is unchanged. `hello@rakazo.com` stays.
+The six files named in the design use `ALMA INTELIGENCIA, S.R.L.` The Delaware street lines are gone. `hello@rakazo.com` stays. After approval, the governing-law sentence on the terms page, the privacy page, and the agent legal text names the laws of the Dominican Republic and the courts of Santo Domingo, D.N.
 
 Two extra maintainer sentences use the same party name, because they are the same fact as the About page: the comparison row in `apps/www/src/guide.ts`, and the paragraph in `apps/www/src/pages/openclaw-alternative.astro`. `apps/www/src/agent-content.ts` is the sixth file the design already named.
 

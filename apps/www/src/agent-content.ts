@@ -110,6 +110,8 @@ Services we select must provide protection equal to or greater than the safeguar
 
 Hosted users can delete their account and associated personal Space data from Account. In self-hosted deployments, the server operator controls information sent to that deployment. For privacy requests, email [hello@rakazo.com](mailto:hello@rakazo.com).
 
+This policy is governed by the laws of the Dominican Republic. Disputes will be resolved in the courts of Santo Domingo, D.N.
+
 Read the [complete privacy policy](https://rakazo.com/privacy/) for account information, other service providers, retention, deletion, security, international transfers, children, and your rights.
 `;
 
@@ -123,7 +125,7 @@ You are responsible for your account and for actions your bots take on your beha
 
 Free trials convert to a paid plan when they end unless cancelled before then. Plans may include usage limits, and we may slow or pause usage that exceeds them. Paid plans renew automatically until cancelled and are charged through Stripe. Cancel at any time from billing settings or by emailing [hello@rakazo.com](mailto:hello@rakazo.com); access continues until the end of the paid period. Payments are non-refundable and not prorated except where required by law. Charges made in error are refunded when reported within 30 days. If we close your account or stop offering the Service for reasons other than a violation of these terms, we refund prepaid fees for the unused period. Consumers in the EU and UK can withdraw from a new subscription within 14 days and are refunded less the value of the Service already provided.
 
-The Service is provided as is. Our liability is limited to the greater of what you paid us in the previous 12 months or US$100, except where the law does not allow a limit. Delaware law governs these terms.
+The Service is provided as is. Our liability is limited to the greater of what you paid us in the previous 12 months or US$100, except where the law does not allow a limit. These terms are governed by the laws of the Dominican Republic. Disputes will be resolved in the courts of Santo Domingo, D.N.
 
 Read the [complete terms](https://rakazo.com/terms/) for acceptable use, termination and data deletion, disclaimers, indemnity, app store terms, changes, and contact details.
 `;
