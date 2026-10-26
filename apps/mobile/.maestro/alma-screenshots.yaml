@@ -59,7 +59,6 @@ name: ALMA sample-mode screenshots
     visible: "Borrador de ALMA"
     timeout: 20000
 - assertVisible: "Resumen de audiencia"
-- assertVisible: "Tiempo mínimo de revisión"
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 06-draft-review-reader
 - tapOn: "Atrás"
@@ -82,8 +81,9 @@ name: ALMA sample-mode screenshots
 - scrollUntilVisible:
     element: "He revisado este borrador"
     direction: DOWN
+# The clock text changes every tick, so wait until the button drops the countdown.
 - extendedWaitUntil:
-    visible: "Tiempo mínimo de revisión 0:00"
+    visible: "^Aprobar borrador$"
     timeout: 20000
 - tapOn: "He revisado este borrador y asumo la responsabilidad profesional de su contenido"
 - takeScreenshot: 09-draft-review-ready
