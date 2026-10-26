@@ -53,6 +53,9 @@ const NOT_PASSED: Record<string, string> = {
   RAKAZO_COMPOSE_PROJECT_NAME: "read by the updater sidecar, which has its own environment",
   RAKAZO_IMAGE_TAG: "read by deployment tooling and the updater sidecar, not app processes",
   RAKAZO_IMAGE_TAG_PREVIOUS: "read by the updater sidecar, which has its own environment",
+  PATH: "the image already provides it; passing it through would drop the container default",
+  HOME: "the image already provides it; passing it through would drop the container default",
+  LANG: "the image already provides it; passing it through would drop the container default",
 };
 
 /**

@@ -5,6 +5,7 @@ import {
   codexLiveListsModel,
   compatibleThinkingLevels,
   defaultCatalogModelId,
+  managedModelActive,
   modelCredentialDto,
   parseModelSecret,
   prepareAllowedThinkingLevels as prepareModelThinkingLevels,
@@ -20,7 +21,7 @@ import {
   storedPiProviderIds,
   usableModelId,
 } from "@rakazo/contracts";
-import { clampCatalogThinkingLevel } from "@rakazo/core";
+import { ALMA_UNAVAILABLE_MESSAGE, clampCatalogThinkingLevel } from "@rakazo/core";
 import {
   deleteUnreferencedCredentialSecret,
   findNewestUserModelCredential,
@@ -275,12 +276,19 @@ async function writeModelCredential(
   return { ...credential, isDefault: becomesMain || runsMain, defaultModel };
 }
 
+function rejectManagedModelWrite(): void {
+  if (managedModelActive()) {
+    throw new ORPCError("BAD_REQUEST", { message: ALMA_UNAVAILABLE_MESSAGE });
+  }
+}
+
 export async function persistModelCredential(
   deps: RouterDeps,
   actor: Actor,
   input: ModelCredentialInput,
   codexCatalog: CodexLiveCatalog,
 ) {
+  rejectManagedModelWrite();
   const prepared = await prepareModelCredential(deps, actor, input, codexCatalog);
   throwIfAborted(input.signal);
   const cred = await withSerializableRetry(() =>
@@ -302,6 +310,7 @@ export function createModelConnector(deps: RouterDeps, codexCatalog: CodexLiveCa
     input: ModelConnectInput,
     signal: AbortSignal | undefined,
   ) => {
+    rejectManagedModelWrite();
     const credential = await modelConnectionTarget(deps, actor, input.provider, input.credentialId);
     let plaintext: string;
     try {

@@ -1597,6 +1597,10 @@ export const MeSchema = z.object({
   /** Deprecated: app accounts never have server administrator privileges. Always false. */
   isDeploymentOwner: z.boolean(),
   needsModel: z.boolean(),
+  /** The operator model is on. Clients hide model, provider, and key setup. */
+  managedModel: z.boolean().optional(),
+  /** Operator speech-to-text is on. Clients hide voice-provider setup. */
+  managedVoice: z.boolean().optional(),
   defaultProvider: z.string().nullable(),
   defaultModel: z.string().nullable(),
   /** Provider the active default runs on with the server's own credentials, without a key. */

@@ -652,15 +652,19 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
   const [agentSkills, setAgentSkills] = useState<AgentSkillCatalogEntry[]>([]);
   const [uploadConfig, setUploadConfig] = useState<{ maxUploadSizeBytes?: number }>();
   const [needsModel, setNeedsModel] = useState<boolean>();
+  const [managedModel, setManagedModel] = useState(false);
   // Re-read on focus so returning from Models settings updates unsent missing-model messages.
   useFocusEffect(
     useCallback(() => {
       let cancelled = false;
-      void rpc<{ maxUploadSizeBytes?: number } & Partial<Pick<MobileMe, "needsModel">>>("me")
+      void rpc<
+        { maxUploadSizeBytes?: number } & Partial<Pick<MobileMe, "needsModel" | "managedModel">>
+      >("me")
         .then((me) => {
           if (cancelled) return;
           setUploadConfig(me);
           setNeedsModel(me.needsModel);
+          setManagedModel(me.managedModel === true);
         })
         .catch(() => undefined);
       return () => {
@@ -2190,10 +2194,12 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
   const failedRunId = runError ? snap?.run?.id : null;
   useEffect(() => setRunErrorDetailsOpen(false), [failedRunId]);
   function openErrorConnection() {
+    if (managedModel) return;
     setRunErrorDetailsOpen(false);
     openModelSettings();
   }
   function openErrorModel() {
+    if (managedModel) return;
     setRunErrorDetailsOpen(false);
     router.push({
       pathname: "/bot-settings",

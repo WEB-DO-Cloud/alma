@@ -67,6 +67,10 @@ export default function Models() {
   const connectionRequestRef = useRef<string | null>(null);
   const returningFromPickerRef = useRef(false);
 
+  useEffect(() => {
+    if (me?.managedModel) router.replace("/account");
+  }, [me?.managedModel, router]);
+
   useEffect(
     () => () => {
       if (pickerRequestRef.current) closeModelPicker(pickerRequestRef.current);

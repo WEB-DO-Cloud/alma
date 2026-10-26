@@ -4,8 +4,8 @@ import {
   OPENAI_COMPATIBLE_PROVIDER_ID,
 } from "@rakazo/contracts";
 import { isCancelledError } from "@tanstack/react-query";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -19,6 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeActionButton } from "../../components/native-action-button";
 import { NativeSwitch } from "../../components/native-switch";
 import { Checkmark } from "../../components/row-accessories";
+import type { MobileMe } from "../../lib/api";
+import { rpc as accountRpc } from "../../lib/api";
 import { mobileTokens } from "../../lib/appearance";
 import {
   loadCallSoundsEnabled,
@@ -110,6 +112,18 @@ export default function VoiceSettings() {
   const sideInsets = useSideInsets();
   const styles = useThemedStyles(createVoiceStyles);
   const { t } = useI18n();
+  const router = useRouter();
+  useEffect(() => {
+    let active = true;
+    void accountRpc<MobileMe>("me")
+      .then((me) => {
+        if (active && me && (me.managedModel || me.managedVoice)) router.replace("/account");
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [router]);
   const [cached] = useState(() => cachedVoiceSettings(target));
   const [catalog, setCatalog] = useState<VoiceCatalogEntry[]>(cached?.catalog ?? []);
   const [credentials, setCredentials] = useState<VoiceCredential[]>(cached?.credentials ?? []);

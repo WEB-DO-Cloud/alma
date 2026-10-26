@@ -7,15 +7,17 @@ import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
-const { spaceSettings, rpcForSpace, panels } = vi.hoisted(() => {
+const { spaceSettings, rpcForSpace, panels, accountMe } = vi.hoisted(() => {
   const spaceSettings = { overrides: vi.fn(), setOverride: vi.fn() };
+  const accountMe = { managedModel: false, managedVoice: false };
   return {
     spaceSettings,
+    accountMe,
     // The other namespaces are only refreshed after a change.
     rpcForSpace: vi.fn((_spaceId: string) => ({
       spaceSettings,
       models: {},
-      me: vi.fn(),
+      me: async () => ({ ...accountMe }),
       voice: {},
       approvalRules: {},
       autoReview: {},
@@ -96,6 +98,8 @@ async function click(label: string) {
 
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  accountMe.managedModel = false;
+  accountMe.managedVoice = false;
   panels.length = 0;
   spaceSettings.overrides.mockReset();
   spaceSettings.setOverride.mockReset();
@@ -149,6 +153,19 @@ it("opens the panels a Space already customizes", async () => {
   expect(container.querySelector('[data-testid="confirmations-panel"]')).not.toBeNull();
   expect(container.querySelector('[data-testid="voice-panel"]')).toBeNull();
   expect(new Set(panels)).toEqual(new Set(["models:space", "confirmations:space"]));
+});
+
+it("hides model and voice rows when the operator manages them", async () => {
+  accountMe.managedModel = true;
+  spaceSettings.overrides.mockResolvedValue(["models", "voice", "confirmations"]);
+  await render();
+  await vi.waitFor(() =>
+    expect(container.querySelector('[data-testid="space-setting-confirmations"]')).not.toBeNull(),
+  );
+  expect(container.querySelector('[data-testid="space-setting-models"]')).toBeNull();
+  expect(container.querySelector('[data-testid="space-setting-voice"]')).toBeNull();
+  expect(container.querySelector('[data-testid="models-panel"]')).toBeNull();
+  expect(container.querySelector('[data-testid="voice-panel"]')).toBeNull();
 });
 
 it("keeps the row as it was when customizing fails", async () => {

@@ -8,11 +8,14 @@ import {
   listVoiceCatalog,
   MAX_SPEAK_CHARS,
   MAX_TRANSCRIBE_BYTES,
+  managedVoiceStatus,
   NoVoiceConfigured,
   OPENAI_COMPATIBLE_VOICE_PROVIDER_ID,
   openAiCompatibleVoiceServer,
+  resolveManagedVoice,
   serializeOpenAiCompatibleVoiceSecret,
   voiceCatalogEntry,
+  XaiVoiceProvider,
 } from "@rakazo/adapters";
 import type {
   Actor,
@@ -67,6 +70,14 @@ export async function voiceProviderFor(deps: VoiceDeps, actor: Actor, provider: 
 
 export { listVoiceCatalog };
 
+export function listedVoiceCatalog(options: { allowPrivateEndpoint?: boolean } = {}) {
+  return resolveManagedVoice().enabled ? [] : listVoiceCatalog(options);
+}
+
+export function managedVoiceEnabled() {
+  return resolveManagedVoice().enabled;
+}
+
 const SPEAK_TIMEOUT_MS = 60_000;
 export const MAX_SPEAK_REQUEST_BYTES = 16 * 1024;
 export const MAX_TRANSCRIBE_REQUEST_BYTES = 4 * Math.ceil(MAX_TRANSCRIBE_BYTES / 3) + 1024;
@@ -83,6 +94,26 @@ export function voiceContext(actor: Actor, signal?: AbortSignal): AdapterContext
 
 export function catalogEntry(provider: string) {
   return voiceCatalogEntry(provider);
+}
+
+export const MANAGED_VOICE_CLOSED = "Esta opción no está disponible.";
+
+export function assertVoiceWritable(): void {
+  if (resolveManagedVoice().enabled) {
+    throw new ORPCError("BAD_REQUEST", { message: MANAGED_VOICE_CLOSED });
+  }
+}
+
+/** Saved credential, unless the operator voice replaces it for every organization. */
+export function currentVoiceStatus(
+  cred: { provider: string; voiceId: string } | null,
+): VoiceStatus {
+  const managed = managedVoiceStatus();
+  if (!managed) return toVoiceStatus(cred);
+  if (!managed.transcribe) {
+    getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
+  }
+  return managed;
 }
 
 export function toVoiceStatus(cred: { provider: string; voiceId: string } | null): VoiceStatus {
@@ -263,6 +294,7 @@ export async function persistVoiceCredential(
     signal?: AbortSignal;
   },
 ): Promise<VoiceCredential> {
+  assertVoiceWritable();
   if (!isVoiceProviderId(input.provider)) {
     throw new ORPCError("BAD_REQUEST", { message: "Unknown voice provider." });
   }
@@ -394,6 +426,7 @@ export async function disconnectVoiceCredential(
   actor: Actor,
   input: { provider: string },
 ): Promise<{ ok: true }> {
+  assertVoiceWritable();
   const provider = input.provider.trim();
   if (!provider) {
     throw new ORPCError("BAD_REQUEST", { message: "Unknown voice provider." });
@@ -431,6 +464,7 @@ export async function updateVoiceSpeechModel(
   actor: Actor,
   input: { provider: string; speechModel: string; scope?: SettingsScope },
 ): Promise<VoiceCredential> {
+  assertVoiceWritable();
   if (input.provider !== FISH_AUDIO_PROVIDER) {
     throw new ORPCError("BAD_REQUEST", { message: "Speech model applies to Fish Audio." });
   }
@@ -517,6 +551,33 @@ export async function transcribeVoice(
   actor: Actor,
   input: { audio: Uint8Array; mimeType: string; language?: string; signal?: AbortSignal },
 ) {
+  const managed = resolveManagedVoice();
+  if (managed.enabled) {
+    if (!managed.apiKey) {
+      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
+      throw new ORPCError("BAD_REQUEST", { message: "No se pudo transcribir." });
+    }
+    if (input.audio.byteLength === 0 || input.audio.byteLength > MAX_TRANSCRIBE_BYTES) {
+      throw new ORPCError("BAD_REQUEST", { message: "That recording is empty or too large." });
+    }
+    try {
+      return await new XaiVoiceProvider().transcribe(
+        {
+          audio: input.audio,
+          mimeType: input.mimeType || "audio/webm",
+          language: input.language,
+          apiKey: managed.apiKey,
+          signal: input.signal,
+        },
+        voiceContext(actor, input.signal),
+      );
+    } catch (error) {
+      getLogger().error("alma.managed-voice.request-failed", {
+        reason: error instanceof Error ? error.name : "failed",
+      });
+      throw new ORPCError("BAD_REQUEST", { message: "No se pudo transcribir." });
+    }
+  }
   const loaded = await loadDefaultVoiceCredential(deps, actor);
   if (!loaded) throw new NoVoiceConfigured("key");
   const provider = await voiceProviderFor(deps, actor, loaded.cred.provider);

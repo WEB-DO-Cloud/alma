@@ -1045,6 +1045,8 @@ export type MobileMe = Pick<
   | "hostCredentialProvider"
   | "hostCredentialSource"
   | "needsModel"
+  | "managedModel"
+  | "managedVoice"
   | "isDeploymentOwner"
   | "needsSignupSurvey"
 > & { billingEnabled?: boolean };

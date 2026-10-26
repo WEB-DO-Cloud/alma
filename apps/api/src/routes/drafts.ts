@@ -1,3 +1,4 @@
+import { managedDraftIdentity, managedModelActive, resolveManagedModel } from "@rakazo/adapters";
 import {
   approveDraftForActor,
   copySourceForActor,
@@ -23,9 +24,16 @@ export function draftRoutes(ctx: RouterContext) {
       get: authed.drafts.get.handler(async ({ context, input }) =>
         getDraftForActor(deps.prisma, context.actor, input.draftId),
       ),
-      create: authed.drafts.create.handler(async ({ context, input }) =>
-        createDraftForActor(deps.prisma, context.actor, input),
-      ),
+      create: authed.drafts.create.handler(async ({ context, input }) => {
+        const identity = managedModelActive() ? managedDraftIdentity(resolveManagedModel()) : null;
+        return createDraftForActor(
+          deps.prisma,
+          context.actor,
+          identity
+            ? { ...input, model: identity.model, modelVersion: identity.modelVersion }
+            : input,
+        );
+      }),
       open: authed.drafts.open.handler(async ({ context, input }) =>
         openDraftForActor(deps.prisma, context.actor, input.draftId),
       ),

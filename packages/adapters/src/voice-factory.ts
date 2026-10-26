@@ -9,6 +9,7 @@ import {
 } from "./openai-compatible-voice.js";
 import { OpenAIVoiceProvider } from "./openai-voice.js";
 import { SCRIPTED_VOICE_CATALOG_ENTRY, ScriptedVoiceProvider } from "./scripted-voice.js";
+import { XaiVoiceProvider } from "./xai-voice.js";
 
 export const VOICE_CATALOG = [
   {
@@ -33,6 +34,12 @@ export const VOICE_CATALOG = [
     id: "fish-audio",
     name: "Fish Audio",
     description: "Voice models, cloning, and expressive speech with optional transcription.",
+    transcribe: true,
+  },
+  {
+    id: "xai",
+    name: "xAI",
+    description: "Grok Voice speech to text.",
     transcribe: true,
   },
   {
@@ -86,6 +93,8 @@ export function createVoiceProvider(
       return new CartesiaVoiceProvider();
     case "fish-audio":
       return new FishAudioVoiceProvider();
+    case "xai":
+      return new XaiVoiceProvider();
     case OPENAI_COMPATIBLE_VOICE_PROVIDER_ID:
       return new OpenAiCompatibleVoiceProvider({
         allowPrivateEndpoint: options.allowPrivateEndpoint,
@@ -97,7 +106,7 @@ export function createVoiceProvider(
       break;
   }
   throw new Error(
-    `Unknown voice provider "${kind}". Use elevenlabs | openai | cartesia | fish-audio | openai-compatible.`,
+    `Unknown voice provider "${kind}". Use elevenlabs | openai | cartesia | fish-audio | xai | openai-compatible.`,
   );
 }
 

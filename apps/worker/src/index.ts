@@ -56,9 +56,9 @@ import {
   resolveDeploymentModel,
   resolvePiSessionRoot,
   resolveSandboxProvider,
-  ScriptedAgentRuntime,
   SpaceMemoryProviderResolver,
   sandboxProviderOptionsFromEnv,
+  selectChatRuntime,
   shutdownPiTelemetry,
   withRunWorker,
   withSecretPersistence,
@@ -126,10 +126,10 @@ async function main() {
   const ticketBoardEnabled = process.env.TICKET_BOARD_ENABLED === "true";
   const boardEvents = createBoardEvents(realtime);
   const dataDir = process.env.DATA_DIR ?? "./data";
-  const runtime =
-    process.env.AGENT_RUNTIME === "scripted"
-      ? new ScriptedAgentRuntime()
-      : new PiAgentRuntime({ sessionRoot: resolvePiSessionRoot(dataDir) });
+  const runtime = selectChatRuntime(
+    process.env.AGENT_RUNTIME ?? "pi",
+    new PiAgentRuntime({ sessionRoot: resolvePiSessionRoot(dataDir) }),
+  );
   // Same resolver the API uses, so both processes agree on provider, model and key.
   const { key: deploymentModelKey, configured: deploymentModelConfigured } =
     resolveDeploymentModel();

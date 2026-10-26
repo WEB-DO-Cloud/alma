@@ -665,69 +665,75 @@ export default function BotSettingsScreen() {
                 scrollRef.current?.scrollTo({ y: modelY.current, animated: true });
             }}
           >
-            <SettingsGroup label={t("Model")}>
-              <MenuPicker
-                plain
-                choices={modelChoices}
-                label={t("Model")}
-                showLabel={false}
-                onChange={selectModel}
-                onPress={
-                  modelChoices.length > MODEL_SEARCH_THRESHOLD
-                    ? () =>
-                        router.push({
-                          pathname: "/bot-model",
-                          params: { botId, value: selectedModelKey },
-                        })
-                    : undefined
-                }
-                value={selectedModelKey}
-              />
-              {thinkingOptions.length ? (
-                <MenuPicker
-                  plain
-                  choices={thinkingChoices}
-                  label={t("Thinking")}
-                  onChange={setThinkingLevel}
-                  value={thinkingLevel}
-                />
-              ) : null}
-            </SettingsGroup>
-            {modelMetaError ? (
-              <Text style={{ color: tokens.mutedForeground, marginTop: 12, fontSize: 13 }}>
-                {modelMetaError}
-              </Text>
-            ) : null}
+            {me?.managedModel ? null : (
+              <>
+                <SettingsGroup label={t("Model")}>
+                  <MenuPicker
+                    plain
+                    choices={modelChoices}
+                    label={t("Model")}
+                    showLabel={false}
+                    onChange={selectModel}
+                    onPress={
+                      modelChoices.length > MODEL_SEARCH_THRESHOLD
+                        ? () =>
+                            router.push({
+                              pathname: "/bot-model",
+                              params: { botId, value: selectedModelKey },
+                            })
+                        : undefined
+                    }
+                    value={selectedModelKey}
+                  />
+                  {thinkingOptions.length ? (
+                    <MenuPicker
+                      plain
+                      choices={thinkingChoices}
+                      label={t("Thinking")}
+                      onChange={setThinkingLevel}
+                      value={thinkingLevel}
+                    />
+                  ) : null}
+                </SettingsGroup>
+                {modelMetaError ? (
+                  <Text style={{ color: tokens.mutedForeground, marginTop: 12, fontSize: 13 }}>
+                    {modelMetaError}
+                  </Text>
+                ) : null}
+              </>
+            )}
 
             <SettingsGroup label={t("Computer")}>
               <ComputerModePicker plain value={computerMode} onChange={setComputerMode} />
             </SettingsGroup>
-            <SettingsGroup label={t("Voice")}>
-              <View style={styles.row}>
-                <Text style={[styles.rowLabel, { color: tokens.foreground }]}>
-                  {t("Read replies aloud")}
-                </Text>
-                <NativeSwitch
-                  accessibilityLabel={t("Read replies aloud")}
-                  onValueChange={setAutoSpeak}
-                  value={autoSpeak}
-                />
-              </View>
-              {deviceVoiceEnabled ? (
-                voiceError ? (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={t("Device voice")}
-                    accessibilityValue={{ text: voiceError }}
-                    onPress={() => void retryDeviceVoices()}
-                  >
-                    {voiceRow}
-                  </Pressable>
-                ) : (
-                  voiceRow
-                )
-              ) : null}
-            </SettingsGroup>
+            {me?.managedModel || me?.managedVoice ? null : (
+              <SettingsGroup label={t("Voice")}>
+                <View style={styles.row}>
+                  <Text style={[styles.rowLabel, { color: tokens.foreground }]}>
+                    {t("Read replies aloud")}
+                  </Text>
+                  <NativeSwitch
+                    accessibilityLabel={t("Read replies aloud")}
+                    onValueChange={setAutoSpeak}
+                    value={autoSpeak}
+                  />
+                </View>
+                {deviceVoiceEnabled ? (
+                  voiceError ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t("Device voice")}
+                      accessibilityValue={{ text: voiceError }}
+                      onPress={() => void retryDeviceVoices()}
+                    >
+                      {voiceRow}
+                    </Pressable>
+                  ) : (
+                    voiceRow
+                  )
+                ) : null}
+              </SettingsGroup>
+            )}
             <SettingsGroup label={t("Permissions")}>
               <View style={styles.row}>
                 <Text style={[styles.rowLabel, { color: tokens.foreground }]}>

@@ -9,7 +9,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert, AppState, Linking, ScrollView } from "react-native";
 import { SettingsGroup, SettingsRow } from "../../components/settings-group";
-import { rpc } from "../../lib/api";
+import { type MobileMe, rpc } from "../../lib/api";
 import { useI18n } from "../../lib/i18n";
 import { useSideInsets } from "../../lib/side-insets";
 
@@ -21,6 +21,7 @@ export default function BillingScreen() {
   const [status, setStatus] = useState<BillingStatus | null>(null);
   const [amount, setAmount] = useState<Amount>(DEFAULT_MONTHLY_CREDIT_AMOUNT);
   const [pending, setPending] = useState(false);
+  const [managedModel, setManagedModel] = useState(false);
   const refresh = useCallback(async () => {
     const next = await rpc<BillingStatus>("billing/status");
     setStatus(next);
@@ -47,6 +48,11 @@ export default function BillingScreen() {
             if (active) Alert.alert(t("Could not load billing"));
           });
       };
+      void rpc<MobileMe>("me")
+        .then((me) => {
+          if (active) setManagedModel(me.managedModel === true);
+        })
+        .catch(() => undefined);
       load();
       const subscription = AppState.addEventListener("change", (state) => {
         if (state === "active") load();
@@ -180,7 +186,7 @@ export default function BillingScreen() {
               />
             </SettingsGroup>
           ) : null}
-          {!recurring || status.cancelAtPeriodEnd ? (
+          {!managedModel && (!recurring || status.cancelAtPeriodEnd) ? (
             <SettingsGroup
               label={t("Your subscription or API key")}
               footer={t("Free. ChatGPT, Claude, or any model provider.")}

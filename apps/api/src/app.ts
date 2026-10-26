@@ -73,10 +73,10 @@ import {
   reconcileComputerUpdates,
   removePiUserSessions,
   resolveDeploymentModel,
-  ScriptedAgentRuntime,
   SpaceMemoryProviderResolver,
   StripeBillingProvider,
   sandboxProviderOptionsFromEnv,
+  selectChatRuntime,
   stripeBillingConfigFromEnv,
   toTeamChatInbound,
   withSecretPersistence,
@@ -450,11 +450,12 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
   integrationSettings.warmDirectories();
   const runtime =
     runtimeOverride ??
-    (env.agentRuntime === "scripted"
-      ? new ScriptedAgentRuntime()
-      : new PiAgentRuntime({
-          sessionRoot: env.piSessionRecording ? piSessionsRoot(env.dataDir) : undefined,
-        }));
+    selectChatRuntime(
+      env.agentRuntime,
+      new PiAgentRuntime({
+        sessionRoot: env.piSessionRecording ? piSessionsRoot(env.dataDir) : undefined,
+      }),
+    );
   const pushTokens = new PrismaPushTokenStore(prisma, env.encryptionKey);
   const notifications =
     notificationsOverride ??

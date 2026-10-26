@@ -685,12 +685,16 @@ export default function Account() {
           {(
             [
               { title: t("Artifacts"), href: "/artifacts" },
-              { title: t("Models"), href: "/models" },
-              { title: t("Voice"), href: "/voice" },
+              ...(me?.managedModel ? [] : [{ title: t("Models"), href: "/models" as const }]),
+              ...(me?.managedModel || me?.managedVoice
+                ? []
+                : [{ title: t("Voice"), href: "/voice" as const }]),
               { title: t("Approvals"), href: "/approvals" },
               { title: t("Integrations"), href: "/integrations" },
               { title: t("Messaging"), href: "/messaging" },
-              { title: t("AI data sharing"), href: "/ai-data-sharing" },
+              ...(me?.managedModel
+                ? []
+                : [{ title: t("AI data sharing"), href: "/ai-data-sharing" as const }]),
             ] as const
           ).map(({ title, href }) => (
             <SettingsRow

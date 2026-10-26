@@ -2802,8 +2802,14 @@ const ROUTINE_RETRY_DELAY_MS = 12 * 60_000;
 const ROUTINE_RETRY_NEXT_RUN_WINDOW_MS = 30 * 60_000;
 const MISSING_MODEL_MESSAGE = "Connect a model in Settings before running bots.";
 
-function runtimeFallbackModel(runtime: AgentRuntime) {
-  return runtime.describe().capabilities.scripted ? { provider: "scripted", id: "scripted" } : null;
+function managedFromRuntime(runtime: AgentRuntime | undefined) {
+  return runtime?.describe().capabilities.managed;
+}
+
+function runtimeFallbackModel(runtime: AgentRuntime | undefined) {
+  const capabilities = runtime?.describe().capabilities;
+  if (capabilities?.scripted) return { provider: "scripted", id: "scripted" };
+  return capabilities?.managed ?? null;
 }
 
 export interface ExecutorDeps {
@@ -3150,6 +3156,8 @@ export function createRunExecutor(deps: ExecutorDeps) {
     /** The connection a role row is pinned to. */
     credentialId?: string,
   ): Promise<AgentRunRequest["model"]> => {
+    const managed = managedFromRuntime(deps.runtime);
+    if (managed) return { provider: managed.provider, id: managed.id };
     const hostedProvider = (await modelCreditBillingEnabled(deps))
       ? resolveDeploymentModel().provider
       : undefined;
@@ -3227,6 +3235,8 @@ export function createRunExecutor(deps: ExecutorDeps) {
       spaceId: string;
       botId?: string;
     }): Promise<AgentRunRequest["model"]> {
+      const managed = managedFromRuntime(deps.runtime);
+      if (managed) return { provider: managed.provider, id: managed.id };
       const override = scope.botId
         ? await deps.prisma.bot.findFirst({
             where: {
@@ -4157,7 +4167,9 @@ export function createRunExecutor(deps: ExecutorDeps) {
         }
         const runDeployment = deps.deploymentModelConfigured ? resolveDeploymentModel() : null;
         const runtimeFallback = runtimeFallbackModel(deps.runtime);
+        const managed = managedFromRuntime(deps.runtime) ?? null;
         const pinError =
+          !managed &&
           run.modelPinned &&
           !(
             (await modelCreditBillingEnabled(deps)) &&
@@ -4175,8 +4187,9 @@ export function createRunExecutor(deps: ExecutorDeps) {
           defaults: { settings, deployment: runDeployment },
         });
         const { credential, thinkingLevel } = selected;
-        const runModelProvider = selected.provider ?? runtimeFallback?.provider;
-        const runModelId = selected.id ?? runtimeFallback?.id;
+        const runModelProvider =
+          managed?.provider ?? selected.provider ?? runtimeFallback?.provider;
+        const runModelId = managed?.id ?? selected.id ?? runtimeFallback?.id;
         const failRunBeforeModel = (message: string) =>
           failRunBeforeTurn(
             deps,
@@ -4190,6 +4203,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
           return;
         }
         if (
+          !managed &&
           run.modelPinned &&
           (selected.provider !== modelChoice.modelProvider || selected.id !== modelChoice.modelId)
         ) {
@@ -4208,7 +4222,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
             deps,
             run.userId,
             run.spaceId,
-            credential,
+            managed ? null : credential,
             runModelProvider,
             runModelId,
             (values) => runSecrets.push(...values),
@@ -8649,7 +8663,11 @@ export function createRunExecutor(deps: ExecutorDeps) {
                   ),
                 );
               }
-            } else if (event.type === "usage" && !event.accounted) {
+            } else if (
+              event.type === "usage" &&
+              !event.accounted &&
+              !managedFromRuntime(deps.runtime)
+            ) {
               await recordUsage(deps.prisma, event, {
                 spaceId: run.spaceId,
                 botId: bot.id,
@@ -10531,7 +10549,8 @@ async function modelCreditBillingEnabled(deps: ExecutorDeps): Promise<boolean> {
 }
 
 async function resolveModelKey(...args: Parameters<typeof resolveModelKeyMaterial>) {
-  const [deps, userId, spaceId, , provider] = args;
+  const [deps, userId, spaceId, , provider, modelId] = args;
+  const managed = managedFromRuntime(deps.runtime);
   const billingEnabled = await modelCreditBillingEnabled(deps);
   const scope = { userId, spaceId };
   if (billingEnabled && (await hasHostedModelCredits(deps.prisma, scope, provider))) {
@@ -10548,6 +10567,7 @@ async function resolveModelKey(...args: Parameters<typeof resolveModelKeyMateria
     provider === LOCAL_PROVIDER_ID ||
     (provider === OPENAI_COMPATIBLE_PROVIDER_ID && Boolean(material.baseUrl)) ||
     (provider === "scripted" && deps.runtime?.describe().capabilities.scripted) ||
+    (managed?.provider === provider && managed.id === modelId) ||
     (!credential && deployment.provider === provider && deployment.hostCredentials);
   // Match Pi's OpenRouter fallback only when no explicit key overrides it.
   const runtimeKey =

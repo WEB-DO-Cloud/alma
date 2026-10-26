@@ -70,6 +70,10 @@ async function main() {
     process.env.WAKEUP_DRIVER = "memory";
     process.env.SANDBOX_PROVIDER = sandboxProvider;
     process.env.AGENT_RUNTIME = agentRuntime;
+    // The managed model and voice switches default on for a deployment. These
+    // suites still exercise the model and voice screens, so they stay off here.
+    process.env.ALMA_MANAGED_MODEL = "0";
+    delete process.env.ALMA_VOICE_PROVIDER;
     process.env.RAKAZO_LIVE_MODEL_CATALOG = "off";
     if (!integration) {
       process.env.TICKET_BOARD_ENABLED = "true";

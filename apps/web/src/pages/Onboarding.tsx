@@ -214,9 +214,11 @@ export function OnboardingPage() {
       .then(([me, models]) => {
         setBillingEnabled(me.billingEnabled);
         setCatalog(models);
-        const next = me.needsModel ? "model" : "bot";
+        const next = me.managedModel || !me.needsModel ? "bot" : "model";
         setAfterSurvey(next);
-        if (!linkedStep) goTo(me.needsSignupSurvey ? "survey" : next);
+        if (!linkedStep || (linkedStep === "model" && next === "bot")) {
+          goTo(me.needsSignupSurvey && linkedStep !== "model" ? "survey" : next);
+        }
       })
       .catch(() => {
         setAfterSurvey("bot");
@@ -607,7 +609,7 @@ export function OnboardingPage() {
               // step when the import brought a usable connection.
               void rpc
                 .me()
-                .then((me) => setAfterSurvey(me.needsModel ? "model" : "bot"))
+                .then((me) => setAfterSurvey(me.managedModel || !me.needsModel ? "bot" : "model"))
                 .catch(() => undefined)
                 .finally(() => {
                   setImportedBotId(bot.id);

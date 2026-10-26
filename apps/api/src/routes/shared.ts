@@ -3,6 +3,8 @@ import {
   deploymentModelRole,
   hasHostedModelCredits,
   hostCredentialSource,
+  managedModelActive,
+  resolveManagedVoice,
   resolveMemberMainModel,
 } from "@rakazo/adapters";
 import type { Actor, Me } from "@rakazo/contracts";
@@ -28,6 +30,8 @@ function hostCredentials(active: boolean, provider: string) {
 }
 
 export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
+  const managedModel = managedModelActive();
+  const managedVoice = resolveManagedVoice().enabled;
   const [user, setup, canManageOrganization] = await Promise.all([
     deps.prisma.user.findUniqueOrThrow({
       where: { id: actor.userId },
@@ -45,12 +49,17 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     name: user.name,
     spaceId: actor.spaceId,
     isDeploymentOwner: false,
-    needsModel: setup.needsModel,
-    defaultProvider: canonicalPiProviderId(setup.model?.provider ?? deps.env.defaultProvider),
-    defaultModel: setup.model?.modelId ?? deps.env.defaultModel,
+    needsModel: managedModel ? false : setup.needsModel,
+    managedModel,
+    managedVoice,
+    defaultProvider: managedModel
+      ? null
+      : canonicalPiProviderId(setup.model?.provider ?? deps.env.defaultProvider),
+    defaultModel: managedModel ? null : (setup.model?.modelId ?? deps.env.defaultModel),
     // Set only while the active default is the deployment's own, running on host credentials.
     ...hostCredentials(
-      !setup.main &&
+      !managedModel &&
+        !setup.main &&
         !setup.settings?.defaultModelProvider &&
         Boolean(deps.env.deploymentModelHostCredentials),
       deps.env.defaultProvider,

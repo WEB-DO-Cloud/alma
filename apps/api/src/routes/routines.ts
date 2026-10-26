@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { routineJobKey, routineWakeupJob, runContinueJob } from "@rakazo/adapter-kit";
 import {
+  managedModelActive,
   parseRoutineWatch,
   routineRunModelPin,
   stableStringify,
@@ -82,17 +83,26 @@ export function routinesRoutes(ctx: RouterContext) {
         const githubEnabled = input.githubEnabled ?? existing.githubEnabled;
         const messageProvider =
           input.messageProvider === undefined ? existing.messageProvider : input.messageProvider;
-        const modelProvider =
-          input.modelProvider === undefined ? existing.modelProvider : input.modelProvider;
-        const modelId = input.modelId === undefined ? existing.modelId : input.modelId;
+        const ignoreModel = managedModelActive();
+        const modelProvider = ignoreModel
+          ? existing.modelProvider
+          : input.modelProvider === undefined
+            ? existing.modelProvider
+            : input.modelProvider;
+        const modelId = ignoreModel
+          ? existing.modelId
+          : input.modelId === undefined
+            ? existing.modelId
+            : input.modelId;
         const hasModel = Boolean(modelProvider && modelId);
         const modelChanged =
           canonicalPiProviderId(modelProvider ?? "") !==
             canonicalPiProviderId(existing.modelProvider ?? "") || modelId !== existing.modelId;
         const touchesModel =
-          input.modelProvider !== undefined ||
-          input.modelId !== undefined ||
-          input.thinkingLevel !== undefined;
+          !ignoreModel &&
+          (input.modelProvider !== undefined ||
+            input.modelId !== undefined ||
+            input.thinkingLevel !== undefined);
         if (Boolean(modelProvider) !== Boolean(modelId)) {
           throw new ORPCError("BAD_REQUEST", {
             message: "Model provider and model id must both be set or both cleared",

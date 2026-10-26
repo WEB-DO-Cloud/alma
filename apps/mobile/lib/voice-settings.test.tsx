@@ -19,6 +19,7 @@ vi.mock("./side-insets", () => ({ useSideInsets: () => ({}) }));
 vi.mock("expo-router", () => ({
   useFocusEffect: (callback: () => void) => useEffect(callback, [callback]),
   useLocalSearchParams: () => state.params,
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn(), back: vi.fn() }),
 }));
 vi.mock("./api", () => ({
   rpc: state.rpc,
