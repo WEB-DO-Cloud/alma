@@ -145,7 +145,7 @@ export const JA_MESSAGES: Record<string, string> = {
   "Chat Settings": "チャット設定",
   "Configure a plugin catalog on the server to connect apps.":
     "アプリを接続するには、サーバーでプラグインカタログを設定してください。",
-  "Paste the OpenAI-compatible address from your server. Rakazo adds /v1 if needed.":
+  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "サーバーのOpenAI互換アドレスを貼り付けてください。必要に応じてALMAが/v1を追加します。",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "サーバーのOpenAI互換アドレスを貼り付けてください。必要に応じてALMAが/v1を追加します。",

@@ -789,7 +789,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
         );
         return c.redirect(new URL("/app?messaging", env.webOrigin).toString());
       } catch {
-        return c.text("Slack connection failed. Return to Rakazo and try again.", 400);
+        return c.text("Slack connection failed. Return to ALMA and try again.", 400);
       }
     });
   }

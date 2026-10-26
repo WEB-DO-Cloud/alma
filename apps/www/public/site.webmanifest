@@ -1,7 +1,7 @@
 {
-  "name": "Rakazo",
-  "short_name": "Rakazo",
-  "description": "An open source Grok Bot alternative for persistent AI teammates that do real work.",
+  "name": "ALMA",
+  "short_name": "ALMA",
+  "description": "ALMA AI prepares drafts for review.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#FDFDFD",

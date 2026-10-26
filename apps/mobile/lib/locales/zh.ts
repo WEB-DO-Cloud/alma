@@ -731,7 +731,7 @@ export const ZH_MESSAGES: Record<string, string> = {
   "Open conversation": "打开对话",
   "Open in full window": "在全窗口中打开",
   "OpenAPI JSON": "OpenAPI JSON",
-  "Paste the OpenAI-compatible address from your server. Rakazo adds /v1 if needed.":
+  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "粘贴你服务器的 OpenAI 兼容地址。如有需要，ALMA 会自动补上 /v1。",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "粘贴你服务器的 OpenAI 兼容地址。如有需要，ALMA 会自动补上 /v1。",
