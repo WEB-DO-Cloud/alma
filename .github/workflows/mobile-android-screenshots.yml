@@ -274,14 +274,53 @@ jobs:
             echo 'reactNativeArchitectures=arm64-v8a,x86_64' >> apps/mobile/android/gradle.properties
           fi
           python3 - <<'PY'
+          import re
+          import shutil
           from pathlib import Path
-          path = Path("apps/mobile/android/app/build.gradle")
-          text = path.read_text()
-          updated = text.replace("signingConfig signingConfigs.release", "signingConfig signingConfigs.debug")
-          if "signingConfig signingConfigs.debug" not in updated:
+
+          root = Path("apps/mobile/android")
+          gradle_path = root / "app/build.gradle"
+          text = gradle_path.read_text()
+          text = text.replace(
+              "signingConfig signingConfigs.release",
+              "signingConfig signingConfigs.debug",
+          )
+          text, namespace_edits = re.subn(
+              r"namespace\s+['\"]do\.alma\.app['\"]",
+              "namespace 'app.alma'",
+              text,
+          )
+          if namespace_edits != 1:
+              raise SystemExit(f"Expected one namespace edit, found {namespace_edits}")
+          if "applicationId 'do.alma.app'" not in text and 'applicationId "do.alma.app"' not in text:
+              raise SystemExit("applicationId do.alma.app was not kept")
+          if "signingConfig signingConfigs.debug" not in text:
               raise SystemExit("Generated Gradle project has no debug signing config")
-          path.write_text(updated)
-          print("Release build uses the debug keystore")
+          gradle_path.write_text(text)
+
+          # AGP rejects the Java keyword "do" as a namespace segment. The installed id stays do.alma.app.
+          src = root / "app/src"
+          for path in src.rglob("*"):
+              if path.is_file() and path.suffix in {".kt", ".java", ".xml"}:
+                  body = path.read_text()
+                  updated = body.replace("do.alma.app", "app.alma")
+                  if updated != body:
+                      path.write_text(updated)
+          for package_dir in list(src.rglob("do")):
+              sources = package_dir / "alma" / "app"
+              if not sources.is_dir():
+                  continue
+              dest = package_dir.parent / "app" / "alma"
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              if dest.exists():
+                  raise SystemExit(f"Refusing to overwrite {dest}")
+              shutil.move(str(sources), str(dest))
+              alma_dir = package_dir / "alma"
+              if alma_dir.exists() and not any(alma_dir.iterdir()):
+                  alma_dir.rmdir()
+              if package_dir.exists() and not any(package_dir.iterdir()):
+                  package_dir.rmdir()
+          print("Release build uses the debug keystore and namespace app.alma")
           PY
 
       - name: Build sample-mode APK
