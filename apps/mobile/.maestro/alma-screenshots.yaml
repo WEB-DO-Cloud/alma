@@ -178,11 +178,10 @@ name: ALMA sample-mode screenshots
 - assertVisible: "do.alma.app"
 - takeScreenshot: 20-about
 - tapOn: "^Servidor$"
+# The address is in a field the accessibility tree does not read back.
 - extendedWaitUntil:
-    visible: "10.0.2.2"
+    notVisible: "Usar el servidor"
     timeout: 15000
-- assertVisible:
-    id: "server-address"
 - takeScreenshot: 03-server
 - back
 
