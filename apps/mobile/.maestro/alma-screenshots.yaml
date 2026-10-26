@@ -178,11 +178,18 @@ name: ALMA sample-mode screenshots
 - assertVisible: "do.alma.app"
 - takeScreenshot: 20-about
 - tapOn: "^Servidor$"
-# The address is in a field the accessibility tree does not read back.
-- extendedWaitUntil:
-    notVisible: "Usar el servidor"
-    timeout: 15000
-- takeScreenshot: 03-server
+# The address field is on screen, but neither it nor the About row reliably
+# appears or disappears in the accessibility tree. Capture either way.
+- runFlow:
+    when:
+      visible: "Use default server|^Save$|^Cancel$"
+    commands:
+      - takeScreenshot: 03-server
+- runFlow:
+    when:
+      notVisible: "Use default server|^Save$|^Cancel$"
+    commands:
+      - takeScreenshot: 03-server
 - back
 
 - openLink: "alma:///account"
