@@ -54,9 +54,12 @@ name: ALMA sample-mode screenshots
 # A reader draft has no approve action. Capture it before the timed draft starts its clock.
 # A row tap reaches the review screen without the draft id, so open the sample id directly.
 - openLink: "alma:///draft-review?draftId=draft-lectura"
+# The diff body is nested text, which the accessibility tree does not expose.
 - extendedWaitUntil:
-    visible: "Resumen preparado por ALMA"
+    visible: "Borrador de ALMA"
     timeout: 20000
+- assertVisible: "Resumen de audiencia"
+- assertVisible: "Tiempo mínimo de revisión"
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 06-draft-review-reader
 - tapOn: "Atrás"
