@@ -130,5 +130,10 @@ describe("bitrise", () => {
     expect(source).toContain("ubuntu-resolute-26.04-bitrise-2026-android");
     expect(source).toContain("bundle exec fastlane ios beta");
     expect(source).toContain("bundle exec fastlane android internal");
+    const tests = JSON.stringify(config.workflows["mobile-tests"]);
+    const installAt = tests.indexOf("pnpm install --frozen-lockfile");
+    const generateAt = tests.indexOf("pnpm db:generate");
+    expect(installAt).toBeGreaterThanOrEqual(0);
+    expect(generateAt).toBeGreaterThan(installAt);
   });
 });

@@ -108,6 +108,8 @@ Android App Bundle to the internal track and no other track.
 `ubuntu-resolute-26.04-bitrise-2026-android` for Android and unit tests.
 Confirm those stacks are enabled on the workspace. Native workflows install
 pnpm, then `bundle install` in `apps/mobile`, then a fastlane lane.
+`mobile-tests` runs `pnpm db:generate` after install so the privacy checks can
+load the database client. Generate does not open a database connection.
 
 Order for a signed build: bump, Expo prebuild, then gym or Gradle. iOS reads
 the workspace Expo generates (scheme `ALMA`, override with `ALMA_IOS_SCHEME`

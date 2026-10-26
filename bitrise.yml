@@ -25,6 +25,8 @@ workflows:
                 corepack enable
                 corepack prepare pnpm@9.15.0 --activate
                 pnpm install --frozen-lockfile
+                # The privacy checks import the database package. Generate does not connect.
+                DATABASE_URL="${DATABASE_URL:-postgres://rakazo:rakazo@127.0.0.1:5433/rakazo}" pnpm db:generate
                 pnpm --filter @rakazo/mobile test
                 pnpm exec vitest run \
                   packages/core/src/push-notice.test.ts \
