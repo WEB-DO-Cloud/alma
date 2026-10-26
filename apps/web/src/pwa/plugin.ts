@@ -17,9 +17,9 @@ export function webManifest() {
   }));
   return {
     id: "/",
-    name: "Rakazo",
-    short_name: "Rakazo",
-    description: "Your team of always-on agents.",
+    name: "ALMA",
+    short_name: "ALMA",
+    description: "ALMA AI prepares drafts for review.",
     start_url: "/",
     scope: "/",
     display: "standalone",

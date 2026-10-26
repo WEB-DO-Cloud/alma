@@ -23,10 +23,10 @@
   const PHASE_LABELS = {
     "checking-docker": "Getting ready…",
     preparing: "Getting ready…",
-    pulling: "Downloading Rakazo…",
-    starting: "Starting Rakazo…",
+    pulling: "Downloading ALMA…",
+    starting: "Starting ALMA…",
     "waiting-healthy": "Almost ready…",
-    ready: "Rakazo is ready.",
+    ready: "ALMA AI is ready.",
   };
   const TERMINAL_PHASES = new Set([
     "idle",
@@ -267,7 +267,7 @@
       const result = await bridge.test(value);
       if (result.ok) {
         serverUrl.value = result.url;
-        setStatus(`Rakazo answered at ${result.url}.`, "ok");
+        setStatus(`ALMA answered at ${result.url}.`, "ok");
       } else {
         setStatus(result.error ?? "Could not reach that address.", "error");
       }
@@ -371,7 +371,7 @@
         continueButton.focus();
       }
     } catch {
-      setStatus("Setup could not start. Quit Rakazo and try again.", "error");
+      setStatus("Setup could not start. Quit ALMA and try again.", "error");
       setBusy(true);
     }
   }

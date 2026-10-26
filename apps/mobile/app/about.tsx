@@ -16,7 +16,6 @@ export default function AboutScreen() {
       <Text style={styles.body}>{almaText("private", locale)}</Text>
       <Text style={styles.body}>{almaText("noAdvice", locale)}</Text>
       <Text style={styles.body}>{almaText("attribution", locale)}</Text>
-      <Text style={styles.note}>{almaText("pendingArt", locale)}</Text>
       <Text style={styles.note}>do.alma.app</Text>
       <AlmaRow title={almaText("server", locale)} onPress={() => router.push("/server")} />
       <Pressable

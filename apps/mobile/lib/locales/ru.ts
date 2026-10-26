@@ -761,8 +761,6 @@ export const RU_MESSAGES: Record<string, string> = {
   "Open conversation": "Открыть диалог",
   "Open in full window": "Открыть в полном окне",
   "OpenAPI JSON": "OpenAPI JSON",
-  "Paste the OpenAI-compatible address from your server. Rakazo adds /v1 if needed.":
-    "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
   Paused: "Приостановлено",
