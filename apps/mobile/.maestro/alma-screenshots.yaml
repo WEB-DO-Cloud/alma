@@ -6,41 +6,43 @@ name: ALMA sample-mode screenshots
     permissions:
       notifications: deny
 
-# A cold API 34 emulator can cover the app with "isn't responding" or the
-# notification prompt. clearState shows that prompt even when notifications are denied.
+# A cold emulator can cover ALMA with a launcher ANR or the notification prompt.
+# Relaunching while that dialog is up makes the launcher ANR again, so close it
+# and only launch once more if the sample home is still hidden.
 - repeat:
-    times: 4
+    times: 3
     commands:
       - runFlow:
           when:
-            visible: "responding|Close app"
+            visible: "Close app"
           commands:
             - tapOn:
-                id: "android:id/aerr_wait"
-            - launchApp
+                id: "android:id/aerr_close"
       - runFlow:
           when:
             visible: "Don't allow"
           commands:
             - tapOn: "Don't allow"
       - extendedWaitUntil:
-          visible: "Borradores para revisión|Drafts for review|responding|Don't allow|Close app"
+          visible: "Borradores para revisión|Drafts for review|Close app|Don't allow"
           timeout: 20000
-- runFlow:
-    when:
-      visible: "responding|Close app"
-    commands:
-      - tapOn:
-          id: "android:id/aerr_wait"
-      - launchApp
 - runFlow:
     when:
       notVisible: "Borradores para revisión|Drafts for review"
     commands:
-      - openLink: "alma:///alma"
+      - launchApp
+      - extendedWaitUntil:
+          visible: "Borradores para revisión|Drafts for review|Close app"
+          timeout: 30000
+      - runFlow:
+          when:
+            visible: "Close app"
+          commands:
+            - tapOn:
+                id: "android:id/aerr_close"
 - extendedWaitUntil:
     visible: "Borradores para revisión|Drafts for review"
-    timeout: 60000
+    timeout: 45000
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 04-alma-home
 
