@@ -1,5 +1,6 @@
 import { getLogger, monitoringUserId } from "@rakazo/logging";
 import type { MonitoringConfig } from "@rakazo/logging/monitoring";
+import { isVendorSentryHost } from "@rakazo/logging/monitoring";
 import { Hono } from "hono";
 import type { AppEnv } from "./env.js";
 import { sanitizeNativeEnvelope } from "./native-monitoring.js";
@@ -30,6 +31,7 @@ export function parseDsn(dsn: string): DsnTarget | undefined {
     return undefined;
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") return undefined;
+  if (isVendorSentryHost(url.hostname)) return undefined;
   const segments = url.pathname.split("/").filter(Boolean);
   const projectId = segments.pop();
   if (!url.username || !projectId || !/^[\w-]+$/.test(projectId)) return undefined;

@@ -1,10 +1,11 @@
-export const UI_LOCALES = ["en", "zh-CN", "ru", "de", "nl", "ja"] as const;
+export const UI_LOCALES = ["es", "en", "zh-CN", "ru", "de", "nl", "ja"] as const;
 
 export type UiLocale = (typeof UI_LOCALES)[number];
 
 export const UI_LOCALE_STORAGE_KEY = "rakazo.uiLocale";
 
 export const UI_LOCALE_LABELS: Record<UiLocale, string> = {
+  es: "Español",
   en: "English",
   "zh-CN": "简体中文",
   ru: "Русский",
@@ -21,6 +22,7 @@ export function htmlLangForLocale(locale: string): string {
 /** Return whether a value is one of the supported mobile UI locales. */
 export function isUiLocale(value: string | null | undefined): value is UiLocale {
   return (
+    value === "es" ||
     value === "en" ||
     value === "zh-CN" ||
     value === "ru" ||

@@ -124,7 +124,9 @@ describe("expo push", () => {
       data: { kind: string; deliveryId: string };
     };
     expect(body.to).toBe("ExponentPushToken[test]");
-    expect(body.title).toBe("Need you");
+    expect(body.title).toBe("ALMA");
+    expect(JSON.stringify(body)).not.toContain("Need you");
+    expect(JSON.stringify(body)).not.toContain("on screen");
     expect(body.collapseId).toBe("th-1");
     expect(body.tag).toBe("th-1");
     expect(body.data).toEqual({
@@ -486,9 +488,10 @@ describe("expo push", () => {
       notifyContext,
     );
     const [sent] = expo.sent;
-    expect(Array.from(sent?.title ?? "")).toHaveLength(100);
-    expect(Array.from(sent?.body ?? "")).toHaveLength(180);
-    expect(sent?.body.endsWith("…")).toBe(true);
+    expect(sent?.title).toBe("ALMA");
+    expect(sent?.body).toBe("Hay un borrador pendiente de revisión");
+    expect(sent?.title).not.toContain("🤖");
+    expect(sent?.body).not.toContain("é");
     expect(Buffer.byteLength(JSON.stringify(sent))).toBeLessThan(4096);
   });
 });

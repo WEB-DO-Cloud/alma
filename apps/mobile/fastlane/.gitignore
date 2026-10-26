@@ -1,0 +1,12 @@
+report.xml
+Preview.html
+test_output/
+screenshots/
+*.mobileprovision
+*.cer
+*.p12
+*.p8
+*.jks
+*.keystore
+.env
+AuthKey_*.p8

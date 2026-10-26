@@ -1,4 +1,4 @@
-appId: com.rakazo.app
+appId: do.alma.app
 name: Android live working status demonstration
 ---
 - launchApp:

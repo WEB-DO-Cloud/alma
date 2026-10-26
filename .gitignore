@@ -46,3 +46,18 @@ apps/web/src/locales/**/*.mjs
 apps/web/src/locales/**/*.js
 apps/web/scripts/msgids.json
 playwright-report-www
+
+# Signing material and fastlane output. Secrets stay in the CI secret store.
+*.mobileprovision
+*.p12
+*.p8
+*.jks
+*.keystore
+AuthKey_*.p8
+google-services.json
+play-service-account.json
+apps/mobile/fastlane/report.xml
+apps/mobile/fastlane/Preview.html
+apps/mobile/fastlane/test_output
+apps/mobile/fastlane/screenshots
+apps/mobile/fastlane/.env

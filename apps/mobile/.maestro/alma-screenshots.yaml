@@ -1,0 +1,15 @@
+appId: do.alma.app
+name: ALMA mock screenshots
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Borradores para revisión"
+    timeout: 30000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: alma-home
+- tapOn: "Borradores para revisión"
+- extendedWaitUntil:
+    visible: "Instancia de entrega"
+    timeout: 20000
+- takeScreenshot: alma-drafts

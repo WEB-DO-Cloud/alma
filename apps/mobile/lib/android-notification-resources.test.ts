@@ -26,6 +26,7 @@ const keys = [
 ];
 
 const resourceDirectories = {
+  es: "values-es",
   en: "values",
   "zh-CN": "values-zh-rCN",
   ru: "values-ru",

@@ -30,6 +30,8 @@ describe("monitoring routes", () => {
     );
     expect(parseDsn("https://errors.example.com/8")).toBeUndefined();
     expect(parseDsn("ftp://key@host.example.com/1")).toBeUndefined();
+    expect(parseDsn("https://key@o123.ingest.sentry.io/8")).toBeUndefined();
+    expect(parseDsn("https://key@sentry.io/8")).toBeUndefined();
   });
 
   it("reads browser config from the environment", () => {

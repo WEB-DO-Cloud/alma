@@ -1,0 +1,35 @@
+# Certificates live in a private git repo. The password that encrypts them is
+# MATCH_PASSWORD, which match reads from the environment. Never write it here.
+
+default_git_url = "https://github.com/WEB-DO-Cloud/alma-certificates"
+repository = ENV.fetch("MATCH_GIT_URL", default_git_url)
+
+git_url(repository)
+storage_mode("git")
+type("appstore")
+app_identifier(["do.alma.app"])
+
+apple_id = ENV["APPLE_ID"]
+username(apple_id) if apple_id && !apple_id.empty?
+
+team = ENV["APPLE_TEAM_ID"]
+team_id(team) if team && !team.empty?
+
+# MATCH_GIT_BASIC_AUTHORIZATION is either:
+# - HTTPS: base64 of "username:token" (git_basic_authorization), or
+# - SSH: the deploy key PEM, used when MATCH_GIT_URL is an ssh URL.
+material = ENV["MATCH_GIT_BASIC_AUTHORIZATION"].to_s
+ssh = repository.start_with?("git@") || repository.start_with?("ssh://")
+if ssh && material.include?("PRIVATE KEY")
+  require "fileutils"
+  require "shellwords"
+  dir = File.join(Dir.tmpdir, "alma-match-ssh")
+  FileUtils.mkdir_p(dir)
+  key_path = File.join(dir, "id_match")
+  body = material.end_with?("\n") ? material : "#{material}\n"
+  File.write(key_path, body)
+  File.chmod(0o600, key_path)
+  ENV["GIT_SSH_COMMAND"] = "ssh -i #{Shellwords.escape(key_path)} -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+elsif !ssh && !material.empty? && !material.include?("PRIVATE KEY")
+  git_basic_authorization(material)
+end
