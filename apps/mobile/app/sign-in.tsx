@@ -246,9 +246,9 @@ export default function SignIn() {
                 {resetSent || codeStep
                   ? t("Check your email")
                   : mode === "in"
-                    ? t("Sign in to Rakazo")
+                    ? t("Sign in to ALMA")
                     : mode === "up"
-                      ? t("Sign up for Rakazo")
+                      ? t("Create your ALMA account")
                       : t("Reset your password")}
               </Text>
               {resetSent ? (

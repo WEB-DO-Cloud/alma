@@ -4,7 +4,7 @@ appId: do.alma.app
 - launchApp:
     stopApp: true
 - extendedWaitUntil:
-    visible: "Account|Sign up for Rakazo|Sign in to Rakazo"
+    visible: "Account|Create your ALMA account|Sign in to ALMA"
     timeout: 40000
 - runFlow:
     when:
@@ -17,5 +17,5 @@ appId: do.alma.app
           timeout: 15000
       - tapOn: "Sign out"
 - extendedWaitUntil:
-    visible: "Sign up for Rakazo|Sign in to Rakazo"
+    visible: "Create your ALMA account|Sign in to ALMA"
     timeout: 20000

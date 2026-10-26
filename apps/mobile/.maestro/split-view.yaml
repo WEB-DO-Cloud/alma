@@ -1,5 +1,5 @@
 appId: do.alma.app
-name: Rakazo split view on a wide window
+name: ALMA split view on a wide window
 tags:
   - screenshots
 ---
@@ -9,7 +9,7 @@ tags:
     permissions:
       notifications: deny
 - extendedWaitUntil:
-    visible: "Sign up for Rakazo|Pixel Launcher isn't responding"
+    visible: "Create your ALMA account|Pixel Launcher isn't responding"
     timeout: 30000
 - runFlow:
     when:
@@ -17,7 +17,7 @@ tags:
     commands:
       - tapOn: "Close app"
 - extendedWaitUntil:
-    visible: "Sign up for Rakazo"
+    visible: "Create your ALMA account"
     timeout: 30000
 - tapOn: "Sign in"
 - runFlow: helpers/server.yaml

@@ -1,7 +1,7 @@
 /** Spanish UI. Missing keys fall back to the English source string. */
 export const ES_MESSAGES: Record<string, string> = {
-  "Sign in to Rakazo": "Iniciar sesión en ALMA",
-  "Sign up for Rakazo": "Crear cuenta en ALMA",
+  "Sign in to ALMA": "Iniciar sesión en ALMA",
+  "Create your ALMA account": "Crea tu cuenta de ALMA",
   "Sign in": "Iniciar sesión",
   "Sign up": "Crear cuenta",
   "Sign in with passkey": "Iniciar sesión con llave de acceso",
