@@ -355,6 +355,19 @@ jobs:
           if 'moduleName === "node:module"' not in text:
               metro.write_text(text.replace(needle, insert, 1))
           print("preview bundle can resolve node:module")
+          mock = root / "lib" / "alma-mock.ts"
+          source = mock.read_text()
+          flag = "  return mockModeFromEnv();\n"
+          # Metro inlines EXPO_PUBLIC_* only on a direct process.env.EXPO_PUBLIC_* read.
+          # isMockMode() reads the flag off the process.env object, which is empty in the
+          # release bundle, so the sample home never appears. This checkout forces it on.
+          # setMockMode still overrides it, which is how the flow reaches sign-in.
+          forced = "  return true;\n"
+          found = source.count(flag)
+          if found != 1:
+              raise SystemExit(f"expected one mock-mode return, found {found}")
+          mock.write_text(source.replace(flag, forced, 1))
+          print("sample mode is on in the preview bundle")
           PY
 
       - name: Build sample-mode APK
