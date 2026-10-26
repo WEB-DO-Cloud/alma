@@ -323,6 +323,40 @@ jobs:
           print("Release build uses the debug keystore and namespace app.alma")
           PY
 
+      - name: Let Metro resolve the upload helper
+        if: steps.screenshot-apk.outputs.cache-hit != 'true'
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("apps/mobile")
+          shim = root / ".preview-node-module.js"
+          shim.write_text(
+              "function createRequire() {\n"
+              "  return function previewRequire(id) {\n"
+              "    if (String(id).includes('sentry-upload')) {\n"
+              "      return { sentryUploadAllowed: function () { return false; } };\n"
+              "    }\n"
+              "    throw new Error('Unsupported Node built-in in the preview bundle: ' + id);\n"
+              "  };\n"
+              "}\n"
+              "module.exports = { createRequire };\n"
+          )
+          metro = root / "metro.config.js"
+          text = metro.read_text()
+          needle = "config.resolver.resolveRequest = (context, moduleName, platform) => {"
+          insert = (
+              needle
+              + "\n  if (moduleName === \"node:module\") {\n"
+              + "    return { type: \"sourceFile\", filePath: require(\"path\").join(projectRoot, \".preview-node-module.js\") };\n"
+              + "  }\n"
+          )
+          if needle not in text:
+              raise SystemExit("metro resolver hook not found")
+          if 'moduleName === "node:module"' not in text:
+              metro.write_text(text.replace(needle, insert, 1))
+          print("preview bundle can resolve node:module")
+          PY
+
       - name: Build sample-mode APK
         if: steps.screenshot-apk.outputs.cache-hit != 'true'
         working-directory: apps/mobile/android
