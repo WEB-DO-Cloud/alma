@@ -124,7 +124,7 @@ Chat uses the existing thread stack. The empty chat says `Escriba o dicte. ALMA 
 | Push text | `sanitizePushPayload` replaces any title and body before send. |
 | No hosted Sentry | `isVendorSentryHost` matches `sentry.io`, `sentry-cdn.com`, and any subdomain of either. `mobileReportingEnabled` ignores those DSNs. `sentryUploadAllowed` in `apps/mobile/lib/sentry-upload.cjs` refuses source-map upload to those hosts. Upload also needs `SENTRY_AUTH_TOKEN` and a `SENTRY_URL` that fails that same host test. `EXPO_PUBLIC_SENTRY_ENABLED` set to `0`, `false`, `off`, or `no` turns reporting off. Any other value, including unset, does not by itself turn reporting on. |
 | Firm API, not a phone geofence | Production firm data is stored by the firm API, which is operated in the Dominican Republic. The phone sends draft text to the configured API URL, or keeps sample data on the device. It does not check the API's region, and it does not anonymize identifiers on the device. Hosted Sentry is refused. Visible push text does not name a client or a matter. The store sentence in Planned additions is not built. |
-| Wording | Store listing name `ALMA - Asistente Privado`. Subtitle and description use "borradores para revisión". The UI does not say the product is a lawyer or that it gives legal advice. About states that ALMA prepares drafts and does not replace the reviewer's judgment, and it keeps the Apache-2.0 notice for the Rakazo code it includes. |
+| Wording | Store listing name `ALMA - Asistente Privado`. Subtitle and description use "borradores para revisión". About uses the two sentences quoted in the architecture section, plus the Apache-2.0 Rakazo notice. |
 
 ### Release pipeline
 
