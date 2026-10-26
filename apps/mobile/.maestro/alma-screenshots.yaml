@@ -6,10 +6,10 @@ name: ALMA sample-mode screenshots
     permissions:
       notifications: deny
 
-# A cold API 34 emulator can cover the app with "isn't responding" (launcher or ALMA).
-# Waiting leaves the app in front. Closing the launcher returns to the home screen.
+# A cold API 34 emulator can cover the app with "isn't responding" or the
+# notification prompt. clearState shows that prompt even when notifications are denied.
 - repeat:
-    times: 3
+    times: 4
     commands:
       - runFlow:
           when:
@@ -17,9 +17,14 @@ name: ALMA sample-mode screenshots
           commands:
             - tapOn:
                 id: "android:id/aerr_wait"
+      - runFlow:
+          when:
+            visible: "Don't allow"
+          commands:
+            - tapOn: "Don't allow"
       - extendedWaitUntil:
-          visible: "Borradores para revisión|Drafts for review|isn't responding"
-          timeout: 30000
+          visible: "Borradores para revisión|Drafts for review|isn't responding|Don't allow"
+          timeout: 45000
 - runFlow:
     when:
       visible: "isn't responding"
