@@ -352,13 +352,12 @@ name: ALMA sample-mode screenshots
 - extendedWaitUntil:
     visible: "^Correo$|^Email$|No se pudieron cargar las opciones de acceso|Could not load sign-in options"
     timeout: 20000
-- hideKeyboard
 - takeScreenshot: 01-sign-in
+# hideKeyboard sends Back on Android and pops this screen.
 - tapOn:
     text: "^Crear cuenta$|^Sign up$"
     index: 0
 - extendedWaitUntil:
     visible: "Crea tu cuenta de ALMA|Create your ALMA account"
     timeout: 15000
-- hideKeyboard
 - takeScreenshot: 02-sign-up
