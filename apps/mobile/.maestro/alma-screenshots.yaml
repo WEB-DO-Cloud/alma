@@ -272,17 +272,15 @@ name: ALMA sample-mode screenshots
     visible: "Could not load billing.*|Not available in the preview|Update your server.*"
     timeout: 20000
 - takeScreenshot: 32-settings-billing
-- runFlow:
-    when:
-      visible: "Could not load billing.*"
-    commands:
-      - tapOn:
-          id: "android:id/button1"
-      - extendedWaitUntil:
-          notVisible: "Could not load billing.*"
-          timeout: 8000
-
+# Closing the alert can focus the screen again and raise it once more. Leave the
+# screen, then close whichever alert is still up.
+- tapOn:
+    text: "^OK$"
+    optional: true
 - openLink: "alma:///archived-bots"
+- tapOn:
+    text: "^OK$"
+    optional: true
 - extendedWaitUntil:
     visible: "^Archived$|Not available in the preview|Update your server.*"
     timeout: 15000
