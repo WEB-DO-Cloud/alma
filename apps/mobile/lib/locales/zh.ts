@@ -733,8 +733,6 @@ export const ZH_MESSAGES: Record<string, string> = {
   "OpenAPI JSON": "OpenAPI JSON",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "粘贴你服务器的 OpenAI 兼容地址。如有需要，ALMA 会自动补上 /v1。",
-  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
-    "粘贴你服务器的 OpenAI 兼容地址。如有需要，ALMA 会自动补上 /v1。",
   Paused: "已暂停",
   Prompt: "提示词",
   "Recording a live demonstration needs desktop or web with the full computer view. You can still ask this bot to run saved skills from chat.":

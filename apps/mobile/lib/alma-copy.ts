@@ -138,6 +138,6 @@ export function almaText(key: AlmaCopyKey, locale: string): string {
   return copy.en[key];
 }
 
-export function almaCatalog(locale: string): typeof copy.en {
+export function almaCatalog(locale: string): { readonly [K in AlmaCopyKey]: string } {
   return locale === "es" || locale.toLowerCase().startsWith("es") ? copy.es : copy.en;
 }

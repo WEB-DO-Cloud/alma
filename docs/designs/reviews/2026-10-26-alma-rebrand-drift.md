@@ -46,3 +46,5 @@ Unchecked rows from the What stays table are unchanged: `@rakazo/*`, database an
 `rg` still matches other lowercase and code tokens (Docker image names, headers, storage keys, the sandbox user, test fixtures, the repo directory in `cd rakazo`). Those are the catch-all row. A capitalized `Rakazo` outside the credits sentences, `Rakazo.icon`, `LICENSE`, `CHANGELOG.md`, and `docs/designs/**` does not remain.
 
 The Linux AppImage example in the README follows `productName`, so it is `ALMA-*.AppImage`. The published GitHub path stays `elie222/rakazo`.
+
+A case-variant host in the passkey test (`App.Rakazo.com`) and the Windows sandbox path fixture (`C:\Users\Owner\Rakazo`) stay. They are the same internal names as `app.rakazo.com` and the sandbox directory, not the product label.

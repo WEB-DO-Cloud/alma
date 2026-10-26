@@ -763,8 +763,6 @@ export const RU_MESSAGES: Record<string, string> = {
   "OpenAPI JSON": "OpenAPI JSON",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
-  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
-    "Вставьте OpenAI-совместимый адрес со своего сервера. При необходимости ALMA добавляет /v1.",
   Paused: "Приостановлено",
   Prompt: "Промпт",
   "Recording a live demonstration needs desktop or web with the full computer view. You can still ask this bot to run saved skills from chat.":

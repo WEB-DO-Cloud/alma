@@ -7,7 +7,9 @@ const path = (name: string) => fileURLToPath(new URL(name, root));
 const NAVY = "#002D62";
 
 const iconSvg = await readFile(path("brand/alma-icon.svg"));
-const sparkSvg = Buffer.from(iconSvg.toString("utf8").replace(/\s*<rect id="plate"[^>]*\/>\s*/, "\n"));
+const sparkSvg = Buffer.from(
+  iconSvg.toString("utf8").replace(/\s*<rect id="plate"[^>]*\/>\s*/, "\n"),
+);
 const wordSvg = await readFile(path("brand/alma-logo-white.svg"));
 const faviconSvg = await readFile(path("apps/web/public/favicon.svg"));
 
@@ -16,7 +18,9 @@ async function pngFile(input: Buffer, name: string, width: number, height = widt
 }
 
 async function ico(input: Buffer, name: string, sizes: number[]) {
-  const frames = await Promise.all(sizes.map((size) => sharp(input).resize(size, size).png().toBuffer()));
+  const frames = await Promise.all(
+    sizes.map((size) => sharp(input).resize(size, size).png().toBuffer()),
+  );
   const header = Buffer.alloc(6 + frames.length * 16);
   header.writeUInt16LE(1, 2);
   header.writeUInt16LE(frames.length, 4);
@@ -65,12 +69,26 @@ await pngFile(spark, "packages/ui-tokens/assets/Rakazo.icon/Assets/orange-bot.pn
 const wordWidth = 720;
 const wordHeight = Math.round((wordWidth * 67) / 259);
 const word = await sharp(wordSvg).resize(wordWidth, wordHeight).png().toBuffer();
-await sharp({ create: { width: 1024, height: 1024, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-  .composite([{ input: word, left: Math.round((1024 - wordWidth) / 2), top: Math.round((1024 - wordHeight) / 2) }])
+await sharp({
+  create: { width: 1024, height: 1024, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+})
+  .composite([
+    {
+      input: word,
+      left: Math.round((1024 - wordWidth) / 2),
+      top: Math.round((1024 - wordHeight) / 2),
+    },
+  ])
   .png()
   .toFile(path("apps/mobile/assets/splash-icon.png"));
 await sharp({ create: { width: 1200, height: 630, channels: 3, background: NAVY } })
-  .composite([{ input: word, left: Math.round((1200 - wordWidth) / 2), top: Math.round((630 - wordHeight) / 2) }])
+  .composite([
+    {
+      input: word,
+      left: Math.round((1200 - wordWidth) / 2),
+      top: Math.round((630 - wordHeight) / 2),
+    },
+  ])
   .png()
   .toFile(path("apps/www/public/og-image.png"));
 

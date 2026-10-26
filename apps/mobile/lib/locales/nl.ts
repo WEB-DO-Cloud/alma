@@ -156,8 +156,6 @@ export const NL_MESSAGES: Record<string, string> = {
     "Configureer een plugincatalogus op de server om apps te koppelen.",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "Plak het OpenAI-compatibele adres van je server. ALMA voegt zo nodig /v1 toe.",
-  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
-    "Plak het OpenAI-compatibele adres van je server. ALMA voegt zo nodig /v1 toe.",
   "Settings: General": "Instellingen: algemeen",
   "Settings: Usage": "Instellingen: gebruik",
   "Sign-in did not return a session": "De aanmelding gaf geen sessie terug",

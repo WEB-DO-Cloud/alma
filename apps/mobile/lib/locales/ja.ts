@@ -147,8 +147,6 @@ export const JA_MESSAGES: Record<string, string> = {
     "アプリを接続するには、サーバーでプラグインカタログを設定してください。",
   "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
     "サーバーのOpenAI互換アドレスを貼り付けてください。必要に応じてALMAが/v1を追加します。",
-  "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed.":
-    "サーバーのOpenAI互換アドレスを貼り付けてください。必要に応じてALMAが/v1を追加します。",
   "Settings: General": "設定: 一般",
   "Settings: Usage": "設定: 使用量",
   "Sign-in did not return a session": "ログインでセッションが返されませんでした",
