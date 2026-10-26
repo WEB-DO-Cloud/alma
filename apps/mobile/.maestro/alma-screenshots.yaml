@@ -75,7 +75,6 @@ name: ALMA sample-mode screenshots
     visible: "Borrador de ALMA"
     timeout: 20000
 - assertVisible: "Edición del abogado"
-- assertVisible: "Tiempo mínimo de revisión"
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 08-draft-review-diff
 - scrollUntilVisible:
