@@ -52,7 +52,8 @@ name: ALMA sample-mode screenshots
 - takeScreenshot: 05-drafts
 
 # A reader draft has no approve action. Capture it before the timed draft starts its clock.
-- tapOn: "Resumen de audiencia"
+# A row tap reaches the review screen without the draft id, so open the sample id directly.
+- openLink: "alma:///draft-review?draftId=draft-lectura"
 - extendedWaitUntil:
     visible: "Resumen preparado por ALMA"
     timeout: 20000
@@ -67,11 +68,7 @@ name: ALMA sample-mode screenshots
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 07-draft-approvals-empty
 
-- openLink: "alma:///drafts"
-- extendedWaitUntil:
-    visible: "Instancia de entrega"
-    timeout: 20000
-- tapOn: "Instancia de entrega"
+- openLink: "alma:///draft-review?draftId=draft-ejemplo"
 - extendedWaitUntil:
     visible: "Borrador de ALMA"
     timeout: 20000
