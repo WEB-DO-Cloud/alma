@@ -98,11 +98,11 @@ name: ALMA sample-mode screenshots
 - takeScreenshot: 11-draft-approvals
 
 - openLink: "alma:///alma-chat"
+# The sample reply is markdown, which the accessibility tree does not expose.
 - extendedWaitUntil:
-    visible: "Puedo dejar un borrador listo para su revisión."
+    visible: "^Enviar$"
     timeout: 20000
-- assertVisible: "Voz"
-- assertVisible: "Enviar"
+- assertVisible: "^Voz$"
 - assertVisible: "Datos de ejemplo"
 - takeScreenshot: 12-alma-chat
 - tapOn: "Escriba a ALMA"
@@ -110,15 +110,15 @@ name: ALMA sample-mode screenshots
 - hideKeyboard
 - assertVisible: "Revise la instancia"
 - takeScreenshot: 13-alma-chat-typed
-- tapOn: "Enviar"
+- tapOn: "^Enviar$"
 - extendedWaitUntil:
-    visible: "Dejé el resultado en Borradores para revisión."
-    timeout: 20000
-- takeScreenshot: 14-alma-chat-sent
-- tapOn: "Voz"
-- extendedWaitUntil:
-    visible: "While using the app|Only this time|^Allow$|Escuchando…|Escriba a ALMA"
+    visible: "Revise la instancia"
     timeout: 10000
+- takeScreenshot: 14-alma-chat-sent
+- tapOn: "^Voz$"
+- extendedWaitUntil:
+    visible: "While using the app|Only this time|^Allow$|^Voz$"
+    timeout: 8000
 - runFlow:
     when:
       visible: "While using the app"
@@ -134,15 +134,7 @@ name: ALMA sample-mode screenshots
       visible: "^Allow$"
     commands:
       - tapOn: "Allow"
-- extendedWaitUntil:
-    visible: "Escuchando…|Escriba a ALMA|^Voz$"
-    timeout: 8000
 - takeScreenshot: 15-alma-chat-dictate
-- runFlow:
-    when:
-      visible: "Escuchando…"
-    commands:
-      - tapOn: "Escuchando…"
 
 - openLink: "alma:///alma-computer"
 - extendedWaitUntil:
