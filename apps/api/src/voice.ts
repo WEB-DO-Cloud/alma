@@ -15,6 +15,7 @@ import {
   resolveManagedVoice,
   serializeOpenAiCompatibleVoiceSecret,
   voiceCatalogEntry,
+  XAI_TTS_VOICE,
   XaiVoiceProvider,
 } from "@rakazo/adapters";
 import type {
@@ -505,6 +506,14 @@ export async function prepareVoice(
   actor: Actor,
   input: { text: string; voiceId?: string; botId?: string; scope?: SettingsScope },
 ) {
+  const managed = resolveManagedVoice();
+  if (managed.enabled) {
+    if (!managed.apiKey) {
+      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
+      return { ready: false, utterances: [] as string[] };
+    }
+    return { ready: true, utterances: toUtterances(input.text) };
+  }
   try {
     await resolveVoiceTarget(deps, actor, input);
   } catch (error) {
@@ -516,6 +525,8 @@ export async function prepareVoice(
   return { ready: true, utterances: toUtterances(input.text) };
 }
 
+export const MANAGED_SPEAK_FAILED = "No se pudo leer la respuesta.";
+
 export async function synthesizeVoice(
   deps: VoiceDeps,
   actor: Actor,
@@ -524,9 +535,39 @@ export async function synthesizeVoice(
     voiceId?: string;
     botId?: string;
     scope?: SettingsScope;
+    language?: string;
     signal?: AbortSignal;
   },
 ) {
+  const managed = resolveManagedVoice();
+  if (managed.enabled) {
+    const text = input.text.trim();
+    if (!text) throw new ORPCError("BAD_REQUEST", { message: "Nothing to speak." });
+    if (text.length > MAX_SPEAK_CHARS) {
+      throw new ORPCError("BAD_REQUEST", { message: "That utterance is too long to speak." });
+    }
+    if (!managed.apiKey) {
+      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
+      throw new ORPCError("BAD_REQUEST", { message: MANAGED_SPEAK_FAILED });
+    }
+    try {
+      return await new XaiVoiceProvider().synthesize(
+        {
+          text,
+          voiceId: XAI_TTS_VOICE,
+          apiKey: managed.apiKey,
+          language: input.language,
+          signal: input.signal,
+        },
+        voiceContext(actor, input.signal),
+      );
+    } catch (error) {
+      getLogger().error("alma.managed-voice.request-failed", {
+        reason: error instanceof Error ? error.name : "failed",
+      });
+      throw new ORPCError("BAD_REQUEST", { message: MANAGED_SPEAK_FAILED });
+    }
+  }
   const target = await resolveVoiceTarget(deps, actor, input);
   const text = input.text.trim();
   if (!text) throw new ORPCError("BAD_REQUEST", { message: "Nothing to speak." });
@@ -618,6 +659,7 @@ export function mountVoiceHttpRoutes(
           text: String((body as { text?: unknown }).text ?? ""),
           voiceId: optionalString((body as { voiceId?: unknown }).voiceId),
           botId: optionalString((body as { botId?: unknown }).botId),
+          language: optionalString((body as { language?: unknown }).language),
           scope: SettingsScopeSchema.safeParse((body as { scope?: unknown }).scope).data,
           signal: AbortSignal.any(
             [c.req.raw.signal, AbortSignal.timeout(SPEAK_TIMEOUT_MS)].filter(

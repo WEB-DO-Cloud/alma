@@ -548,11 +548,15 @@ function SpaceShell() {
         ? null
         : undefined;
   const call = useCallSession();
-  /** Calls a bot, or opens voice settings first when no voice is connected. */
+  const voiceStatusKey = queries.voice.status.queryKey();
+  const voiceStatus: VoiceStatus | null =
+    useQuery(queries.voice.status.queryOptions()).data ?? null;
+  /** Calls a bot. A missing user voice opens settings, except when the operator owns voice. */
   const callBot = (bot: Bot) => {
-    if (!bootstrapMe?.phoneCallsEnabled) return;
-    if (!voiceStatus?.ready) {
-      openSettings("voice");
+    const canCall = Boolean(voiceStatus?.transcribe && voiceStatus.voiceId);
+    if (!bootstrapMe?.phoneCallsEnabled && !canCall) return;
+    if (!voiceStatus?.voiceId) {
+      if (!(bootstrapMe?.managedVoice || bootstrapMe?.managedModel)) openSettings("voice");
       return;
     }
     startCall({
@@ -562,9 +566,6 @@ function SpaceShell() {
       transcribe: voiceStatus ? Boolean(voiceStatus.transcribe) : undefined,
     });
   };
-  const voiceStatusKey = queries.voice.status.queryKey();
-  const voiceStatus: VoiceStatus | null =
-    useQuery(queries.voice.status.queryOptions()).data ?? null;
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
   const [dismissedRunErrorIds, setDismissedRunErrorIds] =
     useState<ReadonlySet<string>>(readSeenRunErrorIds);
@@ -650,6 +651,7 @@ function SpaceShell() {
   // A failed first load falls back to the shell, whose polling and footer can still recover.
   const [initialLoadFailed, setInitialLoadFailed] = useState(false);
   const [bootstrapMe, setBootstrapMe] = useState<Me | null | undefined>(seed?.me);
+  const voiceCanCall = Boolean(voiceStatus?.transcribe && voiceStatus.voiceId);
   const callsEnabledRef = useRef(false);
   useEffect(() => {
     callsEnabledRef.current = bootstrapMe?.phoneCallsEnabled === true;
@@ -3630,7 +3632,7 @@ function SpaceShell() {
               </span>
             </Button>
             <div className="flex items-center justify-self-end gap-2">
-              {bootstrapMe?.phoneCallsEnabled && !inGroup && active ? (
+              {(bootstrapMe?.phoneCallsEnabled || voiceCanCall) && !inGroup && active ? (
                 <IconTooltip label={call?.botId === active.id ? t`Open call` : t`Call`}>
                   <Button
                     variant="floating"
@@ -3707,7 +3709,7 @@ function SpaceShell() {
               workingBots={workingBots}
               userBubble={userBubble}
               onCallBack={
-                bootstrapMe?.phoneCallsEnabled && !inGroup && active
+                (bootstrapMe?.phoneCallsEnabled || voiceCanCall) && !inGroup && active
                   ? () => callBot(active)
                   : undefined
               }
@@ -3818,6 +3820,11 @@ function SpaceShell() {
               onSend={sendMessage}
               onStop={stopRun}
               phoneCallsEnabled={bootstrapMe?.phoneCallsEnabled === true}
+              dictationEnabled={
+                bootstrapMe?.phoneCallsEnabled === true ||
+                voiceStatus?.transcribe === true ||
+                bootstrapMe?.managedVoice === true
+              }
               dictationTranscribe={voiceStatus ? Boolean(voiceStatus.transcribe) : undefined}
               artifactTarget={transcriptArtifactTarget}
               replyTarget={activeReplyTarget}

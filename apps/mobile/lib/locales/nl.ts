@@ -813,6 +813,7 @@ export const NL_MESSAGES: Record<string, string> = {
   "Allow speech recognition in Settings, or connect ElevenLabs, OpenAI, or Fish Audio.":
     "Sta spraakherkenning toe in Instellingen, of koppel ElevenLabs, OpenAI of Fish Audio.",
   Call: "Bellen",
+  Dictate: "Dicteren",
   "Calls need transcription": "Gesprekken hebben transcriptie nodig",
   "Could not hear that.": "Dat kon niet gehoord worden.",
   "Could not speak that.": "Dat kon niet uitgesproken worden.",

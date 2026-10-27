@@ -804,6 +804,7 @@ export const JA_MESSAGES: Record<string, string> = {
   "Allow speech recognition in Settings, or connect ElevenLabs, OpenAI, or Fish Audio.":
     "設定で音声認識を許可するか、ElevenLabs、OpenAI、Fish Audioのいずれかを接続してください。",
   Call: "通話",
+  Dictate: "音声入力",
   "Calls need transcription": "通話には文字起こしが必要です",
   "Could not hear that.": "聞き取れませんでした。",
   "Could not speak that.": "読み上げできませんでした。",
