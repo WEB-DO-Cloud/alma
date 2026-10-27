@@ -144,7 +144,7 @@ export function OnboardingPage() {
   const { t } = useLingui();
   const navigate = useNavigate();
   const fieldId = useId();
-  // The URL holds the survey and model steps, so /onboarding/survey and /onboarding/model open directly.
+  // /onboarding/survey opens from the URL. /onboarding/model stays only while a model is still due.
   const { step: routeStep } = useParams();
   const linkedStep = routeStep === "survey" || routeStep === "model" ? routeStep : undefined;
   const [creatingBot, setCreatingBot] = useState(false);
