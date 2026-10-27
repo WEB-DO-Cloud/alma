@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   AccessibilityInfo,
   ActivityIndicator,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -12,6 +13,7 @@ import {
   Text,
   TextInput,
   TouchableWithoutFeedback,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -62,6 +64,8 @@ export default function SignIn() {
   const [code, setCode] = useState("");
   const [codeSent, setCodeSent] = useState(false);
   const [passkeys, setPasskeys] = useState(false);
+  const { width: windowWidth } = useWindowDimensions();
+  const logoWidth = Math.round(windowWidth * 0.45);
 
   useEffect(() => {
     setPasswordVisible(false);
@@ -215,6 +219,7 @@ export default function SignIn() {
   }
 
   const custom = usesCustomApiBase(apiBase);
+  const showLogo = (mode === "in" || mode === "up") && !resetSent;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: tokens.background }}>
@@ -234,6 +239,19 @@ export default function SignIn() {
               keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
               keyboardShouldPersistTaps="handled"
             >
+              {showLogo ? (
+                <Image
+                  accessibilityLabel="ALMA"
+                  source={require("../assets/alma-logo-black.png")}
+                  resizeMode="contain"
+                  style={{
+                    width: logoWidth,
+                    height: Math.round((logoWidth * 67) / 259),
+                    alignSelf: "center",
+                    marginBottom: 28,
+                  }}
+                />
+              ) : null}
               <Text
                 accessibilityRole="header"
                 style={{

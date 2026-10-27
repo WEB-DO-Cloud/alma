@@ -11,6 +11,9 @@ const sparkSvg = Buffer.from(
   iconSvg.toString("utf8").replace(/\s*<rect id="plate"[^>]*\/>\s*/, "\n"),
 );
 const wordSvg = await readFile(path("brand/alma-logo-white.svg"));
+const wordBlackSvg = Buffer.from(
+  (await readFile(path("brand/alma-logo.svg"), "utf8")).replaceAll("#002D62", "#000000"),
+);
 const faviconSvg = await readFile(path("apps/web/public/favicon.svg"));
 
 async function pngFile(input: Buffer, name: string, width: number, height = width) {
@@ -69,18 +72,49 @@ await pngFile(spark, "packages/ui-tokens/assets/Rakazo.icon/Assets/orange-bot.pn
 const wordWidth = 720;
 const wordHeight = Math.round((wordWidth * 67) / 259);
 const word = await sharp(wordSvg).resize(wordWidth, wordHeight).png().toBuffer();
+// Tight crop. A square with padding makes contain draw the wordmark far smaller than imageWidth.
+const splashWordWidth = 2048;
+await sharp(
+  await sharp(wordSvg)
+    .resize(splashWordWidth, Math.round((splashWordWidth * 67) / 259))
+    .png()
+    .toBuffer(),
+)
+  .trim({ threshold: 1 })
+  .png()
+  .toFile(path("apps/mobile/assets/splash-icon.png"));
+// Android 12 draws this inside a circle. The wordmark is wider than that circle, so the spark fills it.
+const sparkTrimmed = await sharp(spark).trim({ threshold: 1 }).png().toBuffer();
+const sparkMeta = await sharp(sparkTrimmed).metadata();
+const sparkSide = Math.max(sparkMeta.width ?? 1, sparkMeta.height ?? 1);
 await sharp({
-  create: { width: 1024, height: 1024, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  create: {
+    width: sparkSide,
+    height: sparkSide,
+    channels: 4,
+    background: { r: 0, g: 0, b: 0, alpha: 0 },
+  },
 })
   .composite([
     {
-      input: word,
-      left: Math.round((1024 - wordWidth) / 2),
-      top: Math.round((1024 - wordHeight) / 2),
+      input: sparkTrimmed,
+      left: Math.round((sparkSide - (sparkMeta.width ?? sparkSide)) / 2),
+      top: Math.round((sparkSide - (sparkMeta.height ?? sparkSide)) / 2),
     },
   ])
   .png()
-  .toFile(path("apps/mobile/assets/splash-icon.png"));
+  .toFile(path("apps/mobile/assets/splash-icon-android.png"));
+const blackWordWidth = 2048;
+await sharp(
+  await sharp(wordBlackSvg)
+    .resize(blackWordWidth, Math.round((blackWordWidth * 67) / 259))
+    .png()
+    .toBuffer(),
+)
+  .trim({ threshold: 1 })
+  .png()
+  .toFile(path("apps/mobile/assets/alma-logo-black.png"));
+await writeFile(path("apps/web/public/alma-logo-black.svg"), wordBlackSvg);
 await sharp({ create: { width: 1200, height: 630, channels: 3, background: NAVY } })
   .composite([
     {

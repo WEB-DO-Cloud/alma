@@ -218,7 +218,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <AuthFrame onSubmit={submit} title={title}>
+    <AuthFrame onSubmit={submit} title={title} logo={mode !== "forgot"}>
       {sent ? (
         <div className="w-full text-center">
           <Link to="/sign-in" className="font-medium text-foreground">
@@ -516,18 +516,24 @@ export function AuthFrame({
   title,
   onSubmit,
   children,
+  logo = false,
 }: {
   title: React.ReactNode;
   onSubmit: (event: React.FormEvent) => void;
   children: React.ReactNode;
+  logo?: boolean;
 }) {
   return (
     <div className="flex min-h-full items-center justify-center bg-background px-6 py-16 text-foreground">
       <form onSubmit={onSubmit} className="flex w-[460px] flex-col items-center">
-        <div className="flex h-[74px] w-[74px] items-center justify-center gap-[11px] rounded-full bg-muted">
-          <span className="h-5 w-[9px] rounded-full bg-primary" />
-          <span className="h-5 w-[9px] rounded-full bg-primary" />
-        </div>
+        {logo ? (
+          <img alt="ALMA" src="/alma-logo-black.svg" className="h-auto w-[min(45vw,13rem)]" />
+        ) : (
+          <div className="flex h-[74px] w-[74px] items-center justify-center gap-[11px] rounded-full bg-muted">
+            <span className="h-5 w-[9px] rounded-full bg-primary" />
+            <span className="h-5 w-[9px] rounded-full bg-primary" />
+          </div>
+        )}
         <h1 aria-live="polite" className="mb-9 mt-7 text-4xl font-medium tracking-tight">
           {title}
         </h1>
