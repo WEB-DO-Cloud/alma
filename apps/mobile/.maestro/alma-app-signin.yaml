@@ -1,0 +1,48 @@
+appId: do.alma.app
+name: ALMA app sign-in
+---
+# Signed out, the app opens create-account. Ask for sign-in, then wait for the
+# form or the error the capabilities request leaves behind.
+- launchApp:
+    clearState: true
+    permissions:
+      notifications: deny
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            visible: "Close app"
+          commands:
+            - tapOn:
+                id: "android:id/aerr_close"
+      - runFlow:
+          when:
+            visible: "Don't allow"
+          commands:
+            - tapOn: "Don't allow"
+      - extendedWaitUntil:
+          visible: "Sign in to ALMA|Create your ALMA account|Iniciar sesión en ALMA|Crea tu cuenta de ALMA|Could not load sign-in options|No se pudieron cargar las opciones de acceso|Close app|Don't allow"
+          timeout: 20000
+- runFlow:
+    when:
+      notVisible: "Sign in to ALMA|Create your ALMA account|Iniciar sesión en ALMA|Crea tu cuenta de ALMA|Could not load sign-in options|No se pudieron cargar las opciones de acceso"
+    commands:
+      - launchApp
+      - extendedWaitUntil:
+          visible: "Sign in to ALMA|Create your ALMA account|Iniciar sesión en ALMA|Crea tu cuenta de ALMA|Could not load sign-in options|No se pudieron cargar las opciones de acceso|Close app"
+          timeout: 30000
+      - runFlow:
+          when:
+            visible: "Close app"
+          commands:
+            - tapOn:
+                id: "android:id/aerr_close"
+- openLink: "alma:///sign-in?mode=in"
+- extendedWaitUntil:
+    visible: "Sign in to ALMA|Iniciar sesión en ALMA|Create your ALMA account|Crea tu cuenta de ALMA"
+    timeout: 30000
+- extendedWaitUntil:
+    visible: "^Email$|^Correo$|Could not load sign-in options|No se pudieron cargar las opciones de acceso"
+    timeout: 25000
+- takeScreenshot: alma-app-sign-in

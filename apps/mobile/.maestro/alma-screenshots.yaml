@@ -1,15 +1,361 @@
 appId: do.alma.app
-name: ALMA mock screenshots
+name: ALMA sample-mode screenshots
 ---
 - launchApp:
     clearState: true
+    permissions:
+      notifications: deny
+
+# A cold emulator can cover ALMA with a launcher ANR or the notification prompt.
+# Relaunching while that dialog is up makes the launcher ANR again, so close it
+# and only launch once more if the sample home is still hidden.
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            visible: "Close app"
+          commands:
+            - tapOn:
+                id: "android:id/aerr_close"
+      - runFlow:
+          when:
+            visible: "Don't allow"
+          commands:
+            - tapOn: "Don't allow"
+      - extendedWaitUntil:
+          visible: "Borradores para revisión|Drafts for review|Close app|Don't allow"
+          timeout: 20000
+- runFlow:
+    when:
+      notVisible: "Borradores para revisión|Drafts for review"
+    commands:
+      - launchApp
+      - extendedWaitUntil:
+          visible: "Borradores para revisión|Drafts for review|Close app"
+          timeout: 30000
+      - runFlow:
+          when:
+            visible: "Close app"
+          commands:
+            - tapOn:
+                id: "android:id/aerr_close"
 - extendedWaitUntil:
-    visible: "Borradores para revisión"
-    timeout: 30000
+    visible: "Borradores para revisión|Drafts for review"
+    timeout: 45000
 - assertVisible: "Datos de ejemplo"
-- takeScreenshot: alma-home
+- takeScreenshot: 04-alma-home
+
 - tapOn: "Borradores para revisión"
 - extendedWaitUntil:
     visible: "Instancia de entrega"
     timeout: 20000
-- takeScreenshot: alma-drafts
+- assertVisible: "Resumen de audiencia"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 05-drafts
+
+# A reader draft has no approve action. Capture it before the timed draft starts its clock.
+# A row tap reaches the review screen without the draft id, so open the sample id directly.
+- openLink: "alma:///draft-review?draftId=draft-lectura"
+# The diff body is nested text, which the accessibility tree does not expose.
+- extendedWaitUntil:
+    visible: "Borrador de ALMA"
+    timeout: 20000
+- assertVisible: "Resumen de audiencia"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 06-draft-review-reader
+- tapOn: "Atrás"
+
+- openLink: "alma:///draft-approvals"
+- extendedWaitUntil:
+    visible: "Todavía no hay aprobaciones."
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 07-draft-approvals-empty
+
+- openLink: "alma:///draft-review?draftId=draft-ejemplo"
+- extendedWaitUntil:
+    visible: "Borrador de ALMA"
+    timeout: 20000
+- assertVisible: "Edición del abogado"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 08-draft-review-diff
+# The checkbox and approve button are pressables without accessible names.
+# On a Pixel 6 those controls sit at these points once the diff is on screen.
+- tapOn:
+    point: "50%,74%"
+- takeScreenshot: 09-draft-review-ready
+- tapOn:
+    point: "29%,93%"
+- extendedWaitUntil:
+    visible: "Aprobado por Lcda. Ejemplo"
+    timeout: 20000
+- takeScreenshot: 10-draft-review-approved
+
+- openLink: "alma:///draft-approvals"
+- extendedWaitUntil:
+    visible: "Aprobado por Lcda. Ejemplo"
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 11-draft-approvals
+
+- openLink: "alma:///alma-chat"
+# The sample reply is markdown, which the accessibility tree does not expose.
+- extendedWaitUntil:
+    visible: "^Enviar$"
+    timeout: 20000
+- assertVisible: "^Voz$"
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 12-alma-chat
+- tapOn: "Escriba a ALMA"
+- inputText: "Revise la instancia"
+- hideKeyboard
+- assertVisible: "Revise la instancia"
+- takeScreenshot: 13-alma-chat-typed
+- tapOn: "^Enviar$"
+- extendedWaitUntil:
+    visible: "Revise la instancia"
+    timeout: 10000
+- takeScreenshot: 14-alma-chat-sent
+- tapOn: "^Voz$"
+- extendedWaitUntil:
+    visible: "While using the app|Only this time|^Allow$|^Voz$"
+    timeout: 8000
+- runFlow:
+    when:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+- runFlow:
+    when:
+      visible: "Only this time"
+    commands:
+      - tapOn: "Only this time"
+- runFlow:
+    when:
+      visible: "^Allow$"
+    commands:
+      - tapOn: "Allow"
+- takeScreenshot: 15-alma-chat-dictate
+
+- openLink: "alma:///alma-computer"
+- extendedWaitUntil:
+    visible: "Preparar borrador de instancia"
+    timeout: 20000
+- assertVisible: "Solo lectura"
+- assertVisible: "La computadora no está en pantalla."
+- assertVisible: "Datos de ejemplo"
+- takeScreenshot: 16-alma-computer
+- tapOn: "^Detener$"
+- extendedWaitUntil:
+    visible: "^Detenido$"
+    timeout: 20000
+- takeScreenshot: 17-alma-computer-stopped
+
+- openLink: "alma:///firm"
+- extendedWaitUntil:
+    visible: "Bufete Ejemplo"
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- assertVisible: "Estos datos se editan en la web del bufete."
+- takeScreenshot: 18-firm
+- swipe:
+    start: "50%,80%"
+    end: "50%,30%"
+- swipe:
+    start: "50%,80%"
+    end: "50%,30%"
+- extendedWaitUntil:
+    visible: "Lcda. Ejemplo"
+    timeout: 10000
+- takeScreenshot: 19-firm-lawyers
+
+- openLink: "alma:///about"
+- extendedWaitUntil:
+    visible: "ALMA no sustituye el criterio profesional de quien revisa."
+    timeout: 20000
+- assertVisible: "Datos de ejemplo"
+- assertVisible: "do.alma.app"
+- takeScreenshot: 20-about
+- tapOn: "^Servidor$"
+# The address field is on screen, but neither it nor the About row reliably
+# appears or disappears in the accessibility tree. Capture either way.
+- runFlow:
+    when:
+      visible: "Use default server|^Save$|^Cancel$"
+    commands:
+      - takeScreenshot: 03-server
+- runFlow:
+    when:
+      notVisible: "Use default server|^Save$|^Cancel$"
+    commands:
+      - takeScreenshot: 03-server
+- back
+
+- openLink: "alma:///account"
+- extendedWaitUntil:
+    visible: "^Inicio$"
+    timeout: 20000
+- assertVisible: "Borradores para revisión"
+- takeScreenshot: 21-settings-account
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
+- swipe:
+    start: "50%,75%"
+    end: "50%,25%"
+- takeScreenshot: 22-settings-account-more
+
+- openLink: "alma:///language"
+- extendedWaitUntil:
+    visible: "^Español$"
+    timeout: 15000
+- assertVisible: "^English$"
+- takeScreenshot: 23-settings-language
+
+- openLink: "alma:///signup-survey"
+- extendedWaitUntil:
+    visible: "How will you use ALMA?"
+    timeout: 15000
+- takeScreenshot: 24-settings-signup-survey
+
+- openLink: "alma:///models"
+- extendedWaitUntil:
+    visible: "Could not load model settings|Main model|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 25-settings-models
+
+- openLink: "alma:///voice"
+- extendedWaitUntil:
+    visible: "This device|Could not load voice settings|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 26-settings-voice
+
+- openLink: "alma:///approvals"
+- extendedWaitUntil:
+    visible: "Never ask|Ask|Something went wrong|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 27-settings-approvals
+
+- openLink: "alma:///integrations"
+- extendedWaitUntil:
+    visible: "Search apps|Could not load integrations|^Integrations$|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 28-settings-integrations
+
+- openLink: "alma:///messaging"
+- extendedWaitUntil:
+    visible: "^Messaging$|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 29-settings-messaging
+
+- openLink: "alma:///ai-data-sharing"
+# Maestro compares each label to the whole string. The alert title is "AI data sharing"
+# and the buttons are CANCEL and REINTENTAR; the body is a longer sentence.
+- extendedWaitUntil:
+    visible: "^CANCEL$|^REINTENTAR$"
+    timeout: 20000
+- takeScreenshot: 30-settings-ai-data-sharing
+- tapOn: "^CANCEL$"
+- extendedWaitUntil:
+    notVisible: "^CANCEL$"
+    timeout: 8000
+
+- openLink: "alma:///artifacts"
+- extendedWaitUntil:
+    visible: "No artifacts yet|Could not load artifacts.*|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 31-artifacts
+
+- openLink: "alma:///billing"
+- extendedWaitUntil:
+    visible: "Could not load billing.*|Not available in the preview|Update your server.*"
+    timeout: 20000
+- takeScreenshot: 32-settings-billing
+# Closing the alert can focus the screen again and raise it once more. Leave the
+# screen, then close whichever alert is still up.
+- tapOn:
+    text: "^OK$"
+    optional: true
+- openLink: "alma:///archived-bots"
+- tapOn:
+    text: "^OK$"
+    optional: true
+- extendedWaitUntil:
+    visible: "^Archived$|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 33-settings-archived
+
+- openLink: "alma:///change-password"
+- extendedWaitUntil:
+    visible: "Current password|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 34-settings-change-password
+
+- openLink: "alma:///model-picker"
+- extendedWaitUntil:
+    visible: "Could not load model settings|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 35-settings-model-picker
+
+- openLink: "alma:///space"
+- extendedWaitUntil:
+    visible: "^Space$|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 36-settings-space
+
+- openLink: "alma:///new-space"
+- extendedWaitUntil:
+    visible: "Customer support|Create space|^Nombre$|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 37-new-space
+
+- openLink: "alma:///new-group"
+- extendedWaitUntil:
+    visible: "New group chat|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 38-new-group
+
+- openLink: "alma:///search"
+- extendedWaitUntil:
+    visible: "^Search$|Not available in the preview|Update your server.*"
+    timeout: 15000
+- takeScreenshot: 39-search
+
+# Sample mode replaces sign-in with home. Turn sample data off, then capture the form.
+# A local capabilities stub lets the email and password fields render.
+- openLink: "alma:///about"
+- extendedWaitUntil:
+    visible: "Usar el servidor|Use the server"
+    timeout: 20000
+- tapOn: "Usar el servidor|Use the server"
+- extendedWaitUntil:
+    visible: "Usar datos de ejemplo|Use sample data"
+    timeout: 10000
+# Logged-out visitors land on create-account unless the link asks for sign-in.
+- openLink: "alma:///sign-in?mode=in"
+- extendedWaitUntil:
+    visible: "Iniciar sesión en ALMA|Sign in to ALMA|Crea tu cuenta de ALMA|Create your ALMA account"
+    timeout: 20000
+- runFlow:
+    when:
+      visible: "Crea tu cuenta de ALMA|Create your ALMA account"
+    commands:
+      - tapOn:
+          text: "^Iniciar sesión$|^Sign in$"
+          index: 0
+      - extendedWaitUntil:
+          visible: "Iniciar sesión en ALMA|Sign in to ALMA"
+          timeout: 10000
+- extendedWaitUntil:
+    visible: "^Correo$|^Email$|No se pudieron cargar las opciones de acceso|Could not load sign-in options"
+    timeout: 20000
+- takeScreenshot: 01-sign-in
+# hideKeyboard sends Back on Android and pops this screen.
+- tapOn:
+    text: "^Crear cuenta$|^Sign up$"
+    index: 0
+- extendedWaitUntil:
+    visible: "Crea tu cuenta de ALMA|Create your ALMA account"
+    timeout: 15000
+- takeScreenshot: 02-sign-up
