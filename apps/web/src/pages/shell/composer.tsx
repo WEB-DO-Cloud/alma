@@ -65,6 +65,7 @@ export const Composer = memo(function Composer({
   onSend,
   onStop,
   phoneCallsEnabled,
+  dictationEnabled,
   dictationTranscribe,
   replyTarget,
   replyQuote,
@@ -96,6 +97,8 @@ export const Composer = memo(function Composer({
   onSend: (text: string, mentions: ComposerMention[], clientNonce: string) => Promise<boolean>;
   onStop: () => Promise<void>;
   phoneCallsEnabled?: boolean;
+  /** Microphone is available even when phone calls are off. */
+  dictationEnabled?: boolean;
   /** Hold-to-talk falls back to the voice provider's transcription; undefined while unknown. */
   dictationTranscribe?: boolean;
   artifactTarget: ArtifactTarget;
@@ -124,9 +127,10 @@ export const Composer = memo(function Composer({
     return slashMatch ? (slashMatch[1] ?? "") : null;
   });
   const onCall = useCallSession() !== null;
+  const showDictation = Boolean(dictationEnabled || phoneCallsEnabled);
   const talk = useHoldToTalk({
     transcribe: dictationTranscribe,
-    disabled: disabled || onCall || !phoneCallsEnabled,
+    disabled: disabled || onCall || !showDictation,
     onText: (text) => {
       // A refused send keeps the words: they land in the field to edit or retry.
       void onSend(text, [], newClientId())
@@ -841,7 +845,7 @@ export const Composer = memo(function Composer({
             <HoldToTalkControls talk={talk} />
           ) : running ? (
             <>
-              {phoneCallsEnabled && draft.trim().length === 0 ? (
+              {showDictation && draft.trim().length === 0 ? (
                 <HoldToTalkControls talk={talk} disabled={disabled || onCall} />
               ) : null}
               <Button
@@ -866,7 +870,7 @@ export const Composer = memo(function Composer({
             </>
           ) : (
             <>
-              {phoneCallsEnabled && draft.trim().length === 0 ? (
+              {showDictation && draft.trim().length === 0 ? (
                 <HoldToTalkControls talk={talk} disabled={disabled || onCall} />
               ) : null}
               <Button

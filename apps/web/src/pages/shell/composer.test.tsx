@@ -626,6 +626,11 @@ it("hides call dictation until the server enables it", () => {
   expect(container?.querySelector('button[aria-label="Hold to talk"]')).toBeNull();
 });
 
+it("shows hold to talk when the server can transcribe", () => {
+  renderComposer(vi.fn().mockResolvedValue(true), { dictationEnabled: true });
+  expect(container?.querySelector('button[aria-label="Hold to talk"]')).not.toBeNull();
+});
+
 describe("a dropped folder or archive", () => {
   /** A drop whose file list the browser empties once the handler returns. */
   function drop(entries: unknown[], files: File[]) {

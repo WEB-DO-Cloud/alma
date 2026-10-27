@@ -663,6 +663,8 @@ export interface VoiceSynthesizeRequest {
   apiKey: string;
   /** Connection speech model. Fish uses this, then `FISH_TTS_MODEL`, then s2.1-pro. */
   model?: string;
+  /** BCP-47 tag or ISO 639-1 code. Providers that require a language map it themselves. */
+  language?: string;
   signal?: AbortSignal;
 }
 

@@ -1,6 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { managedVoiceStatus, resolveManagedVoice } from "./managed-voice.js";
-import { voiceLanguage, XAI_LEGAL_KEYTERMS, XAI_STT_MODEL, XaiVoiceProvider } from "./xai-voice.js";
+import {
+  ttsLanguage,
+  voiceLanguage,
+  XAI_LEGAL_KEYTERMS,
+  XAI_STT_MODEL,
+  XAI_TTS_URL,
+  XAI_TTS_VOICE,
+  XaiVoiceProvider,
+} from "./xai-voice.js";
 
 const context = {
   operationId: "voice",
@@ -23,6 +31,17 @@ describe("voiceLanguage", () => {
     expect(voiceLanguage("EN_us")).toBe("en");
     expect(voiceLanguage("pt-PT")).toBe("pt-pt");
     expect(voiceLanguage("klingon")).toBe("es");
+  });
+});
+
+describe("ttsLanguage", () => {
+  it("uses a regional Spanish tag and keeps listed languages", () => {
+    expect(ttsLanguage(undefined)).toBe("es-ES");
+    expect(ttsLanguage("es-DO")).toBe("es-ES");
+    expect(ttsLanguage("es-MX")).toBe("es-MX");
+    expect(ttsLanguage("en-US")).toBe("en");
+    expect(ttsLanguage("pt-BR")).toBe("pt-BR");
+    expect(ttsLanguage("klingon")).toBe("es-ES");
   });
 });
 
@@ -56,6 +75,30 @@ describe("XaiVoiceProvider", () => {
     expect(result).toEqual({ text: "El saldo es $100." });
     expect(fetchMock).toHaveBeenCalledWith("https://api.x.ai/v1/stt", expect.any(Object));
   });
+
+  it("speaks with the operator voice and returns mpeg bytes", async () => {
+    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => {
+      expect(JSON.parse(String(init.body))).toEqual({
+        text: "El saldo es 100.",
+        voice_id: XAI_TTS_VOICE,
+        language: "es-ES",
+        text_normalization: true,
+      });
+      expect((init.headers as Record<string, string>).authorization).toBe("Bearer xai-test-key");
+      return new Response(new Uint8Array([1, 2, 3]), {
+        status: 200,
+        headers: { "content-type": "audio/mpeg" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const clip = await new XaiVoiceProvider().synthesize(
+      { text: "El saldo es 100.", voiceId: XAI_TTS_VOICE, apiKey: "xai-test-key", language: "es" },
+      context,
+    );
+    expect(clip.mimeType).toBe("audio/mpeg");
+    expect([...clip.bytes]).toEqual([1, 2, 3]);
+    expect(fetchMock).toHaveBeenCalledWith(XAI_TTS_URL, expect.any(Object));
+  });
 });
 
 describe("managed voice", () => {
@@ -68,7 +111,7 @@ describe("managed voice", () => {
         ready: true,
         transcribe: true,
         provider: null,
-        voiceId: "",
+        voiceId: XAI_TTS_VOICE,
       },
     );
     expect(managedVoiceStatus({ ALMA_VOICE_PROVIDER: "xai" })).toEqual({

@@ -26,6 +26,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "Use a custom server": "Usar un servidor propio",
   "Custom server": "Servidor propio",
   "Check your email": "Revise su correo",
+  Dictate: "Dictar",
   "Could not continue": "No se pudo continuar",
   "Password recovery is not configured for this server":
     "Este servidor no tiene recuperación de contraseña",

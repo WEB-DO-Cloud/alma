@@ -1,5 +1,6 @@
 import type { SettingsScope } from "@rakazo/contracts";
 import { readBoundedResponseBytes } from "@rakazo/core";
+import { getActiveUiLocale } from "./i18n.js";
 import { rpc, selectedSpaceId, withSpaceHeaders } from "./rpc.js";
 import { errorText, voiceAccountErrorText } from "./user-error.js";
 
@@ -179,6 +180,7 @@ export class Speaker {
             voiceId: opts.voiceId,
             botId: opts.botId,
             scope: opts.scope,
+            language: getActiveUiLocale(),
           }),
           signal: deadline.signal,
         }),
