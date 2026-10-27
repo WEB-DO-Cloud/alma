@@ -78,6 +78,10 @@ vi.mock("react-native", () => {
         {children}
       </button>
     ),
+    Image: ({ accessibilityLabel }: { accessibilityLabel?: string }) => (
+      <img alt={accessibilityLabel ?? ""} />
+    ),
+    useWindowDimensions: () => ({ width: 390, height: 844, scale: 3, fontScale: 1 }),
   };
 });
 vi.mock("react-native-safe-area-context", () => ({
@@ -197,6 +201,14 @@ it.each(["in", "up"])(
         (mode === "in" ? "Don’t have an account?" : "Already have an account?"),
     )!;
     expect(submit.textContent).toBe(mode === "in" ? "Sign in" : "Sign up");
+    const logo = host.querySelector("img");
+    const title = [...host.querySelectorAll("span")].find(
+      (span) =>
+        span.textContent === (mode === "in" ? "Sign in to ALMA" : "Create your ALMA account"),
+    );
+    expect(logo?.getAttribute("alt")).toBe("ALMA");
+    expect(title).toBeTruthy();
+    expectBefore(logo!, title!);
     expect(sso.dataset.prominence).toBe("quiet");
     expectBefore(email, password);
     expectBefore(password, submit);

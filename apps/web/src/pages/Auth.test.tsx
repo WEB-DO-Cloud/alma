@@ -142,6 +142,23 @@ it("retries failed capabilities without exposing a password form", async () => {
   expect(fetchAuthCapabilities).toHaveBeenCalledTimes(2);
   expect(host.textContent).toContain("Continue with Example");
 });
+it.each(["in", "up"] as const)("shows the ALMA logo above the title on %s", async (mode) => {
+  vi.mocked(fetchAuthCapabilities).mockResolvedValue({ ...capabilities, passwordAuth: true });
+  await render(mode);
+  const logo = host.querySelector("img");
+  const title = host.querySelector("h1");
+  expect(logo?.getAttribute("alt")).toBe("ALMA");
+  expect(logo?.getAttribute("src")).toBe("/alma-logo-black.svg");
+  expect(title).toBeTruthy();
+  expect(logo!.compareDocumentPosition(title!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+});
+
+it("keeps the logo off password recovery", async () => {
+  vi.mocked(fetchAuthCapabilities).mockResolvedValue({ ...capabilities, passwordAuth: true });
+  await render("forgot");
+  expect(host.querySelector("img")).toBeNull();
+});
+
 it.each(["in", "up"] as const)("puts quiet SSO below the primary action on %s", async (mode) => {
   vi.mocked(fetchAuthCapabilities).mockResolvedValue({ ...capabilities, passwordAuth: true });
   await render(mode);
