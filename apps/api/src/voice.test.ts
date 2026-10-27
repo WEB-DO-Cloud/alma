@@ -966,8 +966,38 @@ describe("managed xAI transcription", () => {
       ready: true,
       transcribe: true,
       provider: null,
-      voiceId: "",
+      voiceId: "eve",
     });
+  });
+
+  it("speaks through the operator voice without a user credential", async () => {
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "xai-test-key");
+    const fetchMock = vi.fn(async (url: string, init: RequestInit) => {
+      expect(String(url)).toBe("https://api.x.ai/v1/tts");
+      expect(JSON.parse(String(init.body))).toMatchObject({
+        text: "Hola.",
+        voice_id: "eve",
+        language: "es-ES",
+        text_normalization: true,
+      });
+      return new Response(new Uint8Array([9]), {
+        status: 200,
+        headers: { "content-type": "audio/mpeg" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const app = new Hono();
+    mountVoiceHttpRoutes(app, {} as VoiceDeps, async () => actor);
+    const response = await app.request("/api/voice/speak", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ text: "Hola.", language: "es" }),
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toBe("audio/mpeg");
+    expect([...new Uint8Array(await response.arrayBuffer())]).toEqual([9]);
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 });
 

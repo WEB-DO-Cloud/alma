@@ -8,7 +8,7 @@ import type { ApiRequestContext } from "./api";
 import { aiConsentCoalesceKey, captureApiRequestContext, rpc } from "./api";
 import { voiceForBot } from "./bot-voices";
 import { loadDeviceVoiceEnabled } from "./device-voice";
-import { t } from "./i18n";
+import { getActiveUiLocale, t } from "./i18n";
 import { errorText, voiceAccountErrorText } from "./user-error";
 
 /** Who is speaking, for the dock: it is mounted outside any one thread's bot list. */
@@ -401,6 +401,7 @@ async function renderUtterance(
           voiceId: opts.voiceId,
           botId: opts.botId,
           scope: opts.scope,
+          language: getActiveUiLocale(),
         }),
         signal: deadline.signal,
       }),
