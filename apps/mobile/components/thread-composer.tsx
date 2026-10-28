@@ -22,7 +22,6 @@ import { NativeSymbol } from "./native-symbol";
 export type ThreadComposerHandle = {
   snapshot: () => ComposerSnapshot;
   reset: () => void;
-  insertText: (text: string) => void;
 };
 
 type ThreadComposerProps = {
@@ -45,8 +44,6 @@ type ThreadComposerProps = {
   send: () => Promise<void>;
   stop: () => Promise<void>;
   startVoiceCall: () => Promise<void>;
-  onDictate?: () => void;
-  dictating?: boolean;
   onSlashAction: (action: SlashActionId) => void;
 };
 
@@ -70,8 +67,6 @@ export function ThreadComposer({
   send,
   stop,
   startVoiceCall,
-  onDictate,
-  dictating = false,
   onSlashAction,
 }: ThreadComposerProps) {
   const tokens = useMobileTokens();
@@ -101,13 +96,6 @@ export function ThreadComposer({
       setSlashQuery(null);
       setSelectedSkill(null);
       setSelectedMentions([]);
-    },
-    insertText: (text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed) return;
-      setDraft((current) => (current.trim() ? `${current.trim()} ${trimmed}` : trimmed));
-      setMentionQuery(null);
-      setSlashQuery(null);
     },
   }));
   const mentionOptions = useMemo(() => {
@@ -505,22 +493,6 @@ export function ThreadComposer({
               />
             </Pressable>
           </View>
-          {onDictate ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={dictating ? t("Listening") : t("Dictate")}
-              hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
-              onPress={onDictate}
-              style={{ marginBottom: 8 }}
-            >
-              <NativeSymbol
-                ios={dictating ? "mic.fill" : "mic"}
-                android={dictating ? "mic" : "mic-outline"}
-                size={18}
-                color={tokens.foreground}
-              />
-            </Pressable>
-          ) : null}
           {!canSend && botId && !onCall ? (
             <Pressable
               accessibilityRole="button"

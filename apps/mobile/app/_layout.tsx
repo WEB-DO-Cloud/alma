@@ -34,7 +34,6 @@ import { MessageMenuHost } from "../components/message-action-menu";
 import { MessageActionSheetHost } from "../components/message-action-sheet-host";
 import { NativeSymbol } from "../components/native-symbol";
 import { VoicePlayerBar } from "../components/voice-player-bar";
-import { hydrateMockMode, isMockMode } from "../lib/alma-mock";
 import {
   currentApiBase,
   loadApiBase,
@@ -90,27 +89,13 @@ configureForegroundNotifications();
 registerSessionDiskCache(clearSavedChats);
 registerSessionDiskCache(clearQueries);
 installClientUpdates();
-void hydrateMockMode();
 registerSessionDiskCache(() => void clearAppBadge());
 // Keep the splash up until the saved appearance applies, so the first frame isn't in the OS scheme.
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 // Screens that take the whole window even when it is wide enough for the chat list beside them.
 const DIVIDER_GRAB_WIDTH = 24;
-const FULL_WINDOW_ROUTES = new Set([
-  "/sign-in",
-  "/server",
-  "/image",
-  "/computer",
-  "/alma",
-  "/alma-chat",
-  "/alma-computer",
-  "/drafts",
-  "/draft-review",
-  "/draft-approvals",
-  "/firm",
-  "/about",
-]);
+const FULL_WINDOW_ROUTES = new Set(["/sign-in", "/server", "/image", "/computer"]);
 
 /** On a wide window the chat list stays on the left and the stack shows the open chat beside it. */
 function SplitFrame({ children }: { children: ReactNode }) {
@@ -255,11 +240,6 @@ function LayoutContent() {
   useNotificationResponses(ready);
   const pathname = usePathname();
   const screen = analyticsScreen(pathname);
-  const router = useRouter();
-  useEffect(() => {
-    if (!ready || !isMockMode()) return;
-    if (pathname === "/" || pathname === "/sign-in") router.replace("/alma");
-  }, [pathname, ready, router]);
   useEffect(() => {
     if (!ready || !screen || (Platform.OS !== "ios" && Platform.OS !== "android")) return;
     let active = true;
@@ -380,14 +360,6 @@ function LayoutContent() {
                     }}
                   >
                     <Stack.Screen name="index" options={{ headerShown: false, title: "ALMA" }} />
-                    <Stack.Screen name="alma" options={{ headerShown: false, title: "ALMA" }} />
-                    <Stack.Screen name="alma-chat" options={{ headerShown: false }} />
-                    <Stack.Screen name="alma-computer" options={{ headerShown: false }} />
-                    <Stack.Screen name="drafts" options={{ headerShown: false }} />
-                    <Stack.Screen name="draft-review" options={{ headerShown: false }} />
-                    <Stack.Screen name="draft-approvals" options={{ headerShown: false }} />
-                    <Stack.Screen name="firm" options={{ headerShown: false }} />
-                    <Stack.Screen name="about" options={{ headerShown: false }} />
                     <Stack.Screen
                       name="search"
                       options={{

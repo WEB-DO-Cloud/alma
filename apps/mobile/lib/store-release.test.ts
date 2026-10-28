@@ -101,6 +101,8 @@ describe("fastlane lanes", () => {
     expect(fastfile).toContain('ENV["ALMA_STORE_RELEASE_APPROVED"] == "yes"');
     expect(fastfile).toContain("does not submit for App Store review");
     expect(fastfile).not.toMatch(/MATCH_PASSWORD\s*=\s*["']/);
+    expect(fastfile).not.toContain("EXPO_PUBLIC_ALMA_MOCK");
+    expect(fastfile).not.toContain("alma-screenshots.yaml");
   });
 });
 

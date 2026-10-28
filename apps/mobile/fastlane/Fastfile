@@ -139,13 +139,6 @@ def gradle!(task)
   Dir.chdir(File.join(MOBILE_ROOT, "android")) { sh("./gradlew", task, "--no-daemon") }
 end
 
-def capture_mock_screenshots
-  UI.user_error!("Install Maestro and boot a simulator or emulator before the screenshots lane.") if `which maestro`.strip.empty?
-  ENV["EXPO_PUBLIC_ALMA_MOCK"] = "1"
-  ENV["EXPO_PUBLIC_DEFAULT_UI_LOCALE"] = "es"
-  sh("maestro", "test", File.join(MOBILE_ROOT, ".maestro/alma-screenshots.yaml"))
-end
-
 lane :release do
   unless ENV["ALMA_STORE_RELEASE_APPROVED"] == "yes"
     UI.user_error!("Refusing the release lane. ALMA_STORE_RELEASE_APPROVED is not yes. Use ios beta (TestFlight) or android internal (Play internal track).")
@@ -163,11 +156,6 @@ platform :ios do
   desc "Write the CI build number into app.json before prebuild."
   lane :bump do
     bump_version!
-  end
-
-  desc "Capture Spanish mock-mode screenshots. Requires a booted simulator and Maestro."
-  lane :screenshots do
-    capture_mock_screenshots
   end
 
   desc "Upload App Store metadata only. Does not upload a binary or submit for review."
@@ -234,11 +222,6 @@ platform :android do
   desc "Write the CI build number into app.json before prebuild."
   lane :bump do
     bump_version!
-  end
-
-  desc "Capture Spanish mock-mode screenshots. Requires a booted emulator and Maestro."
-  lane :screenshots do
-    capture_mock_screenshots
   end
 
   desc "Upload Play listing text to the internal track only. Does not upload a binary."

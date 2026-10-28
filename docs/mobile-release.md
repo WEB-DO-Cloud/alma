@@ -78,11 +78,6 @@ review or promote a Play release.
 | `EXPO_PUBLIC_API_URL` | Firm API. Use HTTPS for a non-demo build. |
 | `BITRISE_USE_UPLOADED_SIGNING` | Set to `true` only to install profiles uploaded in the Bitrise UI instead of match. |
 
-Screenshot and demo builds also set `EXPO_PUBLIC_ALMA_MOCK=1` and
-`EXPO_PUBLIC_DEFAULT_UI_LOCALE=es`. Do not bake the mock flag into a store
-binary. The locale env is only for a screenshot build: the app otherwise
-follows the saved choice, then the device language, then English.
-
 `BITRISE_BUILD_NUMBER` is provided by Bitrise. The bump lane writes it to the
 iOS build number and the Android version code before prebuild. Set
 `ALMA_VERSION` only when the marketing version should change. Set
@@ -129,13 +124,6 @@ or `ALMA_IOS_WORKSPACE`).
 `manual-testflight` and `manual-play-internal` are not in `trigger_map`.
 Nothing in this file submits for App Store review or promotes a Play release
 to production, beta, or alpha.
-
-The screenshots lanes (`ios screenshots` and `android screenshots`) are not a
-Bitrise workflow. They need a booted simulator or emulator, Maestro, and a
-build started with `EXPO_PUBLIC_ALMA_MOCK=1` and
-`EXPO_PUBLIC_DEFAULT_UI_LOCALE=es`. The flow is
-`apps/mobile/.maestro/alma-screenshots.yaml`. Spanish is the first listing
-locale.
 
 ## Before Expo push
 

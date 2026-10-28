@@ -833,7 +833,6 @@ export const RU_MESSAGES: Record<string, string> = {
     "Ожидание входа — срок действия ссылки истекает примерно через {minutes} мин.",
   "On a call with {name}": "Звонок с {name}",
   Call: "Позвонить",
-  Dictate: "Диктовать",
   Settings: "Настройки",
   Transcript: "Расшифровка",
   Mute: "Выключить микрофон",

@@ -31,7 +31,6 @@ import {
   useStackedSettings,
 } from "../../components/settings-group";
 import { createAccountNameEditor } from "../../lib/account-name-editor";
-import { almaText } from "../../lib/alma-copy";
 import type { MobileMe } from "../../lib/api";
 import {
   currentApiBase,
@@ -458,28 +457,6 @@ export default function Account() {
             {usageModels}
           </>
         ) : null}
-        <SettingsGroup accessibilityLabel="ALMA" label="ALMA">
-          {(
-            [
-              { title: almaText("home", locale), href: "/alma" },
-              { title: almaText("drafts", locale), href: "/drafts" },
-              { title: almaText("chat", locale), href: "/alma-chat" },
-              { title: almaText("computer", locale), href: "/alma-computer" },
-              { title: almaText("history", locale), href: "/draft-approvals" },
-              { title: almaText("firm", locale), href: "/firm" },
-              { title: almaText("about", locale), href: "/about" },
-            ] as const
-          ).map(({ title, href }) => (
-            <SettingsRow
-              key={href}
-              accessibilityRole="button"
-              chevron="right"
-              onPress={() => openFromSettingsSheet(router, href)}
-              title={title}
-            />
-          ))}
-        </SettingsGroup>
-
         <SettingsGroup>
           <SettingsRow
             accessibilityRole="button"

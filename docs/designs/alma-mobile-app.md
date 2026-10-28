@@ -1,7 +1,7 @@
 # ALMA mobile app
 
 *   **Author:** WEB-DO-Cloud/alma
-*   **Status:** In Review
+*   **Status:** Historical. The phone menu in this document was removed. See `docs/designs/alma-restore-original-ui.md`.
 *   **Date:** 2026-10-26
 
 --------------------------------------------------------------------------------
