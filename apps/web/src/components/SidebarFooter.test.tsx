@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
+
 import type { DesktopUpdateState } from "@rakazo/contracts";
+import { MOBILE_APP_STORES } from "@rakazo/contracts";
 import { Toaster } from "@rakazo/ui-web";
 import type { ReactNode } from "react";
 import { act } from "react";
@@ -142,12 +144,14 @@ it("opens integrations and keeps the existing account actions and links", async 
   expect([...menu.querySelectorAll("button, a")].map((row) => row.textContent)).toEqual([
     "Usage",
     "Get the mobile app",
-    "Docs",
     "Board",
     "Artifacts",
     "Settings",
     "Log out",
   ]);
+  expect(
+    [...menu.querySelectorAll("a")].find((link) => link.textContent === "Get the mobile app")?.href,
+  ).toBe(MOBILE_APP_STORES.ios);
   expect(host.querySelector('[data-testid="user-menu-trigger"]')?.getAttribute("aria-label")).toBe(
     "Account menu for Demo User",
   );
@@ -159,15 +163,14 @@ it("omits Board when unavailable", async () => {
   );
 });
 
-it("offers the existing Android download on Android", async () => {
+it("offers the Play listing on Android", async () => {
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue("Android");
   await render();
   const mobile = [...document.querySelectorAll("a")].find(
     (link) => link.textContent === "Get the mobile app",
-  )!;
-  expect(mobile.href).toBe(
-    "https://github.com/elie222/rakazo/releases/download/android/rakazo.apk",
   );
+  expect(mobile?.href).toBe(MOBILE_APP_STORES.android);
+  expect(document.body.innerHTML).not.toContain("github.com/elie222/rakazo");
 });
 
 it("falls back when app artwork fails and accepts replacement artwork", async () => {

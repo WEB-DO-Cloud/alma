@@ -1,9 +1,8 @@
 import {
-  ANDROID_APK_URL,
   buildIdAt,
   CLIENT_BUILD_HEADER,
   formatClientBuild,
-  IOS_APP_STORE_URL,
+  MOBILE_APP_STORES,
 } from "@rakazo/contracts";
 import * as Updates from "expo-updates";
 import type { AppStateStatus } from "react-native";
@@ -42,7 +41,7 @@ async function downloadUpdate(): Promise<boolean> {
   return true;
 }
 
-/** Apply an over-the-air update now if one exists; otherwise send the user to the store. */
+/** Apply an over-the-air update now if one exists; otherwise open the store listing. */
 export async function applyRequiredUpdate(): Promise<void> {
   try {
     if (await downloadUpdate()) {
@@ -52,9 +51,8 @@ export async function applyRequiredUpdate(): Promise<void> {
   } catch {
     // An unreachable update server falls through to the store.
   }
-  await Linking.openURL(Platform.OS === "ios" ? IOS_APP_STORE_URL : ANDROID_APK_URL).catch(
-    () => undefined,
-  );
+  const store = Platform.OS === "ios" ? MOBILE_APP_STORES.ios : MOBILE_APP_STORES.android;
+  await Linking.openURL(store).catch(() => undefined);
 }
 
 let prompting = false;

@@ -23,8 +23,6 @@ sources:
     href: "https://docs.x.ai/grok-bot/faq"
   - label: "xAI pricing"
     href: "https://x.ai/pricing"
-  - label: "ALMA source"
-    href: "https://github.com/elie222/rakazo"
 related:
   - href: "/claude-duet-alternative/"
     title: "Open source Claude Duet alternative"

@@ -49,7 +49,6 @@ import {
   selectedAskActionLabel,
   settleReadBoundary,
   shouldShowBotSenderName,
-  speechLocaleTag,
   threadWindowMessages,
   timeSeparatorIds,
   unreadDividerMessageId,
@@ -190,15 +189,11 @@ import { findSwitchTarget, ringOnArrival, takeRingOnArrival } from "../lib/bot-s
 import { setCallProviderTranscribe, startCall, useCallSession } from "../lib/call-session";
 import { chatSettingsRoute } from "../lib/chat-settings-route";
 import { loadDeviceVoiceEnabled } from "../lib/device-voice";
-import {
-  available as dictationAvailable,
-  listen as listenDictation,
-  stop as stopDictation,
-} from "../lib/dictation";
+import { available as dictationAvailable } from "../lib/dictation";
 import { canDoubleTapReact } from "../lib/double-tap";
 import { cancelFocusPrompt, focusPromptThreadActive } from "../lib/focus-prompt";
 import { helperHeaderOffset, helperOpenTarget } from "../lib/helper-header-offset";
-import { getActiveUiLocale, t, useI18n } from "../lib/i18n";
+import { t, useI18n } from "../lib/i18n";
 import { isInlineImageMimeType } from "../lib/inline-image";
 import { integrationsCacheScope, isIntegrationsScopeCurrent } from "../lib/integrations-cache";
 import { useKeyboardLayout } from "../lib/keyboard-layout";
@@ -254,7 +249,6 @@ import {
 import { secretDestinationLabel } from "../lib/secret-destination";
 import { secretFieldTraits } from "../lib/secret-field-traits";
 import { selectableTextFromMarkdown } from "../lib/selectable-text";
-import { transcribeFromMicrophone } from "../lib/server-dictation";
 import {
   currentReadySessionGeneration,
   currentSessionGeneration,
@@ -659,27 +653,18 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
   const [uploadConfig, setUploadConfig] = useState<{ maxUploadSizeBytes?: number }>();
   const [needsModel, setNeedsModel] = useState<boolean>();
   const [managedModel, setManagedModel] = useState(false);
-  const [dictationOn, setDictationOn] = useState(false);
-  const [dictating, setDictating] = useState(false);
-  const dictateAbort = useRef<AbortController | null>(null);
   // Re-read on focus so returning from Models settings updates unsent missing-model messages.
   useFocusEffect(
     useCallback(() => {
       let cancelled = false;
-      void Promise.all([
-        rpc<
-          { maxUploadSizeBytes?: number } & Partial<
-            Pick<MobileMe, "needsModel" | "managedModel" | "managedVoice">
-          >
-        >("me"),
-        rpc<{ transcribe?: boolean }>("voice/status").catch(() => null),
-      ])
-        .then(([me, status]) => {
+      void rpc<
+        { maxUploadSizeBytes?: number } & Partial<Pick<MobileMe, "needsModel" | "managedModel">>
+      >("me")
+        .then((me) => {
           if (cancelled) return;
           setUploadConfig(me);
           setNeedsModel(me.needsModel);
           setManagedModel(me.managedModel === true);
-          setDictationOn(me.managedVoice === true || status?.transcribe === true);
         })
         .catch(() => undefined);
       return () => {
@@ -2064,50 +2049,6 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
       : t("Hello, {bot} here.", { bot: botName });
   }
 
-  function dictateOnDevice(lang: string) {
-    void listenDictation({
-      lang,
-      onFinal: (text) => {
-        setDictating(false);
-        composerRef.current?.insertText(text);
-      },
-      onGiveUp: () => setDictating(false),
-    });
-  }
-
-  function dictate() {
-    if (dictating) {
-      dictateAbort.current?.abort();
-      dictateAbort.current = null;
-      stopDictation();
-      setDictating(false);
-      return;
-    }
-    setDictating(true);
-    const lang = speechLocaleTag(getActiveUiLocale());
-    void rpc<{ transcribe?: boolean }>("voice/status")
-      .then(async (status) => {
-        if (!status.transcribe) {
-          dictateOnDevice(lang);
-          return;
-        }
-        const controller = new AbortController();
-        dictateAbort.current = controller;
-        try {
-          const text = await transcribeFromMicrophone({
-            language: getActiveUiLocale(),
-            signal: controller.signal,
-          });
-          if (!controller.signal.aborted) composerRef.current?.insertText(text);
-          setDictating(false);
-        } catch {
-          if (controller.signal.aborted) return;
-          dictateOnDevice(lang);
-        }
-      })
-      .catch(() => dictateOnDevice(lang));
-  }
-
   /** `switchedHere`: the caller asked another bot to put them through, so this bot answers. */
   async function startVoiceCall(switchedHere = false) {
     if (readOnly) return;
@@ -3174,8 +3115,6 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
             send={send}
             stop={stop}
             startVoiceCall={startVoiceCall}
-            onDictate={dictationOn ? dictate : undefined}
-            dictating={dictating}
             onSlashAction={runSlashAction}
           />
         </Animated.View>

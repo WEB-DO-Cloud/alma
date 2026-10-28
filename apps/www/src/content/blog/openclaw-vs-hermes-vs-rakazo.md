@@ -15,8 +15,6 @@ sources:
     href: "https://hermes-agent.nousresearch.com/docs/getting-started/quickstart"
   - label: "Hermes Agent desktop"
     href: "https://hermes-agent.nousresearch.com/docs/user-guide/desktop"
-  - label: "ALMA self-hosting guide"
-    href: "https://github.com/elie222/rakazo/blob/main/docs/self-host.md"
 related:
   - href: "/openclaw-alternative/"
     title: "Open source OpenClaw alternative"

@@ -1,14 +1,12 @@
 import { OPENCLAW_H1 } from "./guide";
 import { GROK_ALTERNATIVE_H1, GROK_ALTERNATIVE_PATH } from "./grok-alternative";
-import { DOCS_URL, GITHUB_URL, OPENCLAW_ALTERNATIVE_PATH } from "./site";
+import { OPENCLAW_ALTERNATIVE_PATH } from "./site";
 
 export const ROUNDUP_UPDATED = "October 24, 2026";
 
 export const GET_STARTED = {
   heading: "Get started",
   copy: "Start on ALMA Cloud, in beta, or self-host.",
-  docsLabel: "Self-hosting guide",
-  githubLabel: "View on GitHub",
 } as const;
 
 export const OPEN_SOURCE_REASONS = [
@@ -855,9 +853,6 @@ export function alternativeMarkdown(alternative: Alternative): string {
     `## ${GET_STARTED.heading}`,
     "",
     GET_STARTED.copy,
-    "",
-    `- [${GET_STARTED.docsLabel}](${DOCS_URL})`,
-    `- [${GET_STARTED.githubLabel}](${GITHUB_URL})`,
     "",
     "## FAQ",
     "",

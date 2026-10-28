@@ -1,13 +1,4 @@
-import {
-  DOCS_URL,
-  GITHUB_URL,
-  OPENCLAW_ALTERNATIVE_PATH,
-  SELF_HOST_GUIDE_PATH,
-  SELF_HOST_RESTRICTED_URL,
-  SELF_HOST_SECRETS_URL,
-  SETUP_PROMPT_URL,
-  SITE_URL,
-} from "./site";
+import { GITHUB_URL, OPENCLAW_ALTERNATIVE_PATH, SELF_HOST_GUIDE_PATH, SITE_URL } from "./site";
 
 export const OPENCLAW_DOCS_URL = "https://docs.openclaw.ai/";
 export const OPENCLAW_GETTING_STARTED_URL = "https://docs.openclaw.ai/start/getting-started";
@@ -15,17 +6,9 @@ export const OPENCLAW_FEATURES_URL = "https://docs.openclaw.ai/concepts/features
 export const OPENCLAW_SANDBOX_URL = "https://docs.openclaw.ai/gateway/sandboxing";
 export const OPENCLAW_GITHUB_URL = "https://github.com/openclaw/openclaw";
 
-export const PUBLISHED_IMAGES_INSTALL = `mkdir -p alma && cd alma &&
-curl -fsSLO https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh &&
-bash install-images.sh`;
-
 export const PUBLISHED_IMAGES_SERVER = `bash install-images.sh --prepare-only
 # Edit .env, then:
 bash install-images.sh`;
-
-export const SOURCE_CHECKOUT = `git clone https://github.com/elie222/rakazo.git
-cd rakazo
-cp .env.example .env`;
 
 export const SOURCE_DEV = `docker compose --env-file .env \\
   -f infra/compose/docker-compose.yml \\
@@ -84,7 +67,7 @@ export const SELF_HOST_FAQS: readonly FaqItem[] = [
   {
     question: "Is hosted ALMA available?",
     answer:
-      "Yes. ALMA Cloud is in beta at app.rakazo.com. Self-hosting is available too.",
+      "Yes. ALMA Cloud is in beta at app.alma.com.do. Self-hosting is available too.",
   },
   {
     question: "How does this compare with OpenClaw?",
@@ -264,7 +247,7 @@ export const SELF_HOST_MARKDOWN = `# Self-hosted AI agent
 
 ALMA AI is an open source AI agent for persistent teammates. Each bot can use a browser and a shell, keep routines as Markdown, and pause for approval when work crosses a boundary you set. Self-hosting means that stack runs on infrastructure you operate.
 
-The software is [Apache-2.0](${GITHUB_URL}/blob/main/LICENSE). Hosted ALMA Cloud is in beta. This page is the essential setup. The [full self-hosting guide](${DOCS_URL}) on GitHub covers backups, upgrades, secrets, restricted networks, and production Compose.
+The software is [Apache-2.0](${GITHUB_URL}/blob/main/LICENSE). Hosted ALMA Cloud is in beta. This page is the essential setup.
 
 ## What self-hosting gives you
 
@@ -288,15 +271,9 @@ A source checkout needs Node.js 22.22.2 or newer on the 22.x line, Node.js 24.x,
 
 ## Install with published images
 
-\`\`\`bash
-${PUBLISHED_IMAGES_INSTALL}
-\`\`\`
-
 The installer downloads the Compose file and \`.env.images.example\`, creates \`.env\` with random secrets, and starts ALMA. It keeps an existing \`.env\` when you run it again. The default image tag is \`edge\` (builds from the main branch, \`linux/amd64\` and \`linux/arm64\`).
 
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173) and create an account. The first registered user becomes the deployment owner. Connect a model in the app, or set \`OPENROUTER_API_KEY\` before startup. Local Docker computers are on by default.
-
-For an agent-assisted install, use the [setup prompt](${SETUP_PROMPT_URL}).
 
 ## Run it on a server
 
@@ -312,15 +289,9 @@ Before the second command, set \`RAKAZO_HOST\` to the hostname and set \`BETTER_
 ${CADDY_SNIPPET}
 \`\`\`
 
-Replace \`app.example.com\` with your host. Desktop clients should use **Existing instance** with the \`https://\` address. The [public single-VM section](${DOCS_URL}#public-single-vm-deployment) covers production Compose, host hardening, signup allowlists, and SMTP.
-
-If downloads are blocked, use the [restricted-network guide](${SELF_HOST_RESTRICTED_URL}). Secret names and recovery are in the [secrets checklist](${SELF_HOST_SECRETS_URL}).
+Replace \`app.example.com\` with your host. Desktop clients should use **Existing instance** with the \`https://\` address.
 
 ## Install from source
-
-\`\`\`bash
-${SOURCE_CHECKOUT}
-\`\`\`
 
 Set \`POSTGRES_PASSWORD\` and \`POSTGRES_APP_PASSWORD\` to two URI-safe random values (for example \`openssl rand -hex 16\`) and put them in \`DATABASE_MIGRATION_URL\` and \`DATABASE_URL\`. Set \`BETTER_AUTH_SECRET\`, \`ENCRYPTION_KEY\`, and \`SCREEN_PROXY_SECRET\` to independent long random values. Docker sandboxes also need a dedicated \`SANDBOX_SUPERVISOR_TOKEN\`. Keep these in \`.env\`, not in git.
 
@@ -339,14 +310,6 @@ With a server already running, the Electron app's **Existing instance** option t
 ${RUN_ON_YOUR_MAC}
 
 In the mobile app, tap **Use a custom server** on the sign-in screen and enter the same HTTPS origin as \`WEB_ORIGIN\`.
-
-## Full reference
-
-- [Self-hosting guide](${DOCS_URL})
-- [Secrets checklist](${SELF_HOST_SECRETS_URL})
-- [Restricted networks](${SELF_HOST_RESTRICTED_URL})
-- [Setup prompt](${SETUP_PROMPT_URL})
-- [Source](${GITHUB_URL})
 
 ## FAQ
 
@@ -415,7 +378,6 @@ Choose OpenClaw when the assistant should live in chat apps you already use, wit
 - [OpenClaw sandboxing](${OPENCLAW_SANDBOX_URL})
 - [OpenClaw source](${OPENCLAW_GITHUB_URL})
 - [ALMA self-host guide](${SITE_URL}${SELF_HOST_GUIDE_PATH})
-- [ALMA source](${GITHUB_URL})
 
 ## FAQ
 

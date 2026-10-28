@@ -1,10 +1,7 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const starsLabel = await githubStarsLabel();
 ---
 
 <BaseLayout
@@ -12,13 +9,13 @@ const starsLabel = await githubStarsLabel();
   description="How ALMA INTELIGENCIA, S.R.L. collects, uses, and protects information when you use ALMA."
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy">
       <h1>Privacy</h1>
       <p><strong>Last updated: September 14, 2026</strong></p>
       <p>
         This policy explains how ALMA INTELIGENCIA, S.R.L. (“ALMA,” “we,” or “us”) handles personal information
-        when you use the ALMA mobile app, an ALMA service that we host, or rakazo.com. A third party that
+        when you use the ALMA mobile app, an ALMA service that we host, or alma.com.do. A third party that
         operates a self-hosted ALMA deployment is responsible for its own privacy practices.
       </p>
 
@@ -165,7 +162,7 @@ const starsLabel = await githubStarsLabel();
       <h2>Contact us</h2>
       <p>
         © 2026 ALMA INTELIGENCIA, S.R.L.<br />
-        <a href="mailto:hello@rakazo.com">hello@rakazo.com</a>
+        <a href="mailto:hello@alma.com.do">hello@alma.com.do</a>
       </p>
     </main>
     <Footer />

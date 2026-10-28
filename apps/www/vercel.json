@@ -2,14 +2,14 @@
   "redirects": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": { "eq": "www.rakazo.com" } }],
-      "destination": "https://rakazo.com/",
+      "has": [{ "type": "host", "value": { "eq": "www.alma.com.do" } }],
+      "destination": "https://alma.com.do/",
       "statusCode": 301
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": { "eq": "www.rakazo.com" } }],
-      "destination": "https://rakazo.com/:path*",
+      "has": [{ "type": "host", "value": { "eq": "www.alma.com.do" } }],
+      "destination": "https://alma.com.do/:path*",
       "statusCode": 301
     },
     {

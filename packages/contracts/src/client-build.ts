@@ -16,9 +16,11 @@ export const CLIENT_KINDS = ["web", "mobile"] as const;
 export type ClientKind = (typeof CLIENT_KINDS)[number];
 export type MinimumClientBuilds = Partial<Record<ClientKind, string>>;
 
-export const IOS_APP_STORE_URL = "https://apps.apple.com/app/rakazo/id6801531099";
-export const ANDROID_APK_URL =
-  "https://github.com/elie222/rakazo/releases/download/android/rakazo.apk";
+/** Store listings for the ALMA apps. The iOS id is a placeholder until the listing exists. */
+export const MOBILE_APP_STORES = {
+  ios: "https://apps.apple.com/app/alma-asistente-privado/id0000000000",
+  android: "https://play.google.com/store/apps/details?id=do.alma.app",
+} as const;
 
 const BUILD_ID = /^\d{14}$/;
 

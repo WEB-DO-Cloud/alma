@@ -29,7 +29,7 @@ vi.mock("react-native", () => rn);
 vi.mock("./api", () => ({ configureClientBuild: vi.fn() }));
 vi.mock("./i18n", () => ({ t: (message: string) => message }));
 
-import { IOS_APP_STORE_URL } from "@rakazo/contracts";
+import { MOBILE_APP_STORES } from "@rakazo/contracts";
 import {
   clientBuildHeaders,
   FOREGROUND_UPDATE_CHECK_MS,
@@ -81,12 +81,21 @@ describe("update required", () => {
     expect(rn.Linking.openURL).not.toHaveBeenCalled();
   });
 
+  it("opens the Play listing on Android when no over-the-air update is available", async () => {
+    rn.Platform.OS = "android";
+    noteClientUpdateRequired();
+    pressUpdate();
+    await flush();
+    expect(rn.Linking.openURL).toHaveBeenCalledWith(MOBILE_APP_STORES.android);
+    rn.Platform.OS = "ios";
+  });
+
   it("opens the store when no over-the-air update can fix it, and asks again next time", async () => {
     noteClientUpdateRequired();
     pressUpdate();
     await flush();
     expect(updates.reloadAsync).not.toHaveBeenCalled();
-    expect(rn.Linking.openURL).toHaveBeenCalledWith(IOS_APP_STORE_URL);
+    expect(rn.Linking.openURL).toHaveBeenCalledWith(MOBILE_APP_STORES.ios);
     noteClientUpdateRequired();
     expect(rn.Alert.alert).toHaveBeenCalledTimes(2);
   });

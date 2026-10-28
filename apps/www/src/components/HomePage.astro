@@ -7,7 +7,6 @@ import { LandingBotAvatar } from "./LandingBotAvatar";
 import PhoneMockup from "./PhoneMockup.astro";
 import { ProductDemo } from "./ProductDemo";
 import FeatureIllustration from "./FeatureIllustration.astro";
-import RepoCard from "./RepoCard.astro";
 import RosterBotAvatar from "./RosterBotAvatar.astro";
 import type { Locale } from "../i18n/locales";
 import chatgptLogo from "./provider-logos/chatgpt.svg?raw";
@@ -24,24 +23,9 @@ import {
   isLocale,
   localeHomePath,
 } from "../i18n/locales";
-import {
-  availableDesktopPlatforms,
-  desktopDownloadHref,
-  fetchDesktopDownloads,
-  fetchRecentChanges,
-  githubStarsLabel,
-} from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { homeStructuredData } from "../structured-data";
-import {
-  ANDROID_APK_URL,
-  APP_URL,
-  GITHUB_URL,
-  IOS_APP_URL,
-  SELF_HOST_GUIDE_PATH,
-  SETUP_PROMPT_URL,
-  SITE_URL,
-} from "../site";
+import { APP_URL, IOS_APP_URL, SELF_HOST_GUIDE_PATH, SITE_URL } from "../site";
 
 
 const locale: Locale = isLocale(Astro.currentLocale)
@@ -54,14 +38,6 @@ const availableLanguages = LOCALES.map((supportedLocale) =>
   getHomeCopy(supportedLocale).availableLanguage
 );
 const homeHref = localeHomePath(locale);
-const [starsLabel, desktopDownloads, recentChanges] = await Promise.all([
-  githubStarsLabel(),
-  fetchDesktopDownloads(),
-  fetchRecentChanges(5),
-]);
-const setupAgentPrompt = `Set up ALMA for me. Follow the setup prompt at ${SETUP_PROMPT_URL}`;
-const desktopPlatforms = availableDesktopPlatforms(desktopDownloads);
-const PLATFORM_NAMES = { mac: "macOS", windows: "Windows", linux: "Linux" } as const;
 const PROVIDER_LOGOS: Record<string, string> = {
   Claude: claudeLogo,
   ChatGPT: chatgptLogo,
@@ -94,7 +70,7 @@ const structuredData = homeStructuredData({
   ogImageAlt={copy.ogImageAlt}
 >
   <div class="container">
-    <Header locale={locale} copy={copy.nav} starsLabel={starsLabel} homeHref={homeHref} />
+    <Header locale={locale} copy={copy.nav} homeHref={homeHref} />
 
     <main id="main">
       <script is:inline>
@@ -131,29 +107,7 @@ const structuredData = homeStructuredData({
         <p class="lead">
           {copy.hero.lead}
         </p>
-        <GetStartedActions
-          class="hero__actions"
-          copy={copy.hero}
-          placement="hero"
-          githubLabel={copy.openSource.starOnGithub}
-        />
-        <div class="hero__agent-setup">
-          <button
-            class="setup-copy"
-            type="button"
-            data-setup-copy={setupAgentPrompt}
-            data-setup-label={copy.hero.setupWithAgent}
-            data-setup-copied={copy.hero.copiedForAgent}
-            data-setup-failed={copy.hero.copyFailed}
-          >
-            <span class="setup-copy__prefix" aria-hidden="true">$</span>
-            <span class="setup-copy__label">{copy.hero.setupWithAgent}</span>
-            <svg class="setup-copy__icon" viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="8" y="8" width="12" height="12" rx="2"></rect>
-              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
-            </svg>
-          </button>
-        </div>
+        <GetStartedActions class="hero__actions" copy={copy.hero} placement="hero" />
       </section>
 
       <section id="demo">
@@ -286,25 +240,12 @@ const structuredData = homeStructuredData({
             </article>
             <article class="platform-card">
               <svg class="platform-card__icon" viewBox="0 0 48 48" aria-hidden="true">
-                <rect x="9" y="10" width="30" height="21" rx="3" />
-                <path d="M4 36h40l-3 3H7z" />
-              </svg>
-              <h3>{copy.platforms.desktop}</h3>
-              <div class="platform-card__links">
-                {desktopPlatforms.map((platform) => (
-                  <a href={desktopDownloadHref(platform)}>{PLATFORM_NAMES[platform]}</a>
-                ))}
-              </div>
-            </article>
-            <article class="platform-card">
-              <svg class="platform-card__icon" viewBox="0 0 48 48" aria-hidden="true">
                 <rect x="14" y="5" width="20" height="38" rx="5" />
                 <path d="M21 9.5h6" />
               </svg>
               <h3>{copy.platforms.mobile}</h3>
               <div class="platform-card__links">
                 <a href={IOS_APP_URL}>iOS</a>
-                <a href={ANDROID_APK_URL}>Android</a>
               </div>
             </article>
           </div>
@@ -312,23 +253,13 @@ const structuredData = homeStructuredData({
         <PhoneMockup locale={locale} />
       </section>
 
-      <section id="open-source" class:list={["section", recentChanges.length > 0 && "open-source"]}>
+      <section id="open-source" class="section">
         <div>
           <h2 class="section-heading">{copy.openSource.heading}</h2>
           <p class="section-copy">
             {copy.openSource.copy}
           </p>
-          <div class="source-links">
-            <Button href={GITHUB_URL} external data-attr="open-source-github">
-              {copy.openSource.starOnGithub}
-            </Button>
-          </div>
         </div>
-        {
-          recentChanges.length > 0 && (
-            <RepoCard locale={locale} starsLabel={starsLabel} changes={recentChanges} />
-          )
-        }
       </section>
 
       <section id="faq" class="section" aria-labelledby="faq-heading">
@@ -351,25 +282,18 @@ const structuredData = homeStructuredData({
         <div>
           <h2>{copy.cta.heading}</h2>
           <p>{copy.cta.copy}</p>
-          <GetStartedActions
-            class="cta-actions"
-            copy={copy.hero}
-            downloads={desktopDownloads}
-            placement="cta"
-          />
+          <GetStartedActions class="cta-actions" copy={copy.hero} placement="cta" />
         </div>
         <div class="stats-grid">
           {
             copy.cta.stats.map((stat) => (
               <div>
                 <div class="stat-value">
-                  {stat.value === "stars"
-                    ? starsLabel
-                    : stat.value === "license"
-                      ? "Apache-2.0"
-                      : stat.value === "openSource"
-                        ? copy.cta.openSourceValue
-                        : copy.cta.selfHostValue}
+                  {stat.value === "license"
+                    ? "Apache-2.0"
+                    : stat.value === "openSource"
+                      ? copy.cta.openSourceValue
+                      : copy.cta.selfHostValue}
                 </div>
                 <div class="stat-label">{stat.label}</div>
               </div>
@@ -391,27 +315,6 @@ const structuredData = homeStructuredData({
 </BaseLayout>
 
 <script>
-  const setupCopy = document.querySelector<HTMLButtonElement>("[data-setup-copy]");
-  const setupCopyLabel = setupCopy?.querySelector<HTMLElement>(".setup-copy__label");
-
-  setupCopy?.addEventListener("click", async () => {
-    const prompt = setupCopy.dataset.setupCopy;
-    const idleLabel = setupCopy.dataset.setupLabel;
-    const copiedLabel = setupCopy.dataset.setupCopied;
-    const failedLabel = setupCopy.dataset.setupFailed;
-    if (!prompt || !setupCopyLabel || !idleLabel || !copiedLabel || !failedLabel) return;
-
-    try {
-      await navigator.clipboard.writeText(prompt);
-      setupCopyLabel.textContent = copiedLabel;
-      window.setTimeout(() => {
-        setupCopyLabel.textContent = idleLabel;
-      }, 2400);
-    } catch {
-      setupCopyLabel.textContent = failedLabel;
-    }
-  });
-
   const marquee = document.querySelector<HTMLElement>("[data-testimonial-marquee]");
   const marqueeGroup = marquee?.querySelector<HTMLElement>(".testimonial-group");
   if (marquee && marqueeGroup) {

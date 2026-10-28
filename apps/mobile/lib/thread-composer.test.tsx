@@ -364,15 +364,10 @@ describe("thread composer isolation", () => {
     expect(composer.current!.snapshot().skill).toBeNull();
   });
 
-  it("inserts dictated text and shows the microphone only when dictation is offered", () => {
+  it("keeps Call on an empty draft and does not expose dictation", () => {
     expect(container.querySelector('button[aria-label="Dictate"]')).toBeNull();
-    render({ onDictate: vi.fn() });
-    const mic = container.querySelector('button[aria-label="Dictate"]');
-    expect(mic).not.toBeNull();
-    act(() => composer.current!.insertText("  el saldo  "));
-    expect(composer.current!.snapshot().promptText).toBe("el saldo");
-    act(() => composer.current!.insertText("es 100"));
-    expect(composer.current!.snapshot().promptText).toBe("el saldo es 100");
+    expect(container.querySelector('button[aria-label="Call"]')).not.toBeNull();
+    expect("insertText" in (composer.current ?? {})).toBe(false);
   });
 
   it("clears a slash query before routing and uses the call control for an empty draft", () => {
