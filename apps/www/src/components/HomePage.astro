@@ -23,7 +23,6 @@ import {
   isLocale,
   localeHomePath,
 } from "../i18n/locales";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { homeStructuredData } from "../structured-data";
 import { APP_URL, IOS_APP_URL, SELF_HOST_GUIDE_PATH, SITE_URL } from "../site";
@@ -39,7 +38,6 @@ const availableLanguages = LOCALES.map((supportedLocale) =>
   getHomeCopy(supportedLocale).availableLanguage
 );
 const homeHref = localeHomePath(locale);
-const starsLabel = await githubStarsLabel();
 const PROVIDER_LOGOS: Record<string, string> = {
   Claude: claudeLogo,
   ChatGPT: chatgptLogo,
@@ -291,13 +289,11 @@ const structuredData = homeStructuredData({
             copy.cta.stats.map((stat) => (
               <div>
                 <div class="stat-value">
-                  {stat.value === "stars"
-                    ? starsLabel
-                    : stat.value === "license"
-                      ? "Apache-2.0"
-                      : stat.value === "openSource"
-                        ? copy.cta.openSourceValue
-                        : copy.cta.selfHostValue}
+                  {stat.value === "license"
+                    ? "Apache-2.0"
+                    : stat.value === "openSource"
+                      ? copy.cta.openSourceValue
+                      : copy.cta.selfHostValue}
                 </div>
                 <div class="stat-label">{stat.label}</div>
               </div>

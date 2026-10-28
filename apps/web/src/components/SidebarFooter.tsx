@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
-import { IOS_APP_STORE_URL } from "@rakazo/contracts";
+import { MOBILE_APP_STORES } from "@rakazo/contracts";
 import {
   AppMarkStack,
   Button,
@@ -149,17 +149,19 @@ export function SidebarFooter({
               <Gauge className="text-muted-foreground" strokeWidth={1.75} />
               <Trans>Usage</Trans>
             </Button>
-            {/Android/i.test(navigator.userAgent) ? null : (
-              <a
-                className={`${buttonVariants({ variant: "ghost" })} h-9 w-full justify-start gap-2.5 font-normal`}
-                href={IOS_APP_STORE_URL}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Smartphone className="text-muted-foreground" strokeWidth={1.75} />
-                <Trans>Get the mobile app</Trans>
-              </a>
-            )}
+            <a
+              className={`${buttonVariants({ variant: "ghost" })} h-9 w-full justify-start gap-2.5 font-normal`}
+              href={
+                /Android/i.test(navigator.userAgent)
+                  ? MOBILE_APP_STORES.android
+                  : MOBILE_APP_STORES.ios
+              }
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Smartphone className="text-muted-foreground" strokeWidth={1.75} />
+              <Trans>Get the mobile app</Trans>
+            </a>
             {onBoard ? (
               <Button
                 variant="ghost"

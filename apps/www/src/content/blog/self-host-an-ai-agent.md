@@ -8,7 +8,7 @@ category: "guides"
 tldr: "The published-image installer is a short script: Docker, Compose, curl, and OpenSSL, then an account and a model. Pull time depends on your connection. A public hostname, TLS, and a secrets review are a longer job than the first local chat."
 sources:
   - label: "Self-hosted AI agent"
-    href: "https://rakazo.com/self-hosted-ai-agent/"
+    href: "https://alma.com.do/self-hosted-ai-agent/"
 related:
   - href: "/self-hosted-ai-agent/"
     title: "Self-hosted AI agent"

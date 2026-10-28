@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import type { DesktopUpdateState } from "@rakazo/contracts";
-import { IOS_APP_STORE_URL } from "@rakazo/contracts";
+import { MOBILE_APP_STORES } from "@rakazo/contracts";
 import { Toaster } from "@rakazo/ui-web";
 import type { ReactNode } from "react";
 import { act } from "react";
@@ -151,7 +151,7 @@ it("opens integrations and keeps the existing account actions and links", async 
   ]);
   expect(
     [...menu.querySelectorAll("a")].find((link) => link.textContent === "Get the mobile app")?.href,
-  ).toBe(IOS_APP_STORE_URL);
+  ).toBe(MOBILE_APP_STORES.ios);
   expect(host.querySelector('[data-testid="user-menu-trigger"]')?.getAttribute("aria-label")).toBe(
     "Account menu for Demo User",
   );
@@ -163,12 +163,13 @@ it("omits Board when unavailable", async () => {
   );
 });
 
-it("does not offer the upstream Android download", async () => {
+it("offers the Play listing on Android", async () => {
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue("Android");
   await render();
-  expect(
-    [...document.querySelectorAll("a")].some((link) => link.textContent === "Get the mobile app"),
-  ).toBe(false);
+  const mobile = [...document.querySelectorAll("a")].find(
+    (link) => link.textContent === "Get the mobile app",
+  );
+  expect(mobile?.href).toBe(MOBILE_APP_STORES.android);
   expect(document.body.innerHTML).not.toContain("github.com/elie222/rakazo");
 });
 

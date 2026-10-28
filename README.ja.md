@@ -2,22 +2,21 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
 
-[![GitHub stars](https://img.shields.io/github/stars/elie222/rakazo?labelColor=black&style=for-the-badge&color=2563EB)](https://github.com/elie222/rakazo/stargazers)
 [![Discord コミュニティに参加](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
-[![App Store で iPhone 版をダウンロード](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/rakazo/id6801531099)
-[![Android APK をダウンロード](https://img.shields.io/badge/Android-Download%20APK-black?labelColor=black&style=for-the-badge&logo=android&logoColor=white)](https://github.com/elie222/rakazo/releases/download/android/rakazo.apk)
+[![App Store で iPhone 版をダウンロード](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/alma-asistente-privado/id0000000000)
+[![Google Play で入手](https://img.shields.io/badge/Google%20Play-ALMA-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
 
 ![ALMA：本当に自分のものにできる AI チームメイト](./docs/readme-hero.png)
 
 ALMA AI は、常駐型の AI チームメイトを持てるオープンソースの AI エージェントです。自分のマシンで動かせる
 セルフホスト型の AI アシスタントでもあります。Web 版、Electron デスクトップアプリ、
-[iPhone](https://apps.apple.com/app/rakazo/id6801531099) 版と [Android](https://github.com/elie222/rakazo/releases/download/android/rakazo.apk) 版で利用できます。
+[iPhone](https://apps.apple.com/app/alma-asistente-privado/id0000000000) 版と [Android](https://play.google.com/store/apps/details?id=do.alma.app) 版で利用できます。
 モデルやコンピューターのプロバイダーは自分で選べるほか、スタック全体をローカルで動かすこともできます。
 
 Grok Bot、Meta Muse、OpenAI Dots、Instinct、OpenClaw、Hermes Agent、Claude Duet の
 オープンソースかつセルフホスト可能な代替ツールです。
 
-ALMA AI は現在ベータ版です。詳しくは [rakazo.com](https://rakazo.com) をご覧ください。
+ALMA AI は現在ベータ版です。詳しくは [alma.com.do](https://alma.com.do) をご覧ください。
 
 このドキュメントは[英語版 README](./README.md) の日本語訳です。リンク先のドキュメントは現在英語のみです。
 
@@ -270,13 +269,13 @@ pnpm test:e2e
 
 ## ALMA と他製品の比較
 
-- [Grok Bot](https://rakazo.com/grok-bot-alternative/)
-- [Muse](https://rakazo.com/muse-alternative/)
-- [Dots](https://rakazo.com/dots-alternative/)
-- [Instinct](https://rakazo.com/instinct-alternative/)
-- [OpenClaw](https://rakazo.com/openclaw-alternative/)
-- [Hermes Agent](https://rakazo.com/hermes-alternative/)
-- [すべての比較](https://rakazo.com/alternatives/)
+- [Grok Bot](https://alma.com.do/grok-bot-alternative/)
+- [Muse](https://alma.com.do/muse-alternative/)
+- [Dots](https://alma.com.do/dots-alternative/)
+- [Instinct](https://alma.com.do/instinct-alternative/)
+- [OpenClaw](https://alma.com.do/openclaw-alternative/)
+- [Hermes Agent](https://alma.com.do/hermes-alternative/)
+- [すべての比較](https://alma.com.do/alternatives/)
 
 ## コントリビュート
 

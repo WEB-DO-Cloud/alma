@@ -2,7 +2,7 @@ import {
   buildIdAt,
   CLIENT_BUILD_HEADER,
   formatClientBuild,
-  IOS_APP_STORE_URL,
+  MOBILE_APP_STORES,
 } from "@rakazo/contracts";
 import * as Updates from "expo-updates";
 import type { AppStateStatus } from "react-native";
@@ -41,7 +41,7 @@ async function downloadUpdate(): Promise<boolean> {
   return true;
 }
 
-/** Apply an over-the-air update now if one exists; otherwise send an iPhone to the App Store. */
+/** Apply an over-the-air update now if one exists; otherwise open the store listing. */
 export async function applyRequiredUpdate(): Promise<void> {
   try {
     if (await downloadUpdate()) {
@@ -49,10 +49,10 @@ export async function applyRequiredUpdate(): Promise<void> {
       return;
     }
   } catch {
-    // An unreachable update server falls through to the store on iPhone.
+    // An unreachable update server falls through to the store.
   }
-  if (Platform.OS !== "ios") return;
-  await Linking.openURL(IOS_APP_STORE_URL).catch(() => undefined);
+  const store = Platform.OS === "ios" ? MOBILE_APP_STORES.ios : MOBILE_APP_STORES.android;
+  await Linking.openURL(store).catch(() => undefined);
 }
 
 let prompting = false;

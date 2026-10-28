@@ -2,21 +2,20 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
 
-[![GitHub stars](https://img.shields.io/github/stars/elie222/rakazo?labelColor=black&style=for-the-badge&color=2563EB)](https://github.com/elie222/rakazo/stargazers)
 [![加入 Discord 社区](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
-[![在 App Store 下载 iPhone 版](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/rakazo/id6801531099)
-[![下载 Android APK](https://img.shields.io/badge/Android-Download%20APK-black?labelColor=black&style=for-the-badge&logo=android&logoColor=white)](https://github.com/elie222/rakazo/releases/download/android/rakazo.apk)
+[![在 App Store 下载 iPhone 版](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/alma-asistente-privado/id0000000000)
+[![在 Google Play 获取](https://img.shields.io/badge/Google%20Play-ALMA-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
 
 ![ALMA：由你掌控的 AI 队友](./docs/readme-hero.png)
 
 ALMA AI 是一个开源 AI 智能体项目，让你拥有可长期协作的 AI 队友，也可以作为自托管 AI 助手在自己的电脑上运行。
-它提供网页版、Electron 桌面应用，以及 [iPhone](https://apps.apple.com/app/rakazo/id6801531099) 和
-[Android](https://github.com/elie222/rakazo/releases/download/android/rakazo.apk) 应用。
+它提供网页版、Electron 桌面应用，以及 [iPhone](https://apps.apple.com/app/alma-asistente-privado/id0000000000) 和
+[Android](https://play.google.com/store/apps/details?id=do.alma.app) 应用。
 你可以接入自己的模型和计算环境提供商，也可以在本地运行完整服务。
 
 它是 Grok Bot、Meta Muse、OpenAI Dots、Instinct、OpenClaw、Hermes Agent、Claude Duet 和 Hark Pro 的开源、自托管替代方案。
 
-ALMA AI 目前处于测试阶段。详情见 [rakazo.com](https://rakazo.com)。
+ALMA AI 目前处于测试阶段。详情见 [alma.com.do](https://alma.com.do)。
 
 本文是 [英文 README](./README.md) 的简体中文译文，链接指向的其他文档目前仍为英文。
 
@@ -26,16 +25,16 @@ ALMA 启动后，你可以像使用 Grok Bot 一样，通过聊天设置和管�
 Muse、Dots、Instinct、Claude Duet 和 Hark Pro 是托管式助手；OpenClaw 和 Hermes Agent 则同样是可以自行运行的开源智能体。
 后两者的文档介绍了安装器、配置文件和网关。Hermes Desktop 无需命令行即可开始第一次聊天；消息网关则是独立进程。
 
-- [Grok Bot](https://rakazo.com/grok-bot-alternative/)
-- [Muse](https://rakazo.com/muse-alternative/)
-- [Dots](https://rakazo.com/dots-alternative/)
-- [Instinct](https://rakazo.com/instinct-alternative/)，可通过短信或电话交流的个人助手
-- [OpenClaw](https://rakazo.com/openclaw-alternative/)
-- [Hermes Agent](https://rakazo.com/hermes-alternative/)，Nous Research 的开源智能体
-- [Claude Duet](https://rakazo.com/claude-duet-alternative/)，Anthropic 的主动式个人智能体
-- [Hark Pro](https://rakazo.com/hark-alternative/)，hark.com 提供的个人智能体
-- [全部对比](https://rakazo.com/alternatives/)
-- [自托管指南](https://rakazo.com/self-hosted-ai-agent/)
+- [Grok Bot](https://alma.com.do/grok-bot-alternative/)
+- [Muse](https://alma.com.do/muse-alternative/)
+- [Dots](https://alma.com.do/dots-alternative/)
+- [Instinct](https://alma.com.do/instinct-alternative/)，可通过短信或电话交流的个人助手
+- [OpenClaw](https://alma.com.do/openclaw-alternative/)
+- [Hermes Agent](https://alma.com.do/hermes-alternative/)，Nous Research 的开源智能体
+- [Claude Duet](https://alma.com.do/claude-duet-alternative/)，Anthropic 的主动式个人智能体
+- [Hark Pro](https://alma.com.do/hark-alternative/)，hark.com 提供的个人智能体
+- [全部对比](https://alma.com.do/alternatives/)
+- [自托管指南](https://alma.com.do/self-hosted-ai-agent/)
 
 ## 功能
 

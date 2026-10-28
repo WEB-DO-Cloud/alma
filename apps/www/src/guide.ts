@@ -67,7 +67,7 @@ export const SELF_HOST_FAQS: readonly FaqItem[] = [
   {
     question: "Is hosted ALMA available?",
     answer:
-      "Yes. ALMA Cloud is in beta at app.rakazo.com. Self-hosting is available too.",
+      "Yes. ALMA Cloud is in beta at app.alma.com.do. Self-hosting is available too.",
   },
   {
     question: "How does this compare with OpenClaw?",

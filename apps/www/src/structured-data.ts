@@ -29,11 +29,11 @@ export function homeStructuredData(input: HomeStructuredDataInput) {
         legalName: LEGAL_NAME,
         url: `${SITE_URL}/`,
         logo: `${SITE_URL}/brand/alma-mark.png`,
-        email: "hello@rakazo.com",
+        email: "hello@alma.com.do",
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "customer support",
-          email: "hello@rakazo.com",
+          email: "hello@alma.com.do",
           url: `${SITE_URL}/support/`,
           availableLanguage: input.availableLanguages,
         },

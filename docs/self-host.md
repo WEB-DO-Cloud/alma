@@ -479,7 +479,7 @@ repairs. Investigate `Model credit hold requires review` logs using the shared c
 missing provider evidence into a zero-cost settlement.
 
 OpenRouter inference requests include the normal ALMA user ID in `user`, `HTTP-Referer`
-(`https://rakazo.com`), and `X-OpenRouter-Title` (`ALMA`). These values are sent only to OpenRouter's
+(`https://alma.com.do`), and `X-OpenRouter-Title` (`ALMA`). These values are sent only to OpenRouter's
 HTTPS inference endpoints, never to compatible custom hosts. Recovery uses the existing configured
 deployment credential; no Redis or external accounting service is required.
 

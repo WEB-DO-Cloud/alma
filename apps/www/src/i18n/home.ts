@@ -67,7 +67,7 @@ export type HomeCopy = {
     copy: string;
     openSourceValue: string;
     selfHostValue: string;
-    stats: Array<{ value: "stars" | "license" | "openSource" | "selfHost"; label: string }>;
+    stats: Array<{ value: "license" | "openSource" | "selfHost"; label: string }>;
   };
   footer: {
     navLabel: string;
@@ -458,7 +458,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       openSourceValue: "Open source",
       selfHostValue: "Self-host",
       stats: [
-        { value: "stars", label: "GitHub stars" },
         { value: "license", label: "License" },
         { value: "openSource", label: "No seats, no gates" },
         { value: "selfHost", label: "Your machine" },
@@ -569,7 +568,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       openSourceValue: "Open Source",
       selfHostValue: "Self-host",
       stats: [
-        { value: "stars", label: "GitHub Stars" },
         { value: "license", label: "Lizenz" },
         { value: "openSource", label: "Keine Seats, keine Gates" },
         { value: "selfHost", label: "Deine Maschine" },
@@ -679,7 +677,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       openSourceValue: "오픈소스",
       selfHostValue: "셀프 호스트",
       stats: [
-        { value: "stars", label: "GitHub 스타" },
         { value: "license", label: "라이선스" },
         { value: "openSource", label: "시트·게이트 없음" },
         { value: "selfHost", label: "당신 머신" },
@@ -789,7 +786,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       openSourceValue: "开源",
       selfHostValue: "自托管",
       stats: [
-        { value: "stars", label: "GitHub 星标" },
         { value: "license", label: "许可证" },
         { value: "openSource", label: "无席位、无门槛" },
         { value: "selfHost", label: "你的机器" },
@@ -900,7 +896,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       openSourceValue: "オープンソース",
       selfHostValue: "セルフホスト",
       stats: [
-        { value: "stars", label: "GitHub スター" },
         { value: "license", label: "ライセンス" },
         { value: "openSource", label: "シート課金なし、機能制限なし" },
         { value: "selfHost", label: "あなたのマシン" },
