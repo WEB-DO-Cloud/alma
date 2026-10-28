@@ -17,7 +17,6 @@ export type HomeCopy = {
     menu: string;
     docs: string;
     blog: string;
-    github: string;
     getStarted: string;
   };
   hero: {
@@ -25,11 +24,7 @@ export type HomeCopy = {
     heading: string;
     lead: string;
     getStarted: string;
-    download: Record<"mac" | "windows" | "linux" | "ios" | "android", string>;
-    viewOnGithub: string;
-    setupWithAgent: string;
-    copiedForAgent: string;
-    copyFailed: string;
+    download: { ios: string };
   };
   selfHost: {
     heading: string;
@@ -63,7 +58,6 @@ export type HomeCopy = {
   openSource: {
     heading: string;
     copy: string;
-    starOnGithub: string;
     readTheDocs: string;
     cloudTitle: string;
     cloudBadge: string;
@@ -81,7 +75,6 @@ export type HomeCopy = {
     links: {
       docs: string;
       product: string;
-      changelog: string;
       alternatives: string;
       all: string;
       about: string;
@@ -91,7 +84,6 @@ export type HomeCopy = {
       company: string;
       blog: string;
       iosApp: string;
-      androidApp: string;
     };
   };
 };
@@ -397,7 +389,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       menu: "Menu",
       docs: "Docs",
       blog: "Blog",
-      github: "GitHub",
       getStarted: "Get started",
     },
     hero: {
@@ -406,16 +397,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       lead: "Give your bots a job. Check in from any device.",
       getStarted: "Get started",
       download: {
-        mac: "Download for macOS",
-        windows: "Download for Windows",
-        linux: "Download for Linux",
         ios: "Download for iOS",
-        android: "Download for Android",
       },
-      viewOnGithub: "View on GitHub",
-      setupWithAgent: "Set up with your agent",
-      copiedForAgent: "Copied for your agent",
-      copyFailed: "Copy failed. Try again.",
     },
     selfHost: {
       heading: "Self-hosted",
@@ -465,7 +448,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     openSource: {
       heading: "Open source",
       copy: "Apache-2.0. Run it, change it, make it yours.",
-      starOnGithub: "Star on GitHub",
       readTheDocs: "Read the docs",
       cloudTitle: "Cloud",
       cloudBadge: "Beta",
@@ -488,7 +470,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       links: {
         docs: "Docs",
         product: "Product",
-        changelog: "Changelog",
         alternatives: "Alternatives",
         all: "All",
         about: "About",
@@ -498,7 +479,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         company: "Company",
         blog: "Blog",
         iosApp: "iPhone app",
-        androidApp: "Android app",
       },
     },
   },
@@ -516,7 +496,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       menu: "Menü",
       docs: "Docs",
       blog: "Blog",
-      github: "GitHub",
       getStarted: "Loslegen",
     },
     hero: {
@@ -525,16 +504,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       lead: "Gib deinen Bots eine Aufgabe. Schau von jedem Gerät nach.",
       getStarted: "Loslegen",
       download: {
-        mac: "Für macOS laden",
-        windows: "Für Windows laden",
-        linux: "Für Linux laden",
         ios: "Für iOS laden",
-        android: "Für Android laden",
       },
-      viewOnGithub: "Auf GitHub ansehen",
-      setupWithAgent: "Mit deinem Agenten einrichten",
-      copiedForAgent: "Für deinen Agenten kopiert",
-      copyFailed: "Kopieren fehlgeschlagen. Erneut versuchen.",
     },
     selfHost: {
       heading: "Self-hosted",
@@ -588,7 +559,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     openSource: {
       heading: "Open Source",
       copy: "Apache-2.0. Selbst betreiben, ändern und anpassen.",
-      starOnGithub: "Auf GitHub mit Stern markieren",
       readTheDocs: "Docs lesen",
       cloudTitle: "Cloud",
       cloudBadge: "Beta",
@@ -611,7 +581,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       links: {
         docs: "Dokumentation",
         product: "Produkt",
-        changelog: "Änderungsprotokoll",
         alternatives: "Alternativen",
         all: "Alle",
         about: "Über uns",
@@ -621,7 +590,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         company: "Unternehmen",
         blog: "Blog",
         iosApp: "iPhone-App",
-        androidApp: "Android-App",
       },
     },
   },
@@ -638,7 +606,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       menu: "메뉴",
       docs: "Docs",
       blog: "블로그",
-      github: "GitHub",
       getStarted: "시작하기",
     },
     hero: {
@@ -647,16 +614,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       lead: "봇에게 일을 맡기세요. 어떤 기기에서든 확인하세요.",
       getStarted: "시작하기",
       download: {
-        mac: "macOS용 다운로드",
-        windows: "Windows용 다운로드",
-        linux: "Linux용 다운로드",
         ios: "iOS용 다운로드",
-        android: "Android용 다운로드",
       },
-      viewOnGithub: "GitHub에서 보기",
-      setupWithAgent: "에이전트로 설정하기",
-      copiedForAgent: "에이전트용으로 복사됨",
-      copyFailed: "복사 실패. 다시 시도하세요.",
     },
     selfHost: {
       heading: "셀프 호스트",
@@ -710,7 +669,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     openSource: {
       heading: "오픈소스",
       copy: "Apache-2.0. 직접 실행하고 원하는 대로 수정하세요.",
-      starOnGithub: "GitHub에서 Star",
       readTheDocs: "문서 읽기",
       cloudTitle: "Cloud",
       cloudBadge: "베타",
@@ -733,7 +691,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       links: {
         docs: "문서",
         product: "제품",
-        changelog: "변경 내역",
         alternatives: "대안",
         all: "전체",
         about: "소개",
@@ -743,7 +700,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         company: "회사",
         blog: "블로그",
         iosApp: "iPhone 앱",
-        androidApp: "Android 앱",
       },
     },
   },
@@ -760,7 +716,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       menu: "菜单",
       docs: "文档",
       blog: "博客",
-      github: "GitHub",
       getStarted: "开始使用",
     },
     hero: {
@@ -769,16 +724,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       lead: "把工作交给 Bot，随时用任意设备查看。",
       getStarted: "开始使用",
       download: {
-        mac: "下载 macOS 版",
-        windows: "下载 Windows 版",
-        linux: "下载 Linux 版",
         ios: "下载 iOS 版",
-        android: "下载 Android 版",
       },
-      viewOnGithub: "在 GitHub 上查看",
-      setupWithAgent: "用你的智能体安装",
-      copiedForAgent: "已为你的智能体复制",
-      copyFailed: "复制失败。请重试。",
     },
     selfHost: {
       heading: "自托管",
@@ -832,7 +779,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     openSource: {
       heading: "开源",
       copy: "Apache-2.0。自由运行、修改，按需定制。",
-      starOnGithub: "在 GitHub 上点星",
       readTheDocs: "阅读文档",
       cloudTitle: "云端",
       cloudBadge: "测试版",
@@ -855,7 +801,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       links: {
         docs: "文档",
         product: "产品",
-        changelog: "更新日志",
         alternatives: "替代方案",
         all: "全部",
         about: "关于",
@@ -865,7 +810,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         company: "公司",
         blog: "博客",
         iosApp: "iPhone 应用",
-        androidApp: "Android 应用",
       },
     },
   },
@@ -883,7 +827,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       menu: "メニュー",
       docs: "ドキュメント",
       blog: "ブログ",
-      github: "GitHub",
       getStarted: "はじめる",
     },
     hero: {
@@ -892,16 +835,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       lead: "ボットに仕事を任せて、どのデバイスからでも確認できます。",
       getStarted: "はじめる",
       download: {
-        mac: "macOS 版をダウンロード",
-        windows: "Windows 版をダウンロード",
-        linux: "Linux 版をダウンロード",
         ios: "iOS 版をダウンロード",
-        android: "Android 版をダウンロード",
       },
-      viewOnGithub: "GitHub で見る",
-      setupWithAgent: "エージェントでセットアップ",
-      copiedForAgent: "エージェント用にコピーしました",
-      copyFailed: "コピーできませんでした。もう一度お試しください。",
     },
     selfHost: {
       heading: "セルフホスト",
@@ -955,7 +890,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     openSource: {
       heading: "オープンソース",
       copy: "Apache-2.0。自由に実行し、変更して、自分のものに。",
-      starOnGithub: "GitHub で Star する",
       readTheDocs: "ドキュメントを読む",
       cloudTitle: "クラウド",
       cloudBadge: "ベータ",
@@ -978,7 +912,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       links: {
         docs: "ドキュメント",
         product: "製品",
-        changelog: "変更履歴",
         alternatives: "代替ツール",
         all: "すべて",
         about: "概要",
@@ -988,7 +921,6 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         company: "会社情報",
         blog: "ブログ",
         iosApp: "iPhone アプリ",
-        androidApp: "Android アプリ",
       },
     },
   },

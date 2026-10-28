@@ -81,6 +81,15 @@ describe("update required", () => {
     expect(rn.Linking.openURL).not.toHaveBeenCalled();
   });
 
+  it("does not open an upstream Android package when no over-the-air update is available", async () => {
+    rn.Platform.OS = "android";
+    noteClientUpdateRequired();
+    pressUpdate();
+    await flush();
+    expect(rn.Linking.openURL).not.toHaveBeenCalled();
+    rn.Platform.OS = "ios";
+  });
+
   it("opens the store when no over-the-air update can fix it, and asks again next time", async () => {
     noteClientUpdateRequired();
     pressUpdate();

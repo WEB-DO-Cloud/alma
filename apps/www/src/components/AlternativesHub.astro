@@ -1,7 +1,6 @@
 ---
 import { GET_STARTED, ROUNDUP_UPDATED } from "../alternatives";
 import { ogPublicPath } from "../og-pages";
-import { DOCS_URL, GITHUB_URL } from "../site";
 import {
   ROUNDUP_CARDS,
   ROUNDUP_CHANGELOG,
@@ -16,7 +15,6 @@ import {
   ROUNDUP_TLDR,
   roundupStructuredData,
 } from "../roundup";
-import Button from "./Button.astro";
 import SiteFrame from "./SiteFrame.astro";
 
 const columns = ROUNDUP_COLUMNS;
@@ -114,8 +112,4 @@ const columns = ROUNDUP_COLUMNS;
 
   <h2>{GET_STARTED.heading}</h2>
   <p>{GET_STARTED.copy}</p>
-  <div class="alt-actions">
-    <Button href={DOCS_URL} external>{GET_STARTED.docsLabel}</Button>
-    <Button href={GITHUB_URL} variant="secondary" external>{GET_STARTED.githubLabel}</Button>
-  </div>
 </SiteFrame>

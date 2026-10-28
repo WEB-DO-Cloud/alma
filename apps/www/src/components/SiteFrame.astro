@@ -1,7 +1,6 @@
 ---
 import type { FaqItem } from "../alternatives";
 import { faqPageSchema } from "../alternatives";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Footer from "./Footer.astro";
 import Header from "./Header.astro";
@@ -25,7 +24,6 @@ const {
   ogType,
   index = true,
 } = Astro.props;
-const starsLabel = await githubStarsLabel();
 const structuredData =
   structuredDataProp ?? (faq && faq.length > 0 ? faqPageSchema(faq) : undefined);
 ---
@@ -40,7 +38,7 @@ const structuredData =
   index={index}
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="alt-page">
       <slot />
     </main>

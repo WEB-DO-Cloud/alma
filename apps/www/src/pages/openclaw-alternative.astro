@@ -23,13 +23,11 @@ import {
   OPENCLAW_TITLE,
   OPENCLAW_UPDATED,
 } from "../guide";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { ogPublicPath } from "../og-pages";
-import { APP_URL, GITHUB_URL, SELF_HOST_GUIDE_PATH } from "../site";
+import { APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
 import { vsCard } from "../vs-points";
 
-const starsLabel = await githubStarsLabel();
 const structuredData = faqPageStructuredData(OPENCLAW_FAQS);
 const card = vsCard("openclaw-alternative");
 ---
@@ -42,7 +40,7 @@ const card = vsCard("openclaw-alternative");
   ogImage={ogPublicPath("openclaw-alternative")}
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy guide">
       <h1>{OPENCLAW_H1}</h1>
       <p class="alt-note">Updated {OPENCLAW_UPDATED}.</p>
@@ -167,7 +165,6 @@ const card = vsCard("openclaw-alternative");
         <li><a href={OPENCLAW_SANDBOX_URL}>OpenClaw sandboxing</a></li>
         <li><a href={OPENCLAW_GITHUB_URL}>OpenClaw source</a></li>
         <li><a href={SELF_HOST_GUIDE_PATH}>ALMA self-host guide</a></li>
-        <li><a href={GITHUB_URL}>ALMA source</a></li>
       </ul>
 
       <FaqSection items={OPENCLAW_FAQS} />
@@ -188,7 +185,6 @@ const card = vsCard("openclaw-alternative");
       <div class="cta-actions">
         <Button href={SELF_HOST_GUIDE_PATH}>Self-host guide</Button>
         <Button href={APP_URL} variant="secondary">ALMA Cloud</Button>
-        <Button href={GITHUB_URL} variant="secondary" external>View on GitHub</Button>
       </div>
     </main>
     <Footer />

@@ -37,7 +37,6 @@ export function homeStructuredData(input: HomeStructuredDataInput) {
           url: `${SITE_URL}/support/`,
           availableLanguage: input.availableLanguages,
         },
-        sameAs: [GITHUB_URL],
       },
       {
         "@type": "WebSite",
@@ -68,7 +67,6 @@ export function homeStructuredData(input: HomeStructuredDataInput) {
         applicationSubCategory: "AI agent platform",
         operatingSystem: "Web, macOS, Linux, iOS, Android",
         isAccessibleForFree: true,
-        codeRepository: GITHUB_URL,
         license: `${GITHUB_URL}/blob/main/LICENSE`,
         provider: { "@id": `${SITE_URL}/#organization` },
         inLanguage: input.availableLanguages,

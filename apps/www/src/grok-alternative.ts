@@ -1,4 +1,4 @@
-import { DOCS_URL, GITHUB_URL, SITE_URL } from "./site";
+import { SITE_URL } from "./site";
 import { CLAUDE_CHATGPT_SUBSCRIPTION_FAQ } from "./subscription-faq";
 
 export const GROK_ALTERNATIVE_PATH = "/grok-bot-alternative/";
@@ -68,10 +68,6 @@ export const GROK_SOURCES = [
   { label: "OpenMuse", href: "https://www.copilotkit.ai/openmuse" },
   { label: "OpenMuse source", href: "https://github.com/CopilotKit/openmuse" },
 ] as const;
-
-export const INSTALL_COMMAND = `mkdir -p alma && cd alma &&
-curl -fsSLO https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh &&
-bash install-images.sh`;
 
 export const SELF_HOST_LEAD =
   "Published images need Docker Engine 26+ (API 1.45+ for bot home volume subpaths), the Compose plugin, curl, and OpenSSL.";
@@ -354,14 +350,7 @@ ${sources}
 
 ${SELF_HOST_LEAD}
 
-\`\`\`bash
-${INSTALL_COMMAND}
-\`\`\`
-
 ${SELF_HOST_AFTER.join("\n\n")}
-
-- [Self-hosting guide](${DOCS_URL})
-- [Source code](${GITHUB_URL})
 
 ## Other alternatives
 

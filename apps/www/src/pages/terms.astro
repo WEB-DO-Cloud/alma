@@ -1,11 +1,8 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { GITHUB_URL } from "../site";
-
-const starsLabel = await githubStarsLabel();
 ---
 
 <BaseLayout
@@ -13,7 +10,7 @@ const starsLabel = await githubStarsLabel();
   description="The terms for using ALMA, including paid plans, cancellation, and refunds."
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy">
       <h1>Terms of Service</h1>
       <p><strong>Last updated: October 7, 2026</strong></p>

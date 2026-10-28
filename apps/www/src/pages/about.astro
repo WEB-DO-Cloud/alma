@@ -1,11 +1,8 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { GITHUB_URL, SELF_HOST_GUIDE_PATH } from "../site";
-
-const starsLabel = await githubStarsLabel();
+import { SELF_HOST_GUIDE_PATH } from "../site";
 ---
 
 <BaseLayout
@@ -13,7 +10,7 @@ const starsLabel = await githubStarsLabel();
   description="ALMA AI prepares drafts for review."
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy">
       <h1>About ALMA</h1>
       <p>
@@ -30,8 +27,7 @@ const starsLabel = await githubStarsLabel();
       </p>
       <h2>Open by default</h2>
       <p>
-        ALMA AI is maintained by ALMA INTELIGENCIA, S.R.L. and released under the Apache-2.0 license. The project accepts
-        public issues and contributions on <a href={GITHUB_URL}>GitHub</a>. To run ALMA on your own
+        ALMA AI is maintained by ALMA INTELIGENCIA, S.R.L. and released under the Apache-2.0 license. To run ALMA on your own
         infrastructure, start with the <a href={SELF_HOST_GUIDE_PATH}>self-hosting guide</a>. For product or account help,
         email <a href="mailto:hello@rakazo.com">hello@rakazo.com</a>.
       </p>

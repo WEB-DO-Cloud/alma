@@ -1,16 +1,13 @@
 ---
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import { githubStarsLabel } from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { GITHUB_URL, SELF_HOST_GUIDE_PATH } from "../site";
-
-const starsLabel = await githubStarsLabel();
+import { SELF_HOST_GUIDE_PATH } from "../site";
 ---
 
 <BaseLayout title="Support · ALMA" description="Get help with the ALMA app and self-hosted ALMA.">
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy">
       <h1>ALMA support</h1>
       <p>
@@ -21,8 +18,7 @@ const starsLabel = await githubStarsLabel();
       </p>
       <h2>Self-hosted ALMA</h2>
       <p>
-        Start with the <a href={SELF_HOST_GUIDE_PATH}>self-hosting guide</a>. For reproducible bugs or feature requests,
-        open an issue in the <a href={`${GITHUB_URL}/issues`}>ALMA GitHub repository</a>.
+        Start with the <a href={SELF_HOST_GUIDE_PATH}>self-hosting guide</a>.
       </p>
       <h2>Account deletion</h2>
       <p>

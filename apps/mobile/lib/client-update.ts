@@ -1,5 +1,4 @@
 import {
-  ANDROID_APK_URL,
   buildIdAt,
   CLIENT_BUILD_HEADER,
   formatClientBuild,
@@ -42,7 +41,7 @@ async function downloadUpdate(): Promise<boolean> {
   return true;
 }
 
-/** Apply an over-the-air update now if one exists; otherwise send the user to the store. */
+/** Apply an over-the-air update now if one exists; otherwise send an iPhone to the App Store. */
 export async function applyRequiredUpdate(): Promise<void> {
   try {
     if (await downloadUpdate()) {
@@ -50,11 +49,10 @@ export async function applyRequiredUpdate(): Promise<void> {
       return;
     }
   } catch {
-    // An unreachable update server falls through to the store.
+    // An unreachable update server falls through to the store on iPhone.
   }
-  await Linking.openURL(Platform.OS === "ios" ? IOS_APP_STORE_URL : ANDROID_APK_URL).catch(
-    () => undefined,
-  );
+  if (Platform.OS !== "ios") return;
+  await Linking.openURL(IOS_APP_STORE_URL).catch(() => undefined);
 }
 
 let prompting = false;

@@ -50,11 +50,8 @@ ${getHomeCopy("en")
 
 ${home.cta.copy}
 
-- [Agent setup prompt](https://github.com/elie222/rakazo/blob/main/SETUP_PROMPT.md)
 - [Self-hosting guide](https://rakazo.com/self-hosted-ai-agent/)
-- [Full self-hosting reference](https://github.com/elie222/rakazo/blob/main/docs/self-host.md)
 - [OpenClaw comparison](https://rakazo.com/openclaw-alternative/)
-- [Source code](https://github.com/elie222/rakazo)
 
 ## Site index
 
@@ -77,11 +74,9 @@ ALMA AI is an open source Grok Bot alternative for persistent AI teammates: bots
 
 The project started from a simple premise: useful agents should be understandable and controllable by the people who run them. ALMA keeps routines in readable Markdown, supports multiple model providers, records actions in an audit log, and lets operators keep model keys, browser sessions, and deployment infrastructure under their own control.
 
-ALMA targets the web, macOS, Linux, iOS, and Android. The source is available under the Apache-2.0 license and accepts public issues and contributions on GitHub. ALMA INTELIGENCIA, S.R.L. maintains the project and offers support at hello@rakazo.com.
+ALMA targets the web, macOS, Linux, iOS, and Android. The source is available under the Apache-2.0 license. ALMA INTELIGENCIA, S.R.L. maintains the project and offers support at hello@rakazo.com.
 
-- [Source code](https://github.com/elie222/rakazo)
 - [Self-hosting guide](https://rakazo.com/self-hosted-ai-agent/)
-- [Full self-hosting reference](https://github.com/elie222/rakazo/blob/main/docs/self-host.md)
 - [Support](https://rakazo.com/support/)
 `;
 
@@ -89,7 +84,7 @@ export const SUPPORT_MARKDOWN = `# ALMA support
 
 For help with the ALMA mobile app or a hosted ALMA account, email [hello@rakazo.com](mailto:hello@rakazo.com). Include the email address on the account, what you expected to happen, and any error message you saw. Never send passwords, API keys, access tokens, or other secrets.
 
-For self-hosted ALMA, start with the [self-hosting guide](https://rakazo.com/self-hosted-ai-agent/). The [full reference](https://github.com/elie222/rakazo/blob/main/docs/self-host.md) is on GitHub. Open reproducible bugs and feature requests in the [public GitHub repository](https://github.com/elie222/rakazo/issues). Report vulnerabilities only to [security@rakazo.com](mailto:security@rakazo.com).
+For self-hosted ALMA, start with the [self-hosting guide](https://rakazo.com/self-hosted-ai-agent/). Report vulnerabilities only to [security@rakazo.com](mailto:security@rakazo.com).
 
 Hosted users can permanently delete their account and associated personal Space data from the Account screen in the ALMA app.
 `;
@@ -144,10 +139,9 @@ ALMA Cloud at https://app.rakazo.com is in beta. Self-hosting is also available.
 
 ## How an agent should use ALMA
 
-1. Read the [setup prompt](https://github.com/elie222/rakazo/blob/main/SETUP_PROMPT.md) before changing the user's machine.
-2. Use the [self-hosting guide](https://rakazo.com/self-hosted-ai-agent/) for setup. The [GitHub guide](https://github.com/elie222/rakazo/blob/main/docs/self-host.md) is the full reference for backups, upgrades, and production layout.
-3. Confirm deployment choices and any host-level commands with the user, and keep secrets in local environment configuration rather than tracked files.
-4. Use the [public issue tracker](https://github.com/elie222/rakazo/issues) for reproducible bugs. Send vulnerabilities only to [security@rakazo.com](mailto:security@rakazo.com).
+1. Use the [self-hosting guide](https://rakazo.com/self-hosted-ai-agent/) for setup.
+2. Confirm deployment choices and any host-level commands with the user, and keep secrets in local environment configuration rather than tracked files.
+3. Send vulnerabilities only to [security@rakazo.com](mailto:security@rakazo.com).
 
 ## Canonical resources
 
@@ -157,13 +151,10 @@ ALMA Cloud at https://app.rakazo.com is in beta. Self-hosting is also available.
 - [Alternatives](https://rakazo.com/alternatives/)
 - [Open source Grok Bot alternative](https://rakazo.com/grok-bot-alternative/)
 - [About](https://rakazo.com/about/)
-- [Source](https://github.com/elie222/rakazo)
 - [Self-hosting guide](https://rakazo.com/self-hosted-ai-agent/): requirements, Docker install, source setup, and desktop and mobile connections.
 - [Self-hosting Markdown](https://rakazo.com/self-hosted-ai-agent.md): the setup guide with language-tagged code examples.
-- [Full self-hosting reference](https://github.com/elie222/rakazo/blob/main/docs/self-host.md)
 - [OpenClaw comparison](https://rakazo.com/openclaw-alternative/)
 - [Blog](https://rakazo.com/blog/)
-- [Releases](https://github.com/elie222/rakazo/releases)
 - [Support](https://rakazo.com/support/)
 - [Privacy](https://rakazo.com/privacy/)
 - [Terms](https://rakazo.com/terms/)
