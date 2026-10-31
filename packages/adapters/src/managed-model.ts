@@ -1,3 +1,4 @@
+import { accessSync, constants } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -41,8 +42,36 @@ export function resolveManagedModel(env: NodeJS.ProcessEnv = process.env): Manag
     xaiApiKey: env.XAI_API_KEY?.trim() || undefined,
     grokBin: env.GROK_BIN?.trim() || "grok",
     grokHome: env.GROK_HOME?.trim() || undefined,
-    scratchRoot: env.ALMA_GROK_SCRATCH?.trim() || path.join(os.tmpdir(), "alma-grok"),
+    scratchRoot: resolveGrokScratchRoot(env),
   };
+}
+
+/**
+ * Grok's per-thread scratch directory. An explicit `ALMA_GROK_SCRATCH` wins.
+ * Otherwise use `<DATA_DIR>/alma-grok` when that directory is writable, then
+ * `/data/alma-grok` when no data dir is configured. The prod image runs as
+ * `node` and `/tmp` is not a reliable writable path there.
+ */
+export function resolveGrokScratchRoot(env: NodeJS.ProcessEnv = process.env): string {
+  const explicit = env.ALMA_GROK_SCRATCH?.trim();
+  if (explicit) return explicit;
+  const configured = env.DATA_DIR?.trim();
+  if (configured) {
+    return directoryWritable(configured)
+      ? path.join(configured, "alma-grok")
+      : path.join(os.tmpdir(), "alma-grok");
+  }
+  if (directoryWritable("/data")) return path.join("/data", "alma-grok");
+  return path.join(os.tmpdir(), "alma-grok");
+}
+
+function directoryWritable(dir: string): boolean {
+  try {
+    accessSync(dir, constants.W_OK);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function managedDraftIdentity(config: ManagedModelConfig): {

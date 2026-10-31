@@ -3,6 +3,7 @@ import {
   canonicalPiProviderId,
   InstructionVersionSchema,
   initialBotMemory,
+  SandboxKind,
 } from "@rakazo/contracts";
 import {
   BACKGROUND_RUN_TRIGGERS,
@@ -33,6 +34,11 @@ const SIDEBAR_PREVIEW_MESSAGE_WINDOW = 16;
 
 function isUniqueViolation(error: unknown): boolean {
   return Boolean(error && typeof error === "object" && "code" in error && error.code === "P2002");
+}
+
+/** Kinds the computer status schema accepts. "none" means no provider is configured. */
+function provisionedComputerKind(kind: string): string | null {
+  return SandboxKind.safeParse(kind).success ? kind : null;
 }
 
 function isSpawnKeyConflict(error: unknown): boolean {
@@ -546,8 +552,11 @@ export function createRepos(
       }
       const settings = await prisma.deploymentSettings.findUnique({ where: { id: "default" } });
       const envKind = process.env.SANDBOX_PROVIDER ?? "docker";
-      const kind =
+      const requestedKind =
         envKind === "docker" && settings?.computerHost === "this-mac" ? "desktop" : envKind;
+      // No computer provider: skip the row. A kind of "none" is not in the status schema
+      // and used to fail every account's thread response with "Output validation failed".
+      const kind = provisionedComputerKind(requestedKind);
       const inTransaction = <T>(run: (tx: Prisma.TransactionClient) => Promise<T>) =>
         input.isolationLevel
           ? prisma.$transaction(run, { isolationLevel: input.isolationLevel })
@@ -571,12 +580,14 @@ export function createRepos(
             input.color,
             { family: input.avatarFamily },
           );
-          const teamComputer = await ensureComputerRecord(tx, {
-            mode: "team",
-            spaceId: actor.spaceId,
-            userId: actor.userId,
-            kind,
-          });
+          const teamComputer = kind
+            ? await ensureComputerRecord(tx, {
+                mode: "team",
+                spaceId: actor.spaceId,
+                userId: actor.userId,
+                kind,
+              })
+            : null;
           const created = await tx.bot.create({
             data: {
               id: avatar.id,
@@ -591,7 +602,7 @@ export function createRepos(
               color: avatar.color,
               position: (positions._max.position ?? -1) + 1,
               parentBotId: input.parentBotId ?? null,
-              computerId: teamComputer.id,
+              computerId: teamComputer?.id ?? null,
               spawnKey: input.spawnKey,
               modelProvider,
               modelId,
@@ -613,7 +624,7 @@ export function createRepos(
               markUnread: false,
             });
           }
-          if (input.computerMode === "dedicated") {
+          if (input.computerMode === "dedicated" && kind) {
             const dedicated = await ensureComputerRecord(tx, {
               mode: "dedicated",
               spaceId: actor.spaceId,
@@ -716,7 +727,14 @@ export function createRepos(
         include: { computer: true },
       });
       if (!bot?.computer) throw new IsolationError();
-      const kind = bot.computer.kind;
+      const kind = provisionedComputerKind(bot.computer.kind);
+      if (!kind) {
+        const current = await prisma.bot.findFirstOrThrow({
+          where: { id: botId },
+          include: { thread: true, computer: true },
+        });
+        return mapBot(current);
+      }
       // Keep ensure + bot link in one transaction so a capped quota lock covers
       // both steps (a computer row alone does not count until a live bot refs it).
       const updated = await withTransactionRetry(() =>

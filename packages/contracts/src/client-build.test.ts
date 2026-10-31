@@ -6,11 +6,17 @@ import {
   compareBuilds,
   formatClientBuild,
   isClientUpdateRequiredError,
+  MOBILE_APP_STORES,
   parseClientBuild,
   parseMinimumClientBuilds,
 } from "./client-build.js";
 
 describe("client builds", () => {
+  it("links the published iOS app", () => {
+    expect(MOBILE_APP_STORES.ios).toBe("https://apps.apple.com/app/id6829162072");
+    expect(MOBILE_APP_STORES.ios.includes("id0000000000")).toBe(false);
+  });
+
   it("names a build by its UTC build time", () => {
     expect(buildIdAt(new Date("2026-10-22T09:30:15.987Z"))).toBe("20261022093015");
   });

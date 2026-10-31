@@ -60,8 +60,12 @@ end
 def prebuild!(platform)
   Dir.chdir(REPO_ROOT) do
     sh("pnpm", "install", "--frozen-lockfile") unless ENV["BITRISE_IO"] == "true"
-    sh("pnpm", "--filter", "@rakazo/mobile", "exec", "expo", "prebuild", "--non-interactive", "--platform", platform)
+    args = ["pnpm", "--filter", "@rakazo/mobile", "exec", "expo", "prebuild", "--non-interactive", "--platform", platform]
+    # Pods are installed afterwards with `bundle exec`, which is the cocoapods in this Gemfile.
+    args << "--no-install" if platform == "ios"
+    sh(*args)
   end
+  pod_install! if platform == "ios"
   return unless platform == "android"
 
   Dir.chdir(MOBILE_ROOT) { sh("node", "scripts/fix-android-namespace.mjs") }
@@ -106,6 +110,12 @@ end
 def ios_scheme
   scheme = ENV["ALMA_IOS_SCHEME"].to_s
   scheme.empty? ? "ALMA" : scheme
+end
+
+def pod_install!
+  podfile = File.join(MOBILE_ROOT, "ios/Podfile")
+  UI.user_error!("expo prebuild did not create an iOS Podfile.") unless File.exist?(podfile)
+  Dir.chdir(MOBILE_ROOT) { sh("bundle", "exec", "pod", "install", "--project-directory=ios") }
 end
 
 def deploy_dir

@@ -75,7 +75,8 @@
       "expo-sharing",
       "./plugins/with-worklets-headers",
       "./plugins/with-scene-lifecycle",
-      "./plugins/with-lan-cleartext"
+      "./plugins/with-lan-cleartext",
+      "./plugins/with-strip-foreground-services"
     ],
     "ios": {
       "bundleIdentifier": "do.alma.app",
@@ -97,7 +98,7 @@
     },
     "android": {
       "package": "do.alma.app",
-      "versionCode": 10,
+      "versionCode": 13,
       "softwareKeyboardLayoutMode": "resize",
       "icon": "./assets/icon.png",
       "adaptiveIcon": {

@@ -1,3 +1,4 @@
+import { mkdtempSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -5,6 +6,7 @@ import { afterEach, expect, it } from "vitest";
 import {
   managedDraftIdentity,
   managedModelEnabled,
+  resolveGrokScratchRoot,
   resolveManagedModel,
   writeAlmaModelTable,
 } from "./managed-model.js";
@@ -39,6 +41,28 @@ it("defaults the runtime to grok-build and keeps secrets out of the draft identi
     modelVersion: "subscription-default",
   });
   expect(JSON.stringify(managedDraftIdentity(config))).not.toContain("xai-test-fixture");
+});
+
+it("puts grok scratch on a writable data directory when ALMA_GROK_SCRATCH is unset", () => {
+  expect(
+    resolveGrokScratchRoot({
+      ALMA_GROK_SCRATCH: "  /var/alma-scratch  ",
+      DATA_DIR: "/data",
+    }),
+  ).toBe("/var/alma-scratch");
+
+  const data = mkdtempSync(path.join(os.tmpdir(), "alma-data-"));
+  roots.push(data);
+  expect(resolveGrokScratchRoot({ DATA_DIR: data, ALMA_GROK_SCRATCH: "" })).toBe(
+    path.join(data, "alma-grok"),
+  );
+  expect(
+    resolveGrokScratchRoot({
+      DATA_DIR: path.join(os.tmpdir(), "missing-alma-data-dir"),
+      ALMA_GROK_SCRATCH: " ",
+    }),
+  ).toBe(path.join(os.tmpdir(), "alma-grok"));
+  expect(resolveManagedModel({ DATA_DIR: data }).scratchRoot).toBe(path.join(data, "alma-grok"));
 });
 
 it("writes the alma table without the secret value", async () => {

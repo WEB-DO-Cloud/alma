@@ -1,3 +1,4 @@
+import { ComputerStatusSchema } from "@rakazo/contracts";
 import { describe, expect, it } from "vitest";
 import { executionBlocksUserTakeover, toComputerStatus } from "./computer-status.js";
 
@@ -29,6 +30,46 @@ describe("toComputerStatus", () => {
     };
     expect(toComputerStatus("bot-1", computer).busyBotName).toBeNull();
     expect(toComputerStatus("bot-1", computer, "Writer").busyBotName).toBe("Writer");
+  });
+
+  it("accepts kind none and other unknown kinds without failing output validation", () => {
+    const none = toComputerStatus("bot-1", {
+      kind: "none",
+      state: "stopped",
+      scope: "team",
+      controlHolder: "none",
+      homeRevision: "empty",
+    });
+    expect(ComputerStatusSchema.parse(none)).toMatchObject({
+      kind: "fake",
+      state: "stopped",
+      canUpdate: false,
+      terminalAvailable: false,
+      screenAvailable: false,
+    });
+
+    const unknown = toComputerStatus("bot-1", {
+      kind: "legacy",
+      state: "running",
+      scope: "dedicated",
+      controlHolder: "bot",
+      homeRevision: "r1",
+    });
+    expect(ComputerStatusSchema.parse(unknown)).toMatchObject({
+      kind: "fake",
+      mode: "dedicated",
+      canUpdate: false,
+      terminalAvailable: false,
+      screenAvailable: false,
+    });
+
+    const missing = toComputerStatus("bot-1", null);
+    expect(ComputerStatusSchema.parse(missing)).toMatchObject({
+      kind: "fake",
+      canUpdate: true,
+      terminalAvailable: true,
+      screenAvailable: false,
+    });
   });
 
   it("hides update on desktop computers", () => {

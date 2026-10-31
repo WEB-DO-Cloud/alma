@@ -22,6 +22,9 @@ describe("Android mobile platform contract", () => {
     expect(service).not.toContain("showStarting");
     expect(service).not.toContain("catch (_: IOException) {\n        stop()");
     expect(service).toContain("Expo push owns background completion and attention delivery");
+    expect(service).not.toContain("startForeground");
+    expect(service).not.toContain("FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING");
+    expect(service).toContain("manager.notify(LIVE_NOTIFICATION_ID, liveBuilder.build())");
     expect(service).toContain("isAllowedNotificationEndpoint(storage.endpoint)");
     expect(service).toContain("if (!isAllowedNotificationEndpoint(endpoint)) throw IOException");
     expect(module).toContain("android.settings.APP_NOTIFICATION_PROMOTION_SETTINGS");
