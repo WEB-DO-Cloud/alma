@@ -119,7 +119,7 @@ thread stream                                 v
 | `ALMA_MODEL_API_KEY` | Secret value for a later host. The file records the name `ALMA_MODEL_API_KEY`. The value is copied into the child environment only when it is non-empty. |
 | `GROK_BIN` | Executable. Default `grok`. |
 | `GROK_HOME` | Config and `auth.json`. Required for the subscription session. |
-| `ALMA_GROK_SCRATCH` | Parent of per-thread scratch directories. Default is `path.join(os.tmpdir(), "alma-grok")`. |
+| `ALMA_GROK_SCRATCH` | Parent of per-thread scratch directories. When unset, the default is `<DATA_DIR>/alma-grok` if that directory is writable, then `/data/alma-grok` if `DATA_DIR` is unset and `/data` is writable, otherwise the system temp directory. |
 | `XAI_API_KEY` | Fallback secret. Forwarded to the child when set. Never logged. |
 
 `resolveManagedModel` in `packages/adapters` is the only reader of these names. `apps/api/src/env.ts` and the worker call it. Vendor names do not move into `packages/core`.

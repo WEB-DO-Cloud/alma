@@ -97,6 +97,8 @@ describe("fastlane lanes", () => {
 
   it("uploads only to TestFlight and the Play internal track", () => {
     expect(read(join(mobileRoot, "Gemfile"))).toContain('gem "fastlane", "2.241.1"');
+    expect(read(join(mobileRoot, "Gemfile"))).toContain('gem "cocoapods", "~> 1.17"');
+    expect(fastfile).toContain('sh("bundle", "exec", "pod", "install", "--project-directory=ios")');
     expect(fastfile).toContain("submit_for_review: false");
     expect(fastfile).toContain("skip_submission: true");
     expect(fastfile).toContain('track: "internal"');

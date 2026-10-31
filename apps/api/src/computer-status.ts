@@ -1,5 +1,6 @@
 import { computerSupportsTerminal, computerSupportsUpdate } from "@rakazo/adapters";
 import type { ComputerStatus } from "@rakazo/contracts";
+import { SandboxKind } from "@rakazo/contracts";
 import { ACTIVE_RUN_STATUSES, computerScreenSize } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 
@@ -75,7 +76,12 @@ export function toComputerStatus(
         ? computer.state
         : "stopped";
   const screen = computerScreenSize(computer?.kind);
-  const kind = (computer?.kind ?? "fake") as ComputerStatus["kind"];
+  // Rows created with no computer provider store kind "none", which ComputerStatusSchema
+  // rejects. Map that (and any other unknown kind) to the missing-computer kind so the
+  // response still validates, and do not advertise a screen or terminal for it.
+  const parsedKind = SandboxKind.safeParse(computer?.kind);
+  const kind: ComputerStatus["kind"] = parsedKind.success ? parsedKind.data : "fake";
+  const providerKnown = computer == null || parsedKind.success;
   return {
     botId,
     mode: computer?.scope === "dedicated" ? "dedicated" : "team",
@@ -84,12 +90,13 @@ export function toComputerStatus(
     controlHolder: (computer?.controlHolder ?? "none") as ComputerStatus["controlHolder"],
     controlBotId: computer?.controlBotId ?? null,
     takeoverRequested: Boolean(computer?.controlRunId),
-    screenAvailable: !computer?.maintenanceId && (state === "running" || state === "booting"),
+    screenAvailable:
+      providerKnown && !computer?.maintenanceId && (state === "running" || state === "booting"),
     screenWidth: screen.width,
     screenHeight: screen.height,
     homeRevision: computer?.homeRevision ?? null,
     busyBotName,
-    canUpdate: computerSupportsUpdate(kind),
-    terminalAvailable: computerSupportsTerminal(kind),
+    canUpdate: providerKnown && computerSupportsUpdate(kind),
+    terminalAvailable: providerKnown && computerSupportsTerminal(kind),
   };
 }

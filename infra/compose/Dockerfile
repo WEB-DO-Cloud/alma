@@ -38,6 +38,9 @@ RUN pnpm --filter @rakazo/db generate
 RUN pnpm --filter @rakazo/api --filter @rakazo/worker build
 RUN RAKAZO_ALLOW_DEV_SECRETS=1 pnpm --filter @rakazo/web build
 RUN install -d -m 750 -o node -g node /data /app/apps/web/node_modules/.vite-temp /app/apps/web/asset-archive
+# The API runs as node. A root-owned 755 /tmp makes Grok scratch (and other
+# runtime temp files) fail when ALMA_GROK_SCRATCH is unset.
+RUN chmod 1777 /tmp
 # Optional. The default image does not download grok. Device login is
 # `docker compose exec api grok login --device-auth` with GROK_HOME on /data.
 ARG INSTALL_GROK_CLI=0
