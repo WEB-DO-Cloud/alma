@@ -81,7 +81,9 @@ export function toComputerStatus(
   // response still validates, and do not advertise a screen or terminal for it.
   const parsedKind = SandboxKind.safeParse(computer?.kind);
   const kind: ComputerStatus["kind"] = parsedKind.success ? parsedKind.data : "fake";
-  const providerKnown = computer == null || parsedKind.success;
+  // A missing computer and a stored kind of "none" are the same product state:
+  // the response stays valid, and it does not offer a screen, update, or terminal.
+  const providerKnown = parsedKind.success;
   return {
     botId,
     mode: computer?.scope === "dedicated" ? "dedicated" : "team",

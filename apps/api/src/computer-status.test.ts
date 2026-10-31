@@ -66,8 +66,8 @@ describe("toComputerStatus", () => {
     const missing = toComputerStatus("bot-1", null);
     expect(ComputerStatusSchema.parse(missing)).toMatchObject({
       kind: "fake",
-      canUpdate: true,
-      terminalAvailable: true,
+      canUpdate: false,
+      terminalAvailable: false,
       screenAvailable: false,
     });
   });
