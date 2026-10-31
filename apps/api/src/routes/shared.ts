@@ -113,7 +113,9 @@ export async function modelSetup(deps: RouterDeps, actor: Actor) {
         deployment: { provider: deps.env.defaultProvider, model: deps.env.defaultModel },
       }).primary,
     settings,
-    needsModel: deps.env.agentRuntime !== "scripted" && !main && !hasDeployment,
+    // The managed model runs without a user credential. A connected model is not required.
+    needsModel:
+      !managedModelActive() && deps.env.agentRuntime !== "scripted" && !main && !hasDeployment,
   };
 }
 

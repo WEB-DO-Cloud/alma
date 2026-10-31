@@ -1964,6 +1964,10 @@ msgstr "Não foi possível renomear o espaço"
 msgid "Could not render chart"
 msgstr "Não foi possível renderizar o gráfico"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "Não foi possível redefinir a senha"
@@ -4584,6 +4588,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Solicite um novo código"
@@ -5887,6 +5899,10 @@ msgstr "Aguardando na fila…"
 #: src/pages/shell/message-cards.tsx
 msgid "Waiting…"
 msgstr "Aguardando…"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

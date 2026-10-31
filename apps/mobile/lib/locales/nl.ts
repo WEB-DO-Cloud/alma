@@ -1012,4 +1012,8 @@ export const NL_MESSAGES: Record<string, string> = {
   "{sender} rollup hours": "Bundeluren voor {sender}",
   "Connect Slack": "Slack verbinden",
   "Link DMs": "DM’s koppelen",
+  "Report response": "Reactie melden",
+  "Report sent": "Melding verzonden",
+  "We'll review this response.": "We bekijken dit antwoord.",
+  "Could not report this response": "Dit antwoord melden is mislukt",
 };

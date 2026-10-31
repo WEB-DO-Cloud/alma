@@ -1964,6 +1964,10 @@ msgstr "无法重命名工作区"
 msgid "Could not render chart"
 msgstr "无法渲染图表"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "无法重置密码"
@@ -4584,6 +4588,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "请重新获取验证码"
@@ -5887,6 +5899,10 @@ msgstr "排队等候…"
 #: src/pages/shell/message-cards.tsx
 msgid "Waiting…"
 msgstr "等待中…"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

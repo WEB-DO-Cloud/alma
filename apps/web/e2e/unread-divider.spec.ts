@@ -200,7 +200,12 @@ test("marking a message unread brings the chat back with New above the reply fro
   await firstReply.hover();
   await firstReply.getByRole("button", { name: "More" }).click();
   const markUnread = page.getByRole("menuitem", { name: "Mark as unread", exact: true });
-  await expect(page.getByRole("menuitem")).toHaveText(["Reply", "Mark as unread", "Copy"]);
+  await expect(page.getByRole("menuitem")).toHaveText([
+    "Reply",
+    "Mark as unread",
+    "Copy",
+    "Report response",
+  ]);
   await captureScreenshot(page, testInfo, "message-mark-unread-menu");
   await markUnread.click();
   await expect(page.locator(`[data-roster-bot-id="${chiefId}"]`)).toHaveAttribute(
@@ -211,7 +216,7 @@ test("marking a message unread brings the chat back with New above the reply fro
   // The completed action disappears from this message, while the chat remains unread.
   await firstReply.hover();
   await firstReply.getByRole("button", { name: "More" }).click();
-  await expect(page.getByRole("menuitem")).toHaveText(["Reply", "Copy"]);
+  await expect(page.getByRole("menuitem")).toHaveText(["Reply", "Copy", "Report response"]);
   // The scroll viewport continues behind the rounded corners, with no rectangular cutoff.
   const transcriptBounds = await page.getByTestId("transcript").boundingBox();
   const composerBounds = await page.getByTestId("composer-bar").boundingBox();
@@ -241,7 +246,7 @@ test("marking a message unread brings the chat back with New above the reply fro
   await expect(otherRow).not.toHaveAttribute("data-roster-unread", "true");
   await firstReply.hover();
   await firstReply.getByRole("button", { name: "More" }).click();
-  await expect(page.getByRole("menuitem")).toHaveText(["Reply", "Copy"]);
+  await expect(page.getByRole("menuitem")).toHaveText(["Reply", "Copy", "Report response"]);
   await closeMenu();
 
   await page.goto(`/app/${otherId}`);

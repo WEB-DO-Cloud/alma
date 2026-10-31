@@ -345,6 +345,7 @@ model SpaceMember {
   modelPreferences SpaceModelPreference[]
   voicePreferences SpaceVoicePreference[]
   aiDataConsents AiDataConsent[]
+  messageReports MessageReport[]
   modelRoleChoices SpaceModelRoleChoice[]
   settingOverrides SpaceSettingOverride[]
 
@@ -641,6 +642,7 @@ model Thread {
   /// Highest message seq the user has read; the "New" divider goes after it. -1 = none read.
   lastReadSeq                 Int        @default(-1)
   messages                    Message[]
+  messageReports              MessageReport[]
   events                      Event[]
   tasks                       Task[]
   runs                        Run[]
@@ -669,6 +671,7 @@ model Message {
   sourceRuns            Run[]             @relation("RunSourceMessage")
   externalTranscriptFor  ExternalMessage?
   steeringMessages SteeringMessage[]
+  reports          MessageReport[]
   createdAt        DateTime  @default(now())
 
   @@unique([threadId, seq])
@@ -678,6 +681,23 @@ model Message {
   @@index([runId, seq])
   @@index([searchTokens], type: Gin)
   @@map("messages")
+}
+
+/// A user report of an assistant response, kept for the operator to review.
+model MessageReport {
+  id        String   @id @default(cuid())
+  spaceId   String
+  userId    String
+  threadId  String
+  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  messageId String
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  spaceMember SpaceMember @relation(fields: [spaceId, userId], references: [spaceId, userId], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@index([spaceId, createdAt])
+  @@map("message_reports")
 }
 
 model Event {

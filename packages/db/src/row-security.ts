@@ -100,6 +100,7 @@ export const ROW_SECURITY_MODELS: ReadonlySet<string> = new Set([
   "PushToken",
   "Thread",
   "Message",
+  "MessageReport",
   "Event",
   "MemoryDocument",
   "MemoryRevision",

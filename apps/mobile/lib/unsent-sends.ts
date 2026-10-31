@@ -22,6 +22,13 @@ import type { OutboxScope } from "./thread-feedback";
 import { configureUnsentSends, restoreUnsentSends, sendWaitingMessages } from "./thread-feedback";
 import { errorText } from "./user-error";
 
+function promptConnectModel() {
+  Alert.alert(t("Add an AI model to keep chatting"), undefined, [
+    { text: t("Not Now"), style: "cancel" },
+    { text: t("Add Model"), onPress: openModelSettings, isPreferred: true },
+  ]);
+}
+
 let activeScope: (OutboxScope & { generation: number }) | null = null;
 function scope() {
   return activeScope &&
@@ -79,13 +86,16 @@ configureUnsentSends({
   errorText: (error) => errorText(error, t("Failed to send message")),
   notDelivered: (attempt) => {
     if (isModelRequiredSendError(attempt.error)) {
-      Alert.alert(t("Add an AI model to keep chatting"), undefined, [
-        { text: t("Not Now"), style: "cancel" },
-        { text: t("Add Model"), onPress: openModelSettings, isPreferred: true },
-      ]);
-    } else {
-      Alert.alert(t("Failed to send message"), attempt.error);
+      // A managed model, or an account that no longer needs one, must not be sent to connect a model.
+      void rpc<{ managedModel?: boolean; needsModel?: boolean }>("me")
+        .then((me) => {
+          if (me.managedModel || me.needsModel === false) return;
+          promptConnectModel();
+        })
+        .catch(() => promptConnectModel());
+      return;
     }
+    Alert.alert(t("Failed to send message"), attempt.error);
   },
 });
 export function startUnsentSends(): () => void {

@@ -1,6 +1,10 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { MessageReaction, ThreadMessage } from "@rakazo/contracts";
-import { canReactToThreadMessage, MESSAGE_REACTIONS } from "@rakazo/contracts";
+import {
+  canReactToThreadMessage,
+  canReportAssistantMessage,
+  MESSAGE_REACTIONS,
+} from "@rakazo/contracts";
 import { canMarkMessageUnread } from "@rakazo/core";
 import {
   DropdownMenu,
@@ -11,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@rakazo/ui-web";
-import { Copy, MessageSquareDot, MoreHorizontal, Reply, Smile } from "lucide-react";
+import { Copy, Flag, MessageSquareDot, MoreHorizontal, Reply, Smile } from "lucide-react";
 import { useState } from "react";
 import { MessageHoverMetadata } from "../../components/MessageHoverMetadata";
 import { copyableMessageText } from "../../lib/message-text";
@@ -24,6 +28,7 @@ export function MessageHoverActions({
   onMarkUnread,
   markedUnread = false,
   onReact,
+  onReport,
 }: {
   message: ThreadMessage;
   side: "start" | "end";
@@ -31,6 +36,7 @@ export function MessageHoverActions({
   onMarkUnread: (message: ThreadMessage) => void;
   markedUnread?: boolean;
   onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
+  onReport: (message: ThreadMessage) => Promise<void>;
 }) {
   const { t } = useLingui();
   const [moreOpen, setMoreOpen] = useState(false);
@@ -118,6 +124,17 @@ export function MessageHoverActions({
               <Copy size={14} strokeWidth={1.7} />
               <Trans>Copy</Trans>
             </DropdownMenuItem>
+            {canReportAssistantMessage(message) ? (
+              <DropdownMenuItem
+                onClick={() => {
+                  setMoreOpen(false);
+                  void onReport(message);
+                }}
+              >
+                <Flag size={14} strokeWidth={1.7} />
+                <Trans>Report response</Trans>
+              </DropdownMenuItem>
+            ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

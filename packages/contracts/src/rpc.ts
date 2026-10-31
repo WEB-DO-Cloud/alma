@@ -496,6 +496,10 @@ export const appContract = {
         }),
       )
       .output(z.object({ ok: z.literal(true), runIds: z.array(Id).optional() })),
+    /** Records that the user flagged an assistant response. Does not start a turn. */
+    report: oc
+      .input(threadTarget.safeExtend({ messageId: Id }))
+      .output(z.object({ ok: z.literal(true) })),
     stop: oc.input(threadTarget).output(z.object({ ok: z.literal(true) })),
     followUp: oc
       .input(

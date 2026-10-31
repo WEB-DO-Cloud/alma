@@ -2360,6 +2360,31 @@ function SpaceShell() {
     },
     [t],
   );
+  const reportAssistantResponse = useCallback(
+    async (message: ThreadMessage) => {
+      const botId = activeBotId.current;
+      const groupId = activeGroupId.current;
+      if (!botId && !groupId) return;
+      try {
+        await rpc.threads.report({
+          ...(groupId ? { groupId } : { botId: botId! }),
+          messageId: message.id,
+        });
+        const stillHere = groupId
+          ? activeGroupId.current === groupId
+          : activeBotId.current === botId;
+        if (!stillHere) return;
+        toast.success(t`Report sent`, { description: t`We'll review this response.` });
+      } catch (error) {
+        const stillHere = groupId
+          ? activeGroupId.current === groupId
+          : activeBotId.current === botId;
+        if (!stillHere) return;
+        toast.error(errorText(error, t`Could not report this response`));
+      }
+    },
+    [t],
+  );
   const onAttachmentPick = useCallback(
     (files: FileList | readonly File[] | null) => {
       const threadKey = activeGroupId.current ?? activeBotId.current;
@@ -3748,6 +3773,7 @@ function SpaceShell() {
                 setReplyQuote(quote);
               }}
               onReact={reactToMessage}
+              onReport={reportAssistantResponse}
               onJumpToMessage={jumpToReplyMessage}
               onOpenPeerMessages={(peer) => {
                 setPeerConversation(peer);
@@ -3804,6 +3830,7 @@ function SpaceShell() {
               attachmentNotice={attachmentNotice}
               sendError={sendError}
               onOpenModels={() => {
+                if (bootstrapMe?.managedModel) return;
                 if (active && !inGroup) {
                   setPanel("settings");
                   setModelFocusRequest(Date.now());

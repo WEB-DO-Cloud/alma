@@ -5,6 +5,7 @@ import {
   ATTACHMENT_MAX_COUNT,
   attachmentMaxBytes,
   canReactToThreadMessage,
+  canReportAssistantMessage,
   isAttachmentAudioMimeType,
   MESSAGE_REACTIONS,
 } from "@rakazo/contracts";
@@ -2343,6 +2344,23 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
     }
   }
 
+  async function reportAssistantResponse(message: MobileMessage) {
+    const targetBotId = botId;
+    const targetGroupId = groupId;
+    if (!targetBotId && !targetGroupId) return;
+    try {
+      await rpc("threads/report", {
+        ...(targetGroupId ? { groupId: targetGroupId } : { botId: targetBotId! }),
+        messageId: message.id,
+      });
+      if (!isCurrentTarget(targetBotId, targetGroupId)) return;
+      Alert.alert(t("Report sent"), t("We'll review this response."));
+    } catch (err) {
+      if (!isCurrentTarget(targetBotId, targetGroupId)) return;
+      Alert.alert(t("Could not report this response"), errorText(err, t("Try again.")));
+    }
+  }
+
   // Event actions read the latest committed screen state without invalidating settled rows.
   const currentRowActions: MessageRowActions = {
     helperToggle: (measure, toggle, opening) => {
@@ -2404,6 +2422,7 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
     select: setSelectableText,
     speak,
     react: (message, reaction) => reactToMessage(message, reaction),
+    report: reportAssistantResponse,
     markUnread: markUnreadFrom,
     answer: answerMessage,
     openBot,
@@ -2477,6 +2496,7 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
       select: (text) => rowActionsRef.current.select(text),
       speak: (message) => rowActionsRef.current.speak(message),
       react: (message, reaction) => rowActionsRef.current.react(message, reaction),
+      report: (message) => rowActionsRef.current.report(message),
       markUnread: (message) => rowActionsRef.current.markUnread(message),
       answer: (message, answer, username, dismiss) =>
         rowActionsRef.current.answer(message, answer, username, dismiss),
@@ -2703,7 +2723,7 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
     <FailedSendBubble
       key={attempt.clientNonce}
       attempt={attempt}
-      needsModel={needsModel}
+      needsModel={managedModel ? false : needsModel}
       onRetry={() => {
         followOwnSend();
         void deliver(attempt, true);
@@ -3360,6 +3380,7 @@ type MessageRowActions = {
   select: (text: string) => void;
   speak: (message: MobileMessage) => void;
   react: (message: MobileMessage, reaction: MessageReaction) => Promise<boolean>;
+  report: (message: MobileMessage) => Promise<void>;
   markUnread: (message: MobileMessage) => void;
   answer: (
     message: MobileMessage,
@@ -3497,6 +3518,7 @@ const MessageRow = memo(function MessageRow({
       !message.id.startsWith("progress:") &&
       quotableMessageSegments(message.role, message.blocks).length > 0;
     const includeReact = !readOnly && canReactToThreadMessage(message);
+    const includeReport = canReportAssistantMessage(message);
     // The call already reads replies aloud; a second voice would talk over it.
     const includeSpeak = message.role === "bot" && !onCall && Boolean(blockText(message));
     const includeSelect = messageText.trim().length > 0;
@@ -3514,6 +3536,7 @@ const MessageRow = memo(function MessageRow({
       if (text) void Clipboard.setStringAsync(text).catch(() => undefined);
     };
     const react = (reaction: MessageReaction) => actions.react(message, reaction);
+    const report = () => void actions.report(message);
     const markUnread = () => actions.markUnread(message);
     // VoiceOver reads the bubble as one element and can't reach a code block's copy button.
     const codeBlocks = message.role === "user" ? [] : markdownCodeBlocks(blockText(message));
@@ -3547,6 +3570,7 @@ const MessageRow = memo(function MessageRow({
       ...(includeSpeak ? [{ name: "speak", text: t("Speak message"), onPress: speakMessage }] : []),
       ...(includeSelect ? [{ name: "select", text: t("Select text"), onPress: select }] : []),
       { name: "copy", text: t("Copy"), onPress: copy },
+      ...(includeReport ? [{ name: "report", text: t("Report response"), onPress: report }] : []),
       ...(codeBlocks.length === 1
         ? [{ name: "copyCode", text: t("Copy code"), onPress: copyCode }]
         : []),
@@ -3555,6 +3579,7 @@ const MessageRow = memo(function MessageRow({
       labels: {
         reply: t("Reply"),
         copy: t("Copy"),
+        report: t("Report response"),
         react: t("React"),
         quote: t("Quote"),
         speak: t("Speak message"),
@@ -3569,6 +3594,7 @@ const MessageRow = memo(function MessageRow({
         speak: includeSpeak,
         select: includeSelect,
         unread: includeUnread,
+        report: includeReport,
       },
     });
     const openSheet = (event: GestureResponderEvent) =>
@@ -3612,6 +3638,16 @@ const MessageRow = memo(function MessageRow({
           ],
           [
             { name: "copy", text: t("Copy"), icon: "copy-outline" as const, onPress: copy },
+            ...(includeReport
+              ? [
+                  {
+                    name: "report",
+                    text: t("Report response"),
+                    icon: "flag-outline" as const,
+                    onPress: report,
+                  },
+                ]
+              : []),
             ...(includeSelect
               ? [
                   {
@@ -3659,6 +3695,7 @@ const MessageRow = memo(function MessageRow({
         }
         if (id === "reply") reply();
         if (id === "copy") copy();
+        if (id === "report") report();
         if (id === "quote") quote();
         if (id === "speak") speakMessage();
         if (id === "select") select();

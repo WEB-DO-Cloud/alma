@@ -2,13 +2,14 @@ import { MODEL_REQUIRED_SEND_ERROR } from "@rakazo/core";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { rpc } from "./api";
 import type { SendAttempt } from "./thread-feedback";
 import { configureUnsentSends } from "./thread-feedback";
 import "./unsent-sends";
 
 vi.mock("react-native", () => ({ Alert: { alert: vi.fn() }, AppState: {} }));
 vi.mock("expo-router", () => ({ router: { push: vi.fn() } }));
-vi.mock("./api", () => ({ isServerReachable: vi.fn() }));
+vi.mock("./api", () => ({ isServerReachable: vi.fn(), rpc: vi.fn() }));
 vi.mock("./artifact-cache-session", () => ({}));
 vi.mock("./integrations-cache", () => ({}));
 vi.mock("./outbox-disk", () => ({ outboxDisk: {} }));
@@ -22,8 +23,10 @@ function attempt(error: string): SendAttempt {
 }
 beforeEach(() => vi.clearAllMocks());
 describe("notDelivered", () => {
-  it("offers Models settings and cancellation for the missing-model rejection", () => {
+  it("offers Models settings and cancellation for the missing-model rejection", async () => {
+    vi.mocked(rpc).mockRejectedValueOnce(new Error("offline"));
     notDelivered(attempt(` ${MODEL_REQUIRED_SEND_ERROR} `));
+    await vi.waitFor(() => expect(Alert.alert).toHaveBeenCalled());
     const [title, message, buttons] = vi.mocked(Alert.alert).mock.calls[0]!;
     expect(title).toBe("translated: Add an AI model to keep chatting");
     expect(message).toBeUndefined();
@@ -35,6 +38,13 @@ describe("notDelivered", () => {
     buttons![1]!.onPress!();
     expect(router.push).toHaveBeenCalledWith("/(settings)/models");
   });
+  it("does not ask to connect a model when the managed model is on", async () => {
+    vi.mocked(rpc).mockResolvedValueOnce({ managedModel: true, needsModel: false });
+    notDelivered(attempt(MODEL_REQUIRED_SEND_ERROR));
+    await vi.waitFor(() => expect(rpc).toHaveBeenCalledWith("me"));
+    expect(Alert.alert).not.toHaveBeenCalled();
+  });
+
   it("keeps the existing alert for unrelated errors", () => {
     notDelivered(attempt("Rejected"));
     expect(Alert.alert).toHaveBeenCalledWith("translated: Failed to send message", "Rejected");

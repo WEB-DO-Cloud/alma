@@ -1016,4 +1016,8 @@ export const ZH_MESSAGES: Record<string, string> = {
   "{sender} rollup hours": "{sender} 合并间隔（小时）",
   "Connect Slack": "连接 Slack",
   "Link DMs": "关联私信",
+  "Report response": "举报回复",
+  "Report sent": "已提交举报",
+  "We'll review this response.": "我们会审核这条回复。",
+  "Could not report this response": "无法举报这条回复",
 };
