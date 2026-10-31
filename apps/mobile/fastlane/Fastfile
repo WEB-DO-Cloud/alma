@@ -155,10 +155,11 @@ def configure_android_release_signing!
   patched = text.sub(/signingConfigs \{\n        debug \{.*?\n        \}/m) do |block|
     "#{block}\n#{signing.rstrip}"
   end
-  patched = patched.sub(/release \{\n            signingConfig signingConfigs\.debug/) do
-    "release {\n            signingConfig signingConfigs.release"
+  # The template puts comment lines between "release {" and its signingConfig.
+  patched = patched.sub(/(        release \{\n(?:            \/\/.*\n)*            )signingConfig signingConfigs\.debug/) do
+    "#{Regexp.last_match(1)}signingConfig signingConfigs.release"
   end
-  if patched == text
+  unless patched.include?("signingConfig signingConfigs.release") && patched.include?("        release {\n            storeFile")
     UI.user_error!("Could not attach a release signingConfig to the prebuild Gradle file.")
   end
   File.write(gradle_path, patched)
