@@ -3,13 +3,13 @@
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
 
 [![加入 Discord 社区](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
-[![在 App Store 下载 iPhone 版](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/alma-asistente-privado/id0000000000)
+[![在 App Store 下载 iPhone 版](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/id6829162072)
 [![在 Google Play 获取](https://img.shields.io/badge/Google%20Play-ALMA-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
 
 ![ALMA：由你掌控的 AI 队友](./docs/readme-hero.png)
 
 ALMA AI 是一个开源 AI 智能体项目，让你拥有可长期协作的 AI 队友，也可以作为自托管 AI 助手在自己的电脑上运行。
-它提供网页版、Electron 桌面应用，以及 [iPhone](https://apps.apple.com/app/alma-asistente-privado/id0000000000) 和
+它提供网页版、Electron 桌面应用，以及 [iPhone](https://apps.apple.com/app/id6829162072) 和
 [Android](https://play.google.com/store/apps/details?id=do.alma.app) 应用。
 你可以接入自己的模型和计算环境提供商，也可以在本地运行完整服务。
 

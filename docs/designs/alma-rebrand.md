@@ -27,7 +27,7 @@ Use this table. A later section does not override it.
 | Email subject and the visible From name | Product token becomes `ALMA`. Example subject: `Verify your ALMA email`. |
 | Push title already fixed on the phone | Stays `ALMA`. |
 | Copyright line on the marketing footer, the terms page, the privacy page, and the phone store copyright file | `© 2026 ALMA INTELIGENCIA, S.R.L.` The store file `apps/mobile/fastlane/metadata/copyright.txt` has no © sign. Its text becomes `2026 ALMA INTELIGENCIA, S.R.L.` |
-| Store listing title | Stays `ALMA - Asistente Privado`. That field is separate from the on-device label `ALMA`. |
+| Store listing title | `ALMA Asistente IA`. That field is separate from the on-device label `ALMA`. |
 | OS permission strings | Product token becomes `ALMA`. Desktop key `build.mac.extendInfo.NSMicrophoneUsageDescription` in `apps/desktop/package.json` becomes `ALMA uses the microphone for dictation and voice calls with your bots.` |
 
 On a Spanish screen that already exists, keep the Spanish words and change only the product token.

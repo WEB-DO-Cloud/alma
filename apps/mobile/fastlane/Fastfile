@@ -39,9 +39,12 @@ end
 
 def sync_certificates(type)
   require_match_password!
+  # CI only reads the match repo, except the one-time run that creates the certificate and
+  # profile (ALMA_MATCH_CREATE=true, set as a build parameter, never as a standing secret).
+  setup_ci if ci?
   options = {
     type: type,
-    readonly: ci?,
+    readonly: ci? && ENV["ALMA_MATCH_CREATE"] != "true",
     app_identifier: APP_IDENTIFIER,
   }
   options[:api_key] = app_store_api_key! if ci? || api_key_env?
@@ -59,6 +62,36 @@ def prebuild!(platform)
     sh("pnpm", "install", "--frozen-lockfile") unless ENV["BITRISE_IO"] == "true"
     sh("pnpm", "--filter", "@rakazo/mobile", "exec", "expo", "prebuild", "--non-interactive", "--platform", platform)
   end
+  return unless platform == "android"
+
+  Dir.chdir(MOBILE_ROOT) { sh("node", "scripts/fix-android-namespace.mjs") }
+  # The release bundle runs out of memory with the template's 2 GB heap.
+  props = File.join(MOBILE_ROOT, "android/gradle.properties")
+  text = File.read(props)
+  updated = text.sub("-Xmx2048m", "-Xmx4g").sub("MaxMetaspaceSize=512m", "MaxMetaspaceSize=1g")
+  unless updated.include?("org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g")
+    UI.user_error!("Could not raise the Gradle heap in android/gradle.properties.")
+  end
+  File.write(props, updated)
+end
+
+# Expo prebuild leaves automatic signing with no team. Point the app target at the match profile.
+def use_match_signing!
+  team = ENV["APPLE_TEAM_ID"].to_s
+  UI.user_error!("Set APPLE_TEAM_ID.") if team.empty?
+  profile = ENV["sigh_#{APP_IDENTIFIER}_appstore_profile-name"].to_s
+  UI.user_error!("match did not export an App Store profile name for #{APP_IDENTIFIER}.") if profile.empty?
+  project = Dir[File.join(MOBILE_ROOT, "ios/*.xcodeproj")].fetch(0)
+  update_code_signing_settings(
+    path: project,
+    use_automatic_signing: false,
+    team_id: team,
+    targets: [ios_scheme],
+    bundle_identifier: APP_IDENTIFIER,
+    code_sign_identity: "Apple Distribution",
+    profile_name: profile
+  )
+  profile
 end
 
 def ios_workspace
@@ -115,7 +148,9 @@ def configure_android_release_signing!
   keystore = materialize_android_keystore!
   gradle_path = File.join(MOBILE_ROOT, "android/app/build.gradle")
   text = File.read(gradle_path)
-  signing = <<~GRADLE
+  # <<- keeps this indent. <<~ would strip it, and the check below would
+  # then reject a release signingConfig that was actually inserted.
+  signing = <<-GRADLE
         release {
             storeFile file(#{keystore.dump})
             storePassword #{ENV.fetch("ANDROID_KEYSTORE_PASSWORD").dump}
@@ -126,10 +161,11 @@ def configure_android_release_signing!
   patched = text.sub(/signingConfigs \{\n        debug \{.*?\n        \}/m) do |block|
     "#{block}\n#{signing.rstrip}"
   end
-  patched = patched.sub(/release \{\n            signingConfig signingConfigs\.debug/) do
-    "release {\n            signingConfig signingConfigs.release"
+  # The template puts comment lines between "release {" and its signingConfig.
+  patched = patched.sub(/(        release \{\n(?:            \/\/.*\n)*            )signingConfig signingConfigs\.debug/) do
+    "#{Regexp.last_match(1)}signingConfig signingConfigs.release"
   end
-  if patched == text
+  unless patched.include?("signingConfig signingConfigs.release") && patched.include?("        release {\n            storeFile")
     UI.user_error!("Could not attach a release signingConfig to the prebuild Gradle file.")
   end
   File.write(gradle_path, patched)
@@ -193,11 +229,18 @@ platform :ios do
   lane :archive do
     bump_version! if ENV["BITRISE_BUILD_NUMBER"] || ENV["ALMA_BUILD_NUMBER"]
     prebuild!("ios")
-    sync_certificates("appstore") unless ENV["BITRISE_USE_UPLOADED_SIGNING"] == "true"
+    export_options = { method: "app-store" }
+    unless ENV["BITRISE_USE_UPLOADED_SIGNING"] == "true"
+      sync_certificates("appstore")
+      profile = use_match_signing!
+      export_options[:provisioningProfiles] = { APP_IDENTIFIER => profile }
+      export_options[:signingStyle] = "manual"
+    end
     gym(
       workspace: ios_workspace,
       scheme: ios_scheme,
       export_method: "app-store",
+      export_options: export_options,
       output_directory: deploy_dir,
       output_name: "ALMA.ipa",
       clean: true
