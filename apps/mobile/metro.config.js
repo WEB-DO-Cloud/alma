@@ -11,6 +11,9 @@ function resolveFromApp(moduleName) {
 }
 
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (moduleName === "node:module") {
+    return { type: "sourceFile", filePath: require("node:path").join(projectRoot, "node-module-shim.js") };
+  }
   if (pinned.has(moduleName) || moduleName.startsWith("react-native/")) {
     try {
       return { type: "sourceFile", filePath: resolveFromApp(moduleName) };
