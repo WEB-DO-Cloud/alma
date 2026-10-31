@@ -3830,6 +3830,7 @@ function SpaceShell() {
               attachmentNotice={attachmentNotice}
               sendError={sendError}
               onOpenModels={() => {
+                if (bootstrapMe?.managedModel) return;
                 if (active && !inGroup) {
                   setPanel("settings");
                   setModelFocusRequest(Date.now());

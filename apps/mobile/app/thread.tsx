@@ -2723,7 +2723,7 @@ function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId: string
     <FailedSendBubble
       key={attempt.clientNonce}
       attempt={attempt}
-      needsModel={needsModel}
+      needsModel={managedModel ? false : needsModel}
       onRetry={() => {
         followOwnSend();
         void deliver(attempt, true);

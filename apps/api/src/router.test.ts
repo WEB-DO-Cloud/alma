@@ -628,6 +628,30 @@ describe("model setup gate", () => {
     },
   );
 
+  it("does not ask for a user model when the managed model is active", async () => {
+    const previousManaged = process.env.ALMA_MANAGED_MODEL;
+    const previousRuntime = process.env.AGENT_RUNTIME;
+    process.env.ALMA_MANAGED_MODEL = "1";
+    process.env.AGENT_RUNTIME = "pi";
+    try {
+      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
+      const me = await call(handler, actor, "me", null);
+      expect(me.status).toBe(200);
+      await expect(me.json()).resolves.toEqual({
+        json: expect.objectContaining({ needsModel: false, managedModel: true }),
+      });
+
+      const send = await call(handler, actor, "threads/send", { botId: "bot-1", text: "hello" });
+      const body = (await send.json()) as { json?: { message?: string } };
+      expect(body.json?.message).not.toBe("Connect a model to start a run.");
+    } finally {
+      if (previousManaged === undefined) delete process.env.ALMA_MANAGED_MODEL;
+      else process.env.ALMA_MANAGED_MODEL = previousManaged;
+      if (previousRuntime === undefined) delete process.env.AGENT_RUNTIME;
+      else process.env.AGENT_RUNTIME = previousRuntime;
+    }
+  });
+
   it("refuses to start a run when no model is configured", async () => {
     const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
 
