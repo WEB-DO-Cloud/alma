@@ -3745,8 +3745,9 @@ export function createRunExecutor(deps: ExecutorDeps) {
           computer: { select: { scope: true } },
         },
       });
-      if (!leaseTarget.computerId) throw new Error("Bot has no computer");
-      if (leaseTarget.computerSwitching) {
+      // A deployment with no sandbox has no computer row. The run still answers;
+      // it just has no computer tools. A bot that is mid-switch keeps waiting.
+      if (leaseTarget.computerId && leaseTarget.computerSwitching) {
         await requeueComputerRun(deps, runId, workerId, fence, resumeCheckpoint, heldForTakeover);
         return;
       }
@@ -3764,26 +3765,28 @@ export function createRunExecutor(deps: ExecutorDeps) {
         );
       }
       let computerLease: ComputerExecutionLease | null = null;
-      try {
-        computerLease = await acquireComputerExecutionLease(deps.prisma, {
-          computerId: leaseTarget.computerId,
-          runId,
-          botId: run.botId,
-          resumeHeldLease,
-        });
-        if (!computerLease && leaseTarget.computer?.scope === "dedicated") {
-          computerLease = await acquireDedicatedScreenLeaseFence(deps.prisma, {
+      if (leaseTarget.computerId) {
+        try {
+          computerLease = await acquireComputerExecutionLease(deps.prisma, {
             computerId: leaseTarget.computerId,
             runId,
             botId: run.botId,
-            workerId,
-            runFence: fence,
+            resumeHeldLease,
           });
+          if (!computerLease && leaseTarget.computer?.scope === "dedicated") {
+            computerLease = await acquireDedicatedScreenLeaseFence(deps.prisma, {
+              computerId: leaseTarget.computerId,
+              runId,
+              botId: run.botId,
+              workerId,
+              runFence: fence,
+            });
+          }
+        } catch (error) {
+          if (!(error instanceof ComputerBusyError)) throw error;
+          await requeueComputerRun(deps, runId, workerId, fence, resumeCheckpoint, heldForTakeover);
+          return;
         }
-      } catch (error) {
-        if (!(error instanceof ComputerBusyError)) throw error;
-        await requeueComputerRun(deps, runId, workerId, fence, resumeCheckpoint, heldForTakeover);
-        return;
       }
       let attempt: { id: string };
       // Resumed attempts keep the first start, so lateness reflects when the run began.
@@ -4246,9 +4249,8 @@ export function createRunExecutor(deps: ExecutorDeps) {
           });
         }
 
-        if (!bot.computer) throw new Error("Bot has no computer");
         const storedComputer = bot.computer;
-        const computerMode = parseComputerMode(storedComputer.scope);
+        const computerMode = storedComputer ? parseComputerMode(storedComputer.scope) : "team";
         const artifacts = deps.artifacts;
         const recentFilesInput = {
           context,
@@ -4258,6 +4260,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
         };
         const runComputer = lazyRunComputer(
           async () => {
+            if (!storedComputer) throw new Error("Bot has no computer");
             getLogger().info("computer.requested");
             const computer = await provisionComputer(deps, storedComputer.id, context, "bot");
             screenRelease = { computer, context, keepWarm: false };
@@ -4274,9 +4277,15 @@ export function createRunExecutor(deps: ExecutorDeps) {
           },
           () => runAbortController?.abort(),
         );
-        const computerKind = (await deps.sandbox.provisionKind?.()) ?? storedComputer.kind;
+        const computerKind = storedComputer
+          ? ((await deps.sandbox.provisionKind?.()) ?? storedComputer.kind)
+          : "none";
+        const computerUsable =
+          storedComputer != null &&
+          computerKind !== "none" &&
+          deps.sandbox.describe().id !== "none";
         const workspaceCheckpoint = createRunWorkspaceCheckpoint(async () => {
-          if (!runComputer.ready) return;
+          if (!storedComputer || !runComputer.ready) return;
           await checkpointRunComputerWorkspace(deps, storedComputer, runComputer.ready, context);
         }, context.signal);
         const pendingTurnFiles: MessageBlock[][] = [turnBlocks ?? []];
@@ -4293,7 +4302,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
               tool: computerUseTool,
               trigger: run.trigger,
               "run.id": runId,
-              "computer.id": storedComputer.id,
+              "computer.id": storedComputer?.id,
             },
             async () => {
               const computer = await runComputer.get();
@@ -4343,7 +4352,9 @@ export function createRunExecutor(deps: ExecutorDeps) {
           .filter(Boolean)
           .join("\n\n");
         const graphical =
-          computerKind !== "desktop" && deps.sandbox.describe().capabilities.graphical;
+          computerUsable &&
+          computerKind !== "desktop" &&
+          deps.sandbox.describe().capabilities.graphical;
         // Gate on the model this run will actually call — the pair written to the run row
         // above. Deriving it a second time here dropped the deployment fallback, so a
         // vision-capable default was gated as "scripted" and lost its screenshot tools.
@@ -4399,7 +4410,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
         const pageBrowserAllowed =
           graphical && browser.describe().capabilities.page && !heldForTakeover;
         const disabledBuiltinTools = disabledBuiltinToolSet(bot.disabledBuiltinTools);
-        const builtins = [
+        const selectedBuiltins = [
           ...selectBuiltinToolsForRun({
             ticketBoardEnabled: deps.ticketBoardEnabled,
             phoneCallsEnabled: deps.phoneCallsEnabled,
@@ -4427,6 +4438,9 @@ export function createRunExecutor(deps: ExecutorDeps) {
             ? agentConnectionTools.filter((tool) => !disabledBuiltinTools.has(tool.name))
             : []),
         ];
+        const builtins = computerUsable
+          ? selectedBuiltins
+          : selectedBuiltins.filter((tool) => !COMPUTER_BOUND_TOOL_NAMES.has(tool.name));
         const exposedConnectorTools = discovered.filter(
           (tool) => !builtinAgentTools.some((builtin) => builtin.name === tool.name),
         );
@@ -4592,18 +4606,19 @@ export function createRunExecutor(deps: ExecutorDeps) {
           select: { kind: true, request: true, idempotencyKey: true },
         });
         const approvedEffectReplays = createApprovedEffectReplayQueue(approvedEffects);
-        const baseComputerInstruction = persistentComputerInstruction({
-          heldForTakeover,
-          graphicalToolsAllowed,
-          graphical,
-          disabled: disabledBuiltinTools,
-        });
-        const dockerToolInstruction = dockerComputerToolInstruction(
-          computerKind,
-          disabledBuiltinTools,
-        );
+        const baseComputerInstruction = computerUsable
+          ? persistentComputerInstruction({
+              heldForTakeover,
+              graphicalToolsAllowed,
+              graphical,
+              disabled: disabledBuiltinTools,
+            })
+          : "";
+        const dockerToolInstruction = computerUsable
+          ? dockerComputerToolInstruction(computerKind, disabledBuiltinTools)
+          : undefined;
         const hostEnvironment =
-          computerKind === "desktop"
+          computerUsable && storedComputer && computerKind === "desktop"
             ? await deps.sandbox
                 .environment?.(
                   {
@@ -4622,16 +4637,19 @@ export function createRunExecutor(deps: ExecutorDeps) {
         const hostInstruction = hostEnvironment
           ? `Commands run on the user's ${hostEnvironment.platform} computer with their account permissions. Home: ${JSON.stringify(hostEnvironment.home)}. Shell: ${JSON.stringify(hostEnvironment.shell)}. The shell tool executes commands with that shell. Use its native syntax, paths and installed tools; do not assume Linux or bash. Local files outside the bot workspace can be accessed through commands. App launching is available through OS commands; graphical screen control is unavailable.`
           : undefined;
-        const computerInstruction = [
-          "Use the computer only when the task needs files, commands, a browser, or an installed application. Answer directly from the conversation when sufficient; use connected tools for app data. A website with no connected app is still yours to use in the computer's browser, now and in scheduled routines, so a missing connection alone is never a reason to decline. Do not inspect the computer just to prepare for an unrelated task. If what you are about to buy, send or submit differs from what the user confirmed, such as a changed item or total, show the difference and confirm again first.",
-          hostInstruction
-            ? `${baseComputerInstruction} ${hostInstruction}`
-            : dockerToolInstruction
-              ? `${baseComputerInstruction} ${dockerToolInstruction}`
-              : baseComputerInstruction,
-        ].join(" ");
-        const workspaceInstruction =
-          computerMode === "team"
+        const computerInstruction = computerUsable
+          ? [
+              "Use the computer only when the task needs files, commands, a browser, or an installed application. Answer directly from the conversation when sufficient; use connected tools for app data. A website with no connected app is still yours to use in the computer's browser, now and in scheduled routines, so a missing connection alone is never a reason to decline. Do not inspect the computer just to prepare for an unrelated task. If what you are about to buy, send or submit differs from what the user confirmed, such as a changed item or total, show the difference and confirm again first.",
+              hostInstruction
+                ? `${baseComputerInstruction} ${hostInstruction}`
+                : dockerToolInstruction
+                  ? `${baseComputerInstruction} ${dockerToolInstruction}`
+                  : baseComputerInstruction,
+            ].join(" ")
+          : "This deployment has no computer. Answer from the conversation and connected tools.";
+        const workspaceInstruction = !computerUsable
+          ? ""
+          : computerMode === "team"
             ? `Your Team Computer home is ${teamBotWorkspaceDirectory(bot.id)}. Relative file paths and shell working directories start there. Put intentionally shared work under shared/. Other bots' folders are visible under bots/; treat them as their working areas.`
             : "This entire computer workspace is your private home. Relative file paths and shell working directories start at its root.";
 
@@ -6277,7 +6295,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
                           "rakazo-background-launch",
                           // Marker id must match sleepComputerIfIdle's probe (DB id), not ComputerRef.id
                           // (providerRef via toComputerRef). Scope launches to this run for cancel teardown.
-                          storedComputer.id,
+                          storedComputer?.id ?? "",
                           runId,
                           randomUUID(),
                           command,
@@ -8426,6 +8444,7 @@ export function createRunExecutor(deps: ExecutorDeps) {
               });
               return;
             } else if (event.type === "takeover") {
+              if (!storedComputer) return;
               if (!(await renewRunLease(deps, runId, workerId, fence))) return;
               // The user takes over the computer's screen, so it must be up before the run waits.
               await getRunComputer("takeover");
@@ -9381,6 +9400,23 @@ function fleetPrepareDeps(
  * every tool (see commitAnswerRunInput).
  */
 const CREATED_RUN_TOOL_NAMES = new Set(["ask_user", "update_bot"]);
+
+/** Tools that provision a sandbox. Omitted when the deployment has no computer. */
+const COMPUTER_BOUND_TOOL_NAMES = new Set([
+  "computer_observe",
+  "computer_act",
+  "browser_navigate",
+  "browser_snapshot",
+  "browser_act",
+  "list_files",
+  "read_file",
+  "write_file",
+  "attach_file",
+  "shell",
+  "open_path",
+  "launch_app",
+  "request_takeover",
+]);
 
 export function selectBuiltinToolsForRun(options: {
   ticketBoardEnabled?: boolean;

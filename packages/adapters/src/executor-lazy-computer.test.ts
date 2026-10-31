@@ -37,6 +37,7 @@ async function runRoutine(
     steeringAfterFirst?: boolean;
     copyFailureOnce?: boolean;
     parallel?: boolean;
+    noComputer?: boolean;
     priorSetupFailures?: number;
     exportError?: Error;
     setupError?: Error;
@@ -114,15 +115,17 @@ async function runRoutine(
         modelProvider: null,
         modelId: null,
         thinkingLevel: null,
-        computerId: "computer-1",
+        computerId: options.noComputer ? null : "computer-1",
         computerSwitching: false,
         memoryScope: null,
-        computer: {
-          id: "computer-1",
-          scope: "dedicated",
-          kind: options.native ? "desktop" : "e2b",
-          homeKey: "home-1",
-        },
+        computer: options.noComputer
+          ? null
+          : {
+              id: "computer-1",
+              scope: "dedicated",
+              kind: options.native ? "desktop" : "e2b",
+              homeKey: "home-1",
+            },
       })),
       findUnique: vi.fn(async () => ({ name: "Assistant" })),
       findMany: vi.fn(async () => []),
@@ -200,7 +203,10 @@ async function runRoutine(
     },
   };
   const sandbox = {
-    describe: () => ({ id: "e2b", capabilities: { graphical: false } }),
+    describe: () => ({
+      id: options.noComputer ? "none" : "e2b",
+      capabilities: { graphical: false },
+    }),
     environment: options.native
       ? vi.fn(async () => {
           if (options.nativeUnavailable) throw new Error("native app is closed");
@@ -318,6 +324,29 @@ describe("run computer provisioning", () => {
     expect(onRunStarted).toHaveBeenCalledExactlyOnceWith();
     expect(finalizeRun).toHaveBeenCalledWith(expect.objectContaining({ outcome: "failed" }));
     expect(enqueue).not.toHaveBeenCalled();
+  });
+
+  it("completes a run for a new bot with no computer", async () => {
+    const { finalizeRun, runtimeRun } = await runRoutine([], { noComputer: true });
+    expect(finalizeRun).toHaveBeenCalledWith(expect.objectContaining({ outcome: "completed" }));
+    expect(provisionComputer).not.toHaveBeenCalled();
+    const request = runtimeRun.mock.calls[0]?.[0] as
+      | { tools: Array<{ name: string }>; instructions: string }
+      | undefined;
+    if (!request) throw new Error("run did not reach the model");
+    const tools = request.tools.map((tool) => tool.name);
+    for (const name of [
+      "shell",
+      "list_files",
+      "read_file",
+      "write_file",
+      "computer_act",
+      "computer_observe",
+      "request_takeover",
+    ]) {
+      expect(tools).not.toContain(name);
+    }
+    expect(request.instructions).toContain("This deployment has no computer.");
   });
 
   it("never starts the computer for a run that does not use it", async () => {
