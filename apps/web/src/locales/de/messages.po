@@ -1964,6 +1964,10 @@ msgstr "Space konnte nicht umbenannt werden"
 msgid "Could not render chart"
 msgstr "Diagramm konnte nicht angezeigt werden"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "Passwort konnte nicht zurückgesetzt werden"
@@ -4584,6 +4588,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Fordere einen neuen Code an"
@@ -5887,6 +5899,10 @@ msgstr "Wartet in der Warteschlange…"
 #: src/pages/shell/message-cards.tsx
 msgid "Waiting…"
 msgstr "Warten…"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

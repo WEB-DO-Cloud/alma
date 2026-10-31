@@ -1964,6 +1964,10 @@ msgstr "No se pudo renombrar el space"
 msgid "Could not render chart"
 msgstr "No se pudo renderizar el gráfico"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "No se pudo reportar esta respuesta"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "No se pudo restablecer la contraseña"
@@ -4584,6 +4588,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "Reportar respuesta"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "Reporte enviado"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Solicita un código nuevo"
@@ -5888,6 +5900,10 @@ msgstr "Esperando en la cola…"
 msgid "Waiting…"
 msgstr "Esperando…"
 
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "Revisaremos esta respuesta."
+
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
 msgstr ""
@@ -6099,19 +6115,3 @@ msgstr "Tu proveedor de voz se quedó sin crédito."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Tu proveedor de voz rechazó la clave."
-
-#: src/pages/shell/message-hover-actions.tsx
-msgid "Report response"
-msgstr "Reportar respuesta"
-
-#: src/pages/Shell.tsx
-msgid "Report sent"
-msgstr "Reporte enviado"
-
-#: src/pages/Shell.tsx
-msgid "We'll review this response."
-msgstr "Revisaremos esta respuesta."
-
-#: src/pages/Shell.tsx
-msgid "Could not report this response"
-msgstr "No se pudo reportar esta respuesta"

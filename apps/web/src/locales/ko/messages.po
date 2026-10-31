@@ -1964,6 +1964,10 @@ msgstr "스페이스 이름을 바꿀 수 없습니다"
 msgid "Could not render chart"
 msgstr "차트를 만들지 못했습니다."
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "비밀번호를 재설정할 수 없습니다"
@@ -4584,6 +4588,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "새 코드를 요청하세요"
@@ -5887,6 +5899,10 @@ msgstr "줄에서 기다리는 중…"
 #: src/pages/shell/message-cards.tsx
 msgid "Waiting…"
 msgstr "기다리는 중…"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

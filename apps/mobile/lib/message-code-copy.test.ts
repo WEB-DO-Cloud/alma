@@ -30,6 +30,7 @@ function messageMenu(role: "bot" | "user", blocks: string[], markedUnread = fals
     canDoubleTapReact: () => false,
     waitingForUser: false,
     canMarkMessageUnread: () => true,
+    canReportAssistantMessage: () => false,
     markdownCodeBlocks,
     Clipboard: { setStringAsync },
     MESSAGE_REACTIONS: [],
