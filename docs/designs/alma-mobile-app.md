@@ -24,7 +24,7 @@ The phone has to be usable before a firm API is online, so a labeled sample mode
 *   Someone who is not an approver can read a draft and cannot approve it.
 *   A push the server sends is always the visible title `ALMA` and the body `Hay un borrador pendiente de revisión`. A tap opens the thread named in the payload data. It does not open a draft by title.
 *   Error reporting to hosted `sentry.io` stays off. A self-hosted collector can be used. `EXPO_PUBLIC_SENTRY_ENABLED=0` turns reporting off even then.
-*   Visible product wording is "borradores para revisión" and the store name `ALMA - Asistente Privado`. The app does not call itself a lawyer or give legal advice.
+*   Visible product wording is "borradores para revisión" and the store name `ALMA Asistente IA`. The app does not call itself a lawyer or give legal advice.
 *   iOS and Android release builds run on Bitrise through fastlane. TestFlight and the Play internal track are manual workflows. Nothing in this repository submits an App Store review or promotes a Play release.
 *   `EXPO_PUBLIC_ALMA_MOCK=1` shows labeled sample data with no firm API.
 
@@ -124,7 +124,7 @@ Chat uses the existing thread stack. The empty chat says `Escriba o dicte. ALMA 
 | Push text | `sanitizePushPayload` replaces any title and body before send. |
 | No hosted Sentry | `isVendorSentryHost` matches `sentry.io`, `sentry-cdn.com`, and any subdomain of either. `mobileReportingEnabled` ignores those DSNs. `sentryUploadAllowed` in `apps/mobile/lib/sentry-upload.cjs` refuses source-map upload to those hosts. Upload also needs `SENTRY_AUTH_TOKEN` and a `SENTRY_URL` that fails that same host test. `EXPO_PUBLIC_SENTRY_ENABLED` set to `0`, `false`, `off`, or `no` turns reporting off. Any other value, including unset, does not by itself turn reporting on. |
 | Firm API, not a phone geofence | Production firm data is stored by the firm API, which is operated in the Dominican Republic. The phone sends draft text to the configured API URL, or keeps sample data on the device. It does not check the API's region, and it does not anonymize identifiers on the device. Hosted Sentry is refused. Visible push text does not name a client or a matter. The store sentence in Planned additions is not built. |
-| Wording | Store listing name `ALMA - Asistente Privado`. Subtitle and description use "borradores para revisión". About uses the two sentences quoted in the architecture section, plus the Apache-2.0 Rakazo notice. |
+| Wording | Store listing name `ALMA Asistente IA`. Subtitle and description use "borradores para revisión". About uses the two sentences quoted in the architecture section, plus the Apache-2.0 Rakazo notice. |
 
 ### Release pipeline
 

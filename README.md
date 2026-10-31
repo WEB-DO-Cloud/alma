@@ -3,13 +3,13 @@
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md)
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
-[![Download on the App Store](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/alma-asistente-privado/id0000000000)
+[![Download on the App Store](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/id6829162072)
 [![Get it on Google Play](https://img.shields.io/badge/Google%20Play-ALMA-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
 
 ![ALMA — AI teammates you actually own](./docs/readme-hero.png)
 
 ALMA AI prepares drafts for review. It is available on the web, as an Electron desktop app, and on
-[iPhone](https://apps.apple.com/app/alma-asistente-privado/id0000000000) and [Android](https://play.google.com/store/apps/details?id=do.alma.app). Bring your own model
+[iPhone](https://apps.apple.com/app/id6829162072) and [Android](https://play.google.com/store/apps/details?id=do.alma.app). Bring your own model
 and computer provider, or run the complete stack locally.
 
 It is an open source, self-hosted alternative to Grok Bot, Meta Muse, OpenAI Dots, Instinct,

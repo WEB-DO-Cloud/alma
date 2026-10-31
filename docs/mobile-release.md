@@ -2,7 +2,7 @@
 
 ALMA ships as an iOS and Android app with bundle id and package `do.alma.app`.
 The name under the icon is ALMA. The store listing name is
-`ALMA - Asistente Privado`.
+`ALMA Asistente IA`.
 
 Store builds use Expo prebuild, then fastlane, on Bitrise. Over-the-air updates
 and the old Expo submit profile are not the store path. The icon in the repo is
@@ -17,8 +17,10 @@ from somewhere else. `MATCH_PASSWORD` encrypts the repo. Create it on a trusted
 machine, store it as a Bitrise secret, and do not put it in git.
 
 Do this once, from `apps/mobile`, on a machine that can sign in to Apple.
-Bitrise must not be the place that creates the first certificates, and CI always
-runs match in read-only mode.
+CI only reads the match repo. The one exception is a build whose parameter
+`ALMA_MATCH_CREATE` is `true`: that run may create the certificate and profile
+when the certificates repo is still empty. Do not store that parameter as a
+standing secret. Leave it unset after the certificates exist.
 
 HTTPS, with a GitHub personal access token that can read and write the
 certificates repo:

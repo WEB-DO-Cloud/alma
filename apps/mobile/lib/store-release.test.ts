@@ -47,13 +47,16 @@ describe("store listing", () => {
 
   it("uses the store name and says drafts for review", () => {
     expect(read(join(mobileRoot, "fastlane/metadata/es-ES/name.txt")).trim()).toBe(
-      "ALMA - Asistente Privado",
+      "ALMA Asistente IA",
     );
     expect(read(join(mobileRoot, "fastlane/metadata/en-US/name.txt")).trim()).toBe(
-      "ALMA - Asistente Privado",
+      "ALMA Asistente IA",
     );
     expect(read(join(mobileRoot, "fastlane/metadata/android/es-ES/title.txt")).trim()).toBe(
-      "ALMA - Asistente Privado",
+      "ALMA Asistente IA",
+    );
+    expect(read(join(mobileRoot, "fastlane/metadata/android/en-US/title.txt")).trim()).toBe(
+      "ALMA Asistente IA",
     );
     expect(read(join(mobileRoot, "fastlane/metadata/es-ES/description.txt"))).toContain(
       "borradores para revisión",
@@ -99,6 +102,9 @@ describe("fastlane lanes", () => {
     expect(fastfile).toContain('track: "internal"');
     expect(fastfile).not.toMatch(/track:\s*"(production|beta|alpha)"/);
     expect(fastfile).toContain('ENV["ALMA_STORE_RELEASE_APPROVED"] == "yes"');
+    expect(fastfile).toContain("ALMA_MATCH_CREATE");
+    expect(fastfile).toContain("signing = <<-GRADLE");
+    expect(fastfile).toContain("signingConfig signingConfigs.release");
     expect(fastfile).toContain("does not submit for App Store review");
     expect(fastfile).not.toMatch(/MATCH_PASSWORD\s*=\s*["']/);
     expect(fastfile).not.toContain("EXPO_PUBLIC_ALMA_MOCK");

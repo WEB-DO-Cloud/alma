@@ -16,9 +16,9 @@ export const CLIENT_KINDS = ["web", "mobile"] as const;
 export type ClientKind = (typeof CLIENT_KINDS)[number];
 export type MinimumClientBuilds = Partial<Record<ClientKind, string>>;
 
-/** Store listings for the ALMA apps. The iOS id is a placeholder until the listing exists. */
+/** Store listings for the ALMA apps. */
 export const MOBILE_APP_STORES = {
-  ios: "https://apps.apple.com/app/alma-asistente-privado/id0000000000",
+  ios: "https://apps.apple.com/app/id6829162072",
   android: "https://play.google.com/store/apps/details?id=do.alma.app",
 } as const;
 

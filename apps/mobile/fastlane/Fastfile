@@ -67,8 +67,12 @@ def prebuild!(platform)
   Dir.chdir(MOBILE_ROOT) { sh("node", "scripts/fix-android-namespace.mjs") }
   # The release bundle runs out of memory with the template's 2 GB heap.
   props = File.join(MOBILE_ROOT, "android/gradle.properties")
-  text = File.read(props).sub("-Xmx2048m", "-Xmx4g").sub("MaxMetaspaceSize=512m", "MaxMetaspaceSize=1g")
-  File.write(props, text)
+  text = File.read(props)
+  updated = text.sub("-Xmx2048m", "-Xmx4g").sub("MaxMetaspaceSize=512m", "MaxMetaspaceSize=1g")
+  unless updated.include?("org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g")
+    UI.user_error!("Could not raise the Gradle heap in android/gradle.properties.")
+  end
+  File.write(props, updated)
 end
 
 # Expo prebuild leaves automatic signing with no team. Point the app target at the match profile.
@@ -144,7 +148,9 @@ def configure_android_release_signing!
   keystore = materialize_android_keystore!
   gradle_path = File.join(MOBILE_ROOT, "android/app/build.gradle")
   text = File.read(gradle_path)
-  signing = <<~GRADLE
+  # <<- keeps this indent. <<~ would strip it, and the check below would
+  # then reject a release signingConfig that was actually inserted.
+  signing = <<-GRADLE
         release {
             storeFile file(#{keystore.dump})
             storePassword #{ENV.fetch("ANDROID_KEYSTORE_PASSWORD").dump}
