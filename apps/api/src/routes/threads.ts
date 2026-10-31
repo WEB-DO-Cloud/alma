@@ -18,6 +18,7 @@ import {
   touchGroupUpdatedAt,
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
+import { reportAssistantMessage } from "../message-report.js";
 import { assertTeachingSendAllowed } from "../taught-skills.js";
 import {
   isBackgroundRun,
@@ -190,6 +191,11 @@ export function threadsRoutes(ctx: RouterContext) {
           });
         }
         return { ok: true as const, runIds: result.runIds };
+      }),
+      report: authed.threads.report.handler(async ({ context, input }) => {
+        const target = await resolveThreadTarget(deps.prisma, context.actor, input);
+        await reportAssistantMessage(deps.prisma, context.actor, target.threadId, input.messageId);
+        return { ok: true as const };
       }),
       stop: authed.threads.stop.handler(async ({ context, input }) => {
         const target = await resolveThreadTarget(deps.prisma, context.actor, input);

@@ -114,6 +114,7 @@ describe("archived thread read authorization", () => {
       "threads/answer",
       { botId: "bot-1", runId: "run-1", messageId: "message-1", answer: "Cannot answer" },
     ],
+    ["threads/report", { botId: "bot-1", messageId: "message-1" }],
     ["threads/clear", { botId: "bot-1" }],
     ["threads/stop", { botId: "bot-1" }],
     ["threads/followUp", { botId: "bot-1", text: "Cannot run" }],

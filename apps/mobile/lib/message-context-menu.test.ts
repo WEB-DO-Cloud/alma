@@ -10,6 +10,7 @@ const labels: Record<MessageMenuSymbol, string> = {
   speak: "Speak message",
   select: "Select text",
   unread: "Mark as unread",
+  report: "Report response",
 };
 
 const reactions = ["👍", "👎", "❤️", "😂", "🎉", "😮"] as const;
@@ -89,6 +90,28 @@ describe("message context menu", () => {
         }),
       ),
     ).not.toContain("unread");
+  });
+
+  it("offers Report response only for an assistant message", () => {
+    const reported = buildMessageContextMenu({
+      labels,
+      reactions,
+      include: { quote: false, react: false, speak: false, select: false, report: true },
+    });
+    expect(reported.map((entry) => [entry.id, entry.title, entry.symbol])).toEqual([
+      ["reply", "Reply", "reply"],
+      ["copy", "Copy", "copy"],
+      ["report", "Report response", "report"],
+    ]);
+    expect(
+      ids(
+        buildMessageContextMenu({
+          labels,
+          reactions,
+          include: { quote: true, react: true, speak: true, select: true },
+        }),
+      ),
+    ).not.toContain("report");
   });
 
   it("reads a reaction id back out of a menu event", () => {

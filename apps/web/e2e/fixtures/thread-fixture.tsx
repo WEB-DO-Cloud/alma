@@ -84,6 +84,7 @@ export function FixtureTranscript({
         onMarkUnread={noop}
         onQuote={noop}
         onReact={resolved}
+        onReport={resolved}
         onJumpToMessage={noop}
         onOpenPeerMessages={noop}
         peerBot={() => BOT}

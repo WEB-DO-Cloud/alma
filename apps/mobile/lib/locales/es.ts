@@ -32,4 +32,8 @@ export const ES_MESSAGES: Record<string, string> = {
   Language: "Idioma",
   Account: "Cuenta",
   Server: "Servidor",
+  "Report response": "Reportar respuesta",
+  "Report sent": "Reporte enviado",
+  "We'll review this response.": "Revisaremos esta respuesta.",
+  "Could not report this response": "No se pudo reportar esta respuesta",
 };

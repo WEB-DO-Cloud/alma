@@ -1059,4 +1059,8 @@ export const DE_MESSAGES: Record<string, string> = {
   "{sender} rollup hours": "{sender}: Bündelung in Stunden",
   "Connect Slack": "Slack verbinden",
   "Link DMs": "DMs verknüpfen",
+  "Report response": "Antwort melden",
+  "Report sent": "Meldung gesendet",
+  "We'll review this response.": "Wir prüfen diese Antwort.",
+  "Could not report this response": "Diese Antwort konnte nicht gemeldet werden",
 };

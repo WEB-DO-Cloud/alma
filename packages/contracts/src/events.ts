@@ -408,6 +408,15 @@ export const ThreadMessageSchema = z.object({
 });
 export type ThreadMessage = z.infer<typeof ThreadMessageSchema>;
 
+/** An assistant response the user can flag for review. Progress and subagent rows are not stored messages. */
+export function canReportAssistantMessage(message: Pick<ThreadMessage, "id" | "role">): boolean {
+  return (
+    message.role === "bot" &&
+    !message.id.startsWith("progress:") &&
+    !message.id.startsWith("subagent:")
+  );
+}
+
 export function canReactToThreadMessage(message: Pick<ThreadMessage, "id" | "blocks">): boolean {
   return (
     !message.id.startsWith("progress:") &&

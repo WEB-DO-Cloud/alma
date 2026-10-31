@@ -9,6 +9,7 @@ import {
   CreateGroupInput,
   CreateRoutineInput,
   canReactToThreadMessage,
+  canReportAssistantMessage,
   McpServerConfigInput,
   MessageBlock,
   ModelConnectInputSchema,
@@ -220,6 +221,14 @@ describe("contracts", () => {
     expect(MessageBlock.safeParse({ kind: "steps", steps: [], durationMs: -1 }).success).toBe(
       false,
     );
+  });
+
+  it("lets a user report a stored assistant response", () => {
+    expect(canReportAssistantMessage({ id: "message-1", role: "bot" })).toBe(true);
+    expect(canReportAssistantMessage({ id: "message-1", role: "user" })).toBe(false);
+    expect(canReportAssistantMessage({ id: "message-1", role: "system" })).toBe(false);
+    expect(canReportAssistantMessage({ id: "progress:1", role: "bot" })).toBe(false);
+    expect(canReportAssistantMessage({ id: "subagent:agent-1", role: "bot" })).toBe(false);
   });
 
   it("limits reactions to persisted non-channel messages", () => {

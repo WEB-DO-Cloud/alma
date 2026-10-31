@@ -85,6 +85,7 @@ function renderMessage(
         onReply={vi.fn()}
         onMarkUnread={vi.fn()}
         onReact={vi.fn()}
+        onReport={vi.fn()}
       />,
     ),
   );

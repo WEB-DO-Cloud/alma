@@ -1054,4 +1054,8 @@ export const RU_MESSAGES: Record<string, string> = {
   "{sender} rollup hours": "{sender}: интервал группировки в часах",
   "Connect Slack": "Подключить Slack",
   "Link DMs": "Привязать ЛС",
+  "Report response": "Пожаловаться на ответ",
+  "Report sent": "Жалоба отправлена",
+  "We'll review this response.": "Мы проверим этот ответ.",
+  "Could not report this response": "Не удалось отправить жалобу",
 };
