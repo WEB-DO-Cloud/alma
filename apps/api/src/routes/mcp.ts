@@ -21,6 +21,7 @@ import {
   revertConnectedMcpApprovals,
 } from "../mcp-approval.js";
 import { buildMcpUpdateMaterial } from "../mcp-material.js";
+import { searchMcpRegistry } from "../mcp-registry.js";
 import {
   assertMcpOAuthTemplates,
   assertMcpRemoteEndpoint,
@@ -242,6 +243,22 @@ export function mcpRoutes(ctx: RouterContext) {
       }),
     },
     mcp: {
+      registry: {
+        search: authed.mcp.registry.search.handler(async ({ context, input }) => {
+          try {
+            const servers = await searchMcpRegistry({
+              query: input.query,
+              limit: input.limit,
+              signal: context.signal,
+            });
+            return { servers };
+          } catch (error) {
+            throw new ORPCError("BAD_GATEWAY", {
+              message: error instanceof Error ? error.message : "MCP registry search failed",
+            });
+          }
+        }),
+      },
       servers: {
         list: authed.mcp.servers.list.handler(async ({ context }) => {
           const rows = await deps.prisma.mcpServer.findMany({

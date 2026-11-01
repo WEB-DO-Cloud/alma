@@ -1,0 +1,133 @@
+import type { McpRegistryServer } from "@rakazo/contracts";
+
+/**
+ * Remote MCP servers shown before search. Each endpoint was present on the
+ * official registry (`version=latest`) on 2026-11-01. Edit this list to change
+ * Popular; do not add a server that has no concrete https remote.
+ *
+ * Google Drive, Dropbox, Box, and HubSpot are omitted: that check found no
+ * first-party remote for them. Gmail, Google Calendar, and Outlook use the
+ * MintMCP remotes published in the registry. Slack uses the Waystation remote.
+ */
+export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
+  {
+    registryName: "com.mintmcp/gmail",
+    name: "Gmail",
+    description: "Search, read, and draft Gmail.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://gmail.mintmcp.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.mintmcp/gcal",
+    name: "Google Calendar",
+    description: "List and update Google Calendar events.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://gcal.mintmcp.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.mintmcp/outlook-email",
+    name: "Outlook",
+    description: "Search, read, and draft Outlook mail.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://outlook-email.mintmcp.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.mintmcp/outlook-calendar",
+    name: "Outlook Calendar",
+    description: "List and update Outlook Calendar events.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://outlook-calendar.mintmcp.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.notion/mcp",
+    name: "Notion",
+    description: "Search and edit your Notion workspace.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://mcp.notion.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "ai.waystation/slack",
+    name: "Slack",
+    description: "Send messages and read Slack channels.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://waystation.ai/slack/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "io.github.github/github-mcp-server",
+    name: "GitHub",
+    description: "Manage GitHub repositories, issues, and pull requests.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://api.githubcopilot.com/mcp/",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "app.linear/linear",
+    name: "Linear",
+    description: "Find and manage Linear issues and projects.",
+    iconUrl: "https://static.linear.app/integrations/mcp/icon.svg",
+    transport: "streamable_http",
+    endpoint: "https://mcp.linear.app/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.atlassian/atlassian-mcp-server",
+    name: "Atlassian",
+    description: "Search and update Jira and Confluence.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://mcp.atlassian.com/v2/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.stripe/mcp",
+    name: "Stripe",
+    description: "Work with Stripe customers, products, and payments.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://mcp.stripe.com",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.zapier/mcp",
+    name: "Zapier",
+    description: "Connect apps through Zapier.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://mcp.zapier.com/api/v1/connect",
+    needsHeader: false,
+    headerName: null,
+  },
+  {
+    registryName: "com.canva.mcp/mcp",
+    name: "Canva",
+    description: "Create and export Canva designs.",
+    iconUrl: null,
+    transport: "streamable_http",
+    endpoint: "https://mcp.canva.com/mcp",
+    needsHeader: false,
+    headerName: null,
+  },
+];

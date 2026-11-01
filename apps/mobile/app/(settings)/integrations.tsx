@@ -32,6 +32,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ConnectorIcon } from "../../components/connector-icon";
+import { McpRegistryBrowse } from "../../components/mcp-registry-browse";
 import { NativeActionButton } from "../../components/native-action-button";
 import { Chevron } from "../../components/row-accessories";
 import { rpc } from "../../lib/api";
@@ -759,6 +760,23 @@ export default function Integrations() {
           />
         ) : null}
 
+        {!detailItem ? (
+          <McpRegistryBrowse
+            query={query}
+            installedEndpoints={
+              new Set(mcpServers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])))
+            }
+            botId={lastBotId || undefined}
+            onInstalled={() => {
+              void rpc<McpServer[]>("mcp/servers/list")
+                .then((servers) => {
+                  if (mounted.current) setMcpServers(servers);
+                })
+                .catch(() => undefined);
+            }}
+          />
+        ) : null}
+
         {!detailItem && (mcpServers.length > 0 || mcpError) ? (
           <View testID="registered-mcp-servers" style={styles.catalogStack}>
             <Text style={styles.section}>{t("MCP servers")}</Text>
@@ -844,7 +862,10 @@ export default function Integrations() {
             ) : null}
 
             {catalogReady && catalog.length > 0 ? (
-              <View style={catalogColumns === 2 ? styles.catalogGrid : styles.catalogStack}>
+              <View
+                testID="connection-catalog"
+                style={catalogColumns === 2 ? styles.catalogGrid : styles.catalogStack}
+              >
                 {showFeatured
                   ? featuredTiles.map((tile) => {
                       const item = tile.item;

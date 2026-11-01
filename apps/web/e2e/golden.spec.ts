@@ -243,6 +243,7 @@ test("takeover, routine, plugins, and export are reachable", async ({ page }, te
   await captureScreenshot(page, testInfo, "11b-connected-plugins-empty");
 
   const linearRow = page
+    .getByTestId("connection-catalog")
     .getByText("Linear", { exact: true })
     .locator("xpath=ancestor::*[.//button][1]");
   const connectPopup = page.waitForEvent("popup");

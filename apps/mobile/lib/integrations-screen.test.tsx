@@ -306,9 +306,9 @@ it("persists a completed connection before refreshing", async () => {
     if (proc === "connections/catalog") return Promise.reject(new Error("Unavailable"));
     return Promise.resolve([]);
   });
-  const add = [...container.querySelectorAll("button")].find(
-    (button) => button.textContent === "Add",
-  );
+  const add = [
+    ...container.querySelectorAll<HTMLButtonElement>('[data-testid="connection-catalog"] button'),
+  ].find((button) => button.textContent === "Add");
   await act(async () => add?.click());
   expect(state.write).toHaveBeenLastCalledWith(expect.anything(), {
     catalog: [item],

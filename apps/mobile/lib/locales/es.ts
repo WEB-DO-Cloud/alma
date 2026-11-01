@@ -36,4 +36,26 @@ export const ES_MESSAGES: Record<string, string> = {
   "Report sent": "Reporte enviado",
   "We'll review this response.": "Revisaremos esta respuesta.",
   "Could not report this response": "No se pudo reportar esta respuesta",
+  Popular: "Populares",
+  "Could not search the MCP registry": "No se pudo buscar en el registro MCP",
+  "This server needs a header.": "Este servidor necesita un encabezado.",
+  "No remote MCP servers found": "No hay servidores MCP remotos",
+  "Adding…": "Agregando…",
+  "Could not add MCP server": "No se pudo agregar el servidor MCP",
+  "Header value": "Valor del encabezado",
+  "Search, read, and draft Gmail.": "Busca, lee y redacta en Gmail.",
+  "List and update Google Calendar events.": "Consulta y actualiza eventos de Google Calendar.",
+  "Search, read, and draft Outlook mail.": "Busca, lee y redacta correo de Outlook.",
+  "List and update Outlook Calendar events.": "Consulta y actualiza eventos de Outlook Calendar.",
+  "Search and edit your Notion workspace.": "Busca y edita tu espacio de Notion.",
+  "Send messages and read Slack channels.": "Envía mensajes y lee canales de Slack.",
+  "Manage GitHub repositories, issues, and pull requests.":
+    "Administra repositorios, incidencias y pull requests de GitHub.",
+  "Find and manage Linear issues and projects.":
+    "Busca y gestiona incidencias y proyectos de Linear.",
+  "Search and update Jira and Confluence.": "Busca y actualiza Jira y Confluence.",
+  "Work with Stripe customers, products, and payments.":
+    "Trabaja con clientes, productos y pagos de Stripe.",
+  "Connect apps through Zapier.": "Conecta aplicaciones a través de Zapier.",
+  "Create and export Canva designs.": "Crea y exporta diseños de Canva.",
 };
