@@ -54,5 +54,11 @@ test("shows directly registered MCP servers in Integrations without catalog conn
   );
   await servers.getByRole("button", { name: "Manage MCP servers", exact: true }).click();
   await expect(page.getByRole("heading", { name: "MCP servers", exact: true })).toBeVisible();
-  await expect(page.getByRole("dialog").getByText("GitHub", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole("dialog")
+      .getByRole("heading", { name: "Configured servers", exact: true })
+      .locator("xpath=..")
+      .getByText("GitHub", { exact: true }),
+  ).toBeVisible();
 });

@@ -31,6 +31,7 @@ import { Disclosure } from "@rakazo/ui-web/components/ui/disclosure";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, LoaderCircle, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { McpRegistryBrowse } from "../components/integrations/McpRegistryBrowse";
 import { McpServerHealthLine } from "../components/McpServerHealthLine";
 import { connectMcpOauth, MCP_OAUTH_CHANNEL, mcpOAuthRedirectUri } from "../lib/mcp-connect";
 import { fetchFresh, useSpaceQueries, writeSaved } from "../lib/query";
@@ -467,6 +468,17 @@ export function McpServersOverlay({
           </p>
         ) : null}
         <div className="rk-scroll grid min-h-0 grid-cols-1 gap-5 overflow-y-auto p-6 lg:grid-cols-2">
+          <div className="lg:col-span-2">
+            <McpRegistryBrowse
+              showSearch
+              installedEndpoints={
+                new Set(servers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])))
+              }
+              onInstalled={() => {
+                void refresh();
+              }}
+            />
+          </div>
           <Card className="self-start">
             <CardHeader>
               <CardTitle>{editing ? editing.name : <Trans>Add server</Trans>}</CardTitle>

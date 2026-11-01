@@ -795,6 +795,22 @@ export const IntegrationCatalogResultSchema = z.object({
 });
 export type IntegrationCatalogResult = z.infer<typeof IntegrationCatalogResultSchema>;
 
+/** A remote server returned from the official MCP Registry. Stdio-only packages are omitted. */
+export const McpRegistryServerSchema = z.object({
+  registryName: z.string().min(1).max(300),
+  name: z.string().min(1).max(120),
+  description: z.string().max(500),
+  iconUrl: z.string().url().nullable(),
+  transport: z.enum(["streamable_http", "sse"]),
+  endpoint: McpRemoteEndpointSchema,
+  needsHeader: z.boolean(),
+  headerName: z
+    .string()
+    .regex(/^[A-Za-z0-9-]+$/)
+    .nullable(),
+});
+export type McpRegistryServer = z.infer<typeof McpRegistryServerSchema>;
+
 export type { McpTransport } from "./mcp.js";
 
 const McpServerBaseInput = z.object({

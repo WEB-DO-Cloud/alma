@@ -67,6 +67,7 @@ import {
   GroupDetailSchema,
   GroupSchema,
   IntegrationCatalogResultSchema,
+  McpRegistryServerSchema,
   McpServerConfigInput,
   McpServerSchema,
   MemoryDocumentSchema,
@@ -856,6 +857,16 @@ export const appContract = {
     remove: oc.input(z.object({ id: Id })).output(z.object({ ok: z.literal(true) })),
   },
   mcp: {
+    registry: {
+      search: oc
+        .input(
+          z.object({
+            query: z.string().trim().min(2).max(80),
+            limit: z.number().int().min(1).max(20).default(12),
+          }),
+        )
+        .output(z.object({ servers: z.array(McpRegistryServerSchema) })),
+    },
     servers: {
       list: oc.output(z.array(McpServerSchema)),
       create: oc.input(McpServerConfigInput).output(McpServerSchema),

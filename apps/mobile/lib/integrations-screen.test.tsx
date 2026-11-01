@@ -61,6 +61,7 @@ vi.mock("../components/native-action-button", () => ({
 vi.mock("react-native-svg", () => ({
   SvgUri: ({ uri, onError }: { uri: string; onError: () => void }) =>
     createElement("svg", { "data-uri": uri, onClick: onError }),
+  SvgXml: ({ xml }: { xml: string }) => createElement("svg", { "data-xml": xml.slice(0, 32) }),
 }));
 vi.mock("react-native", () => {
   const View = ({ children, testID }: { children?: ReactNode; testID?: string }) => (
@@ -306,9 +307,9 @@ it("persists a completed connection before refreshing", async () => {
     if (proc === "connections/catalog") return Promise.reject(new Error("Unavailable"));
     return Promise.resolve([]);
   });
-  const add = [...container.querySelectorAll("button")].find(
-    (button) => button.textContent === "Add",
-  );
+  const add = [
+    ...container.querySelectorAll<HTMLButtonElement>('[data-testid="connection-catalog"] button'),
+  ].find((button) => button.textContent === "Add");
   await act(async () => add?.click());
   expect(state.write).toHaveBeenLastCalledWith(expect.anything(), {
     catalog: [item],

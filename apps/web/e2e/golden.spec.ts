@@ -175,7 +175,9 @@ test("takeover, routine, plugins, and export are reachable", async ({ page }, te
   await expect(featured).toContainText(
     /Gmail[\s\S]*Google Calendar[\s\S]*Google Drive[\s\S]*Slack[\s\S]*Notion/,
   );
-  await expect(page.getByText("GitHub", { exact: true })).toBeVisible();
+  await expect(
+    page.getByTestId("connection-catalog").getByText("GitHub", { exact: true }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Add Executor", exact: true })).toBeHidden();
   await expect(page.getByRole("button", { name: "Add Treg", exact: true })).toBeHidden();
   await expect(page.getByRole("button", { name: "Add MCP server", exact: true })).toBeHidden();
@@ -243,6 +245,7 @@ test("takeover, routine, plugins, and export are reachable", async ({ page }, te
   await captureScreenshot(page, testInfo, "11b-connected-plugins-empty");
 
   const linearRow = page
+    .getByTestId("connection-catalog")
     .getByText("Linear", { exact: true })
     .locator("xpath=ancestor::*[.//button][1]");
   const connectPopup = page.waitForEvent("popup");

@@ -413,12 +413,18 @@ msgstr "Active"
 msgid "Activity"
 msgstr "Activity"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 #: src/pages/shell/agent-import.tsx
 msgid "Add"
 msgstr "Add"
+
+#. placeholder {0}: server.name
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Add {0}"
+msgstr "Add {0}"
 
 #. placeholder {0}: bot.name
 #: src/pages/GroupPanel.tsx
@@ -556,10 +562,12 @@ msgstr "Add Treg"
 msgid "Add trigger"
 msgstr "Add trigger"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Added"
 msgstr "Added"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Adding…"
@@ -1496,6 +1504,10 @@ msgstr "Connect API key"
 msgid "Connect apps"
 msgstr "Connect apps"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Connect apps through Zapier."
+msgstr "Connect apps through Zapier."
+
 #: src/pages/PluginsOverlay.tsx
 msgid "Connect Executor"
 msgstr "Connect Executor"
@@ -1639,6 +1651,7 @@ msgstr "Cost"
 msgid "Could not add"
 msgstr "Could not add"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Could not add MCP server"
 msgstr "Could not add MCP server"
@@ -2044,6 +2057,10 @@ msgstr "Could not save this choice"
 msgid "Could not search catalog"
 msgstr "Could not search catalog"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Could not search the MCP registry"
+msgstr "Could not search the MCP registry"
+
 #: src/pages/Auth.tsx
 msgid "Could not send reset email"
 msgstr "Could not send reset email"
@@ -2145,6 +2162,10 @@ msgstr "Create a section and move {0} into it."
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "Create account"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Create and export Canva designs."
+msgstr "Create and export Canva designs."
 
 #: src/pages/GroupPanel.tsx
 msgid "Create group"
@@ -2785,6 +2806,10 @@ msgstr "Filter by date"
 msgid "Filters"
 msgstr "Filters"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Find and manage Linear issues and projects."
+msgstr "Find and manage Linear issues and projects."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Find models"
@@ -2909,6 +2934,7 @@ msgstr "Header \"{header}\""
 msgid "Header name"
 msgstr "Header name"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/ModelHeadersEditor.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Header value"
@@ -3245,6 +3271,14 @@ msgstr "Link DMs"
 msgid "Link SSO"
 msgstr "Link SSO"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Google Calendar events."
+msgstr "List and update Google Calendar events."
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Outlook Calendar events."
+msgstr "List and update Outlook Calendar events."
+
 #: src/pages/Artifacts.tsx
 msgid "List view"
 msgstr "List view"
@@ -3367,6 +3401,10 @@ msgstr "Manage {0}"
 #: src/pages/Paywall.tsx
 msgid "Manage billing"
 msgstr "Manage billing"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Manage GitHub repositories, issues, and pull requests."
+msgstr "Manage GitHub repositories, issues, and pull requests."
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Manage MCP servers"
@@ -3872,6 +3910,7 @@ msgid "No OpenClaw, Hermes or agent document found."
 msgstr "No OpenClaw, Hermes or agent document found."
 
 #: src/components/integrations/IntegrationSetup.tsx
+#: src/components/integrations/McpRegistryBrowse.tsx
 msgid "No remote MCP servers found"
 msgstr "No remote MCP servers found"
 
@@ -4248,6 +4287,10 @@ msgstr "Plugin"
 #: src/pages/OrganizationSettingsPanel.tsx
 msgid "PNG, JPG, or SVG up to 1 MB."
 msgstr "PNG, JPG, or SVG up to 1 MB."
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Popular"
+msgstr "Popular"
 
 #: src/pages/RoutineEditor.tsx
 msgid "Post \"No changes\" in chat"
@@ -4872,6 +4915,14 @@ msgstr "Scopes (optional)"
 msgid "Search"
 msgstr "Search"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and edit your Notion workspace."
+msgstr "Search and edit your Notion workspace."
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and update Jira and Confluence."
+msgstr "Search and update Jira and Confluence."
+
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Search apps"
@@ -4893,6 +4944,10 @@ msgstr "Search by domain"
 msgid "Search integrations.sh"
 msgstr "Search integrations.sh"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search MCP servers"
+msgstr "Search MCP servers"
+
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
@@ -4903,11 +4958,20 @@ msgstr "Search models"
 msgid "Search runs"
 msgstr "Search runs"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Gmail."
+msgstr "Search, read, and draft Gmail."
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Outlook mail."
+msgstr "Search, read, and draft Outlook mail."
+
 #. placeholder {0}: filters.query.trim()
 #: src/pages/ActivityList.tsx
 msgid "Search: {0}"
 msgstr "Search: {0}"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/SpaceSearch.tsx
 msgid "Searching…"
@@ -4948,6 +5012,10 @@ msgstr "Send deletion code"
 #: src/components/AskCard.tsx
 msgid "Send it"
 msgstr "Send it"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Send messages and read Slack channels."
+msgstr "Send messages and read Slack channels."
 
 #: src/components/composer/HoldToTalk.tsx
 msgid "Send recording"
@@ -5533,6 +5601,10 @@ msgstr "This server did not request browser authorization."
 msgid "This server is already connected. Disconnect it first to authorize again."
 msgstr "This server is already connected. Disconnect it first to authorize again."
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "This server needs a header."
+msgstr "This server needs a header."
+
 #: src/pages/model-settings/connection-controls.tsx
 msgid "This subscription sign-in is not available in ALMA yet. Use a deployment credential or choose another provider."
 msgstr "This subscription sign-in is not available in ALMA yet. Use a deployment credential or choose another provider."
@@ -6012,6 +6084,10 @@ msgstr "Won't do"
 #: src/components/SignupSurvey.tsx
 msgid "Work"
 msgstr "Work"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Work with Stripe customers, products, and payments."
+msgstr "Work with Stripe customers, products, and payments."
 
 #: src/pages/shell/agent-import.tsx
 msgid "Working instructions"

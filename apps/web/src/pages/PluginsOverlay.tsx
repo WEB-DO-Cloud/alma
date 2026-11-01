@@ -39,6 +39,7 @@ import { queryOptions, skipToken, useQuery, useQueryClient } from "@tanstack/rea
 import { ChevronLeft, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IntegrationSetup } from "../components/integrations/IntegrationSetup";
+import { McpRegistryBrowse } from "../components/integrations/McpRegistryBrowse";
 import { connectedAppMarks } from "../lib/connected-apps";
 import { optionalCatalogFeedProbe } from "../lib/optional-catalog-feed";
 import { fetchFresh, useSpaceQueries, writeSaved } from "../lib/query";
@@ -735,6 +736,19 @@ export function PluginsOverlay({
             </div>
           ) : null}
 
+          {!detailItem ? (
+            <McpRegistryBrowse
+              query={query}
+              installedEndpoints={
+                new Set(mcpServers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])))
+              }
+              botId={activeBotId}
+              onInstalled={() => {
+                void mcpQuery.refetch();
+              }}
+            />
+          ) : null}
+
           {!detailItem && (mcpServers.length > 0 || mcpError) ? (
             <section data-testid="registered-mcp-servers" className="mb-6">
               <div className="mb-2 flex items-center justify-between gap-3">
@@ -850,7 +864,7 @@ export function PluginsOverlay({
                 </p>
               ) : null}
               {visible.length > 0 ? (
-                <div className="grid grid-cols-2 gap-2">
+                <div data-testid="connection-catalog" className="grid grid-cols-2 gap-2">
                   {rendered.map((item) =>
                     renderCatalogTile(item, item.name, item.logo, {
                       // Avoid duplicate connection-tile-* ids while featured is also shown.
