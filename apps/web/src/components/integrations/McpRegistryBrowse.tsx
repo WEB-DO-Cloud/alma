@@ -1,6 +1,7 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { McpRegistryServer } from "@rakazo/contracts";
-import { FEATURED_MCP_SERVERS } from "@rakazo/core";
+import type { FeaturedMcpIcon } from "@rakazo/core";
+import { FEATURED_MCP_ICONS, FEATURED_MCP_SERVERS, featuredMcpIcon } from "@rakazo/core";
 import { Button, Input } from "@rakazo/ui-web";
 import { useEffect, useState } from "react";
 import { addRemoteMcpServer } from "../../lib/add-remote-mcp";
@@ -17,7 +18,23 @@ function endpointHost(endpoint: string): string {
   }
 }
 
-function RegistryIcon({ name, iconUrl }: { name: string; iconUrl: string | null }) {
+function RegistryIcon({
+  name,
+  icon,
+  iconUrl,
+}: {
+  name: string;
+  icon?: FeaturedMcpIcon;
+  iconUrl: string | null;
+}) {
+  const local = icon ? FEATURED_MCP_ICONS[icon] : undefined;
+  if (local) {
+    return (
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-favicon-plate p-1.5">
+        <img src={`data:image/svg+xml,${encodeURIComponent(local)}`} alt="" className="size-full" />
+      </div>
+    );
+  }
   return iconUrl ? (
     <img
       src={iconUrl}
@@ -25,7 +42,7 @@ function RegistryIcon({ name, iconUrl }: { name: string; iconUrl: string | null 
       loading="lazy"
       decoding="async"
       referrerPolicy="no-referrer"
-      className="h-9 w-9 shrink-0 rounded-xl bg-accent object-contain"
+      className="h-9 w-9 shrink-0 rounded-xl bg-favicon-plate object-contain p-1.5"
     />
   ) : (
     <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-sm font-semibold text-foreground">
@@ -142,7 +159,7 @@ export function McpRegistryBrowse({
         data-testid="mcp-registry-card"
         className="flex min-w-0 items-start gap-3 rounded-xl border border-border p-3"
       >
-        <RegistryIcon name={server.name} iconUrl={server.iconUrl} />
+        <RegistryIcon name={server.name} icon={featuredMcpIcon(server)} iconUrl={server.iconUrl} />
         <div className="min-w-0 flex-1">
           <div className="truncate text-[15px] font-medium text-foreground">{server.name}</div>
           {description ? (

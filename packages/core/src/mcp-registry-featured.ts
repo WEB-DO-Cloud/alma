@@ -1,4 +1,7 @@
 import type { McpRegistryServer } from "@rakazo/contracts";
+import type { FeaturedMcpIcon } from "./mcp-registry-icons.js";
+
+export type FeaturedMcpServer = McpRegistryServer & { icon: FeaturedMcpIcon };
 
 /**
  * Remote MCP servers shown before search. Each endpoint was present on the
@@ -9,9 +12,10 @@ import type { McpRegistryServer } from "@rakazo/contracts";
  * first-party remote for them. Gmail, Google Calendar, and Outlook use the
  * MintMCP remotes published in the registry. Slack uses the Waystation remote.
  */
-export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
+export const FEATURED_MCP_SERVERS: readonly FeaturedMcpServer[] = [
   {
     registryName: "com.mintmcp/gmail",
+    icon: "gmail",
     name: "Gmail",
     description: "Search, read, and draft Gmail.",
     iconUrl: null,
@@ -22,6 +26,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.mintmcp/gcal",
+    icon: "google-calendar",
     name: "Google Calendar",
     description: "List and update Google Calendar events.",
     iconUrl: null,
@@ -32,6 +37,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.mintmcp/outlook-email",
+    icon: "outlook",
     name: "Outlook",
     description: "Search, read, and draft Outlook mail.",
     iconUrl: null,
@@ -42,6 +48,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.mintmcp/outlook-calendar",
+    icon: "outlook-calendar",
     name: "Outlook Calendar",
     description: "List and update Outlook Calendar events.",
     iconUrl: null,
@@ -52,6 +59,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.notion/mcp",
+    icon: "notion",
     name: "Notion",
     description: "Search and edit your Notion workspace.",
     iconUrl: null,
@@ -62,6 +70,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "ai.waystation/slack",
+    icon: "slack",
     name: "Slack",
     description: "Send messages and read Slack channels.",
     iconUrl: null,
@@ -72,6 +81,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "io.github.github/github-mcp-server",
+    icon: "github",
     name: "GitHub",
     description: "Manage GitHub repositories, issues, and pull requests.",
     iconUrl: null,
@@ -82,9 +92,10 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "app.linear/linear",
+    icon: "linear",
     name: "Linear",
     description: "Find and manage Linear issues and projects.",
-    iconUrl: "https://static.linear.app/integrations/mcp/icon.svg",
+    iconUrl: null,
     transport: "streamable_http",
     endpoint: "https://mcp.linear.app/mcp",
     needsHeader: false,
@@ -92,6 +103,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.atlassian/atlassian-mcp-server",
+    icon: "atlassian",
     name: "Atlassian",
     description: "Search and update Jira and Confluence.",
     iconUrl: null,
@@ -102,6 +114,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.stripe/mcp",
+    icon: "stripe",
     name: "Stripe",
     description: "Work with Stripe customers, products, and payments.",
     iconUrl: null,
@@ -112,6 +125,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.zapier/mcp",
+    icon: "zapier",
     name: "Zapier",
     description: "Connect apps through Zapier.",
     iconUrl: null,
@@ -122,6 +136,7 @@ export const FEATURED_MCP_SERVERS: readonly McpRegistryServer[] = [
   },
   {
     registryName: "com.canva.mcp/mcp",
+    icon: "canva",
     name: "Canva",
     description: "Create and export Canva designs.",
     iconUrl: null,

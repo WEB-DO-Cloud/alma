@@ -1,7 +1,14 @@
 import type { McpRegistryServer, McpServer } from "@rakazo/contracts";
-import { availableMcpSlug, FEATURED_MCP_SERVERS, remoteMcpCreateInput } from "@rakazo/core";
+import {
+  availableMcpSlug,
+  FEATURED_MCP_ICONS,
+  FEATURED_MCP_SERVERS,
+  featuredMcpIcon,
+  remoteMcpCreateInput,
+} from "@rakazo/core";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { SvgXml } from "react-native-svg";
 import { rpc } from "../lib/api";
 import { mobileTokens } from "../lib/appearance";
 import { useI18n } from "../lib/i18n";
@@ -162,9 +169,16 @@ export function McpRegistryBrowse({
       {cards.map((server) => {
         const added = installedEndpoints.has(server.endpoint);
         const description = featuredDescription(server.registryName, t) || server.description;
+        const icon = featuredMcpIcon(server);
         return (
           <View key={server.endpoint} testID="mcp-registry-card" style={styles.card}>
-            <ConnectorIcon logo={server.iconUrl} name={server.name} size={32} />
+            {icon ? (
+              <View style={[styles.logo, { backgroundColor: mobileTokens().faviconPlate }]}>
+                <SvgXml xml={FEATURED_MCP_ICONS[icon]} width={20} height={20} />
+              </View>
+            ) : (
+              <ConnectorIcon logo={server.iconUrl} name={server.name} size={32} />
+            )}
             <View style={styles.grow}>
               <Text numberOfLines={1} style={styles.title}>
                 {server.name}
@@ -212,6 +226,13 @@ function createStyles() {
   const destructive = mobileTokens().destructive;
   return StyleSheet.create({
     section: { gap: 8 },
+    logo: {
+      width: 32,
+      height: 32,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     heading: { color: native.label, fontSize: 15, fontWeight: "600" },
     card: {
       minHeight: 72,

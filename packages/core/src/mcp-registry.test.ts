@@ -7,6 +7,7 @@ import {
   remoteMcpCreateInput,
 } from "./mcp-registry.js";
 import { FEATURED_MCP_SERVERS } from "./mcp-registry-featured.js";
+import { FEATURED_MCP_ICONS } from "./mcp-registry-icons.js";
 
 const blocked = (hostname: string) =>
   hostname === "10.0.0.8" || hostname === "169.254.169.254" || hostname.endsWith(".internal");
@@ -24,10 +25,15 @@ describe("featured MCP servers", () => {
     const endpoints = FEATURED_MCP_SERVERS.map((server) => server.endpoint);
     expect(new Set(endpoints).size).toBe(endpoints.length);
     for (const server of FEATURED_MCP_SERVERS) {
-      expect(McpRegistryServerSchema.parse(server)).toEqual(server);
+      const { icon, ...registry } = server;
+      expect(McpRegistryServerSchema.parse(registry)).toEqual(registry);
       expect(server.endpoint.startsWith("https://")).toBe(true);
       expect(server.transport).toBe("streamable_http");
       expect(server.needsHeader).toBe(false);
+      expect(server.iconUrl).toBeNull();
+      expect(FEATURED_MCP_ICONS[icon]?.startsWith("<svg")).toBe(true);
+      expect(FEATURED_MCP_ICONS[icon]).not.toContain("<image");
+      expect(FEATURED_MCP_ICONS[icon]).not.toMatch(/href="https?:/);
     }
   });
 });

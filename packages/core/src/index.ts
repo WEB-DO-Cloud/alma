@@ -47,6 +47,7 @@ export * from "./markdown-plain.js";
 export * from "./mcp.js";
 export * from "./mcp-registry.js";
 export * from "./mcp-registry-featured.js";
+export * from "./mcp-registry-icons.js";
 export * from "./message-pages.js";
 export * from "./message-reactions.js";
 export * from "./message-replies.js";
