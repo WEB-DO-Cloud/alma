@@ -202,7 +202,7 @@ export class StripeBillingProvider implements BillingProvider {
                 price: await this.monthlyPrice(
                   `rakazo_monthly_credits_${input.amountCents}`,
                   input.amountCents,
-                  "Rakazo monthly model credits",
+                  "ALMA monthly model credits",
                 ),
               }
             : {
@@ -244,7 +244,7 @@ export class StripeBillingProvider implements BillingProvider {
           price: await this.monthlyPrice(
             `rakazo_monthly_credits_${amountCents}`,
             amountCents,
-            "Rakazo monthly model credits",
+            "ALMA monthly model credits",
           ),
           quantity: 1,
         },
@@ -277,7 +277,7 @@ export class StripeBillingProvider implements BillingProvider {
             price: await this.monthlyPrice(
               `rakazo_byok_monthly_${input.amountCents}`,
               input.amountCents,
-              "Rakazo own-key plan",
+              "ALMA own-key plan",
             ),
           },
         ],

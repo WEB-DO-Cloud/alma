@@ -42,10 +42,8 @@ describe("optional Keenable web provider", () => {
     expect(peer.requests.length).toBeGreaterThan(1);
     for (const request of peer.requests) {
       expect(request.url).toBe("https://api.keenable.ai/mcp");
-      expect(request.headers.get("x-keenable-title")).toBe("rakazo");
-      expect(request.headers.get("user-agent")).toBe(
-        "ALMA/0.1 (+https://github.com/elie222/rakazo; web tools)",
-      );
+      expect(request.headers.get("x-keenable-title")).toBe("ALMA");
+      expect(request.headers.get("user-agent")).toBe("ALMA/0.1 (+https://alma.com.do; web tools)");
       expect(request.headers.has("x-api-key")).toBe(false);
       expect(request.headers.has("authorization")).toBe(false);
     }
@@ -60,7 +58,7 @@ describe("optional Keenable web provider", () => {
     for (const request of peer.requests) {
       expect(request.url).toBe("https://api.keenable.ai/mcp");
       expect(request.headers.get("x-api-key")).toBe("synthetic-key");
-      expect(request.headers.get("x-keenable-title")).toBe("rakazo");
+      expect(request.headers.get("x-keenable-title")).toBe("ALMA");
     }
   });
 

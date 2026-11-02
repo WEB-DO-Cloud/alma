@@ -63,7 +63,7 @@ Docker Engine、Compose プラグイン、curl、OpenSSL が必要です。リ�
 
 ```bash
 mkdir -p alma && cd alma &&
-curl -fsSLO https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh &&
+curl -fsSLO https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh &&
 bash install-images.sh
 ```
 
@@ -107,7 +107,7 @@ Node.js 22.x 系の 22.22.2 以降、Node.js 24.x、または Node.js 26 以降�
 pnpm 9、Docker が必要です。Node.js 23.x と 25.x はサポートしていません。
 
 ```bash
-git clone https://github.com/elie222/rakazo.git
+git clone https://github.com/WEB-DO-Cloud/alma.git
 cd rakazo
 cp .env.example .env
 ```

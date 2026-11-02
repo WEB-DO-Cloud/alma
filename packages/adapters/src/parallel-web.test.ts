@@ -219,7 +219,7 @@ describe("optional Parallel web provider", () => {
       for (const request of peer.requests) {
         expect(request.url).toBe("https://search.parallel.ai/mcp");
         expect(request.headers.get("user-agent")).toBe(
-          "ALMA/0.1 (+https://github.com/elie222/rakazo; web tools)",
+          "ALMA/0.1 (+https://alma.com.do; web tools)",
         );
         expect(request.headers.has("authorization")).toBe(false);
       }

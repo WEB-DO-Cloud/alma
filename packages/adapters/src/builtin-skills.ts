@@ -1,37 +1,37 @@
 import { buildSkillMd } from "@rakazo/core";
 
 const RAKAZO_DOCS: ReadonlyArray<readonly [topics: string, url: string]> = [
-  ["Getting started, first bot, what Rakazo does", "https://rakazo.com/docs.md"],
+  ["Getting started, first bot, what ALMA does", "https://alma.com.do/docs.md"],
   [
     "Creating bots, chatting, bot settings, sidebar, search",
-    "https://rakazo.com/docs/bots-and-chats.md",
+    "https://alma.com.do/docs/bots-and-chats.md",
   ],
-  ["Importing an OpenClaw, Hermes or ChatGPT agent", "https://rakazo.com/docs/import-an-agent.md"],
+  ["Importing an OpenClaw, Hermes or ChatGPT agent", "https://alma.com.do/docs/import-an-agent.md"],
   [
     "Connecting apps and integrations (Gmail, GitHub, MCP tools)",
-    "https://rakazo.com/docs/integrations.md",
+    "https://alma.com.do/docs/integrations.md",
   ],
-  ["Slack, Telegram, WhatsApp and other chat apps", "https://rakazo.com/docs/messaging-apps.md"],
-  ["Routines, schedules and triggers", "https://rakazo.com/docs/routines.md"],
-  ["The bot's computer, files, using your own computer", "https://rakazo.com/docs/computer.md"],
-  ["Memory", "https://rakazo.com/docs/memory.md"],
-  ["Skills", "https://rakazo.com/docs/skills.md"],
-  ["Approvals, Allow and Block lists", "https://rakazo.com/docs/approvals.md"],
-  ["Group chats, bots working together, subagents", "https://rakazo.com/docs/groups.md"],
-  ["Voice, calls, spoken replies", "https://rakazo.com/docs/voice-and-calls.md"],
-  ["Models, providers, API keys, fallbacks, usage", "https://rakazo.com/docs/models.md"],
-  ["Spaces", "https://rakazo.com/docs/spaces.md"],
-  ["Saved credentials and website logins", "https://rakazo.com/docs/bot-secrets.md"],
+  ["Slack, Telegram, WhatsApp and other chat apps", "https://alma.com.do/docs/messaging-apps.md"],
+  ["Routines, schedules and triggers", "https://alma.com.do/docs/routines.md"],
+  ["The bot's computer, files, using your own computer", "https://alma.com.do/docs/computer.md"],
+  ["Memory", "https://alma.com.do/docs/memory.md"],
+  ["Skills", "https://alma.com.do/docs/skills.md"],
+  ["Approvals, Allow and Block lists", "https://alma.com.do/docs/approvals.md"],
+  ["Group chats, bots working together, subagents", "https://alma.com.do/docs/groups.md"],
+  ["Voice, calls, spoken replies", "https://alma.com.do/docs/voice-and-calls.md"],
+  ["Models, providers, API keys, fallbacks, usage", "https://alma.com.do/docs/models.md"],
+  ["Spaces", "https://alma.com.do/docs/spaces.md"],
+  ["Saved credentials and website logins", "https://alma.com.do/docs/bot-secrets.md"],
   [
     "Account, preferences, data export, credits, plans, billing",
-    "https://rakazo.com/docs/account.md",
+    "https://alma.com.do/docs/account.md",
   ],
-  ["Desktop app", "https://rakazo.com/docs/desktop-app.md"],
-  ["Mobile app", "https://rakazo.com/docs/mobile-app.md"],
-  ["Bots that create and manage bots", "https://rakazo.com/docs/fleet-management.md"],
-  ["Building a plugin", "https://rakazo.com/docs/build-a-plugin.md"],
-  ["Self-hosting", "https://rakazo.com/docs/self-host.md"],
-  ["Self-hosted server configuration", "https://rakazo.com/docs/self-host-configuration.md"],
+  ["Desktop app", "https://alma.com.do/docs/desktop-app.md"],
+  ["Mobile app", "https://alma.com.do/docs/mobile-app.md"],
+  ["Bots that create and manage bots", "https://alma.com.do/docs/fleet-management.md"],
+  ["Building a plugin", "https://alma.com.do/docs/build-a-plugin.md"],
+  ["Self-hosting", "https://alma.com.do/docs/self-host.md"],
+  ["Self-hosted server configuration", "https://alma.com.do/docs/self-host-configuration.md"],
 ];
 
 /** Fixed URLs, so fetching one can't carry anything out of a run. */
@@ -59,9 +59,9 @@ const SKILLS: Array<{ name: string; description: string; body: string }> = [
 4. Synthesize a verdict: ship, ship after fixes, or do not ship. List the confirmed findings ordered by severity, each with its location and failure scenario, then any open questions. If nothing survived verification, say so plainly instead of inventing nitpicks.`,
   },
   {
-    name: "Rakazo",
-    description: "How to use or set up Rakazo: chat apps, your computer, billing, hosting",
-    body: `Answer questions about Rakazo itself from its docs. Fetch the matching page with web_fetch before answering, then answer briefly in your own words and link the page. If fetching fails or is unavailable, answer only what this index says and link the page. Never invent menus, buttons, or steps the page doesn't show. Account-specific facts (credit balance, plan, usage) aren't in the docs: point to the screen that shows them.
+    name: "ALMA",
+    description: "How to use or set up ALMA: chat apps, your computer, billing, hosting",
+    body: `Answer questions about ALMA itself from its docs. Fetch the matching page with web_fetch before answering, then answer briefly in your own words and link the page. If fetching fails or is unavailable, answer only what this index says and link the page. Never invent menus, buttons, or steps the page doesn't show. Account-specific facts (credit balance, plan, usage) aren't in the docs: point to the screen that shows them.
 
 ${RAKAZO_DOCS.map(([topics, url]) => `- ${topics}: ${url}`).join("\n")}`,
   },

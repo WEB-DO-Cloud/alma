@@ -24,7 +24,7 @@ The Electron desktop app is a client of the same API. Docker remains the default
 Native file reads and workspace exports are limited to 8 MiB per file. A larger workspace file fails the checkpoint and preserves the previous saved workspace; local files remain on the computer. Writes are bounded by the 12 MiB encoded request limit.
 
 - **Published images** (`docker-compose.images.yml`) default to `SANDBOX_PROVIDER=docker` with a
-  local supervisor and published `ghcr.io/elie222/rakazo/computer` image. No E2B account required.
+  local supervisor and published `ghcr.io/web-do-cloud/alma/computer` image. No E2B account required.
   Optional: set `e2b`, `novita`, `daytona`, `createos`, or `boat` plus the matching API key for remote computers.
 - **Docker** is the quick-start default for published images and for a source checkout / full local
   Compose stack. Workspace bots share a persistent Team Computer by default; Private computers are
@@ -115,7 +115,7 @@ The API and worker talk to the Kubernetes API with their own service account (or
 | Variable | Default | Notes |
 | --- | --- | --- |
 | `KUBERNETES_SANDBOX_NAMESPACE` | `rakazo-sandboxes` | Namespace for computer pods; it must exist |
-| `KUBERNETES_SANDBOX_COMPUTER_IMAGE` | `ghcr.io/elie222/rakazo/computer:edge` | Pin a digest in production |
+| `KUBERNETES_SANDBOX_COMPUTER_IMAGE` | `ghcr.io/web-do-cloud/alma/computer:edge` | Pin a digest in production |
 | `KUBERNETES_SANDBOX_RUNTIME_CLASS_NAME` | unset | For example `kata` or `gvisor` for a VM or user-space kernel boundary |
 | `KUBERNETES_SANDBOX_CPU_LIMIT` / `_MEMORY_LIMIT` | unset | Container limits, such as `2` and `4Gi` |
 | `KUBERNETES_SANDBOX_POD_LABELS` / `_POD_ANNOTATIONS` | unset | JSON objects of strings, merged into every pod |

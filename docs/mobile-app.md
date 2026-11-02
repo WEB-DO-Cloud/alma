@@ -4,14 +4,14 @@ Chat with your bots, answer their questions, watch their computers and take call
 
 ## Install
 
-- iPhone: [App Store](https://apps.apple.com/app/rakazo/id6801531099).
-- Android: [download the APK](https://github.com/elie222/rakazo/releases/download/android/rakazo.apk).
+- iPhone: [App Store](https://apps.apple.com/app/id6829162072).
+- Android: [Google Play](https://play.google.com/store/apps/details?id=do.alma.app).
 
 You can also choose **Get the mobile app** from the account menu in the web or desktop app.
 
 ## Sign in
 
-Sign in with your rakazo.com account. To use your own server instead, tap **Use a custom server** on
+Sign in with your ALMA account. The app opens on `https://app.alma.com.do`. To use your own server instead, tap **Use a custom server** on
 the sign-in screen and enter its address. For a server on your local network, follow
 [Connecting a phone on the same network](./self-host-clients.md#connecting-a-phone-on-the-same-network).
 
@@ -44,5 +44,5 @@ working status while a bot runs.
 
 ## Share to a bot
 
-On Android, share text, images, audio, video, PDFs or files from another app to Rakazo and pick the
+On Android, share text, images, audio, video, PDFs or files from another app to ALMA and pick the
 bot to send them to.

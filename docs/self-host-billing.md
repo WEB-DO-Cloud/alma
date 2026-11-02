@@ -54,8 +54,8 @@ attempts. An hourly, paginated audit rebuilds drifted balance caches from the jo
 repairs. Investigate `Model credit hold requires review` logs using the shared call ID; do not turn
 missing provider evidence into a zero-cost settlement.
 
-OpenRouter inference requests include the normal Rakazo user ID in `user`, `HTTP-Referer`
-(`https://rakazo.com`), and `X-OpenRouter-Title` (`Rakazo`). These values are sent only to OpenRouter's
+OpenRouter inference requests include the normal ALMA user ID in `user`, `HTTP-Referer`
+(`https://alma.com.do`), and `X-OpenRouter-Title` (`ALMA`). These values are sent only to OpenRouter's
 HTTPS inference endpoints, never to compatible custom hosts. Recovery uses the existing configured
 deployment credential; no Redis or external accounting service is required.
 

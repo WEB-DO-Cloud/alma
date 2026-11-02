@@ -16,6 +16,9 @@
       "autoIncrement": true,
       "environment": "production",
       "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://app.alma.com.do"
+      },
       "ios": {
         "image": "macos-tahoe-26.6-xcode-27.1"
       }

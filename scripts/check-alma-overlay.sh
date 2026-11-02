@@ -60,6 +60,58 @@ kept = [
 for path in kept:
     if not pathlib.Path(path).is_file():
         sys.exit(f"missing shipped migration {path}; do not delete history that production already applied")
+server = pathlib.Path("apps/mobile/lib/server-config.ts").read_text()
+if 'PRODUCTION_API = "https://app.alma.com.do"' not in server:
+    sys.exit("mobile production API is not https://app.alma.com.do")
+if "DEFAULT_API = configuredApi ? configuredApi : PRODUCTION_API" not in server:
+    sys.exit("mobile default API does not fall back to the production server")
+if '"https://app.alma.com.do"' not in pathlib.Path("apps/mobile/plugins/with-app-intents.js").read_text():
+    sys.exit("iOS shortcut fallback server is not the production API")
+if '"EXPO_PUBLIC_API_URL": "https://app.alma.com.do"' not in pathlib.Path("apps/mobile/eas.json").read_text():
+    sys.exit("EAS production profile does not set the production API")
+if 'RAKAZO_CLOUD_URL = "https://app.alma.com.do"' not in pathlib.Path("apps/desktop/src/setup-config.ts").read_text():
+    sys.exit("desktop cloud URL is not the production API")
+if 'OFFICIAL_REPO_URL = "https://github.com/WEB-DO-Cloud/alma"' not in pathlib.Path("packages/core/src/self-update.ts").read_text():
+    sys.exit("update repository is not the ALMA repo")
+if 'PUBLISHED_IMAGE_REPO = "web-do-cloud/alma"' not in pathlib.Path("packages/core/src/compose-update.ts").read_text():
+    sys.exit("published image repository is not the ALMA repo")
+if 'SUBMIT_PLUGIN_URL = "https://alma.com.do/plugins/submit/"' not in domain:
+    sys.exit("plugin submit URL is not on alma.com.do")
+skills = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()
+if "rakazo.com" in skills or "github.com/elie222" in skills:
+    sys.exit("built-in skill docs still point at a Rakazo host")
+banned_hosts = ("rakazo.com", "app.rakazo.com", "github.com/elie222", "ghcr.io/elie222")
+host_files = [
+    "apps/mobile/lib/server-config.ts",
+    "apps/mobile/plugins/with-app-intents.js",
+    "apps/mobile/app.config.ts",
+    "apps/mobile/eas.json",
+    "apps/desktop/src/setup-config.ts",
+    "apps/desktop/package.json",
+    "packages/core/src/self-update.ts",
+    "packages/core/src/compose-update.ts",
+    "packages/contracts/src/domain.ts",
+    "packages/adapters/src/builtin-skills.ts",
+    "packages/adapters/src/kubernetes-sandbox.ts",
+    "infra/compose/install-images.sh",
+    "infra/compose/docker-compose.prod.yml",
+    ".github/workflows/ci.yml",
+    "apps/www/src/site.ts",
+]
+for path in host_files:
+    text = pathlib.Path(path).read_text()
+    for needle in banned_hosts:
+        if needle in text:
+            sys.exit(f"{path} still mentions {needle}")
+if "Rakazo" in pathlib.Path("apps/mobile/locales/es.json").read_text():
+    sys.exit("Spanish permission strings still say Rakazo")
+for xml in pathlib.Path("apps/mobile/modules").rglob("call_strings.xml"):
+    for match in re.findall(r">([^<]*Rakazo[^<]*)<", xml.read_text()):
+        sys.exit(f"{xml} shows {match}")
+intents = pathlib.Path("apps/mobile/ios-intents/RakazoIntents.swift").read_text()
+for phrase in (" in Rakazo", " to Rakazo", "Open Rakazo"):
+    if phrase in intents:
+        sys.exit(f"iOS shortcuts still say {phrase.strip()}")
 PY
 
 if ! git rev-parse --verify upstream/main >/dev/null 2>&1; then

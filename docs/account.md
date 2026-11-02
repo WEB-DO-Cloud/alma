@@ -38,19 +38,19 @@ You can add one, replace its value, or remove it. See [Reusable credentials](./b
 In **Settings → General**:
 
 - **Export data** downloads a zip of your account: every space's chats, files and bot workspaces.
-- **Import data** loads an export, for example to move between rakazo.com and your own server.
+- **Import data** loads an export, for example to move between app.alma.com.do and your own server.
 - **Import an agent** brings in an OpenClaw, Hermes or ChatGPT assistant. See
   [Import an agent](./import-an-agent.md).
 - **Delete account** emails you a code, then permanently deletes your account and data.
 
-## Billing on rakazo.com
+## Billing on app.alma.com.do
 
-rakazo.com is free to try; the sidebar shows when your free period ends. To keep going, choose a
+app.alma.com.do is free to try; the sidebar shows when your free period ends. To keep going, choose a
 plan:
 
 - **Use my subscription or API key**: works with your ChatGPT or Claude plan, or any
   [model provider](./models.md) key. You pay the provider for model usage.
-- **Use Rakazo credits**: model usage is paid from **Monthly credits** included in the plan. Choose
+- **Use ALMA credits**: model usage is paid from **Monthly credits** included in the plan. Choose
   **Add credits** for more. Monthly credits expire at renewal; credits you add don't.
 
 **Settings → Billing** shows your plan and when it renews. Choose **Manage** to change it.

@@ -31,17 +31,10 @@ It needs these repository secrets:
 Re-running it for a version that is already in review leaves that submission
 alone.
 
-## Android APK
+## Android
 
-Until Rakazo is on Google Play, Android users can install an APK.
-`release-mobile` publishes it, or run the `release-android-apk` workflow from
-`main` on its own. It builds the `android-apk` EAS profile, signed with the
-project's managed keystore, and replaces the rolling `android` GitHub release,
-so the download link stays the same:
-
-```text
-https://github.com/elie222/rakazo/releases/download/android/rakazo.apk
-```
+Android users install from Google Play (`do.alma.app`). The store build's API
+origin is `https://app.alma.com.do` unless `EXPO_PUBLIC_API_URL` overrides it.
 
 Do this once, from `apps/mobile`, on a machine that can sign in to Apple.
 CI only reads the match repo. The one exception is a build whose parameter
@@ -104,7 +97,7 @@ review or promote a Play release.
 | `ANDROID_KEYSTORE_PASSWORD` | Keystore password. |
 | `ANDROID_KEY_ALIAS` | Upload key alias. |
 | `ANDROID_KEY_PASSWORD` | Upload key password. |
-| `EXPO_PUBLIC_API_URL` | Firm API. Use HTTPS for a non-demo build. |
+| `EXPO_PUBLIC_API_URL` | API origin. Unset store builds use `https://app.alma.com.do`. Use HTTPS. |
 | `BITRISE_USE_UPLOADED_SIGNING` | Set to `true` only to install profiles uploaded in the Bitrise UI instead of match. |
 
 `BITRISE_BUILD_NUMBER` is provided by Bitrise. The bump lane writes it to the

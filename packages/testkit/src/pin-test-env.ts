@@ -62,6 +62,9 @@ if (!process.env.VERIFY_LOGGING) {
 // Tests must never export product analytics to a configured collector.
 process.env.ANALYTICS_PROVIDER = "none";
 
+// Mobile unit tests talk to loopback. A binary with no compile-time URL uses the production API.
+process.env.EXPO_PUBLIC_API_URL = "http://127.0.0.1:3100";
+
 // Postgres suites connect as the runtime login. A protected table reached
 // without runAsTenant/runAsSystem returns nothing there, as in production, so
 // fail the suite on it instead. Loaded only then: other tests need no database.

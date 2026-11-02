@@ -132,8 +132,8 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "elie222",
-        "repo": "rakazo"
+        "owner": "WEB-DO-Cloud",
+        "repo": "alma"
       }
     ]
   }

@@ -23,7 +23,8 @@ import { assertMcpRemoteEndpoint } from "./mcp-servers.js";
 import type { RouterDeps } from "./router.js";
 import { throttleKey, windowCounter } from "./window-counter.js";
 
-const PLUGIN_REGISTRY = "Rakazo";
+const PLUGIN_REGISTRY_ID = "Rakazo";
+const PLUGIN_REGISTRY = "ALMA";
 const MAX_BODY_BYTES = 32 * 1024;
 const HOUR_MS = 60 * 60_000;
 const SUBMISSIONS_PER_IP_PER_HOUR = 10;
@@ -241,7 +242,7 @@ export async function approvedPluginEntries(
       .replace(/^-|-$/g, "");
     return [
       {
-        id: `${PLUGIN_REGISTRY}:${source}`,
+        id: `${PLUGIN_REGISTRY_ID}:${source}`,
         name,
         displayName: row.name,
         description: row.description,

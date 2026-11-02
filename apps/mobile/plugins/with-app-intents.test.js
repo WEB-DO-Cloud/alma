@@ -35,9 +35,10 @@ describe("RakazoIntents", () => {
     }
   });
 
-  it("falls back to the app's own default server", () => {
-    const local = constant("lib/server-config.ts", "LOCAL_API");
-    expect(read("plugins/with-app-intents.js")).toContain(`"${local}"`);
+  it("falls back to the production ALMA server", () => {
+    const production = constant("lib/server-config.ts", "PRODUCTION_API");
+    expect(production).toBe("https://app.alma.com.do");
+    expect(read("plugins/with-app-intents.js")).toContain(`"${production}"`);
   });
 });
 

@@ -8,7 +8,7 @@ export const APP_URL = "https://app.alma.com.do";
 export const PLUGIN_SUBMISSIONS_URL = `${APP_URL}/api/v1/plugin-submissions`;
 export const CATALOG_URL =
   "https://rakazo-public.fsn1.your-objectstorage.com/integrations/catalog.json";
-export const GITHUB_URL = "https://github.com/elie222/rakazo";
+export const GITHUB_URL = "https://github.com/WEB-DO-Cloud/alma";
 export const IOS_APP_URL = MOBILE_APP_STORES.ios;
 export const SELF_HOST_GUIDE_PATH = "/self-hosted-ai-agent/";
 export const DOCS_URL = `${SITE_URL}/docs/`;

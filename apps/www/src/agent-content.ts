@@ -91,7 +91,7 @@ ALMA AI is an open source Grok Bot alternative for persistent AI teammates: bots
 
 The project started from a simple premise: useful agents should be understandable and controllable by the people who run them. ALMA keeps routines in readable Markdown, supports multiple model providers, records actions in an audit log, and lets operators keep model keys, browser sessions, and deployment infrastructure under their own control.
 
-ALMA targets the web, macOS, Windows, Linux, iOS, and Android. The source is available under the Apache-2.0 license and accepts public issues and contributions on GitHub. Inbox Zero Inc. maintains the project and offers support at hello@rakazo.com.
+ALMA targets the web, macOS, Windows, Linux, iOS, and Android. The source is available under the Apache-2.0 license and accepts public issues and contributions on GitHub. Inbox Zero Inc. maintains the project and offers support at hello@alma.com.do.
 
 - [Self-hosting guide](https://alma.com.do/self-hosted-ai-agent/)
 - [Support](https://alma.com.do/support/)
@@ -103,7 +103,7 @@ For help with the ALMA mobile app or a hosted ALMA account, email [hello@alma.co
 
 For self-hosted ALMA, start with the [self-hosting guide](https://alma.com.do/self-hosted-ai-agent/). Report vulnerabilities only to [security@alma.com.do](mailto:security@alma.com.do).
 
-Hosted users can permanently delete their account and associated personal Space data from the Account screen in the ALMA app, or on the web at [app.rakazo.com](https://app.alma.com.do) under Settings → Account. Without access to the app, email [hello@rakazo.com](mailto:hello@rakazo.com) from the account's email address to ask us to delete it. Sign-in security records are kept for up to 90 days.
+Hosted users can permanently delete their account and associated personal Space data from the Account screen in the ALMA app, or on the web at [app.alma.com.do](https://app.alma.com.do) under Settings → Account. Without access to the app, email [hello@alma.com.do](mailto:hello@alma.com.do) from the account's email address to ask us to delete it. Sign-in security records are kept for up to 90 days.
 `;
 
 export const PRIVACY_MARKDOWN = `# ALMA privacy
@@ -135,7 +135,7 @@ These terms are an agreement between you and ALMA INTELIGENCIA, S.R.L. for the A
 
 You are responsible for your account and for actions your bots take on your behalf, including in scheduled routines; give bots only the access they need and require approval for actions that are hard to undo. AI output can be wrong, so review it before relying on it, and do not use the Service where an error could cause serious harm. Do not use the Service to break the law, send spam or malware, access systems without authorization, abuse its computers, or violate the terms of connected providers. You keep ownership of your content and bot output, and you pay any fees charged by third-party services, including usage on your own API keys.
 
-Free trials convert to a paid plan when they end unless cancelled before then. Fair use on hosted plans is up to 100 computer-hours a month and 5 computers running at once per account; computers sleep when idle, there are no charges for computer use beyond the plan, and we may slow or pause usage beyond these limits. Self-hosted deployments have no such limits. Paid plans renew automatically until cancelled and are charged through Stripe. Cancel at any time from billing settings or by emailing [hello@rakazo.com](mailto:hello@rakazo.com); access continues until the end of the paid period. Payments are non-refundable and not prorated except where required by law. Charges made in error are refunded when reported within 30 days. If we close your account or stop offering the Service for reasons other than a violation of these terms, we refund prepaid fees for the unused period. Consumers in the EU and UK can withdraw from a new subscription within 14 days and are refunded less the value of the Service already provided.
+Free trials convert to a paid plan when they end unless cancelled before then. Fair use on hosted plans is up to 100 computer-hours a month and 5 computers running at once per account; computers sleep when idle, there are no charges for computer use beyond the plan, and we may slow or pause usage beyond these limits. Self-hosted deployments have no such limits. Paid plans renew automatically until cancelled and are charged through Stripe. Cancel at any time from billing settings or by emailing [hello@alma.com.do](mailto:hello@alma.com.do); access continues until the end of the paid period. Payments are non-refundable and not prorated except where required by law. Charges made in error are refunded when reported within 30 days. If we close your account or stop offering the Service for reasons other than a violation of these terms, we refund prepaid fees for the unused period. Consumers in the EU and UK can withdraw from a new subscription within 14 days and are refunded less the value of the Service already provided.
 
 The Service is provided as is. Our liability is limited to the greater of what you paid us in the previous 12 months or US$100, except where the law does not allow a limit. These terms are governed by the laws of the Dominican Republic. Disputes will be resolved in the courts of Santo Domingo, D.N.
 

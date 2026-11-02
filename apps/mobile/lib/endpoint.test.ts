@@ -52,6 +52,15 @@ describe("normalizeApiBase", () => {
 });
 
 describe("display and warnings", () => {
+  it("uses the production ALMA server when no compile-time URL is set", async () => {
+    vi.stubEnv("EXPO_PUBLIC_API_URL", "");
+    vi.resetModules();
+    const endpoint = await import("./endpoint.js");
+
+    expect(endpoint.defaultApiBase()).toBe("https://app.alma.com.do");
+    vi.unstubAllEnvs();
+  });
+
   it("falls back to loopback when the compile-time endpoint is invalid", async () => {
     vi.stubEnv("EXPO_PUBLIC_API_URL", "ftp://files.example.com");
     vi.resetModules();

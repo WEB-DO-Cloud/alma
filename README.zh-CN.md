@@ -78,7 +78,7 @@ https://github.com/user-attachments/assets/dccdeddb-2134-4a56-8eed-b2e591736b1c
 
 ```bash
 mkdir -p alma && cd alma &&
-curl -fsSLO https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh &&
+curl -fsSLO https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh &&
 bash install-images.sh
 ```
 
@@ -118,7 +118,7 @@ bash install-images.sh
 不支持 Node.js 23.x 和 25.x。
 
 ```bash
-git clone https://github.com/elie222/rakazo.git
+git clone https://github.com/WEB-DO-Cloud/alma.git
 cd rakazo
 cp .env.example .env
 ```

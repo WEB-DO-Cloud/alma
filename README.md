@@ -60,7 +60,7 @@ You need Docker Engine, the Compose plugin, curl, and OpenSSL. No clone or Node 
 
 ```bash
 mkdir -p alma && cd alma &&
-curl -fsSLO https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh &&
+curl -fsSLO https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh &&
 bash install-images.sh
 ```
 
@@ -104,7 +104,7 @@ You need Node.js 22.22.2 or newer in the 22.x line, Node.js 24.x, or Node.js 26+
 pnpm 9; and Docker. Node.js 23.x and 25.x are not supported.
 
 ```bash
-git clone https://github.com/elie222/rakazo.git
+git clone https://github.com/WEB-DO-Cloud/alma.git
 cd rakazo
 cp .env.example .env
 ```

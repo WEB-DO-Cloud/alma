@@ -905,7 +905,7 @@ export const PluginMarketplaceCatalogSchema = z.object({
 export type PluginMarketplaceCatalog = z.infer<typeof PluginMarketplaceCatalogSchema>;
 
 export const PLUGIN_SUBMISSIONS_PATH = "/api/v1/plugin-submissions";
-export const SUBMIT_PLUGIN_URL = "https://rakazo.com/plugins/submit/";
+export const SUBMIT_PLUGIN_URL = "https://alma.com.do/plugins/submit/";
 
 const HttpsUrlSchema = z
   .string()

@@ -12,8 +12,8 @@ const FILE_NAME = path.basename(SOURCE);
  */
 function withAppIntents(config) {
   config = withInfoPlist(config, (config) => {
-    config.modResults.RakazoDefaultApiBase =
-      process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3100";
+    const configured = process.env.EXPO_PUBLIC_API_URL?.trim();
+    config.modResults.RakazoDefaultApiBase = configured || "https://app.alma.com.do";
     return config;
   });
 
