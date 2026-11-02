@@ -225,8 +225,9 @@ test("takeover, routine, plugins, and export are reachable", async ({ page }, te
   await captureScreenshot(page, testInfo, "11b-connected-plugins-empty");
 
   const linearRow = page
-    .getByTestId("connection-catalog")
+    .locator('[data-testid="mcp-registry"] ~ *')
     .getByText("Linear", { exact: true })
+    .first()
     .locator("xpath=ancestor::*[.//button][1]");
   const connectPopup = page.waitForEvent("popup");
   await linearRow.getByRole("button", { name: "Add", exact: true }).click();

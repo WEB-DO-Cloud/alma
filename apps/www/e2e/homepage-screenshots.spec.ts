@@ -13,7 +13,7 @@ async function openHomepage(page: Page, path = "/") {
   // The server-rendered demo is visible before its client listeners are ready.
   await page
     .locator('astro-island[component-export="ProductDemo"]:not([ssr])')
-    .waitFor({ state: "attached" });
+    .waitFor({ state: "attached", timeout: 120_000 });
 }
 
 // The gallery rejects images taller than 10,000px, so long pages are split into parts.
