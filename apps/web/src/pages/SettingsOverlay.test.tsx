@@ -241,21 +241,24 @@ it("opens a linked billing section once billing turns out to be on", async () =>
   }
 });
 
-it("edits the account's models, voice, confirmations, and vault", async () => {
+it("edits the account's confirmations and vault, and does not offer model or voice setup", async () => {
   scopes.length = 0;
   const props = { space: acme, spaces };
   const { container, rerender, cleanup } = await render({ ...props, section: "models" });
   try {
-    for (const section of ["models", "voice", "confirmations", "vault"] as const) {
+    expect(container.querySelector('[data-testid="settings-nav-models"]')).toBeNull();
+    expect(container.querySelector('[data-testid="settings-nav-voice"]')).toBeNull();
+    expect(
+      container.querySelector("[data-settings-section]")?.getAttribute("data-settings-section"),
+    ).toBe("general");
+    for (const section of ["confirmations", "vault"] as const) {
       await rerender({ ...props, section });
     }
     const vaultNav = container.querySelector('[data-testid="settings-nav-vault"]');
     expect(vaultNav?.textContent).toBe("Vault");
     expect(vaultNav?.getAttribute("aria-current")).toBe("page");
     expect(container.querySelector("h2")?.textContent).toBe("Vault");
-    expect(new Set(scopes)).toEqual(
-      new Set(["models:account", "voice:account", "confirmations:account", "vault:account"]),
-    );
+    expect(new Set(scopes)).toEqual(new Set(["confirmations:account", "vault:account"]));
   } finally {
     await cleanup();
   }

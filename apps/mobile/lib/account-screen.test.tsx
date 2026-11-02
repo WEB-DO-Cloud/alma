@@ -447,8 +447,6 @@ it.each([false, true])(
       );
       const links = [
         "Artifacts",
-        "Models",
-        "Voice",
         "Approvals",
         "Vault",
         "Integrations",
@@ -467,7 +465,7 @@ it.each([false, true])(
       await view.press("Artifacts");
       expect(events).toEqual(["close", "/artifacts"]);
       for (const [title, href] of [
-        ["Models", "/models"],
+        ["Integrations", "/integrations"],
         ["Vault", "/vault"],
         ["Messaging", "/messaging"],
       ]) {

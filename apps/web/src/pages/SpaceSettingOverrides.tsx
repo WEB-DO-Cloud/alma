@@ -22,15 +22,12 @@ import { VaultSettings } from "../components/VaultSettings";
 import { useSpaceQueries } from "../lib/query";
 import { useSpaceRpc } from "../lib/space-rpc";
 import { errorText } from "../lib/user-error";
-import { ModelSettingsOverlay } from "./ModelSettingsOverlay";
-import { VoiceSettingsOverlay } from "./VoiceSettingsOverlay";
-
 /**
  * Account settings the bound Space follows until the member customizes them here. A customized
  * setting shows the same panel as the account's section, editing the Space's own copy.
  */
 export function SpaceSettingOverrides({
-  onClose,
+  onClose: _onClose,
   onBusyChange,
 }: {
   onClose: () => void;
@@ -41,9 +38,6 @@ export function SpaceSettingOverrides({
   const queries = useSpaceQueries();
   const queryClient = useQueryClient();
   const overrides = useQuery(queries.spaceSettings.overrides.queryOptions());
-  const account = useQuery(queries.me.queryOptions()).data;
-  const hideModels = account?.managedModel === true;
-  const hideVoice = hideModels || account?.managedVoice === true;
   const [pending, setPending] = useState<SpaceSetting | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [confirmingReset, setConfirmingReset] = useState<SpaceSetting | null>(null);
@@ -57,23 +51,6 @@ export function SpaceSettingOverrides({
     resetConfirmation?: string;
     busy?: boolean;
   }[] = [
-    {
-      id: "models",
-      label: t`Models`,
-      panel: () => <ModelSettingsOverlay embedded scope="space" onClose={onClose} />,
-    },
-    {
-      id: "voice",
-      label: t`Voice`,
-      panel: () => (
-        <VoiceSettingsOverlay
-          embedded
-          scope="space"
-          onClose={onClose}
-          onBusyChange={onBusyChange}
-        />
-      ),
-    },
     {
       id: "confirmations",
       label: t`Approvals`,
@@ -127,43 +104,41 @@ export function SpaceSettingOverrides({
   return (
     <div className="space-y-3">
       <SettingsGroup data-testid="space-setting-overrides">
-        {settings
-          .filter(({ id }) => (id !== "models" || !hideModels) && (id !== "voice" || !hideVoice))
-          .map(({ id, label, panel, resetConfirmation, busy }) => {
-            const custom = customized.includes(id);
-            return (
-              <div key={id} data-testid={`space-setting-${id}`}>
-                <SettingsRow
-                  label={
-                    <>
-                      <p>{label}</p>
-                      {custom ? null : (
-                        <p className="text-[13px] text-muted-foreground">{t`Your defaults`}</p>
-                      )}
-                    </>
-                  }
-                  control={
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="rounded-full"
-                      aria-label={custom ? t`Use defaults for ${label}` : t`Customize ${label}`}
-                      disabled={pending !== null || busy}
-                      onClick={() =>
-                        custom && resetConfirmation
-                          ? setConfirmingReset(id)
-                          : void setOverride(id, !custom)
-                      }
-                    >
-                      {custom ? t`Use defaults` : t`Customize`}
-                    </Button>
-                  }
-                >
-                  {custom ? <div className="pt-3">{panel()}</div> : null}
-                </SettingsRow>
-              </div>
-            );
-          })}
+        {settings.map(({ id, label, panel, resetConfirmation, busy }) => {
+          const custom = customized.includes(id);
+          return (
+            <div key={id} data-testid={`space-setting-${id}`}>
+              <SettingsRow
+                label={
+                  <>
+                    <p>{label}</p>
+                    {custom ? null : (
+                      <p className="text-[13px] text-muted-foreground">{t`Your defaults`}</p>
+                    )}
+                  </>
+                }
+                control={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full"
+                    aria-label={custom ? t`Use defaults for ${label}` : t`Customize ${label}`}
+                    disabled={pending !== null || busy}
+                    onClick={() =>
+                      custom && resetConfirmation
+                        ? setConfirmingReset(id)
+                        : void setOverride(id, !custom)
+                    }
+                  >
+                    {custom ? t`Use defaults` : t`Customize`}
+                  </Button>
+                }
+              >
+                {custom ? <div className="pt-3">{panel()}</div> : null}
+              </SettingsRow>
+            </div>
+          );
+        })}
       </SettingsGroup>
       {actionError ? (
         <p role="alert" className="text-[12.5px] text-destructive">

@@ -172,42 +172,33 @@ afterEach(() => {
 
 it("follows the account until a setting is customized, then opens the same screen for the Space", async () => {
   expect(state.rpc).toHaveBeenCalledWith("spaceSettings/overrides", undefined, spaceContext);
-  for (const name of ["Models", "Voice", "Approvals", "Vault"])
+  for (const name of ["Approvals", "Vault"])
     expect(control(`Customize ${name}`)?.checked).toBe(false);
   expect(container.querySelector("button")).toBeNull();
 
-  await act(async () => control("Customize Models")!.click());
+  await act(async () => control("Customize Approvals")!.click());
   expect(state.rpc).toHaveBeenCalledWith(
     "spaceSettings/setOverride",
-    { setting: "models", enabled: true },
+    { setting: "confirmations", enabled: true },
     spaceContext,
   );
-  expect(state.push).toHaveBeenCalledWith({
-    pathname: "/models",
-    params: { spaceId: "space-other" },
-  });
-  expect(control("Customize Models")?.checked).toBe(true);
+  expect(state.push).not.toHaveBeenCalled();
+  expect(control("Customize Approvals")?.checked).toBe(true);
 
-  state.push.mockReset();
-  await act(async () => container.querySelector("button")!.click());
-  expect(state.push).toHaveBeenCalledWith({
-    pathname: "/models",
-    params: { spaceId: "space-other" },
-  });
-
-  await act(async () => control("Customize Models")!.click());
+  await act(async () => control("Customize Approvals")!.click());
   expect(state.rpc).toHaveBeenLastCalledWith(
     "spaceSettings/setOverride",
-    { setting: "models", enabled: false },
+    { setting: "confirmations", enabled: false },
     spaceContext,
   );
-  expect(control("Customize Models")?.checked).toBe(false);
+  expect(state.alert).not.toHaveBeenCalled();
+  expect(control("Customize Approvals")?.checked).toBe(false);
 });
 
 it("shows the Space's approval mode and rules right here once approvals are customized", async () => {
   const rows = () =>
     Array.from(container.querySelectorAll("[data-row]"), (row) => row.getAttribute("data-row"));
-  expect(rows()).toEqual(["Models", "Voice", "Approvals", "Vault"]);
+  expect(rows()).toEqual(["Approvals", "Vault"]);
   expect(state.rpc).not.toHaveBeenCalledWith("autoReview/get", expect.anything(), spaceContext);
 
   state.rules = [{ id: "rule-1" }];
@@ -220,14 +211,7 @@ it("shows the Space's approval mode and rules right here once approvals are cust
   expect(state.push).not.toHaveBeenCalled();
   expect(state.rpc).toHaveBeenCalledWith("autoReview/get", { scope: "space" }, spaceContext);
   expect(state.rpc).toHaveBeenCalledWith("approvalRules/list", { scope: "space" }, spaceContext);
-  expect(rows()).toEqual([
-    "Models",
-    "Voice",
-    "Approvals",
-    "Vault",
-    "Approvals: Never ask",
-    "Rules: 1",
-  ]);
+  expect(rows()).toEqual(["Approvals", "Vault", "Approvals: Never ask", "Rules: 1"]);
 
   await act(async () => container.querySelector<HTMLElement>("button:not([data-menu])")!.click());
   expect(state.push).toHaveBeenCalledWith({
@@ -236,7 +220,7 @@ it("shows the Space's approval mode and rules right here once approvals are cust
   });
 
   await act(async () => control("Customize Approvals")!.click());
-  expect(rows()).toEqual(["Models", "Voice", "Approvals", "Vault"]);
+  expect(rows()).toEqual(["Approvals", "Vault"]);
 });
 
 it("holds the Approvals switch while the Space's mode is saving", async () => {
@@ -260,7 +244,7 @@ it("holds the Approvals switch while the Space's mode is saving", async () => {
     spaceContext,
   );
   expect(control("Customize Approvals")?.disabled).toBe(true);
-  expect(control("Customize Models")?.disabled).toBe(false);
+  expect(control("Customize Vault")?.disabled).toBe(false);
 
   await act(async () => finish());
   expect(control("Customize Approvals")?.disabled).toBe(false);
@@ -304,13 +288,13 @@ it("opens the Vault for the Space, and deletes its credentials only once confirm
   expect(control("Customize Vault")?.checked).toBe(false);
 });
 
-it("turns other settings off without asking", async () => {
-  state.overrides = ["voice"];
+it("turns approvals off without asking", async () => {
+  state.overrides = ["confirmations"];
   state.focusCount += 1;
   await act(async () => root.render(createElement(SpaceSettings)));
-  await act(async () => control("Customize Voice")!.click());
+  await act(async () => control("Customize Approvals")!.click());
   expect(state.alert).not.toHaveBeenCalled();
-  expect(control("Customize Voice")?.checked).toBe(false);
+  expect(control("Customize Approvals")?.checked).toBe(false);
 });
 
 function retry() {
@@ -318,7 +302,7 @@ function retry() {
 }
 
 it("offers a retry when the overrides fail to load, then enables the switches", async () => {
-  state.overrides = ["voice"];
+  state.overrides = ["confirmations"];
   await act(async () => root.unmount());
   root = createRoot(container);
   state.rpc.mockImplementationOnce(async () => {
@@ -326,11 +310,11 @@ it("offers a retry when the overrides fail to load, then enables the switches", 
   });
   await act(async () => root.render(createElement(SpaceSettings)));
   expect(container.textContent).toContain("Something went wrong. Try again.");
-  expect(control("Customize Voice")?.disabled).toBe(true);
+  expect(control("Customize Approvals")?.disabled).toBe(true);
 
   await act(async () => retry()!.click());
-  expect(control("Customize Voice")?.disabled).toBe(false);
-  expect(control("Customize Voice")?.checked).toBe(true);
+  expect(control("Customize Approvals")?.disabled).toBe(false);
+  expect(control("Customize Approvals")?.checked).toBe(true);
   expect(retry()).toBeUndefined();
   expect(container.textContent).not.toContain("Something went wrong. Try again.");
 });
@@ -350,7 +334,7 @@ it("keeps a failed save's error when a read that was pending then succeeds", asy
   state.focusCount += 1;
   await act(async () => root.render(createElement(SpaceSettings)));
 
-  await act(async () => control("Customize Models")!.click());
+  await act(async () => control("Customize Approvals")!.click());
   expect(container.textContent).toContain("Could not save that preference");
 
   await act(async () => finishRead());

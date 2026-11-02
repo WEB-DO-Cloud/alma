@@ -1,7 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import type { SpaceMemoryConfig, UsageSummary } from "@rakazo/contracts";
 import { Button, Dialog, DialogClose, DialogContent, DialogTitle } from "@rakazo/ui-web";
-import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApprovalRulesSettings } from "../components/ApprovalRulesSettings";
@@ -9,7 +8,6 @@ import { computersAreUnavailable } from "../components/ComputersUnavailableHint"
 import { SETTINGS_CONTENT_WIDTH, SettingsGroup, SettingsRow } from "../components/SettingsRows";
 import { VaultSettings } from "../components/VaultSettings";
 import { desktopBridge } from "../lib/desktop";
-import { useSpaceQueries } from "../lib/query";
 import { SpaceRpcProvider } from "../lib/space-rpc";
 import {
   ComputerSettingsPanel,
@@ -94,9 +92,8 @@ export function SettingsOverlay({
   const recoveryHoldTimer = useRef<number | undefined>(undefined);
   const showComputer = keepComputerRecovery || computersAreUnavailable(sandboxProvider);
   const showUpdates = Boolean(desktopBridge()?.update);
-  const account = useQuery(useSpaceQueries().me.queryOptions()).data;
-  const hideModels = account?.managedModel === true;
-  const hideVoice = hideModels || account?.managedVoice === true;
+  const hideModels = true;
+  const hideVoice = true;
   // A section that isn't available yet (billing before its flag loads) shows General until it is.
   const section =
     (requestedSection === "computer" && !showComputer) ||

@@ -498,12 +498,18 @@ msgstr "Activo"
 msgid "Activity"
 msgstr "Actividad"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 msgid "Add"
 msgstr "Agregar"
+
+#. placeholder {0}: server.name
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Add {0}"
+msgstr ""
 
 #. placeholder {0}: bot.name
 #: src/pages/GroupPanel.tsx
@@ -624,11 +630,13 @@ msgstr "Agregar disparador"
 msgid "Add workspace"
 msgstr "Añadir espacio de trabajo"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Added"
 msgstr "Agregado"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -683,6 +691,10 @@ msgstr "Todo el tiempo"
 msgid "Allow"
 msgstr "Permitir"
 
+#: src/lib/dictation.ts
+msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
+msgstr "Permite que ALMA use el reconocimiento de voz y el micrófono en Ajustes del Sistema."
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Allow cross-space bot communication"
 msgstr "Permitir la comunicación entre bots de distintos espacios"
@@ -695,10 +707,6 @@ msgstr ""
 msgid "Allow once"
 msgstr "Permitir una vez"
 
-#: src/lib/dictation.ts
-msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
-msgstr "Permite que ALMA use el reconocimiento de voz y el micrófono en Ajustes del Sistema."
-
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Allow writing"
 msgstr "Permitir escritura"
@@ -710,6 +718,15 @@ msgstr ""
 #: src/components/AskCard.tsx
 msgid "Allowed once"
 msgstr "Permitido una vez"
+
+#: src/pages/shell/avatar-studio-popover.tsx
+msgid "ALMA"
+msgstr "ALMA"
+
+#: src/components/ModelCredits.tsx
+#: src/pages/Onboarding.tsx
+msgid "ALMA credits"
+msgstr "Créditos de ALMA"
 
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
@@ -1611,6 +1628,10 @@ msgstr "Conectar clave de API"
 msgid "Connect apps"
 msgstr "Conectar aplicaciones"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Connect apps through Zapier."
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "Connect MCP server “{name}”"
 msgstr "Conectar servidor MCP “{name}”"
@@ -1763,6 +1784,7 @@ msgstr "Coste"
 msgid "Could not add"
 msgstr "No se pudo agregar"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Could not add MCP server"
 msgstr "No se pudo agregar el servidor MCP"
@@ -2191,6 +2213,10 @@ msgstr "No se pudo guardar esta opción"
 msgid "Could not search catalog"
 msgstr "No se pudo buscar en el catálogo"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Could not search the MCP registry"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not send reset email"
 msgstr "No se pudo enviar el correo de restablecimiento"
@@ -2316,6 +2342,10 @@ msgstr "Crea una sección y mueve {0} a ella."
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "Crear cuenta"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Create and export Canva designs."
+msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "Create group"
@@ -2764,10 +2794,6 @@ msgstr "Termina el {day}"
 msgid "Engage when... Ignore..."
 msgstr "Participa cuando... Ignora..."
 
-#: src/components/GitHubStarPrompt.tsx
-msgid "Enjoying ALMA?"
-msgstr ""
-
 #: src/lib/user-error.ts
 msgid "Enter a password"
 msgstr "Introduce una contraseña"
@@ -2980,6 +3006,10 @@ msgstr "Filtros"
 msgid "Finance"
 msgstr "Finanzas"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Find and manage Linear issues and projects."
+msgstr ""
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Find models"
@@ -3135,6 +3165,7 @@ msgstr "Encabezado \"{header}\""
 msgid "Header name"
 msgstr "Nombre del encabezado"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/ModelHeadersEditor.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Header value"
@@ -3471,6 +3502,14 @@ msgstr "Vincular mensajes privados"
 msgid "Link SSO"
 msgstr "Vincular SSO"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Google Calendar events."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Outlook Calendar events."
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "List view"
 msgstr "Vista de lista"
@@ -3598,6 +3637,10 @@ msgstr "Gestionar {0}"
 #: src/pages/Paywall.tsx
 msgid "Manage billing"
 msgstr "Administrar facturación"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Manage GitHub repositories, issues, and pull requests."
+msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Manage MCP servers"
@@ -3843,8 +3886,6 @@ msgid "Model options"
 msgstr "Opciones del modelo"
 
 #: src/pages/ModelSettingsOverlay.tsx
-#: src/pages/settings-nav.ts
-#: src/pages/SpaceSettingOverrides.tsx
 msgid "Models"
 msgstr "Modelos"
 
@@ -4109,6 +4150,7 @@ msgid "No OpenClaw, Hermes or agent document found."
 msgstr "No se encontraron archivos de OpenClaw, Hermes ni un documento de agente."
 
 #: src/components/integrations/IntegrationSetup.tsx
+#: src/components/integrations/McpRegistryBrowse.tsx
 msgid "No remote MCP servers found"
 msgstr "No se encontraron servidores MCP remotos"
 
@@ -4180,7 +4222,6 @@ msgstr "No está en el catálogo de ALMA"
 msgid "Not in the plugin catalog"
 msgstr "No está en el catálogo de plugins"
 
-#: src/components/GitHubStarPrompt.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Not now"
 msgstr "Ahora no"
@@ -4532,6 +4573,10 @@ msgstr "Envíos de plugins"
 msgid "Plugins"
 msgstr "Plugins"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Popular"
+msgstr ""
+
 #: src/pages/RoutineEditor.tsx
 msgid "Post \"No changes\" in chat"
 msgstr "Publicar «Sin cambios» en el chat"
@@ -4611,15 +4656,6 @@ msgstr "Solicitud de incorporación"
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "En cola"
-
-#: src/pages/shell/avatar-studio-popover.tsx
-msgid "ALMA"
-msgstr "ALMA"
-
-#: src/components/ModelCredits.tsx
-#: src/pages/Onboarding.tsx
-msgid "ALMA credits"
-msgstr "Créditos de ALMA"
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -5021,15 +5057,15 @@ msgstr "Reintentar ahora"
 msgid "Retry screen"
 msgstr "Reintentar pantalla"
 
-#. placeholder {0}: call.botName
-#: src/components/call/CallCard.tsx
-msgid "Return to call with {0}"
-msgstr "Volver a la llamada con {0}"
-
 #: src/pages/McpOAuthCallback.tsx
 #: src/pages/SlackInstallCallback.tsx
 msgid "Return to ALMA"
 msgstr "Volver a ALMA"
+
+#. placeholder {0}: call.botName
+#: src/components/call/CallCard.tsx
+msgid "Return to call with {0}"
+msgstr "Volver a la llamada con {0}"
 
 #: src/lib/model-connection-preflight.ts
 msgid "Review provider settings and test again."
@@ -5220,6 +5256,14 @@ msgstr "Pantalla no conectada"
 msgid "Search"
 msgstr "Buscar"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and edit your Notion workspace."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and update Jira and Confluence."
+msgstr ""
+
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Search apps"
@@ -5241,6 +5285,10 @@ msgstr "Buscar por dominio"
 msgid "Search integrations.sh"
 msgstr "Buscar en integrations.sh"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search MCP servers"
+msgstr ""
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5256,11 +5304,20 @@ msgstr "Buscar ejecuciones"
 msgid "Search skills"
 msgstr "Buscar habilidades"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Gmail."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Outlook mail."
+msgstr ""
+
 #. placeholder {0}: filters.query.trim()
 #: src/pages/ActivityList.tsx
 msgid "Search: {0}"
 msgstr "Búsqueda: {0}"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/SpaceSearch.tsx
 msgid "Searching…"
@@ -5309,6 +5366,10 @@ msgstr "Enviar código de eliminación"
 #: src/components/AskCard.tsx
 msgid "Send it"
 msgstr "Enviarlo"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Send messages and read Slack channels."
+msgstr ""
 
 #: src/components/composer/HoldToTalk.tsx
 msgid "Send recording"
@@ -5620,10 +5681,6 @@ msgstr ""
 #: src/lib/user-error.ts
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO no está disponible temporalmente. Inténtalo de nuevo."
-
-#: src/components/GitHubStarPrompt.tsx
-msgid "Star on GitHub"
-msgstr ""
 
 #: src/pages/shell/computer-overlay.tsx
 msgid "Start"
@@ -6010,6 +6067,10 @@ msgstr "Este servidor no solicitó autorización del navegador."
 msgid "This server is already connected. Disconnect it first to authorize again."
 msgstr "Este servidor ya está conectado. Desconéctalo primero para autorizarlo de nuevo."
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "This server needs a header."
+msgstr ""
+
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "This server's tool result does not fit the model. Turn off Keep tool results whole for that server, or choose another model."
@@ -6278,6 +6339,10 @@ msgstr "Usa {oauthEnvReference} para el token de acceso."
 msgid "Use a found model"
 msgstr "Usar un modelo encontrado"
 
+#: src/components/ModelCredits.tsx
+msgid "Use ALMA credits"
+msgstr "Usar créditos de ALMA"
+
 #: src/lib/model-connection-preflight.ts
 msgid "Use Connect to verify the key."
 msgstr "Usa Conectar para verificar la clave."
@@ -6305,10 +6370,6 @@ msgstr "Usar mi suscripción o clave de API"
 #: src/components/teach/TeachRecordingChrome.tsx
 msgid "Use Protected input for passwords."
 msgstr "Usa Entrada protegida para las contraseñas."
-
-#: src/components/ModelCredits.tsx
-msgid "Use ALMA credits"
-msgstr "Usar créditos de ALMA"
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Use space default"
@@ -6378,9 +6439,7 @@ msgstr "Ver todo"
 msgid "View source"
 msgstr "Ver código fuente"
 
-#: src/pages/settings-nav.ts
 #: src/pages/shell/bot-panel.tsx
-#: src/pages/SpaceSettingOverrides.tsx
 #: src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "Voz"
@@ -6514,6 +6573,10 @@ msgstr "No se hará"
 #: src/components/SignupSurvey.tsx
 msgid "Work"
 msgstr "Trabajo"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Work with Stripe customers, products, and payments."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Working instructions"

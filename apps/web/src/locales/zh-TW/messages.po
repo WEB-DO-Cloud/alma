@@ -499,12 +499,18 @@ msgstr "啟用"
 msgid "Activity"
 msgstr "動態"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 msgid "Add"
 msgstr "新增"
+
+#. placeholder {0}: server.name
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Add {0}"
+msgstr ""
 
 #. placeholder {0}: bot.name
 #: src/pages/GroupPanel.tsx
@@ -625,11 +631,13 @@ msgstr "新增觸發器"
 msgid "Add workspace"
 msgstr "新增工作區"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Added"
 msgstr "已新增"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -684,6 +692,10 @@ msgstr "不限時間"
 msgid "Allow"
 msgstr "允許"
 
+#: src/lib/dictation.ts
+msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
+msgstr ""
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Allow cross-space bot communication"
 msgstr "允許跨空間機器人通訊"
@@ -696,10 +708,6 @@ msgstr ""
 msgid "Allow once"
 msgstr "允許一次"
 
-#: src/lib/dictation.ts
-msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
-msgstr ""
-
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Allow writing"
 msgstr "允許寫入"
@@ -711,6 +719,15 @@ msgstr ""
 #: src/components/AskCard.tsx
 msgid "Allowed once"
 msgstr "已允許一次"
+
+#: src/pages/shell/avatar-studio-popover.tsx
+msgid "ALMA"
+msgstr "ALMA"
+
+#: src/components/ModelCredits.tsx
+#: src/pages/Onboarding.tsx
+msgid "ALMA credits"
+msgstr "ALMA 額度"
 
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
@@ -1612,6 +1629,10 @@ msgstr "連線 API 金鑰"
 msgid "Connect apps"
 msgstr "連接應用程式"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Connect apps through Zapier."
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "Connect MCP server “{name}”"
 msgstr "連線 MCP 伺服器「{name}」"
@@ -1764,6 +1785,7 @@ msgstr "費用"
 msgid "Could not add"
 msgstr "無法新增"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Could not add MCP server"
 msgstr "無法新增 MCP 伺服器"
@@ -2192,6 +2214,10 @@ msgstr "無法儲存此選擇"
 msgid "Could not search catalog"
 msgstr "無法搜尋目錄"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Could not search the MCP registry"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not send reset email"
 msgstr "無法傳送重設郵件"
@@ -2317,6 +2343,10 @@ msgstr "建立分組並把 {0} 移入。"
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "建立帳號"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Create and export Canva designs."
+msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "Create group"
@@ -2765,10 +2795,6 @@ msgstr "於 {day} 結束"
 msgid "Engage when... Ignore..."
 msgstr "何時參與… 忽略哪些內容…"
 
-#: src/components/GitHubStarPrompt.tsx
-msgid "Enjoying ALMA?"
-msgstr ""
-
 #: src/lib/user-error.ts
 msgid "Enter a password"
 msgstr "請輸入密碼"
@@ -2981,6 +3007,10 @@ msgstr "篩選器"
 msgid "Finance"
 msgstr ""
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Find and manage Linear issues and projects."
+msgstr ""
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Find models"
@@ -3136,6 +3166,7 @@ msgstr "標頭「{header}」"
 msgid "Header name"
 msgstr "標頭名稱"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/ModelHeadersEditor.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Header value"
@@ -3472,6 +3503,14 @@ msgstr "連結私訊"
 msgid "Link SSO"
 msgstr "關聯 SSO"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Google Calendar events."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "List and update Outlook Calendar events."
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "List view"
 msgstr "清單檢視"
@@ -3599,6 +3638,10 @@ msgstr "管理 {0}"
 #: src/pages/Paywall.tsx
 msgid "Manage billing"
 msgstr "管理帳務"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Manage GitHub repositories, issues, and pull requests."
+msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Manage MCP servers"
@@ -3844,8 +3887,6 @@ msgid "Model options"
 msgstr "模型選項"
 
 #: src/pages/ModelSettingsOverlay.tsx
-#: src/pages/settings-nav.ts
-#: src/pages/SpaceSettingOverrides.tsx
 msgid "Models"
 msgstr "模型"
 
@@ -4110,6 +4151,7 @@ msgid "No OpenClaw, Hermes or agent document found."
 msgstr "找不到 OpenClaw、Hermes 或代理程式文件。"
 
 #: src/components/integrations/IntegrationSetup.tsx
+#: src/components/integrations/McpRegistryBrowse.tsx
 msgid "No remote MCP servers found"
 msgstr "找不到遠端 MCP 伺服器"
 
@@ -4181,7 +4223,6 @@ msgstr "不在 ALMA 目錄中"
 msgid "Not in the plugin catalog"
 msgstr "不在外掛程式目錄中"
 
-#: src/components/GitHubStarPrompt.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Not now"
 msgstr "暫不"
@@ -4533,6 +4574,10 @@ msgstr ""
 msgid "Plugins"
 msgstr ""
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Popular"
+msgstr ""
+
 #: src/pages/RoutineEditor.tsx
 msgid "Post \"No changes\" in chat"
 msgstr "在聊天室中傳送「沒有變更」"
@@ -4612,15 +4657,6 @@ msgstr "Pull request"
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "排隊中"
-
-#: src/pages/shell/avatar-studio-popover.tsx
-msgid "ALMA"
-msgstr "ALMA"
-
-#: src/components/ModelCredits.tsx
-#: src/pages/Onboarding.tsx
-msgid "ALMA credits"
-msgstr "ALMA 額度"
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -5022,15 +5058,15 @@ msgstr "立即重試"
 msgid "Retry screen"
 msgstr "重新連線螢幕"
 
-#. placeholder {0}: call.botName
-#: src/components/call/CallCard.tsx
-msgid "Return to call with {0}"
-msgstr "返回與 {0} 的通話"
-
 #: src/pages/McpOAuthCallback.tsx
 #: src/pages/SlackInstallCallback.tsx
 msgid "Return to ALMA"
 msgstr "返回 ALMA"
+
+#. placeholder {0}: call.botName
+#: src/components/call/CallCard.tsx
+msgid "Return to call with {0}"
+msgstr "返回與 {0} 的通話"
 
 #: src/lib/model-connection-preflight.ts
 msgid "Review provider settings and test again."
@@ -5221,6 +5257,14 @@ msgstr "螢幕未連線"
 msgid "Search"
 msgstr "搜尋"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and edit your Notion workspace."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search and update Jira and Confluence."
+msgstr ""
+
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Search apps"
@@ -5242,6 +5286,10 @@ msgstr "依網域搜尋"
 msgid "Search integrations.sh"
 msgstr "搜尋 integrations.sh"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search MCP servers"
+msgstr ""
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5257,11 +5305,20 @@ msgstr "搜尋執行紀錄"
 msgid "Search skills"
 msgstr ""
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Gmail."
+msgstr ""
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Search, read, and draft Outlook mail."
+msgstr ""
+
 #. placeholder {0}: filters.query.trim()
 #: src/pages/ActivityList.tsx
 msgid "Search: {0}"
 msgstr "搜尋：{0}"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/SpaceSearch.tsx
 msgid "Searching…"
@@ -5310,6 +5367,10 @@ msgstr "傳送刪除驗證碼"
 #: src/components/AskCard.tsx
 msgid "Send it"
 msgstr "傳送"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Send messages and read Slack channels."
+msgstr ""
 
 #: src/components/composer/HoldToTalk.tsx
 msgid "Send recording"
@@ -5621,10 +5682,6 @@ msgstr ""
 #: src/lib/user-error.ts
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO 暫時不可用，請重試。"
-
-#: src/components/GitHubStarPrompt.tsx
-msgid "Star on GitHub"
-msgstr ""
 
 #: src/pages/shell/computer-overlay.tsx
 msgid "Start"
@@ -6011,6 +6068,10 @@ msgstr "此伺服器未請求瀏覽器授權。"
 msgid "This server is already connected. Disconnect it first to authorize again."
 msgstr "此伺服器已連線。請先中斷再重新授權。"
 
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "This server needs a header."
+msgstr ""
+
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "This server's tool result does not fit the model. Turn off Keep tool results whole for that server, or choose another model."
@@ -6279,6 +6340,10 @@ msgstr "存取權杖請使用 {oauthEnvReference}。"
 msgid "Use a found model"
 msgstr "使用找到的模型"
 
+#: src/components/ModelCredits.tsx
+msgid "Use ALMA credits"
+msgstr "使用 ALMA 額度"
+
 #: src/lib/model-connection-preflight.ts
 msgid "Use Connect to verify the key."
 msgstr "請使用「連線」驗證金鑰。"
@@ -6306,10 +6371,6 @@ msgstr "使用我的訂閱或 API 金鑰"
 #: src/components/teach/TeachRecordingChrome.tsx
 msgid "Use Protected input for passwords."
 msgstr "輸入密碼時，請使用受保護的輸入。"
-
-#: src/components/ModelCredits.tsx
-msgid "Use ALMA credits"
-msgstr "使用 ALMA 額度"
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Use space default"
@@ -6379,9 +6440,7 @@ msgstr ""
 msgid "View source"
 msgstr ""
 
-#: src/pages/settings-nav.ts
 #: src/pages/shell/bot-panel.tsx
-#: src/pages/SpaceSettingOverrides.tsx
 #: src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "語音"
@@ -6515,6 +6574,10 @@ msgstr "不處理"
 #: src/components/SignupSurvey.tsx
 msgid "Work"
 msgstr "工作"
+
+#: src/components/integrations/McpRegistryBrowse.tsx
+msgid "Work with Stripe customers, products, and payments."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Working instructions"

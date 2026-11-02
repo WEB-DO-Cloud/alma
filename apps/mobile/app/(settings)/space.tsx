@@ -140,8 +140,6 @@ export default function SpaceSettings() {
           </Text>
         ) : null}
         <SettingsGroup accessibilityLabel={t("Customize")} label={t("Customize")}>
-          {row("models", t("Models"))}
-          {row("voice", t("Voice"))}
           {row("confirmations", t("Approvals"))}
           {row("credentials", t("Vault"))}
         </SettingsGroup>

@@ -754,8 +754,8 @@ function SpaceShell() {
     openSettings("space", spaceId);
   }
 
-  const hideModels = bootstrapMe?.managedModel === true;
-  const hideVoice = hideModels || bootstrapMe?.managedVoice === true;
+  const hideModels = true;
+  const hideVoice = true;
   const settingsNavItems = useSettingsNavItems({
     messaging: messagingSurfaceEnabled,
     wallet: Boolean(bootstrapMe?.paymentWalletProvider),

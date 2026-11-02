@@ -164,39 +164,44 @@ it("follows the account until a setting is customized, then edits the Space's ow
       enabled ? [setting] : [],
   );
   await render();
-  await vi.waitFor(() => expect(button("Customize Models")).not.toBeNull());
-  expect(button("Customize Voice")?.textContent).toBe("Customize");
-  expect(button("Customize Approvals")).not.toBeNull();
+  await vi.waitFor(() => expect(button("Customize Approvals")).not.toBeNull());
   expect(button("Customize Vault")).not.toBeNull();
-  expect(container.textContent?.match(/Your defaults/g)).toHaveLength(4);
+  expect(container.textContent?.match(/Your defaults/g)).toHaveLength(2);
   expect(panels).toEqual([]);
   // The calls go to the space these settings are bound to, not the selected one.
   expect(rpcForSpace).toHaveBeenCalledWith("space-a");
 
-  await click("Customize Voice");
-  expect(spaceSettings.setOverride).toHaveBeenLastCalledWith({ setting: "voice", enabled: true });
+  await click("Customize Approvals");
+  expect(spaceSettings.setOverride).toHaveBeenLastCalledWith({
+    setting: "confirmations",
+    enabled: true,
+  });
   await vi.waitFor(() =>
-    expect(container.querySelector('[data-testid="voice-panel"]')).not.toBeNull(),
+    expect(container.querySelector('[data-testid="confirmations-panel"]')).not.toBeNull(),
   );
-  expect(new Set(panels)).toEqual(new Set(["voice:space"]));
-  expect(button("Use defaults for Voice")?.textContent).toBe("Use defaults");
-  expect(container.textContent?.match(/Your defaults/g)).toHaveLength(3);
+  expect(new Set(panels)).toEqual(new Set(["confirmations:space"]));
+  expect(button("Use defaults for Approvals")?.textContent).toBe("Use defaults");
+  expect(container.textContent?.match(/Your defaults/g)).toHaveLength(1);
 
-  await click("Use defaults for Voice");
-  expect(spaceSettings.setOverride).toHaveBeenLastCalledWith({ setting: "voice", enabled: false });
-  await vi.waitFor(() => expect(container.querySelector('[data-testid="voice-panel"]')).toBeNull());
-  expect(button("Customize Voice")).not.toBeNull();
+  await click("Use defaults for Approvals");
+  expect(spaceSettings.setOverride).toHaveBeenLastCalledWith({
+    setting: "confirmations",
+    enabled: false,
+  });
+  await vi.waitFor(() =>
+    expect(container.querySelector('[data-testid="confirmations-panel"]')).toBeNull(),
+  );
+  expect(button("Customize Approvals")).not.toBeNull();
 });
 
 it("opens the panels a Space already customizes", async () => {
-  spaceSettings.overrides.mockResolvedValue(["models", "confirmations"]);
+  spaceSettings.overrides.mockResolvedValue(["confirmations"]);
   await render();
   await vi.waitFor(() =>
-    expect(container.querySelector('[data-testid="models-panel"]')).not.toBeNull(),
+    expect(container.querySelector('[data-testid="confirmations-panel"]')).not.toBeNull(),
   );
-  expect(container.querySelector('[data-testid="confirmations-panel"]')).not.toBeNull();
-  expect(container.querySelector('[data-testid="voice-panel"]')).toBeNull();
-  expect(new Set(panels)).toEqual(new Set(["models:space", "confirmations:space"]));
+  expect(container.querySelector('[data-testid="credentials-panel"]')).toBeNull();
+  expect(new Set(panels)).toEqual(new Set(["confirmations:space"]));
 });
 
 it("asks before going back to the defaults deletes the Space's own vault", async () => {
@@ -245,9 +250,9 @@ it("keeps the row as it was when customizing fails", async () => {
   spaceSettings.overrides.mockResolvedValue([]);
   spaceSettings.setOverride.mockRejectedValue(new Error("Space is unavailable"));
   await render();
-  await vi.waitFor(() => expect(button("Customize Models")).not.toBeNull());
-  await click("Customize Models");
+  await vi.waitFor(() => expect(button("Customize Approvals")).not.toBeNull());
+  await click("Customize Approvals");
   await vi.waitFor(() => expect(container.textContent).toContain("Space is unavailable"));
-  expect(button("Customize Models")).not.toBeNull();
+  expect(button("Customize Approvals")).not.toBeNull();
   expect(panels).toEqual([]);
 });

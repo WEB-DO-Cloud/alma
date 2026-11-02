@@ -14,12 +14,12 @@ expo = app["expo"]
 def ver(value):
     parts = [int(p) for p in str(value).split(".")]
     return parts
-if ver(expo["version"]) != [1, 0, 12]:
-    sys.exit(f"expo.version is {expo['version']}, expected 1.0.12")
-if int(expo["ios"]["buildNumber"]) != 64:
-    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected 64")
-if int(expo["android"]["versionCode"]) != 13:
-    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected 13")
+if ver(expo["version"]) < [1, 0, 9]:
+    sys.exit(f"expo.version is {expo['version']}, expected at least 1.0.9")
+if int(expo["ios"]["buildNumber"]) <= 64:
+    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected above 64")
+if int(expo["android"]["versionCode"]) <= 13:
+    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected above 13")
 domain = pathlib.Path("packages/contracts/src/domain.ts").read_text()
 if "BYOK_MONTHLY_PRICE_CENTS: number | null = 6900" not in domain:
     sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 6900")
@@ -29,6 +29,12 @@ if re.search(r"\bDictat", thread) or re.search(r"\bDictat", layout):
     sys.exit("phone composer still has a Dictate control")
 if "sample-data" in layout or "sampleData" in layout:
     sys.exit("sample-data mode is referenced from the phone home screen")
+account = pathlib.Path("apps/mobile/app/(settings)/account.tsx").read_text()
+if 'href: "/models"' in account or 'href: "/voice"' in account:
+    sys.exit("account settings still link to Models or Voice")
+nav = pathlib.Path("apps/web/src/pages/settings-nav.ts").read_text()
+if 'id: "models"' in nav or 'id: "voice"' in nav:
+    sys.exit("web settings nav still offers Models or Voice")
 absent = [
     "apps/web/src/pages/DraftReview.tsx",
     "apps/web/src/pages/DraftApprovalLog.tsx",

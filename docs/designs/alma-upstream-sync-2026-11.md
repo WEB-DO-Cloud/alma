@@ -110,7 +110,7 @@ Restore these files from ALMA `HEAD` (they are absent on upstream):
 *   `packages/adapters/src/xai-voice.test.ts`
 *   `packages/core/src/alma-unavailable.ts`
 
-On the upstream `packages/adapters/src/executor.ts`, `packages/adapters/src/voice-factory.ts`, `packages/adapters/src/index.ts`, and `apps/api/src/voice.ts`, re-attach those modules the way ALMA `HEAD` calls them. Per-user model setup stays hidden while managed model is on. That hide is a condition on upstream's settings screens. It does not replace the settings layout.
+On the upstream `packages/adapters/src/executor.ts`, `packages/adapters/src/voice-factory.ts`, `packages/adapters/src/index.ts`, and `apps/api/src/voice.ts`, re-attach those modules the way ALMA `HEAD` calls them. The Models and Voice settings entries are removed on web and on the phone. Deep links to those screens return to Account. The server chooses the model and the voice. Members do not pick a provider. The Read replies aloud switch stays; it is the spoken-summary control, not a provider picker.
 
 The web Call button and the existing mobile call waveform stay on upstream's composer. They use the xAI speak path when operator voice is on. Upstream's spoken-summary control (`readAloud` / `autoSpeak`, `apps/web/src/pages/shell/use-read-aloud.ts`) stays. Its playback call uses the voice factory. When `ALMA_VOICE_PROVIDER=xai`, that factory returns xAI, so summaries and Call share one speaker. Do not add a second speak button.
 
@@ -135,7 +135,14 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 `apps/api/src/routes/mcp.ts` is surgical. Keep upstream's stdio refusal, duplicate-name conflict, and connect-from-approval-card flow. Add the `mcp.registry.search` procedure from ALMA `HEAD` onto that file.
 
-On web and on mobile, render `McpRegistryBrowse` inside upstream's connectors screen and, on web, inside upstream's MCP server dialog. Do not keep ALMA's old screen layout around it.
+On web and on mobile, render `McpRegistryBrowse` inside upstream's connectors screen and, on web, inside upstream's MCP server dialog. Account → Integrations opens that screen. Do not keep ALMA's old screen layout around it.
+
+Official behavior, followed as written:
+
+*   `docs/integrations.md`, “Connect from Integrations” and “Add your own tools”: Integrations is the connectors screen. **Browse MCP servers** searches a public directory.
+*   `docs/self-host-integrations.md`, “Apps and connectors”: `INTEGRATIONS_CATALOG_URL` is an integrations.sh catalog. Rakazo appends `api/search`. Upstream's Browse MCP screen calls `capabilities.catalogSearch` with `usePublicCatalog`, which uses `https://integrations.sh` when no catalog URL is set.
+
+ALMA goes past that for the Popular grid and for registry search. integrations.sh is not the MCP registry. Search calls `GET https://registry.modelcontextprotocol.io/v0/servers?search=…&version=latest` and shows a page of matches. The twelve Popular cards are the fixed list in `mcp-registry-featured.ts`. Add still uses upstream `mcp.servers.create`.
 
 ### 5. Legal
 
@@ -177,9 +184,9 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 | Field | Value |
 | --- | --- |
-| `expo.version` | `1.0.12` |
-| `expo.ios.buildNumber` | `64` |
-| `expo.android.versionCode` | `13` |
+| `expo.version` | at least `1.0.9` (currently upstream's `1.0.12`) |
+| `expo.ios.buildNumber` | above `64` (the published store build) |
+| `expo.android.versionCode` | above `13` (the published store build) |
 
 Also register `./plugins/with-strip-foreground-services` in `expo.plugins` if upstream's plugin list does not already include it.
 

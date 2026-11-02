@@ -68,8 +68,8 @@ export default function Models() {
   const returningFromPickerRef = useRef(false);
 
   useEffect(() => {
-    if (me?.managedModel) router.replace("/account");
-  }, [me?.managedModel, router]);
+    if (typeof router.replace === "function") router.replace("/account");
+  }, [router]);
 
   useEffect(
     () => () => {

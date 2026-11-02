@@ -2,7 +2,6 @@ import { useLingui } from "@lingui/react/macro";
 import {
   Brain,
   CloudDownload,
-  Cpu,
   CreditCard,
   Gauge,
   KeyRound,
@@ -10,7 +9,6 @@ import {
   Monitor,
   Settings,
   ShieldCheck,
-  Volume2,
   Wallet,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -33,8 +31,6 @@ export function useSettingsNavItems(available: {
   const { t } = useLingui();
   return [
     { id: "general", label: t`General`, icon: Settings },
-    { id: "models", label: t`Models`, icon: Cpu },
-    { id: "voice", label: t`Voice`, icon: Volume2 },
     { id: "confirmations", label: t`Approvals`, icon: ShieldCheck },
     { id: "vault", label: t`Vault`, icon: KeyRound },
     ...(available.messaging

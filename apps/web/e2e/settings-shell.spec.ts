@@ -145,13 +145,6 @@ test("settings shell is two-pane and deep-links Models Memory Voice Usage", asyn
   await expect(deleteAccount).toBeVisible();
   await captureScreenshot(page, testInfo, "settings-general-delete-account");
 
-  await settings.getByTestId("settings-nav-models").click();
-  await expect(settings).toHaveAttribute("data-settings-section", "models");
-  await expect(settings.getByTestId("model-settings")).toBeVisible();
-  await expect(settings.getByTestId("model-role-main")).toBeVisible();
-  await expect(settings.getByTestId("model-role-approval")).toBeVisible();
-  await captureScreenshot(page, testInfo, "settings-shell-models");
-
   await settings.getByTestId("settings-nav-memory").click();
   await expect(settings).toHaveAttribute("data-settings-section", "memory");
   await expect(settings.getByTestId("memory-settings")).toBeVisible();
@@ -164,12 +157,7 @@ test("settings shell is two-pane and deep-links Models Memory Voice Usage", asyn
   await expect(memory.getByRole("button", { name: "Recall only" })).toBeVisible();
   await captureScreenshot(page, testInfo, "settings-shell-memory-serenity");
 
-  await settings.getByTestId("settings-nav-voice").click();
-  await expect(settings).toHaveAttribute("data-settings-section", "voice");
-  await expect(settings.getByTestId("voice-settings")).toBeVisible();
-  await captureScreenshot(page, testInfo, "settings-shell-voice");
-
-  await page.getByRole("button", { name: "Close voice settings" }).click();
+  await page.getByRole("button", { name: "Close memory settings" }).click();
   await expect(page.getByTestId("user-settings")).toHaveCount(0);
 
   await openUserSettings(page, "usage");

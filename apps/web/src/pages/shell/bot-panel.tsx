@@ -595,64 +595,62 @@ export function BotSettings({
             </Suspense>
           </ErrorBoundary>
           <div className="space-y-6 pt-6">
-            {me?.managedModel ? null : (
-              <div ref={modelRef}>
-                <div className="mb-2 flex items-center justify-between text-xs font-medium text-muted-foreground pe-1">
-                  <Trans>Model</Trans>
-                  {onOpenConnections ? (
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      aria-label={t`Model connections`}
-                      onClick={onOpenConnections}
-                    >
-                      <Settings className="size-4" />
-                    </Button>
-                  ) : null}
-                </div>
-                <div className="rounded-xl bg-muted/50 p-4 space-y-3">
-                  <div className="flex min-h-11 items-center justify-between gap-3">
-                    <label htmlFor={`${ids}-model`} className="sr-only">
-                      <Trans>Model</Trans>
-                    </label>
-                    <div className="min-w-0 w-full [&>div]:mt-0 [&>button]:mt-0">
-                      <ChatModelPicker
-                        id={`${ids}-model`}
-                        choices={modelChoices}
-                        value={selectedModelKey}
-                        onChange={(key) => {
-                          setModelKey(key);
-                          setThinkingLevel("");
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {thinkingOptions.length ? (
-                    <label
-                      htmlFor={`${ids}-thinking`}
-                      className="flex min-h-11 items-center justify-between gap-3 text-sm text-foreground"
-                    >
-                      <Trans>Thinking</Trans>
-                      <NativeSelect
-                        id={`${ids}-thinking`}
-                        className="max-w-2/3"
-                        value={thinkingLevel}
-                        onChange={(event) => setThinkingLevel(event.target.value)}
-                      >
-                        <NativeSelectOption value="">
-                          {t`Default (${thinkingLevelLabel(defaultThinkingLevel)})`}
-                        </NativeSelectOption>
-                        {thinkingOptions.map((level) => (
-                          <NativeSelectOption key={level} value={level}>
-                            {thinkingLevelLabel(level)}
-                          </NativeSelectOption>
-                        ))}
-                      </NativeSelect>
-                    </label>
-                  ) : null}
-                </div>
+            <div ref={modelRef}>
+              <div className="mb-2 flex items-center justify-between text-xs font-medium text-muted-foreground pe-1">
+                <Trans>Model</Trans>
+                {onOpenConnections ? (
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t`Model connections`}
+                    onClick={onOpenConnections}
+                  >
+                    <Settings className="size-4" />
+                  </Button>
+                ) : null}
               </div>
-            )}
+              <div className="rounded-xl bg-muted/50 p-4 space-y-3">
+                <div className="flex min-h-11 items-center justify-between gap-3">
+                  <label htmlFor={`${ids}-model`} className="sr-only">
+                    <Trans>Model</Trans>
+                  </label>
+                  <div className="min-w-0 w-full [&>div]:mt-0 [&>button]:mt-0">
+                    <ChatModelPicker
+                      id={`${ids}-model`}
+                      choices={modelChoices}
+                      value={selectedModelKey}
+                      onChange={(key) => {
+                        setModelKey(key);
+                        setThinkingLevel("");
+                      }}
+                    />
+                  </div>
+                </div>
+                {thinkingOptions.length ? (
+                  <label
+                    htmlFor={`${ids}-thinking`}
+                    className="flex min-h-11 items-center justify-between gap-3 text-sm text-foreground"
+                  >
+                    <Trans>Thinking</Trans>
+                    <NativeSelect
+                      id={`${ids}-thinking`}
+                      className="max-w-2/3"
+                      value={thinkingLevel}
+                      onChange={(event) => setThinkingLevel(event.target.value)}
+                    >
+                      <NativeSelectOption value="">
+                        {t`Default (${thinkingLevelLabel(defaultThinkingLevel)})`}
+                      </NativeSelectOption>
+                      {thinkingOptions.map((level) => (
+                        <NativeSelectOption key={level} value={level}>
+                          {thinkingLevelLabel(level)}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </label>
+                ) : null}
+              </div>
+            </div>
             <SettingsGroup label={t`Computer`} plain>
               <ComputerModePicker value={computerMode} onChange={setComputerMode} />
               {memoryProviderConfigured ? (
@@ -697,7 +695,7 @@ export function BotSettings({
                   onCheckedChange={(checked) => setAutoSpeak(checked)}
                 />
               </label>
-              {me?.managedVoice || !voices?.length ? null : (
+              {voices?.length ? (
                 <label
                   htmlFor={`${ids}-voice`}
                   className="flex min-h-11 items-center justify-between gap-3 text-sm text-foreground"
@@ -717,7 +715,7 @@ export function BotSettings({
                     ))}
                   </NativeSelect>
                 </label>
-              )}
+              ) : null}
             </SettingsGroup>
             <SettingsGroup label={t`Permissions`}>
               <div className="flex min-h-11 items-center justify-between gap-3 text-sm">
