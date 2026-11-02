@@ -108,7 +108,10 @@ describe("updater HTTP surface", () => {
     const response = await app.request("/apply", {
       method: "POST",
       headers: authorized,
-      body: JSON.stringify({ repoUrl: "https://github.com/WEB-DO-Cloud/alma", branch: "--exec=id" }),
+      body: JSON.stringify({
+        repoUrl: "https://github.com/WEB-DO-Cloud/alma",
+        branch: "--exec=id",
+      }),
     });
     expect(response.status).toBe(400);
   });
