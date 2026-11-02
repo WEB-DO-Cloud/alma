@@ -1,8 +1,9 @@
 import { readFile } from "node:fs/promises";
-import type { PluginCategory } from "@rakazo/core";
+import { fileURLToPath } from "node:url";
 import { PLUGIN_CATEGORIES } from "@rakazo/core";
+import type { PluginCategory } from "@rakazo/core";
 import { z } from "zod";
-import { CATALOG_URL, SITE_URL } from "./site";
+import { SITE_URL } from "./site";
 
 const IntegrationSchema = z.object({
   slug: z.string().regex(/^[a-z0-9_-]+$/),
@@ -21,9 +22,13 @@ const CatalogSchema = z.object({
 
 export type Integration = z.infer<typeof IntegrationSchema>;
 
-/** Published weekly by a private sync job. `CATALOG_URL` may point at another URL or a local file. */
+/** Committed snapshot served at /integrations/catalog.json. `CATALOG_URL` overrides it. */
+const DEFAULT_CATALOG = fileURLToPath(
+  new URL("../public/integrations/catalog.json", import.meta.url),
+);
+
 async function loadCatalog(): Promise<Integration[]> {
-  const source = process.env.CATALOG_URL?.trim() || CATALOG_URL;
+  const source = process.env.CATALOG_URL?.trim() || DEFAULT_CATALOG;
   try {
     const text = /^https?:\/\//.test(source)
       ? await fetch(source).then((response) => {

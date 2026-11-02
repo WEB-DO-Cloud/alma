@@ -16,6 +16,8 @@ git merge --no-commit upstream/main || true
 git read-tree --reset -u MERGE_HEAD
 echo "Worktree matches upstream/main. Restore ALMA-only paths, then re-apply the surgical rules."
 echo "Do not git reset, git merge --abort, or git checkout this branch name before committing."
+echo "Refreshing the marketing integrations catalog onto alma.com.do."
+python3 scripts/sync-integrations-catalog.py
 git diff --name-only --diff-filter=ACMRTD "$fork" HEAD | while IFS= read -r path; do
   if git cat-file -e "HEAD:$path" 2>/dev/null && ! git cat-file -e "MERGE_HEAD:$path" 2>/dev/null; then
     echo "restore $path"

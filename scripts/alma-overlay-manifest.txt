@@ -1,5 +1,5 @@
 # Paths that differ from upstream/main. The prefix is informational.
-# Regenerated after the production-host audit.
+# Regenerated after the marketing catalog moved onto alma.com.do.
 overlay .env.example
 overlay .github/ISSUE_TEMPLATE/bug.yml
 overlay .github/ISSUE_TEMPLATE/config.yml
@@ -564,3 +564,4 @@ overlay packages/ui-tokens/assets/README.md
 overlay packages/ui-tokens/assets/Rakazo.icon/Assets/orange-bot.png
 overlay packages/ui-tokens/scripts/export-brand.ts
 overlay packages/ui-web/src/bot-avatar.tsx
+overlay scripts/sync-integrations-catalog.py

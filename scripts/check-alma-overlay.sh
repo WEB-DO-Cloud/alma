@@ -125,6 +125,7 @@ if [[ ! -f $manifest ]]; then
 fi
 
 globs=(
+  'apps/www/public/integrations/'
   'apps/web/src/locales/'
   'apps/web/scripts/translations-'
   'apps/mobile/lib/locales/'
@@ -192,6 +193,44 @@ for path in files:
 if bad:
     print("\n".join(bad[:40]), file=sys.stderr)
     sys.exit(f"{len(bad)} Rakazo product strings outside the allowlist")
+PY
+
+python3 - << 'PY'
+import pathlib, subprocess, sys
+banned = ("rakazo-public", "your-objectstorage.com")
+allow = {
+    "scripts/sync-integrations-catalog.py",
+    "scripts/check-alma-overlay.sh",
+}
+files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+extra = pathlib.Path("apps/www/public/integrations")
+if extra.exists():
+    files.extend(str(path) for path in extra.rglob("*") if path.is_file())
+loader = pathlib.Path("apps/www/src/integrations.ts").read_text()
+if "process.env.CATALOG_URL" not in loader or "public/integrations/catalog.json" not in loader:
+    sys.exit("marketing catalog default is not the committed snapshot with a CATALOG_URL override")
+seen = set()
+bad = []
+for path in files:
+    if path in seen or path in allow:
+        continue
+    seen.add(path)
+    file = pathlib.Path(path)
+    if not file.is_file():
+        continue
+    if file.suffix.lower() in {".png", ".jpg", ".jpeg", ".ico", ".webp", ".gif"}:
+        continue
+    try:
+        text = file.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        continue
+    for needle in banned:
+        if needle in text:
+            bad.append(f"{path} mentions {needle}")
+            break
+if bad:
+    print("\n".join(bad[:40]), file=sys.stderr)
+    sys.exit(f"{len(bad)} files still name a Rakazo object-storage host")
 PY
 
 echo "alma-overlay: ok"
