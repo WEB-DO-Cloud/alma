@@ -32,4 +32,6 @@ Sections 1–9 match the tree:
 
 ## Verification
 
-`pnpm check` passed. `pnpm lint` passed with existing warnings and no errors. `scripts/check-alma-overlay.sh` passed. The unit suite result is recorded on the pull request. Desktop Electron e2e was not run. Web e2e runs when the local harness can start Postgres.
+`pnpm check` passed. `pnpm lint` passed with existing warnings and no errors. `scripts/check-alma-overlay.sh` passed. The unit suite passed: 19919 tests, 706 skipped. Desktop Electron e2e was not run.
+
+The local web harness started. One Playwright pass opened sign-in (`Sign in to ALMA`), a chat thread with the Call button, the connectors Popular grid (including MintMCP and Waystation), and the upgrade screen at locale `es` (`US$69 / mes`). The full web e2e suite was not run locally; CI runs it.
