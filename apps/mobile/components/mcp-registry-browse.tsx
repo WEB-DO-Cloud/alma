@@ -1,4 +1,4 @@
-import type { McpRegistryServer, McpServer } from "@rakazo/contracts";
+import type { McpRegistryServer } from "@rakazo/contracts";
 import {
   availableMcpSlug,
   FEATURED_MCP_ICONS,
@@ -89,7 +89,7 @@ export function McpRegistryBrowse({
     setSearchError(null);
     const controller = new AbortController();
     const timer = setTimeout(() => {
-      void rpc<{ servers: McpRegistryServer[] }>(
+      void rpc(
         "mcp/registry/search",
         { query: typed, limit: 12 },
         {
@@ -125,11 +125,11 @@ export function McpRegistryBrowse({
     setPending(server.endpoint);
     setAddError(null);
     try {
-      const existing = await rpc<McpServer[]>("mcp/servers/list");
+      const existing = await rpc("mcp/servers/list");
       const saved = existing.find((item) => item.endpoint === server.endpoint);
       const created =
         saved ??
-        (await rpc<McpServer>(
+        (await rpc(
           "mcp/servers/create",
           remoteMcpCreateInput(
             server,

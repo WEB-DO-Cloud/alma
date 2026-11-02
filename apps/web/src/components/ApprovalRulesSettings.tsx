@@ -6,10 +6,12 @@ import type {
   SettingsScope,
 } from "@rakazo/contracts";
 import { humanizeToolName } from "@rakazo/core";
+import { writeSaved } from "@rakazo/core/query";
 import { Button, ToggleGroup, ToggleGroupItem } from "@rakazo/ui-web";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useSpaceQueries, writeSaved } from "../lib/query";
+import { useSpaceQueries } from "../lib/query";
 import { useSpaceRpc } from "../lib/space-rpc";
 import { errorText } from "../lib/user-error";
 import { SettingsGroup, SettingsRow } from "./SettingsRows";
@@ -124,7 +126,7 @@ export function ApprovalRulesSettings({ scope }: { scope: SettingsScope }) {
         </SettingsRow>
       </SettingsGroup>
       {rules.length > 0 ? (
-        <SettingsGroup data-testid="approval-rules">
+        <SettingsGroup title={<Trans>Rules</Trans>} data-testid="approval-rules">
           {rules.map((rule) => (
             <SettingsRow
               key={rule.id}
@@ -168,12 +170,13 @@ export function ApprovalRulesSettings({ scope }: { scope: SettingsScope }) {
                   )}
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground"
+                    size="icon-sm"
+                    aria-label={t`Remove`}
+                    className="text-destructive hover:text-destructive"
                     disabled={saving}
                     onClick={() => void removeRule(rule)}
                   >
-                    <Trans>Remove</Trans>
+                    <Trash2 />
                   </Button>
                 </>
               }

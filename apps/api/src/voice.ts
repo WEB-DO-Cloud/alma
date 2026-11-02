@@ -26,7 +26,8 @@ import type {
   VoiceStatus,
 } from "@rakazo/contracts";
 import { SettingsScopeSchema } from "@rakazo/contracts";
-import { toUtterances } from "@rakazo/core";
+import { speakable, toUtterances } from "@rakazo/core";
+import type { PrismaClient } from "@rakazo/db";
 import {
   deleteUnreferencedCredentialSecret,
   findDefaultVoiceCredential,
@@ -36,7 +37,6 @@ import {
   lockSpaceSettings,
   newestVoiceCredentialOrder,
   Prisma,
-  type PrismaClient,
   runAsSystemInTransaction,
   runAsTenant,
   saveVoicePreference,
@@ -44,28 +44,32 @@ import {
   voicePreferenceTarget,
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
+import { markExpectedFailure } from "@rakazo/logging/hono";
 import type { Context, Hono } from "hono";
 import { readBoundedBody } from "./http-body.js";
 import { withSerializableRetry } from "./serializable-retry.js";
+import type { SpeechSummarizer } from "./speech-summary.js";
 
 export interface VoiceDeps {
   prisma: PrismaClient;
   secrets: SecretStore;
   /** The instance flag (`MCP_ALLOW_PRIVATE_ENDPOINT`). */
   env?: { mcpAllowPrivateEndpoint?: boolean };
+  /** Set only when `VOICE_SUMMARY_MIN_CHARS` turns spoken summaries on. */
+  speechSummary?: { summarize: SpeechSummarizer; minChars: number };
 }
 
 /** A self-hosted speech server on a private address is limited like model endpoints. */
-async function voiceMayUsePrivateEndpoint(deps: VoiceDeps, _actor: Actor, provider: string) {
+async function voiceMayUsePrivateEndpoint(deps: VoiceDeps, provider: string) {
   return (
     provider === OPENAI_COMPATIBLE_VOICE_PROVIDER_ID && deps.env?.mcpAllowPrivateEndpoint === true
   );
 }
 
-/** The voice adapter for a credential, with the actor's private-endpoint decision. */
-export async function voiceProviderFor(deps: VoiceDeps, actor: Actor, provider: string) {
+/** The voice adapter for a credential, with the caller's private-endpoint decision. */
+export async function voiceProviderFor(deps: VoiceDeps, provider: string) {
   return createVoiceProvider(provider, {
-    allowPrivateEndpoint: await voiceMayUsePrivateEndpoint(deps, actor, provider),
+    allowPrivateEndpoint: await voiceMayUsePrivateEndpoint(deps, provider),
   });
 }
 
@@ -83,7 +87,10 @@ const SPEAK_TIMEOUT_MS = 60_000;
 export const MAX_SPEAK_REQUEST_BYTES = 16 * 1024;
 export const MAX_TRANSCRIBE_REQUEST_BYTES = 4 * Math.ceil(MAX_TRANSCRIBE_BYTES / 3) + 1024;
 
-export function voiceContext(actor: Actor, signal?: AbortSignal): AdapterContext {
+export function voiceContext(
+  actor: Pick<Actor, "userId" | "spaceId">,
+  signal?: AbortSignal,
+): AdapterContext {
   return {
     operationId: "voice",
     traceId: "voice",
@@ -197,6 +204,10 @@ export function voiceCredentialPlaintext(input: {
   previousPlaintext?: string;
   allowPrivateEndpoint?: boolean;
 }): string {
+  if (voiceCatalogEntry(input.provider)?.keyless) {
+    // The credential row is what selects the provider; it has no key to keep.
+    return input.provider;
+  }
   if (input.provider !== OPENAI_COMPATIBLE_VOICE_PROVIDER_ID) {
     if (input.plaintext.trim().length < 8) {
       throw new ORPCError("BAD_REQUEST", { message: "Enter an API key." });
@@ -235,7 +246,7 @@ export function fishSpeechModelValue(speechModel: string): string | null {
 
 export async function loadDefaultVoiceCredential(
   deps: VoiceDeps,
-  actor: Actor,
+  actor: Pick<Actor, "userId" | "spaceId">,
   scope?: SettingsScope,
 ) {
   return loadVoiceCredential(deps, actor, undefined, scope);
@@ -243,7 +254,7 @@ export async function loadDefaultVoiceCredential(
 
 export async function loadVoiceCredential(
   deps: VoiceDeps,
-  actor: Actor,
+  actor: Pick<Actor, "userId" | "spaceId">,
   provider?: string,
   scope?: SettingsScope,
 ) {
@@ -304,7 +315,7 @@ export async function persistVoiceCredential(
       ? // An unreadable old secret only means nothing is inherited; the form must be complete.
         await loadVoiceCredential(deps, actor, input.provider).catch(() => null)
       : null;
-  const allowPrivateEndpoint = await voiceMayUsePrivateEndpoint(deps, actor, input.provider);
+  const allowPrivateEndpoint = await voiceMayUsePrivateEndpoint(deps, input.provider);
   const plaintext = voiceCredentialPlaintext({
     ...input,
     previousPlaintext: previous?.apiKey,
@@ -504,7 +515,13 @@ export async function updateVoiceSpeechModel(
 export async function prepareVoice(
   deps: VoiceDeps,
   actor: Actor,
-  input: { text: string; voiceId?: string; botId?: string; scope?: SettingsScope },
+  input: {
+    text: string;
+    voiceId?: string;
+    botId?: string;
+    scope?: SettingsScope;
+    signal?: AbortSignal;
+  },
 ) {
   const managed = resolveManagedVoice();
   if (managed.enabled) {
@@ -522,7 +539,21 @@ export async function prepareVoice(
     }
     throw error;
   }
-  return { ready: true, utterances: toUtterances(input.text) };
+  return { ready: true, utterances: await spokenUtterances(deps, actor, input) };
+}
+
+async function spokenUtterances(
+  deps: VoiceDeps,
+  actor: Actor,
+  input: { text: string; botId?: string; signal?: AbortSignal },
+): Promise<string[]> {
+  const full = toUtterances(input.text);
+  const summary = deps.speechSummary;
+  if (!input.botId || !summary) return full;
+  if (speakable(input.text).length <= summary.minChars) return full;
+  const spoken = await summary.summarize(actor, input.botId, input.text, input.signal);
+  const utterances = spoken ? toUtterances(spoken) : [];
+  return utterances.length > 0 ? utterances : full;
 }
 
 export const MANAGED_SPEAK_FAILED = "No se pudo leer la respuesta.";
@@ -574,7 +605,7 @@ export async function synthesizeVoice(
   if (text.length > MAX_SPEAK_CHARS) {
     throw new ORPCError("BAD_REQUEST", { message: "That utterance is too long to speak." });
   }
-  const provider = await voiceProviderFor(deps, actor, target.cred.provider);
+  const provider = await voiceProviderFor(deps, target.cred.provider);
   return provider.synthesize(
     {
       text,
@@ -621,7 +652,7 @@ export async function transcribeVoice(
   }
   const loaded = await loadDefaultVoiceCredential(deps, actor);
   if (!loaded) throw new NoVoiceConfigured("key");
-  const provider = await voiceProviderFor(deps, actor, loaded.cred.provider);
+  const provider = await voiceProviderFor(deps, loaded.cred.provider);
   if (!provider.transcribe) {
     throw new ORPCError("BAD_REQUEST", {
       message: "This voice provider does not transcribe audio. Use on-device dictation instead.",
@@ -640,6 +671,29 @@ export async function transcribeVoice(
     },
     voiceContext(actor, input.signal),
   );
+}
+
+/**
+ * Transcribes inbound messaging audio (for example a Telegram voice note) with
+ * the bot owner's default voice connection, as the app's dictation does. Null
+ * when no provider can transcribe or the audio is too large; the caller treats
+ * a throw the same way, so the file is delivered without a transcript.
+ */
+export async function transcribeInboundVoice(
+  deps: VoiceDeps,
+  owner: Pick<Actor, "userId" | "spaceId">,
+  input: { audio: Uint8Array; mimeType: string; signal?: AbortSignal },
+): Promise<string | null> {
+  if (input.audio.byteLength > MAX_TRANSCRIBE_BYTES) return null;
+  const loaded = await loadDefaultVoiceCredential(deps, owner);
+  if (!loaded) return null;
+  const provider = await voiceProviderFor(deps, loaded.cred.provider);
+  if (!provider.transcribe) return null;
+  const { text } = await provider.transcribe(
+    { audio: input.audio, mimeType: input.mimeType, apiKey: loaded.apiKey },
+    voiceContext(owner, input.signal),
+  );
+  return text;
 }
 
 export function mountVoiceHttpRoutes(
@@ -730,8 +784,8 @@ function decodeAudioBase64(value: string): Uint8Array {
   }
 }
 
-/** Spent credit is 402; a rejected key is 403, never 401, which clients read as a lost session. */
-export function voiceAccountErrorStatus(code: VoiceAccountErrorCode) {
+/** Spent credit is 402; any other refusal is 403, never 401, which clients read as a lost session. */
+export function voiceAccountErrorStatus(code: VoiceAccountErrorCode | undefined) {
   return code === "VOICE_OUT_OF_CREDIT" ? 402 : 403;
 }
 
@@ -751,12 +805,23 @@ function voiceHttpError(c: Context, error: unknown) {
   if (error instanceof VoiceAccountError) {
     getLogger().warn("voice provider account rejected the request", {
       route: c.req.path,
-      reason: error.code,
+      reason: error.code ?? error.message,
     });
     return c.json({ error: error.message, code: error.code }, voiceAccountErrorStatus(error.code));
   }
   const message = error instanceof Error ? error.message : "Voice request failed.";
   // Message only: request bodies, keys and audio never reach the log.
   getLogger().warn("voice request failed", { route: c.req.path, reason: message });
+  if (isVoiceProviderFailure(error)) markExpectedFailure();
   return c.json({ error: message }, 502);
+}
+
+/** Voice adapters raise plain errors for provider refusals and setup problems; anything else is a bug. */
+export function isVoiceProviderFailure(error: unknown) {
+  return (
+    error instanceof Error &&
+    (Object.getPrototypeOf(error) === Error.prototype ||
+      error.name === "AbortError" ||
+      error.name === "TimeoutError")
+  );
 }

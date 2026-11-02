@@ -1,5 +1,6 @@
 import { isModelRequiredSendError } from "@rakazo/core";
 import { Alert, AppState } from "react-native";
+import type { RpcArgs } from "./api";
 import {
   captureApiRequestContext,
   currentApiBase,
@@ -66,19 +67,17 @@ export async function prepareUnsentSends(): Promise<void> {
 }
 // Configure the wipe before bootstrap can replace credentials or the saved server.
 configureUnsentSends({
-  request: async <T>(
-    proc: string,
-    body: unknown,
-    options: Parameters<typeof rpc>[2],
-    spaceId: string | null,
-  ) => {
+  request: async (proc, body, options, spaceId) => {
     const generation = currentSessionGeneration();
     const context = await captureApiRequestContext();
     if (generation !== currentSessionGeneration()) throw new Error("Session changed");
     const headers = { ...context.headers };
     if (spaceId) headers["x-rakazo-space-id"] = spaceId;
     else delete headers["x-rakazo-space-id"];
-    return rpc<T>(proc, body, { ...options, requestContext: { ...context, headers } });
+    return rpc(
+      proc,
+      ...([body, { ...options, requestContext: { ...context, headers } }] as RpcArgs<typeof proc>),
+    );
   },
   serverReachable: isServerReachable,
   scope,
@@ -86,16 +85,15 @@ configureUnsentSends({
   errorText: (error) => errorText(error, t("Failed to send message")),
   notDelivered: (attempt) => {
     if (isModelRequiredSendError(attempt.error)) {
-      // A managed model, or an account that no longer needs one, must not be sent to connect a model.
-      void rpc<{ managedModel?: boolean; needsModel?: boolean }>("me")
-        .then((me) => {
-          if (me.managedModel || me.needsModel === false) return;
-          promptConnectModel();
-        })
-        .catch(() => promptConnectModel());
+      void Promise.resolve(rpc("me")).then((me) => {
+        if (me && typeof me === "object" && "managedModel" in me && me.managedModel) return;
+        promptConnectModel();
+      });
       return;
     }
-    Alert.alert(t("Failed to send message"), attempt.error);
+    if (!attempt.imageConfirmation) {
+      Alert.alert(t("Failed to send message"), attempt.error);
+    }
   },
 });
 export function startUnsentSends(): () => void {

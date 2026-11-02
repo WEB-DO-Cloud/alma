@@ -13,6 +13,8 @@ type Props = {
   ogImage?: string;
   ogType?: string;
   index?: boolean;
+  wide?: boolean;
+  markdownAlternate?: string;
 };
 
 const {
@@ -23,6 +25,8 @@ const {
   ogImage,
   ogType,
   index = true,
+  wide = false,
+  markdownAlternate,
 } = Astro.props;
 const structuredData =
   structuredDataProp ?? (faq && faq.length > 0 ? faqPageSchema(faq) : undefined);
@@ -36,10 +40,11 @@ const structuredData =
   ogImage={ogImage}
   ogType={ogType}
   index={index}
+  markdownAlternate={markdownAlternate}
 >
   <div class="container">
     <Header />
-    <main id="main" class="alt-page">
+    <main id="main" class:list={[wide ? "wide-page" : "alt-page"]}>
       <slot />
     </main>
     <Footer />

@@ -1,8 +1,9 @@
-import type { TelegramBotCredentials } from "@rakazo/adapters";
+import type { PhotonProjectCredentials, TelegramBotCredentials } from "@rakazo/adapters";
 import {
   boatApiKeyFromEnv,
   boatApiUrlFromEnv,
   mcpStdioOptionsFromEnv,
+  photonProjectsFromEnv,
   resolveCloudAgentProvider,
   resolveDeploymentModel,
   resolveSandboxProvider,
@@ -10,9 +11,11 @@ import {
   telegramBotsFromEnv,
 } from "@rakazo/adapters";
 import type { OidcConfig } from "@rakazo/auth";
-import type { MinimumClientBuilds } from "@rakazo/contracts";
-import { parseMinimumClientBuilds } from "@rakazo/contracts";
+import type { MinimumClientBuilds, NavLink } from "@rakazo/contracts";
+import { parseMinimumClientBuilds, parseNavLinks } from "@rakazo/contracts";
+import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
 import {
+  attachmentCountFromEnv,
   phoneCallSettings,
   resolveAuthSecret,
   resolveContentEncryption,
@@ -24,6 +27,9 @@ import {
 import { monitoringPseudonymSecret } from "@rakazo/logging";
 
 export { resolveCloudAgentProvider, resolveSandboxProvider } from "@rakazo/adapters";
+
+/** Where a local development stack serves the web client. */
+const DEFAULT_WEB_ORIGIN = "http://127.0.0.1:5173";
 
 export interface AppEnv {
   passwordAuth?: boolean;
@@ -46,21 +52,29 @@ export interface AppEnv {
   apiHost: string;
   /** Proxies whose forwarded client address is believed; empty means local networks. */
   trustedProxies: string[];
-  /** The header those proxies set. */
   clientIpHeader: string;
   signupsEnabled: string | undefined;
   signupAllowlist: string | undefined;
   encryptionKey: string;
-  /** CONTENT_ENCRYPTION: whether new content is encrypted at rest. */
   contentEncryption: boolean;
   dataDir: string;
   /** Opt-in Pi JSONL session recording under DATA_DIR/pi-sessions. Default off. */
   piSessionRecording: boolean;
   ticketBoardEnabled: boolean;
+  /** USER_DEVICES_ENABLED=false stops users connecting their own computers. Default on. */
+  userDevicesEnabled: boolean;
+  /** Operator menu links that frame a same-origin page (RAKAZO_NAV_LINKS). */
+  navLinks?: NavLink[];
+  /** Verified accounts that review plugin submissions, add stdio MCP servers, and grant access
+   * (RAKAZO_ADMIN_EMAILS), lowercased. */
+  adminEmails: string[];
   phoneCallsEnabled: boolean;
   phoneCallRingSeconds: number;
   phoneCallCooldownMinutes: number;
   maxUploadSizeBytes: number;
+  maxAttachmentsPerMessage: number;
+  /** Bot replies longer than this are read aloud as a summary; unset reads every reply in full. */
+  voiceSummaryMinChars: number | undefined;
   sandboxSupervisorUrl: string;
   sandboxSupervisorToken: string | undefined;
   screenProxySecret: string;
@@ -68,6 +82,9 @@ export interface AppEnv {
   cloudAgentProvider: string;
   cloudAgentSpaceId: string | undefined;
   cursorApiKey: string | undefined;
+  /** Raw PAYMENT_WALLET_* values; createPaymentWalletProvider resolves them. */
+  paymentWalletProvider: string | undefined;
+  paymentWalletClientId: string | undefined;
   agentRuntime: string;
   deploymentModelKey: string | undefined;
   /** The deployment default model can run; see resolveDeploymentModel. */
@@ -75,6 +92,8 @@ export interface AppEnv {
   /** The deployment default model runs on the host's credentials rather than a key. */
   deploymentModelHostCredentials: boolean;
   e2bApiKey: string | undefined;
+  novitaApiKey: string | undefined;
+  sandboxTemplate: string | undefined;
   daytonaApiKey: string | undefined;
   daytonaApiUrl: string | undefined;
   daytonaTarget: string | undefined;
@@ -94,8 +113,10 @@ export interface AppEnv {
   expoAccessToken: string | undefined;
   smtpUrl: string | undefined;
   emailProvider?: string;
+  welcomeEmailEnabled?: boolean;
   emailApiKey?: string;
   emailFrom: string | undefined;
+  emailReplyTo?: string;
   /** Billing turns on only when all three are set; self-hosted installs leave them unset. */
   stripeSecretKey: string | undefined;
   stripeWebhookSecret: string | undefined;
@@ -118,6 +139,11 @@ export interface AppEnv {
   larkVerificationToken: string | undefined;
   larkEncryptKey: string | undefined;
   larkDomain: string | undefined;
+  photonProjectId: string | undefined;
+  photonProjectSecret: string | undefined;
+  photonWebhookSecret: string | undefined;
+  /** Extra named Photon projects (PHOTON_PROJECT_ID_<NAME>), each with its own number. */
+  photonProjects?: PhotonProjectCredentials[];
   /** Unknown chat senders auto-provision their own accounts when true. */
   messagingOpenSignup: boolean;
   /** Bot that owns team/external chat rooms on the messaging surface. */
@@ -130,7 +156,6 @@ export interface AppEnv {
   wakeupDriver: string;
   mcpStdioEnabled: boolean;
   mcpStdioAllowedCommands: string[];
-  /** Package dir, install/startup timeouts and idle reaping for stdio MCP servers. */
   mcpStdio: ReturnType<typeof mcpStdioOptionsFromEnv>;
   /** Deployment-owner escape for remote MCP on RFC1918 / Docker-network hosts. */
   mcpAllowPrivateEndpoint: boolean;
@@ -142,6 +167,8 @@ export interface AppEnv {
   browserMonitoring:
     | { dsn: string; environment?: string; release?: string; pseudonymSecret?: string }
     | undefined;
+  /** Crisp chat on the paywall, for the hosted service; self-hosted installs leave it unset. */
+  crispWebsiteId?: string | null;
 }
 
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
@@ -190,6 +217,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
         }
       : undefined;
   const authSecret = resolveAuthSecret(source);
+  const webOrigin = resolveWebOrigin(source.WEB_ORIGIN, DEFAULT_WEB_ORIGIN, "WEB_ORIGIN");
   const sandboxProvider = resolveSandboxProvider(source);
   const cloudAgentProvider = resolveCloudAgentProvider(source);
   const deploymentModel = resolveDeploymentModel(source);
@@ -202,8 +230,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     realtimeDatabaseUrl: source.REALTIME_DATABASE_URL ?? required(source, "DATABASE_URL"),
     desktopStackToken: optional(source.RAKAZO_DESKTOP_STACK_TOKEN),
     authSecret,
-    authUrl: source.BETTER_AUTH_URL ?? source.WEB_ORIGIN ?? "http://127.0.0.1:5173",
-    webOrigin: source.WEB_ORIGIN ?? "http://127.0.0.1:5173",
+    authUrl: resolveWebOrigin(source.BETTER_AUTH_URL, webOrigin, "BETTER_AUTH_URL"),
+    webOrigin,
     passkeyAppleAppIds: list(source.PASSKEY_APPLE_APP_IDS),
     passkeyAndroidCertFingerprints: androidCertFingerprints(source.PASSKEY_ANDROID_CERT_SHA256),
     privacyPolicyUrl: optional(source.PRIVACY_POLICY_URL),
@@ -221,8 +249,13 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     dataDir: source.DATA_DIR ?? "./data",
     piSessionRecording: source.PI_SESSION_RECORDING === "true",
     ticketBoardEnabled: source.TICKET_BOARD_ENABLED === "true",
+    userDevicesEnabled: source.USER_DEVICES_ENABLED !== "false",
+    navLinks: parseNavLinks(source.RAKAZO_NAV_LINKS),
+    adminEmails: list(source.RAKAZO_ADMIN_EMAILS).map((email) => email.toLowerCase()),
     ...phoneCallSettings(source),
     maxUploadSizeBytes: uploadSizeFromEnv(source),
+    maxAttachmentsPerMessage: attachmentCountFromEnv(source),
+    voiceSummaryMinChars: voiceSummaryMinCharsFromEnv(source.VOICE_SUMMARY_MIN_CHARS),
     sandboxSupervisorUrl: source.SANDBOX_SUPERVISOR_URL ?? "http://127.0.0.1:7091",
     sandboxSupervisorToken:
       sandboxProvider === "docker" ? resolveSupervisorToken(source) : undefined,
@@ -231,12 +264,16 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     cloudAgentProvider,
     cloudAgentSpaceId: optional(source.CLOUD_AGENT_SPACE_ID),
     cursorApiKey: optional(source.CURSOR_API_KEY),
+    paymentWalletProvider: optional(source.PAYMENT_WALLET_PROVIDER),
+    paymentWalletClientId: optional(source.PAYMENT_WALLET_CLIENT_ID),
     agentRuntime: source.AGENT_RUNTIME ?? "pi",
     // Provider, model and key resolve together: see resolveDeploymentModel.
     deploymentModelKey: deploymentModel.key,
     deploymentModelConfigured: deploymentModel.configured,
     deploymentModelHostCredentials: deploymentModel.hostCredentials,
     e2bApiKey: source.E2B_API_KEY,
+    novitaApiKey: source.NOVITA_API_KEY,
+    sandboxTemplate: source.SANDBOX_TEMPLATE,
     daytonaApiKey: source.DAYTONA_API_KEY,
     daytonaApiUrl: source.DAYTONA_API_URL,
     daytonaTarget: source.DAYTONA_TARGET,
@@ -258,6 +295,8 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     emailProvider: optional(source.EMAIL_PROVIDER),
     emailApiKey: optional(source.EMAIL_API_KEY),
     emailFrom: optional(source.EMAIL_FROM),
+    emailReplyTo: optional(source.EMAIL_REPLY_TO),
+    welcomeEmailEnabled: source.WELCOME_EMAIL_ENABLED === "true",
     stripeSecretKey: optional(source.STRIPE_SECRET_KEY),
     stripeWebhookSecret: optional(source.STRIPE_WEBHOOK_SECRET),
     stripePriceId: optional(source.STRIPE_PRICE_ID),
@@ -278,6 +317,10 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     larkVerificationToken: optional(source.LARK_VERIFICATION_TOKEN),
     larkEncryptKey: optional(source.LARK_ENCRYPT_KEY),
     larkDomain: optional(source.LARK_DOMAIN),
+    photonProjectId: optional(source.PHOTON_PROJECT_ID),
+    photonProjectSecret: optional(source.PHOTON_PROJECT_SECRET),
+    photonWebhookSecret: optional(source.PHOTON_WEBHOOK_SECRET),
+    photonProjects: photonProjectsFromEnv(source),
     messagingOpenSignup: source.MESSAGING_OPEN_SIGNUP === "true",
     teamChatBotId: optional(source.TEAM_CHAT_BOT_ID) ?? optional(source.SLACK_RAKAZO_BOT_ID),
     teamChatJudgeProvider: optional(source.TEAM_CHAT_JUDGE_PROVIDER),
@@ -296,7 +339,24 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     gitSha: optional(source.GIT_SHA) ?? optional(source.RAKAZO_GIT_SHA),
     minimumClientBuilds: parseMinimumClientBuilds(source.RAKAZO_MIN_CLIENT_BUILD),
     browserMonitoring: browserMonitoringFromEnv(source),
+    crispWebsiteId: parseCrispWebsiteId(source.CRISP_WEBSITE_ID),
   };
+}
+
+/**
+ * An origin used to build absolute links. Trailing slashes are dropped so
+ * `${webOrigin}/path` cannot produce `https://host//path`; providers reject a
+ * double-slash redirect URI as a mismatch against the one registered with them.
+ */
+function resolveWebOrigin(value: string | undefined, fallback: string, name: string): string {
+  const origin = (optional(value) ?? fallback).replace(/\/+$/, "");
+  try {
+    const url = new URL(origin);
+    if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error();
+  } catch {
+    throw new Error(`${name} must be an absolute http(s) URL`);
+  }
+  return origin;
 }
 
 function required(source: NodeJS.ProcessEnv, key: string): string {
@@ -315,6 +375,15 @@ function browserMonitoringFromEnv(source: NodeJS.ProcessEnv): AppEnv["browserMon
     release: optional(source.SENTRY_RELEASE) ?? (sha === "unknown" ? undefined : sha),
     pseudonymSecret: monitoringPseudonymSecret(source),
   };
+}
+
+function voiceSummaryMinCharsFromEnv(value: string | undefined): number | undefined {
+  const raw = value?.trim();
+  if (!raw) return undefined;
+  if (!/^\d+$/.test(raw) || !Number.isSafeInteger(Number(raw)) || Number(raw) === 0) {
+    throw new Error("VOICE_SUMMARY_MIN_CHARS must be a positive whole number of characters");
+  }
+  return Number(raw);
 }
 
 function optional(value: string | undefined): string | undefined {

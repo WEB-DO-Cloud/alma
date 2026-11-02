@@ -1,13 +1,69 @@
+import { randomUUID } from "node:crypto";
 import type { BillingSubscriptionSnapshot } from "@rakazo/adapter-kit";
+import { resolveByokMonthlyPriceCents } from "@rakazo/contracts";
 import type { BillingAccount, PrismaClient } from "./client.js";
 import { Prisma } from "./client.js";
 import { organizationRoleForMember } from "./organization-settings.js";
 
-/** Subscription states that let an organization use the product. */
 const ACCESS_STATUSES = new Set(["trialing", "active", "past_due"]);
 
 export function hasBillingAccess(status: string | null): boolean {
   return status !== null && ACCESS_STATUSES.has(status);
+}
+
+/**
+ * Whether a model-credit organization can run bots. Any live subscription grants it, as does a
+ * credit balance outside own-key mode. Otherwise only a free own-key plan or free period does.
+ */
+export function hasModelAccess(
+  credits: { mode: string | null; balanceMicros: bigint; byokFreeUntil: Date | null },
+  subscriptionStatus: string | null,
+  now = new Date(),
+): boolean {
+  if (hasBillingAccess(subscriptionStatus)) return true;
+  if (credits.mode === "byok")
+    return resolveByokMonthlyPriceCents() === null || byokFreeUntil(credits, now) !== null;
+  if (credits.balanceMicros > 0n) return true;
+  return resolveByokMonthlyPriceCents() === null && credits.mode === "credits";
+}
+
+/** The free period's end while it is still running. */
+export function byokFreeUntil(credits: { byokFreeUntil: Date | null }, now = new Date()) {
+  return credits.byokFreeUntil && credits.byokFreeUntil > now ? credits.byokFreeUntil : null;
+}
+
+export const FREE_MONTH_DAYS = 30;
+
+/** One statement, so concurrent grants each add their days. */
+export function extendByokFreePeriod(
+  tx: Prisma.TransactionClient,
+  organizationId: string,
+  days: number,
+) {
+  return tx.$executeRaw`
+    UPDATE model_credit_accounts
+    SET "byokFreeUntil" = GREATEST(COALESCE("byokFreeUntil", now()), now()) + make_interval(days => ${days}::int)
+    WHERE "organizationId" = ${organizationId}`;
+}
+
+export async function spaceHasModelAccess(prisma: PrismaClient, spaceId: string) {
+  const space = await prisma.space.findUnique({
+    where: { id: spaceId },
+    select: {
+      organization: {
+        select: {
+          modelCredits: { select: { mode: true, balanceMicros: true, byokFreeUntil: true } },
+          billing: { select: { status: true } },
+        },
+      },
+    },
+  });
+  if (!space) return false;
+  const { modelCredits, billing } = space.organization;
+  return hasModelAccess(
+    modelCredits ?? { mode: null, balanceMicros: 0n, byokFreeUntil: null },
+    billing?.status ?? null,
+  );
 }
 
 export function billingAccountForOrganization(
@@ -53,6 +109,7 @@ export async function replaceBillingCustomer(
     data: {
       customerId: input.customerId,
       creditAmountCents: null,
+      byokPriceCents: null,
       subscriptionId: null,
       subscriptionItemId: null,
       priceId: null,
@@ -67,6 +124,38 @@ export async function replaceBillingCustomer(
   });
   return prisma.billingAccount.findUniqueOrThrow({
     where: { organizationId: input.organizationId },
+  });
+}
+
+/**
+ * Claims the organization's checkout lease, coordinating API instances without holding a
+ * connection over provider calls. Returns the lease id, or null while another request holds it.
+ */
+export async function claimCheckoutLease(
+  prisma: PrismaClient,
+  organizationId: string,
+  ttlMs: number,
+): Promise<string | null> {
+  const leaseId = randomUUID();
+  const now = new Date();
+  const { count } = await prisma.billingAccount.updateMany({
+    where: {
+      organizationId,
+      OR: [{ checkoutLeaseExpiresAt: null }, { checkoutLeaseExpiresAt: { lte: now } }],
+    },
+    data: { checkoutLeaseId: leaseId, checkoutLeaseExpiresAt: new Date(now.getTime() + ttlMs) },
+  });
+  return count > 0 ? leaseId : null;
+}
+
+export async function releaseCheckoutLease(
+  prisma: PrismaClient,
+  organizationId: string,
+  leaseId: string,
+): Promise<void> {
+  await prisma.billingAccount.updateMany({
+    where: { organizationId, checkoutLeaseId: leaseId },
+    data: { checkoutLeaseId: null, checkoutLeaseExpiresAt: null },
   });
 }
 
@@ -94,6 +183,7 @@ export async function syncBillingSnapshot(
     where: { customerId, OR: [{ syncedAt: null }, { syncedAt: { lt: startedAt } }] },
     data: {
       creditAmountCents: snapshot?.creditAmountCents ?? null,
+      byokPriceCents: snapshot?.byokPriceCents ?? null,
       subscriptionId: snapshot?.subscriptionId ?? null,
       subscriptionItemId: snapshot?.subscriptionItemId ?? null,
       priceId: snapshot?.priceId ?? null,
@@ -134,7 +224,6 @@ export async function organizationForMember(
   return { organizationId: found.organizationId, isOwner: isOwnerRole(found.role) };
 }
 
-/** Organizations the user owns that have a billing customer. */
 export async function ownedBillingAccounts(
   prisma: PrismaClient,
   userId: string,

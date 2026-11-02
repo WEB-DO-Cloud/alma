@@ -10,11 +10,38 @@ a placeholder; final art is still pending.
 
 ## One-time match setup
 
-Signing certificates live in the private repo
-`https://github.com/WEB-DO-Cloud/alma-certificates`. That URL is the Matchfile
-default. Override it with `MATCH_GIT_URL` when the certificates should come
-from somewhere else. `MATCH_PASSWORD` encrypts the repo. Create it on a trusted
-machine, store it as a Bitrise secret, and do not put it in git.
+## Release
+
+Bump `expo.version` in `apps/mobile/app.json` when native code changes (see
+Over-the-air updates below), then run the `release-mobile` workflow from `main`
+with the App Store "What's New" text. It builds iOS on EAS, uploads it to App
+Store Connect, puts the build on that App Store version with the notes, and
+submits it for review; Apple releases it once approved. The same run publishes
+the Android APK below.
+
+It needs these repository secrets:
+
+- `EXPO_TOKEN`: an Expo access token for the project.
+- `ASC_APP_ID`: the app's Apple ID, shown under App Information in App Store
+  Connect.
+- `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_PRIVATE_KEY`: an App Store Connect API
+  key with the App Manager role, from Users and Access > Integrations. The
+  private key is the contents of the downloaded `.p8` file.
+
+Re-running it for a version that is already in review leaves that submission
+alone.
+
+## Android APK
+
+Until Rakazo is on Google Play, Android users can install an APK.
+`release-mobile` publishes it, or run the `release-android-apk` workflow from
+`main` on its own. It builds the `android-apk` EAS profile, signed with the
+project's managed keystore, and replaces the rolling `android` GitHub release,
+so the download link stays the same:
+
+```text
+https://github.com/elie222/rakazo/releases/download/android/rakazo.apk
+```
 
 Do this once, from `apps/mobile`, on a machine that can sign in to Apple.
 CI only reads the match repo. The one exception is a build whose parameter

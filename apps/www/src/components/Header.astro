@@ -3,23 +3,27 @@ import { getHomeCopy } from "../i18n/home";
 import type { HomeCopy } from "../i18n/home";
 import { DEFAULT_LOCALE, localeHomePath } from "../i18n/locales";
 import type { Locale } from "../i18n/locales";
-import { APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
+import { APP_URL } from "../site";
 import Logo from "./Logo.astro";
 
 type Props = {
   locale?: Locale;
   copy?: HomeCopy["nav"];
   homeHref?: string;
+  /** Names the part of the site this header sits on, such as "Docs", next to the logo. */
+  section?: { label: string; href: string };
 };
 
+const { section } = Astro.props;
 const locale = Astro.props.locale ?? DEFAULT_LOCALE;
 const copy = Astro.props.copy ?? getHomeCopy(locale).nav;
 const homeHref = Astro.props.homeHref ?? localeHomePath(locale);
 
 const NAV_LINKS = [
-  { href: SELF_HOST_GUIDE_PATH, label: copy.docs },
+  { href: "/docs/", label: copy.docs },
+  { href: "/integrations/", label: copy.integrations },
   { href: "/blog/", label: copy.blog },
-];
+].filter((link) => link.href !== section?.href);
 
 const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 
@@ -31,6 +35,7 @@ function isCurrent(href: string): boolean {
 <header class="site-header">
   <div class="site-header__left">
     <Logo href={homeHref} label={copy.home} />
+    {section && <a class="site-header__section" href={section.href}>{section.label}</a>}
     <nav class="site-nav" aria-label={copy.primary}>
       {
         NAV_LINKS.map((link) => (
@@ -45,6 +50,7 @@ function isCurrent(href: string): boolean {
     </nav>
   </div>
   <div class="site-header__right">
+    <slot />
     <div class="site-header__cta">
       <a class="button button--primary button--small" href={APP_URL}>
         {copy.getStarted}

@@ -64,26 +64,26 @@ export function toComputerStatus(
   } | null,
   busyBotName: string | null = null,
 ): ComputerStatus {
-  const state = computer?.maintenanceId
-    ? "booting"
-    : computer?.state === "suspending"
-      ? "running"
-      : computer?.state === "stopped" ||
-          computer?.state === "booting" ||
-          computer?.state === "running" ||
-          computer?.state === "suspended" ||
-          computer?.state === "error"
-        ? computer.state
-        : "stopped";
-  const screen = computerScreenSize(computer?.kind);
-  // Rows created with no computer provider store kind "none", which ComputerStatusSchema
-  // rejects. Map that (and any other unknown kind) to the missing-computer kind so the
-  // response still validates, and do not advertise a screen or terminal for it.
-  const parsedKind = SandboxKind.safeParse(computer?.kind);
-  const kind: ComputerStatus["kind"] = parsedKind.success ? parsedKind.data : "fake";
-  // A missing computer and a stored kind of "none" are the same product state:
-  // the response stays valid, and it does not offer a screen, update, or terminal.
+  const parsedKind = SandboxKind.safeParse(computer?.kind ?? "fake");
+  const kind = (parsedKind.success ? parsedKind.data : "fake") as ComputerStatus["kind"];
   const providerKnown = parsedKind.success;
+  const state =
+    kind === "none"
+      ? "stopped"
+      : computer?.maintenanceId
+        ? "booting"
+        : computer?.state === "quarantined"
+          ? "error"
+          : computer?.state === "suspending"
+            ? "running"
+            : computer?.state === "stopped" ||
+                computer?.state === "booting" ||
+                computer?.state === "running" ||
+                computer?.state === "suspended" ||
+                computer?.state === "error"
+              ? computer.state
+              : "stopped";
+  const screen = computerScreenSize(computer?.kind);
   return {
     botId,
     mode: computer?.scope === "dedicated" ? "dedicated" : "team",
