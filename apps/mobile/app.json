@@ -108,8 +108,8 @@
     },
     "ios": {
       "bundleIdentifier": "do.alma.app",
-      "buildNumber": "65",
-      "supportsTablet": true,
+      "buildNumber": "66",
+      "supportsTablet": false,
       "icon": "./assets/icon.png",
       "config": {
         "usesNonExemptEncryption": false

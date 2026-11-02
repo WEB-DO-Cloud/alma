@@ -14,12 +14,27 @@ expo = app["expo"]
 def ver(value):
     parts = [int(p) for p in str(value).split(".")]
     return parts
-if ver(expo["version"]) < [1, 0, 9]:
-    sys.exit(f"expo.version is {expo['version']}, expected at least 1.0.9")
-if int(expo["ios"]["buildNumber"]) <= 64:
-    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected above 64")
-if int(expo["android"]["versionCode"]) <= 13:
-    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected above 13")
+if ver(expo["version"]) < [1, 0, 12]:
+    sys.exit(f"expo.version is {expo['version']}, expected at least 1.0.12")
+if int(expo["ios"]["buildNumber"]) < 66:
+    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected at least 66")
+if expo["ios"].get("supportsTablet") is not False:
+    sys.exit("ios.supportsTablet must be false; ALMA is iPhone-only")
+if int(expo["android"]["versionCode"]) < 14:
+    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected at least 14")
+ios_native = pathlib.Path("apps/mobile/ios")
+if ios_native.is_dir():
+    for path in ios_native.rglob("*"):
+        if path.suffix not in {".plist", ".pbxproj"} or not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        families = re.findall(r'TARGETED_DEVICE_FAMILY = "?([^";]+)"?;', text)
+        if any(value.strip() != "1" for value in families):
+            sys.exit(f"{path} does not target iPhone only (TARGETED_DEVICE_FAMILY=1)")
+        if "UIDeviceFamily" in text:
+            block = text.split("UIDeviceFamily", 1)[1][:400]
+            if re.search(r"<integer>\s*2\s*</integer>", block):
+                sys.exit(f"{path} includes iPad in UIDeviceFamily")
 domain = pathlib.Path("packages/contracts/src/domain.ts").read_text()
 if "BYOK_MONTHLY_PRICE_CENTS: number | null = 6900" not in domain:
     sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 6900")
