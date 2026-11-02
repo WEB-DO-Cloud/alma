@@ -7,16 +7,11 @@ declare function require(id: string): {
 const { sentryUploadAllowed } = require("./lib/sentry-upload.cjs");
 
 const RELEASE_PROFILES = new Set(["production", "android-apk", "diagnostic"]);
+const ALMA_PRODUCTION_API = "https://app.alma.com.do";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim() || ALMA_PRODUCTION_API;
   if (RELEASE_PROFILES.has(process.env.EAS_BUILD_PROFILE ?? "")) {
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    if (!apiUrl) {
-      throw new Error(
-        "EXPO_PUBLIC_API_URL must be set in the EAS production environment before building a release.",
-      );
-    }
-
     let parsed: URL;
     try {
       parsed = new URL(apiUrl);
@@ -29,15 +24,21 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   }
 
   let result = config as ExpoConfig;
-  const rpId = passkeyRpId(process.env.EXPO_PUBLIC_API_URL);
+  const rpId = passkeyRpId(apiUrl);
   if (rpId) {
     // Native passkeys only work for domains the binary is associated with, so the app reads the
-    // same list at runtime to hide passkeys on other servers.
+    // same list at runtime to hide passkeys on other servers. Developer mode makes a
+    // development-signed build fetch the association file itself, for a server on a private
+    // network or VPN that Apple's CDN cannot reach.
+    const mode = process.env.RAKAZO_PASSKEY_DEVELOPER_MODE === "1" ? "?mode=developer" : "";
     result = {
       ...result,
       ios: {
         ...result.ios,
-        associatedDomains: [...(result.ios?.associatedDomains ?? []), `webcredentials:${rpId}`],
+        associatedDomains: [
+          ...(result.ios?.associatedDomains ?? []),
+          `webcredentials:${rpId}${mode}`,
+        ],
       },
       extra: { ...result.extra, passkeyRpIds: [rpId] },
     };

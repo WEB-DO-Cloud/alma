@@ -40,7 +40,7 @@ describe("mobile app config", () => {
     expect(config.android).not.toHaveProperty("googleServicesFile");
   });
 
-  it("leaves the config unchanged when no variable applies", () => {
+  it("associates the production ALMA server when no API URL is set", () => {
     vi.stubEnv("EAS_BUILD_PROFILE", "development");
     vi.stubEnv("EXPO_PUBLIC_API_URL", undefined);
     vi.stubEnv("GOOGLE_SERVICES_JSON", undefined);
@@ -48,9 +48,21 @@ describe("mobile app config", () => {
       ...config,
       android: { ...config.android, googleServicesFile: "./custom-google-services.json" },
     };
+    const almaPasskeys = {
+      ios: { associatedDomains: ["webcredentials:app.alma.com.do"] },
+      extra: { passkeyRpIds: ["app.alma.com.do"] },
+    };
 
-    expect(appConfig(context(existing))).toBe(existing);
-    expect(appConfig(context(config))).toBe(config);
+    expect(appConfig(context(existing))).toEqual({
+      ...existing,
+      ios: { ...existing.ios, ...almaPasskeys.ios },
+      extra: { ...existing.extra, ...almaPasskeys.extra },
+    });
+    expect(appConfig(context(config))).toEqual({
+      ...config,
+      ios: { ...config.ios, ...almaPasskeys.ios },
+      extra: { ...config.extra, ...almaPasskeys.extra },
+    });
   });
 
   it("adds Android config when none exists", () => {
@@ -74,6 +86,17 @@ describe("mobile app config", () => {
         ...config.ios,
         associatedDomains: ["applinks:x.test", "webcredentials:app.example.com"],
       },
+      extra: { ...config.extra, passkeyRpIds: ["app.example.com"] },
+    });
+  });
+
+  it("asks a development build to fetch the association itself in developer mode", () => {
+    vi.stubEnv("EAS_BUILD_PROFILE", "development");
+    vi.stubEnv("RAKAZO_PASSKEY_DEVELOPER_MODE", "1");
+
+    expect(appConfig(context(config))).toEqual({
+      ...config,
+      ios: { ...config.ios, associatedDomains: ["webcredentials:app.example.com?mode=developer"] },
       extra: { ...config.extra, passkeyRpIds: ["app.example.com"] },
     });
   });

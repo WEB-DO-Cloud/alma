@@ -23,8 +23,14 @@ function attempt(error: string): SendAttempt {
 }
 beforeEach(() => vi.clearAllMocks());
 describe("notDelivered", () => {
+  it("leaves image confirmation to the contextual choices without a generic modal", () => {
+    notDelivered({
+      ...attempt("Image input is not configured for this model."),
+      imageConfirmation: true,
+    });
+    expect(Alert.alert).not.toHaveBeenCalled();
+  });
   it("offers Models settings and cancellation for the missing-model rejection", async () => {
-    vi.mocked(rpc).mockRejectedValueOnce(new Error("offline"));
     notDelivered(attempt(` ${MODEL_REQUIRED_SEND_ERROR} `));
     await vi.waitFor(() => expect(Alert.alert).toHaveBeenCalled());
     const [title, message, buttons] = vi.mocked(Alert.alert).mock.calls[0]!;
@@ -39,7 +45,10 @@ describe("notDelivered", () => {
     expect(router.push).toHaveBeenCalledWith("/(settings)/models");
   });
   it("does not ask to connect a model when the managed model is on", async () => {
-    vi.mocked(rpc).mockResolvedValueOnce({ managedModel: true, needsModel: false });
+    vi.mocked(rpc).mockResolvedValueOnce({
+      managedModel: true,
+      needsModel: false,
+    } as never);
     notDelivered(attempt(MODEL_REQUIRED_SEND_ERROR));
     await vi.waitFor(() => expect(rpc).toHaveBeenCalledWith("me"));
     expect(Alert.alert).not.toHaveBeenCalled();

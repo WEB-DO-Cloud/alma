@@ -287,7 +287,7 @@ it.each([true, false])(
       expect(state.save.mock.calls).toEqual([[false], [true]]);
       await click("This device");
     } else {
-      expect(state.save).not.toHaveBeenCalled();
+      expect(state.save.mock.calls).toEqual([[false]]);
     }
     selected("Fish Audio");
   },
@@ -318,7 +318,7 @@ it("clears stale voices if the refresh fails after activating a provider", async
   selected("Other provider");
   expect(container.textContent).not.toContain("fish-audio voice");
   expect(container.textContent).toContain("Could not load voice settings");
-  expect(state.save).not.toHaveBeenCalled();
+  expect(state.save.mock.calls).toEqual([[false]]);
 });
 
 it("edits a Space's override in that Space, leaving this device's voice and sounds out", async () => {

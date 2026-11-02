@@ -72,6 +72,7 @@ function fixture() {
       }),
       { prefix: "/rpc", context: { actor: requestActor } },
     );
+    if (!response) throw new Error("no response");
     return { status: response.status, body: await response.json() };
   }
   return { actor, call, findBot, findMessages };
@@ -114,7 +115,6 @@ describe("archived thread read authorization", () => {
       "threads/answer",
       { botId: "bot-1", runId: "run-1", messageId: "message-1", answer: "Cannot answer" },
     ],
-    ["threads/report", { botId: "bot-1", messageId: "message-1" }],
     ["threads/clear", { botId: "bot-1" }],
     ["threads/stop", { botId: "bot-1" }],
     ["threads/followUp", { botId: "bot-1", text: "Cannot run" }],

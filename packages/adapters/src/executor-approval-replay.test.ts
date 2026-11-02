@@ -11,15 +11,15 @@ import {
   createApprovedEffectReplayQueue,
 } from "./approval-effect.js";
 import {
-  APPROVED_EFFECT_REPLAY_ORDER,
-  approvalReplayEffectToolName,
-  buildApprovalContinuation,
-} from "./executor.js";
-import {
   catalogEntries,
   disambiguateInstalledToolNames,
   resolveCatalogCall,
 } from "./lazy-tool-catalog.js";
+import {
+  APPROVED_EFFECT_REPLAY_ORDER,
+  approvalReplayEffectToolName,
+  buildApprovalContinuation,
+} from "./run-effects.js";
 
 describe("executor approval replay", () => {
   it.each([
@@ -122,6 +122,17 @@ describe("executor approval replay", () => {
     expect(afterShrink).not.toContain("installed_execute_tool:");
     expect(afterShrinkUniquified).toContain(
       'installed__install-A__notes.write: {"text":"approved exactly"}',
+    );
+  });
+
+  it("replays an approved deferred built-in through use_tool", () => {
+    const continuation = buildApprovalContinuation(
+      [{ kind: "create_space", request: { name: "Finance" } }],
+      JSON.stringify,
+      { exposedToolNames: new Set(["shell", "find_tool", "use_tool"]) },
+    );
+    expect(continuation).toContain(
+      'use_tool: {"name":"create_space","arguments":{"name":"Finance"}}',
     );
   });
 

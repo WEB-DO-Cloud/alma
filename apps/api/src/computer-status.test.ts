@@ -3,6 +3,17 @@ import { describe, expect, it } from "vitest";
 import { executionBlocksUserTakeover, toComputerStatus } from "./computer-status.js";
 
 describe("toComputerStatus", () => {
+  it("shows a quarantined computer as an error without making its screen available", () => {
+    expect(
+      toComputerStatus("bot", {
+        kind: "novita",
+        state: "quarantined",
+        scope: "team",
+        controlHolder: "none",
+        homeRevision: "saved",
+      }),
+    ).toMatchObject({ state: "error", screenAvailable: false });
+  });
   it("only marks control that is bound to a waiting run as a requested takeover", () => {
     const computer = {
       kind: "fake",
@@ -32,40 +43,31 @@ describe("toComputerStatus", () => {
     expect(toComputerStatus("bot-1", computer, "Writer").busyBotName).toBe("Writer");
   });
 
-  it("accepts kind none and other unknown kinds without failing output validation", () => {
-    const none = toComputerStatus("bot-1", {
+  it("sandbox-none-computer-status", () => {
+    const stopped = toComputerStatus("bot-1", {
       kind: "none",
       state: "stopped",
       scope: "team",
       controlHolder: "none",
       homeRevision: "empty",
     });
-    expect(ComputerStatusSchema.parse(none)).toMatchObject({
-      kind: "fake",
+    expect(ComputerStatusSchema.parse(stopped)).toMatchObject({
+      kind: "none",
       state: "stopped",
       canUpdate: false,
       terminalAvailable: false,
       screenAvailable: false,
     });
 
-    const unknown = toComputerStatus("bot-1", {
-      kind: "legacy",
+    const running = toComputerStatus("bot-1", {
+      kind: "none",
       state: "running",
-      scope: "dedicated",
-      controlHolder: "bot",
-      homeRevision: "r1",
+      scope: "team",
+      controlHolder: "none",
+      homeRevision: "empty",
     });
-    expect(ComputerStatusSchema.parse(unknown)).toMatchObject({
-      kind: "fake",
-      mode: "dedicated",
-      canUpdate: false,
-      terminalAvailable: false,
-      screenAvailable: false,
-    });
-
-    const missing = toComputerStatus("bot-1", null);
-    expect(ComputerStatusSchema.parse(missing)).toMatchObject({
-      kind: "fake",
+    expect(ComputerStatusSchema.parse(running)).toMatchObject({
+      state: "stopped",
       canUpdate: false,
       terminalAvailable: false,
       screenAvailable: false,

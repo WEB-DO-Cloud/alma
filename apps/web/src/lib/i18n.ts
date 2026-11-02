@@ -1,7 +1,9 @@
 import { i18n } from "@lingui/core";
 import { applyUiDirection } from "./apply-ui-direction";
+import { desktopBridge } from "./desktop";
 import { importChunk } from "./preload-recovery";
-import { persistUiLocale, resolveUiLocale, type UiLocale } from "./ui-locale";
+import type { UiLocale } from "./ui-locale";
+import { persistUiLocale, resolveUiLocale } from "./ui-locale";
 
 export { i18n };
 
@@ -16,6 +18,7 @@ const defaultCatalogLoaders: Record<UiLocale, CatalogLoader> = {
   tr: () => import("../locales/tr/messages.po") as Promise<CatalogModule>,
   hi: () => import("../locales/hi/messages.po") as Promise<CatalogModule>,
   "pt-BR": () => import("../locales/pt-BR/messages.po") as Promise<CatalogModule>,
+  "zh-TW": () => import("../locales/zh-TW/messages.po") as Promise<CatalogModule>,
   "zh-CN": () => import("../locales/zh-CN/messages.po") as Promise<CatalogModule>,
   es: () => import("../locales/es/messages.po") as Promise<CatalogModule>,
   ru: () => import("../locales/ru/messages.po") as Promise<CatalogModule>,
@@ -50,6 +53,10 @@ function activateLoaded(locale: UiLocale, messages: CatalogMessages): UiLocale {
   i18n.activate(locale);
   activeLocale = locale;
   applyUiDirection(locale);
+  // The desktop app's own menus, dialogs and setup window follow the language chosen here.
+  void desktopBridge()
+    ?.locale?.set(locale)
+    .catch(() => undefined);
   return locale;
 }
 

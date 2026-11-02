@@ -27,7 +27,7 @@ Before making changes, ask me these concise questions:
    - Defer model setup and verify infrastructure only. Make clear that bots cannot answer until a model is connected.
 3. Do I want remote computers instead of local Docker? If yes, choose E2B (`E2B_API_KEY`), Daytona (`DAYTONA_API_KEY`), or Boat (`BOAT_API_KEY`) and set `SANDBOX_PROVIDER` accordingly. If no, keep the default `SANDBOX_PROVIDER=docker` (local computers via the in-stack supervisor).
 
-Ask which email address I want for the initial account. Do not create an administrator: app accounts never administer the server, and signup order grants no privileges. Keep server configuration in `.env`; manage logs and updates through server tooling. If email delivery is unavailable, keep `SIGNUPS_ENABLED=false`, create the intended ordinary account using the server-side `bootstrap-owner` command documented in `docs/self-host.md`, and never verify a public signup without either mailbox proof or the matching existing password.
+Ask which email address I want for the initial account. Do not create an administrator: app accounts never administer the server, and signup order grants no privileges. Keep server configuration in `.env`; manage logs and updates through server tooling. If email delivery is unavailable, keep `SIGNUPS_ENABLED=false`, create the intended ordinary account using the server-side `bootstrap-owner` command documented in `docs/self-host-accounts.md`, and never verify a public signup without either mailbox proof or the matching existing password.
 
 Do not ask me to invent secrets; generate strong random values with openssl yourself.
 
@@ -40,7 +40,7 @@ Setup:
 
 1. Create the directory if needed and enter it.
 2. Download and inspect this installer (do not clone the repository):
-   https://raw.githubusercontent.com/elie222/rakazo/main/infra/compose/install-images.sh
+   https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh
    If that host is unreachable, use a mirror URL (e.g. set `RAKAZO_INSTALLER_URL` to
    `https://example.com/mirror/rakazo/infra/compose/install-images.sh` and curl that instead).
 3. Run `bash install-images.sh --prepare-only`. It downloads the Compose and environment example
@@ -72,7 +72,7 @@ Use this for development, Docker sandboxes on the host, or Electron.
 ```text
 Set up ALMA locally and leave it running in a usable state.
 
-Repository: https://github.com/elie222/rakazo.git
+Repository: https://github.com/WEB-DO-Cloud/alma.git
 
 Work like a careful onboarding engineer: perform the setup yourself, explain only decisions or blockers, and verify the product through the UI rather than stopping after dependency installation.
 

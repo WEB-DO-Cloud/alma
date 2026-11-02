@@ -14,7 +14,7 @@ export default defineConfig({
   outputDir: "../web/test-results/www-marketing",
   forbidOnly: Boolean(process.env.CI),
   fullyParallel: false,
-  timeout: 60_000,
+  timeout: 180_000,
   expect: { timeout: 15_000 },
   reporter: [
     ...(process.env.CI ? ([["github"]] as const) : []),

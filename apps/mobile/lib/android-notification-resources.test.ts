@@ -29,6 +29,7 @@ const resourceDirectories = {
   es: "values-es",
   en: "values",
   "zh-CN": "values-zh-rCN",
+  "zh-TW": "values-zh-rTW",
   ru: "values-ru",
   de: "values-de",
   nl: "values-nl",
@@ -53,5 +54,6 @@ describe("Android notification resources", () => {
     expect(strings("zh-CN")).toContain("%1$s 和另外 %2$d");
     expect(strings("nl")).toContain("%1$s en %2$d anderen");
     expect(strings("ja")).toContain("%1$sとほか%2$d件");
+    expect(strings("es")).toContain("%1$s y %2$d más");
   });
 });

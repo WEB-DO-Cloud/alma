@@ -3,7 +3,7 @@
     "name": "ALMA",
     "slug": "alma",
     "scheme": ["alma", "rakazo"],
-    "version": "1.0.9",
+    "version": "1.0.12",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
@@ -72,16 +72,44 @@
           "microphonePermission": "ALMA uses the microphone so you can dictate a message."
         }
       ],
-      "expo-sharing",
+      [
+        "expo-sharing",
+        {
+          "android": {
+            "enabled": true,
+            "singleShareMimeTypes": [
+              "text/*",
+              "image/*",
+              "audio/*",
+              "video/mp4",
+              "application/pdf",
+              "application/json",
+              "application/zip"
+            ],
+            "multipleShareMimeTypes": [
+              "image/*",
+              "audio/*",
+              "video/mp4",
+              "application/pdf",
+              "application/json",
+              "application/zip"
+            ]
+          }
+        }
+      ],
       "./plugins/with-worklets-headers",
       "./plugins/with-scene-lifecycle",
       "./plugins/with-lan-cleartext",
-      "./plugins/with-strip-foreground-services"
+      "./plugins/with-strip-foreground-services",
+      "./plugins/with-app-intents"
     ],
+    "locales": {
+      "es": "./locales/es.json"
+    },
     "ios": {
       "bundleIdentifier": "do.alma.app",
-      "buildNumber": "1",
-      "supportsTablet": false,
+      "buildNumber": "65",
+      "supportsTablet": true,
       "icon": "./assets/icon.png",
       "config": {
         "usesNonExemptEncryption": false
@@ -98,7 +126,7 @@
     },
     "android": {
       "package": "do.alma.app",
-      "versionCode": 13,
+      "versionCode": 14,
       "softwareKeyboardLayoutMode": "resize",
       "icon": "./assets/icon.png",
       "adaptiveIcon": {

@@ -130,11 +130,6 @@ function fill(element: HTMLInputElement, value: string) {
 function ModelShot() {
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    document
-      .querySelector<HTMLButtonElement>(
-        '[data-testid="bot-settings-advanced"] > button[aria-expanded="false"]',
-      )
-      ?.click();
     const timer = window.setTimeout(() => setReady(true), 400);
     return () => window.clearTimeout(timer);
   }, []);
@@ -216,6 +211,7 @@ function ApprovalShot() {
 
 const subscriptionMe: Me = {
   ticketBoardEnabled: false,
+  navLinks: [],
   phoneCallsEnabled: false,
   userId: "user-demo",
   email: "ada@example.test",
@@ -230,6 +226,7 @@ const subscriptionMe: Me = {
   computerHost: "docker",
   canChooseHostComputer: true,
   sandboxProvider: "docker",
+  mcpStdioEnabled: false,
   avatarStyle: "organic",
   billingEnabled: false,
 };
@@ -314,77 +311,11 @@ const params = new URLSearchParams(location.search);
 const view = params.get("view") ?? "create";
 const locale = params.get("locale") === "es" ? "es" : "en";
 
-const organizationSettings = {
-  legalName: "Bufete Ejemplo SRL",
-  tradeName: "Ejemplo Legal",
-  rnc: "131123456",
-  addressLine: "Calle El Conde 12",
-  cityProvince: "Santo Domingo, Distrito Nacional",
-  phone: "+1 809 555 0100",
-  email: "oficina@ejemplo.test",
-  website: "https://ejemplo.test",
-  bankName: "Banco Ejemplo",
-  bankAccount: "000123456",
-  invoiceFooter: "Pago a 15 días. Borrador para revisión.",
-  accentColor: "#1F4B3A",
-  logo: null,
-  lawyers: [
-    {
-      id: "lawyer-ana",
-      name: "Ana Pérez",
-      cardNumber: "12345",
-      email: "ana@ejemplo.test",
-      mayApproveDrafts: true,
-    },
-  ],
-};
-
-function OrganizationShot() {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      const form = document.querySelector("[data-testid='organization-settings']");
-      const name = form?.querySelector<HTMLInputElement>("[data-testid='organization-legal-name']");
-      if (name?.value !== "Bufete Ejemplo SRL") return;
-      if (params.get("scroll") === "end") {
-        document.querySelector("[data-testid='settings-scroll']")?.scrollTo(0, 10_000);
-      }
-      setReady(true);
-      window.clearInterval(timer);
-    }, 50);
-    return () => window.clearInterval(timer);
-  }, []);
-  return (
-    <main
-      data-ready={ready ? "true" : "false"}
-      className="min-h-screen bg-background text-foreground"
-    >
-      <SettingsOverlay
-        email="ada@ejemplo.test"
-        name="Ada"
-        section="organization"
-        onSectionChange={() => undefined}
-        memoryConfig={null}
-        onMemoryConfigChange={() => undefined}
-        onUsageOpen={() => undefined}
-        onClose={() => undefined}
-        timezone={null}
-        onTimezoneChange={async () => undefined}
-        canManageOrganization
-      />
-    </main>
-  );
-}
-
 if (view === "subscription") {
   demoRpc.me = subscriptionMe;
   demoRpc["models/list"] = subscriptionCatalog;
   demoRpc["models/credentials"] = [];
   demoRpc["models/backups"] = [];
-}
-
-if (view === "organization") {
-  demoRpc["organization/get"] = organizationSettings;
 }
 
 void bootstrapI18n(locale).then(() => {
@@ -397,8 +328,6 @@ void bootstrapI18n(locale).then(() => {
       <ApprovalShot />
     ) : view === "subscription" ? (
       <SubscriptionShot />
-    ) : view === "organization" ? (
-      <OrganizationShot />
     ) : (
       <CreateShot />
     );

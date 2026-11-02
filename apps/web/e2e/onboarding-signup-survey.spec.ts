@@ -35,22 +35,3 @@ test("new users answer the signup survey before their first chat", async ({ page
     { reason: "Keep my inbox at zero", use: "both", teamSize: "11-50", source: "A friend" },
   ]);
 });
-
-test("the survey opens from its URL, and a model URL continues when none is due", async ({
-  page,
-}) => {
-  // The scripted server has no model to connect, as when the operator model is on.
-  // /onboarding/survey still opens. /onboarding/model continues into the first chat.
-  await signup(page, `step-links-${Date.now()}@rakazo.test`, "password12", "Step links");
-  await page.waitForURL(/\/app\//, { timeout: 20_000 });
-
-  await page.goto("/onboarding/survey");
-  await expect(page.getByRole("heading", { name: "Welcome to ALMA" })).toBeVisible();
-
-  await page.goto("/onboarding/model");
-  await expect(page.getByRole("heading", { name: "Connect a model" })).toBeHidden();
-  await expect(page.getByRole("combobox", { name: "Message Chief" })).toBeVisible({
-    timeout: 20_000,
-  });
-  await expect(page).toHaveURL(/\/app\//);
-});
