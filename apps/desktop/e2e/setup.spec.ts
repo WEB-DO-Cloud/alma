@@ -168,7 +168,7 @@ test("setup opens in the language the app last used", async () => {
 
   await expect(setup.locator("html")).toHaveAttribute("lang", "es");
   await expect(
-    setup.getByRole("heading", { name: "Te damos la bienvenida a Rakazo" }),
+    setup.getByRole("heading", { name: "Te damos la bienvenida a ALMA" }),
   ).toBeVisible();
   await expect(setup.getByRole("button", { name: "Continuar" })).toBeEnabled();
   await setup.screenshot({

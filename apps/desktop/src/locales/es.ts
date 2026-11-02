@@ -132,7 +132,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "Invalid custom headers": "Encabezados personalizados no válidos",
   "That address redirects elsewhere. Enter the final ALMA server address.":
     "Esa dirección redirige a otro lugar. Introduce la dirección final del servidor de ALMA.",
-  "That address did not respond like a ALMA server.":
+  "That address did not respond like an ALMA server.":
     "Esa dirección no respondió como un servidor de ALMA.",
   "The server answered with HTTP {status}.": "El servidor respondió con HTTP {status}.",
   "Timed out reaching that address.": "Se agotó el tiempo al intentar acceder a esa dirección.",

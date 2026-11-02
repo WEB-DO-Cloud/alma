@@ -217,6 +217,8 @@ overlay apps/web/e2e/github-star-prompt.spec.ts
 overlay apps/web/e2e/golden.spec.ts
 overlay apps/web/e2e/helpers.ts
 overlay apps/web/e2e/logo-avatars.spec.ts
+overlay apps/web/e2e/model-header-discovery.spec.ts
+overlay apps/web/e2e/model-settings.spec.ts
 overlay apps/web/e2e/onboarding-model-required.spec.ts
 overlay apps/web/e2e/onboarding-signup-survey.spec.ts
 overlay apps/web/e2e/settings-shell.spec.ts
@@ -541,6 +543,7 @@ overlay packages/core/src/self-update.ts
 overlay packages/db/prisma/migrations/20261026120000_organization_settings/migration.sql
 overlay packages/db/prisma/migrations/20261026140000_draft_approval/migration.sql
 overlay packages/db/prisma/migrations/20261031120000_message_reports/migration.sql
+overlay packages/db/prisma/migrations/20261115130000_retired_alma_rls_key/migration.sql
 overlay packages/db/src/billing.ts
 overlay packages/db/src/computer-runs.ts
 overlay packages/db/src/repos.ts

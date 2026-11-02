@@ -146,7 +146,9 @@ test("takeover, routine, plugins, and export are reachable", async ({ page }, te
   await expect(featured).toContainText(
     /Gmail[\s\S]*Google Calendar[\s\S]*Google Drive[\s\S]*Slack[\s\S]*Notion/,
   );
-  await expect(page.getByText("GitHub", { exact: true })).toBeVisible();
+  await expect(
+    page.locator('[data-testid="mcp-registry"] ~ *').getByText("GitHub", { exact: true }).first(),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Add custom", exact: true })).toBeVisible();
   await expect(page.getByRole("menuitem")).toHaveCount(0);
   await expect(page.getByText("Tool sources", { exact: true })).toBeHidden();

@@ -24,6 +24,7 @@ for (const surface of ["settings", "onboarding"] as const) {
     test(`${surface} header ${action} clears discovered models and ignores an in-flight result`, async ({
       page,
     }, testInfo) => {
+      test.skip(surface === "settings", "ALMA does not show the Models settings screen");
       if (surface === "onboarding") {
         await page.route("**/rpc/me", async (route) => {
           const response = await route.fetch();

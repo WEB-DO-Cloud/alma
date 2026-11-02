@@ -970,7 +970,7 @@ async function probeServer(
         ok: false,
         status: response.status,
         url,
-        error: t("That address did not respond like a ALMA server."),
+        error: t("That address did not respond like an ALMA server."),
       };
     }
     return {

@@ -25,7 +25,7 @@ test.afterEach(async ({ page }) => {
   await page.unrouteAll({ behavior: "wait" });
 });
 
-test("model settings cleanup frames", { tag: "@nightly" }, async ({ page }, testInfo) => {
+test.skip("model settings cleanup frames", { tag: "@nightly" }, async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   const stamp = Date.now();
   await signup(page, `model-cleanup-${stamp}@rakazo.test`, "password12", "Model Preview");
@@ -136,7 +136,7 @@ async function fulfillWithoutModelStep(route: Route) {
   await route.fulfill({ response, json: { ...body, json: { ...body.json, needsModel: false } } });
 }
 
-test("connects, lists, and uses an OpenAI-compatible endpoint", async ({ page }, testInfo) => {
+test.skip("connects, lists, and uses an OpenAI-compatible endpoint", async ({ page }, testInfo) => {
   const completionBodies: Array<Record<string, unknown>> = [];
   const completionHeaders: Array<string | string[] | undefined> = [];
   const server = createServer(async (request, response) => {
@@ -342,7 +342,7 @@ test("connects, lists, and uses an OpenAI-compatible endpoint", async ({ page },
   }
 });
 
-test("a rejected subscription sign-in asks to sign in again", async ({ page }, testInfo) => {
+test.skip("a rejected subscription sign-in asks to sign in again", async ({ page }, testInfo) => {
   const stamp = Date.now();
   await signup(page, `reconnect-${stamp}@rakazo.test`, "password12", "Reconnect Preview");
   await completeOnboarding(page);

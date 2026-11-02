@@ -1,4 +1,6 @@
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PLUGIN_CATEGORIES } from "@rakazo/core";
 import type { PluginCategory } from "@rakazo/core";
@@ -23,9 +25,19 @@ const CatalogSchema = z.object({
 export type Integration = z.infer<typeof IntegrationSchema>;
 
 /** Committed snapshot served at /integrations/catalog.json. `CATALOG_URL` overrides it. */
-const DEFAULT_CATALOG = fileURLToPath(
-  new URL("../public/integrations/catalog.json", import.meta.url),
-);
+function defaultCatalogPath(): string {
+  const here = dirname(fileURLToPath(import.meta.url));
+  // Astro compiles this module under dist/ before public files are copied beside it.
+  const candidates = [
+    join(here, "../public/integrations/catalog.json"),
+    join(here, "../../public/integrations/catalog.json"),
+    join(process.cwd(), "public/integrations/catalog.json"),
+    join(process.cwd(), "apps/www/public/integrations/catalog.json"),
+  ];
+  return candidates.find((path) => existsSync(path)) ?? candidates[0];
+}
+
+const DEFAULT_CATALOG = defaultCatalogPath();
 
 async function loadCatalog(): Promise<Integration[]> {
   const source = process.env.CATALOG_URL?.trim() || DEFAULT_CATALOG;
