@@ -52,7 +52,7 @@ Finish the merge only when `git status` shows no unmerged paths. `git add -A` in
 `scripts/sync-upstream.sh` repeats these steps against a later `upstream/main`. `scripts/check-alma-overlay.sh` fails the tree when any of these are true. Comparisons are numeric, not lexicographic.
 
 *   `packages/contracts/src/domain.ts` does not set `BYOK_MONTHLY_PRICE_CENTS` to `6900`.
-*   `apps/mobile/app.json` `expo.version` is not `1.0.12`, `expo.ios.buildNumber` is not `64`, or `expo.android.versionCode` is not `13`.
+*   `apps/mobile/app.json` `expo.version` is below `1.0.12`, `expo.ios.buildNumber` is below `66`, `expo.ios.supportsTablet` is not `false`, or `expo.android.versionCode` is below `14`. A checked-in `apps/mobile/ios` project that targets iPad (`TARGETED_DEVICE_FAMILY` other than `1`, or `UIDeviceFamily` containing `2`) fails the same way.
 *   The phone composer source contains a Dictate or Dictar control, or a sample-data mode is referenced from the phone home screen. The check looks at `apps/mobile/app/thread.tsx` and `apps/mobile/app/_layout.tsx`, not the whole repo.
 *   `git diff --name-only upstream/main` lists a tracked path outside the manifest and outside the globs above.
 *   A rendered product string in `apps/web/src`, `apps/mobile/app`, `apps/mobile/lib/locales`, `apps/www/src`, or `README.md` says `Rakazo` and the line is not an allowlisted identifier from section 2.
@@ -186,9 +186,12 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 | Field | Value |
 | --- | --- |
-| `expo.version` | at least `1.0.9` (currently upstream's `1.0.12`) |
-| `expo.ios.buildNumber` | above `64` (the published store build) |
-| `expo.android.versionCode` | above `13` (the published store build) |
+| `expo.version` | `1.0.12` |
+| `expo.ios.buildNumber` | `66` (above the published store build `64`) |
+| `expo.ios.supportsTablet` | `false` (iPhone only, matching the shipped 1.0.9 app). Upstream leaves this `true`. |
+| `expo.android.versionCode` | `14` (above the published store build `13`) |
+
+The native `apps/mobile/ios` project is not checked in. Prebuild reads `supportsTablet: false` and writes `UIDeviceFamily` `1` and `TARGETED_DEVICE_FAMILY` `1`. If that project is later committed, those values must stay iPhone-only.
 
 Also register `./plugins/with-strip-foreground-services` in `expo.plugins` if upstream's plugin list does not already include it.
 

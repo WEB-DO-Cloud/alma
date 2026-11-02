@@ -361,6 +361,8 @@ overlay apps/www/src/pages/self-hosted-ai-agent.astro
 overlay apps/www/src/pages/support.astro
 overlay apps/www/src/pages/terms.astro
 overlay apps/www/src/roundup.ts
+overlay apps/www/e2e/homepage-screenshots.spec.ts
+overlay apps/www/playwright.config.ts
 overlay apps/www/src/site.ts
 overlay apps/www/src/structured-data.ts
 overlay apps/www/src/subscription-faq.ts
