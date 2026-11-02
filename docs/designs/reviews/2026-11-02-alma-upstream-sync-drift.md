@@ -19,7 +19,7 @@ Sections 1–9 match the tree:
 *   Managed model and xAI voice attach on the upstream executor and voice factory. Spoken summaries stay. The Call button stays. The phone composer has no Dictate control and no sample-data mode.
 *   The Popular connector list, including MintMCP and Waystation, is the file from ALMA `HEAD`. It is mounted inside upstream's connectors screen and MCP dialog. Upstream's stdio refusal, duplicate-name conflict, and connect-from-approval-card flow stay.
 *   Terms and privacy name Dominican Republic law and the courts of Santo Domingo, D.N. The privacy voice bullet names xAI and links `https://x.ai/legal/privacy-policy`.
-*   Draft review, organization settings, and message reports stay, with their migrations. The phone menu that duplicated them stays absent.
+*   Draft review, organization settings, and message reports are out. Their pages, routes, RPC procedures, and Prisma models are gone. The three migrations that created the tables stay, and no migration drops those rows. The phone menu and sample-data mode stay absent.
 *   Compose passes the ALMA model and voice env names next to `XAI_API_KEY`. `SIGNUPS_ENABLED` stays. The image keeps `chmod 1777 /tmp` and the optional `INSTALL_GROK_CLI=1` block.
 *   `BYOK_MONTHLY_PRICE_CENTS` is `6900`. Unset uses that constant. A positive integer overrides it. `0` makes the own-key plan free. Checkout sends the resolved cents as Stripe `price_data.unit_amount`. `STRIPE_PRICE_ID` stays the legacy seat price. Spanish UI locale `es` formats the amount with `es-DO`, which renders `US$69`.
 

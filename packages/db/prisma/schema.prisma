@@ -231,8 +231,6 @@ model Organization {
   spaces       Space[]
   billing      BillingAccount?
   modelCredits ModelCreditAccount?
-  profile      OrganizationProfile?
-  logos        OrganizationLogo[]
   referralCode ReferralCode?
   referredBy   Referral?           @relation("ReferredOrganization")
   referrals    Referral[]          @relation("ReferrerOrganization")
@@ -471,7 +469,6 @@ model SpaceMember {
   modelPreferences SpaceModelPreference[]
   voicePreferences SpaceVoicePreference[]
   aiDataConsents AiDataConsent[]
-  messageReports MessageReport[]
   modelRoleChoices SpaceModelRoleChoice[]
   settingOverrides SpaceSettingOverride[]
 
@@ -843,7 +840,6 @@ model Thread {
   /// Highest message seq the user has read; the "New" divider goes after it. -1 = none read.
   lastReadSeq                 Int        @default(-1)
   messages                    Message[]
-  messageReports              MessageReport[]
   events                      Event[]
   tasks                       Task[]
   runs                        Run[]
@@ -873,7 +869,6 @@ model Message {
   sourceRuns            Run[]             @relation("RunSourceMessage")
   externalTranscriptFor  ExternalMessage?
   steeringMessages SteeringMessage[]
-  reports          MessageReport[]
   createdAt        DateTime  @default(now())
 
   @@unique([threadId, seq])
@@ -882,23 +877,6 @@ model Message {
   @@index([runId, seq])
   @@index([searchTokens], type: Gin)
   @@map("messages")
-}
-
-/// A user report of an assistant response, kept for the operator to review.
-model MessageReport {
-  id        String   @id @default(cuid())
-  spaceId   String
-  userId    String
-  threadId  String
-  thread    Thread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  messageId String
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  spaceMember SpaceMember @relation(fields: [spaceId, userId], references: [spaceId, userId], onDelete: Cascade)
-
-  @@unique([userId, messageId])
-  @@index([spaceId, createdAt])
-  @@map("message_reports")
 }
 
 model Event {
@@ -2284,142 +2262,4 @@ model CapabilityInstallSpace {
   @@id([installId, spaceId])
   @@index([spaceId, userId])
   @@map("capability_install_spaces")
-}
-
-/// Firm details printed on drafts for review. One row per organization.
-/// Application code updates it in place and keeps the previous values in the audit log.
-model OrganizationProfile {
-  organizationId String       @id
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  legalName      String       @default("")
-  tradeName      String       @default("")
-  /// Digits only: 9 (company RNC) or 11 (cédula). Empty until the firm sets one.
-  rnc            String       @default("")
-  logoId         String?      @unique
-  logo           OrganizationLogo? @relation(fields: [logoId], references: [id])
-  addressLine    String       @default("")
-  cityProvince   String       @default("")
-  phone          String       @default("")
-  email          String       @default("")
-  website        String       @default("")
-  bankName       String       @default("")
-  bankAccount    String       @default("")
-  invoiceFooter  String       @default("")
-  /// Hex color for generated documents only. The product UI does not use it.
-  accentColor    String?
-  /// Base seconds a lawyer must keep a draft open before approval. Longer drafts take longer.
-  minimumReviewSeconds Int    @default(60)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  lawyers        OrganizationLawyer[]
-
-  @@map("organization_profiles")
-}
-
-/// A named lawyer of the firm. Archived instead of deleted so approval history can name them later.
-model OrganizationLawyer {
-  id               String              @id
-  organizationId   String
-  profile          OrganizationProfile @relation(fields: [organizationId], references: [organizationId], onDelete: Restrict)
-  name             String
-  /// Colegio de Abogados membership number.
-  cardNumber       String
-  email            String
-  mayApproveDrafts Boolean             @default(false)
-  archivedAt       DateTime?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-
-  @@index([organizationId, archivedAt])
-  @@map("organization_lawyers")
-}
-
-/// Logo bytes live in the deployment's file storage. Rows are insert-only.
-model OrganizationLogo {
-  id              String               @id
-  organizationId  String
-  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  mimeType        String
-  byteSize        Int
-  storageKey      String
-  createdByUserId String
-  createdAt       DateTime             @default(now())
-  profile         OrganizationProfile?
-
-  @@index([organizationId, createdAt])
-  @@map("organization_logos")
-}
-
-/// Append-only record of organization settings changes. No foreign keys, so it outlives the rows it describes.
-model OrganizationSettingsAudit {
-  id             String   @id
-  organizationId String
-  actorUserId    String
-  action         String
-  before         Json
-  after          Json
-  createdAt      DateTime @default(now())
-
-  @@index([organizationId, createdAt])
-  @@map("organization_settings_audits")
-}
-
-/// An agent draft for a named lawyer to review. The original text is never rewritten.
-/// Finished drafts are not deleted. No foreign keys, so the row outlives the space it came from.
-model ReviewDraft {
-  id                String    @id
-  organizationId    String
-  spaceId           String
-  createdByUserId   String
-  title             String
-  /// generated, in_review, approved, or rejected.
-  status            String
-  originalText      String
-  editedText        String
-  originalHash      String
-  finalHash         String?
-  model             String
-  modelVersion      String
-  sourceMessageId   String?
-  sourceArtifactId  String?
-  openedAt          DateTime?
-  openedByUserId    String?
-  approvedAt        DateTime?
-  rejectedAt        DateTime?
-  approverLawyerId  String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@index([organizationId, status, createdAt])
-  @@index([sourceMessageId])
-  @@index([sourceArtifactId])
-  @@map("review_drafts")
-}
-
-/// Append-only record of who approved or rejected a draft, and the diff they approved.
-/// No foreign keys and no updates, so a later edit of the lawyer or the draft cannot rewrite it.
-model DraftApprovalLog {
-  id                String   @id
-  draftId           String
-  organizationId    String
-  /// approved or rejected.
-  action            String
-  approverLawyerId  String
-  approverName      String
-  cardNumber        String
-  userId            String
-  openedAt          DateTime
-  approvedAt        DateTime?
-  reviewDurationMs  Int
-  model             String
-  modelVersion      String
-  originalHash      String
-  finalHash         String
-  diff              Json
-  createdAt         DateTime @default(now())
-
-  @@index([organizationId, createdAt])
-  @@index([draftId])
-  @@index([approverLawyerId, createdAt])
-  @@map("draft_approval_logs")
 }

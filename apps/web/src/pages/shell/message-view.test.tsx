@@ -92,7 +92,6 @@ function renderView(
         onReply={vi.fn()}
         onMarkUnread={vi.fn()}
         onReact={vi.fn()}
-        onReport={vi.fn()}
         {...props}
       />,
     ),
@@ -225,7 +224,6 @@ it("keeps an edit made after a save when the saved status arrives late", async (
         onReply={vi.fn()}
         onMarkUnread={vi.fn()}
         onReact={vi.fn()}
-        onReport={vi.fn()}
       />,
     );
   act(() => render(draft));

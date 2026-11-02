@@ -33,7 +33,6 @@ import type { Auth } from "@rakazo/auth";
 import type { NavLink } from "@rakazo/contracts";
 import type { BoardEvents, PrismaClient, ThreadEvents } from "@rakazo/db";
 import type { BillingService } from "./billing.js";
-import type { OrganizationLogoStore } from "./organization-logo-store.js";
 import { accountRoutes } from "./routes/account.js";
 import { availabilityRoutes } from "./routes/availability.js";
 import { boardsRoutes } from "./routes/boards.js";
@@ -42,12 +41,10 @@ import { computerRoutes } from "./routes/computer.js";
 import { connectionsRoutes } from "./routes/connections.js";
 import { contentRoutes } from "./routes/content.js";
 import { createRouterContext } from "./routes/context.js";
-import { draftRoutes } from "./routes/drafts.js";
 import { mcpRoutes } from "./routes/mcp.js";
 import { memoryRoutes } from "./routes/memory.js";
 import { messagingRoutes } from "./routes/messaging.js";
 import { modelsRoutes } from "./routes/models.js";
-import { organizationRoutes } from "./routes/organization.js";
 import { paymentWalletRoutes } from "./routes/payment-wallet.js";
 import { routinesRoutes } from "./routes/routines.js";
 import { spacesRoutes } from "./routes/spaces.js";
@@ -102,8 +99,6 @@ export interface RouterDeps {
   pluginRepoFetcher?: PluginRepoFetcher;
   pluginMarketplaceRead?: PluginTextReader;
   artifacts: ArtifactStore;
-  /** Firm logos. Defaults to the deployment file storage under `dataDir`. */
-  organizationLogos?: OrganizationLogoStore;
   dataDir: string;
   messagingInstallations?: MessagingInstallations;
   messaging?: {
@@ -165,7 +160,5 @@ export function createRouter(deps: RouterDeps) {
     ...messagingRoutes(ctx),
     ...contentRoutes(ctx),
     ...paymentWalletRoutes(ctx),
-    ...organizationRoutes(ctx),
-    ...draftRoutes(ctx),
   });
 }

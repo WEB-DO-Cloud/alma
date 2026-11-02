@@ -1,7 +1,6 @@
 export const messageMenuSymbols = [
   "reply",
   "copy",
-  "report",
   "react",
   "quote",
   "speak",
@@ -43,7 +42,6 @@ export function buildMessageContextMenu({
     speak: boolean;
     select: boolean;
     unread?: boolean;
-    report?: boolean;
   };
 }): MessageMenuEntry[] {
   const secondary: MessageMenuEntry[] = [
@@ -55,7 +53,6 @@ export function buildMessageContextMenu({
     ...(include.reply !== false ? [entry("reply", labels.reply)] : []),
     ...(include.unread ? [entry("unread", labels.unread)] : []),
     entry("copy", labels.copy),
-    ...(include.report ? [entry("report", labels.report)] : []),
     ...(include.react
       ? [
           {

@@ -236,7 +236,6 @@ export const MessageRow = memo(function MessageRow({
         speak: t("Speak message"),
         select: t("Select text"),
         unread: t("Mark as unread"),
-        report: t("Report"),
       },
       reactions: MESSAGE_REACTIONS,
       include: {

@@ -213,7 +213,6 @@ export async function openUserSettings(
   page: Page,
   section?:
     | "general"
-    | "organization"
     | "models"
     | "memory"
     | "voice"

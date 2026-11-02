@@ -78,7 +78,6 @@ export const Transcript = memo(function Transcript({
   markedUnreadMessageId,
   onQuote,
   onReact,
-  onReport,
   onJumpToMessage,
   onOpenPeerMessages,
   memberName,
@@ -126,7 +125,6 @@ export const Transcript = memo(function Transcript({
   markedUnreadMessageId?: string;
   onQuote: (message: ThreadMessage, quote: string) => void;
   onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
-  onReport: (message: ThreadMessage) => Promise<void>;
   onJumpToMessage: (messageId: string) => void;
   onOpenPeerMessages: (peer: { peerBotId: string; peerBotName: string }) => void;
   memberName?: (botId: string | undefined) => string | undefined;
@@ -590,7 +588,6 @@ export const Transcript = memo(function Transcript({
                       onReply={onReply}
                       onMarkUnread={onMarkUnread}
                       onReact={onReact}
-                      onReport={onReport}
                     />
                   </div>
                 </div>

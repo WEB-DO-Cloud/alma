@@ -92,7 +92,6 @@ export function FixtureTranscript({
         onMarkUnread={noop}
         onQuote={noop}
         onReact={resolved}
-        onReport={resolved}
         onJumpToMessage={noop}
         onOpenPeerMessages={noop}
         memberName={(botId) => bot(botId)?.name}

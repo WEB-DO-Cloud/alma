@@ -832,7 +832,21 @@ describePostgres("row-level security (PostgreSQL)", () => {
     const rows = await owner.prisma.$queryRaw<Array<{ relname: string }>>`
       SELECT relname FROM pg_class
       WHERE relnamespace = 'public'::regnamespace AND relkind = 'r' AND relrowsecurity`;
-    const tables = rows.map((row) => row.relname).sort();
+    // These tables stay from shipped ALMA migrations. The client no longer maps them,
+    // and this deploy does not drop the rows.
+    const retired = new Set([
+      "draft_approval_logs",
+      "message_reports",
+      "organization_lawyers",
+      "organization_logos",
+      "organization_profiles",
+      "organization_settings_audits",
+      "review_drafts",
+    ]);
+    const tables = rows
+      .map((row) => row.relname)
+      .filter((name) => !retired.has(name))
+      .sort();
     const { models } = (
       db as unknown as { _runtimeDataModel: { models: Record<string, { dbName: string | null }> } }
     )._runtimeDataModel;

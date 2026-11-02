@@ -183,44 +183,23 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 Also register `./plugins/with-strip-foreground-services` in `expo.plugins` if upstream's plugin list does not already include it.
 
-Message report stays: restore `apps/api/src/message-report.ts`, `apps/api/src/message-report.test.ts`, and `packages/db/prisma/migrations/20261031120000_message_reports/**`. On upstream's web and mobile message menus, keep a Report action that calls that API. Do not run a Bitrise workflow.
+Do not run a Bitrise workflow.
 
-### 7. Drafts and organization settings
+### 7. Draft review, organization settings, and message reports stay out
 
-These are not the phone menu. The phone menu (sample data, a separate drafts list, a separate chat, a separate computer, approval history, firm, and about) stays absent. Sample-data mode stays absent.
+Upstream does not have these screens. They are not part of the overlay.
 
-Restore from ALMA `HEAD` (absent on upstream), and mount the web pages from upstream's existing settings and shell routes without replacing those screens:
+Do not restore the draft-review pages, the organization-settings page, the message Report action, their routes, their RPC procedures, or the Prisma models `OrganizationProfile`, `OrganizationLawyer`, `OrganizationLogo`, `OrganizationSettingsAudit`, `ReviewDraft`, `DraftApprovalLog`, and `MessageReport`.
 
-*   `apps/api/src/drafts.ts`
-*   `apps/api/src/draft-egress.ts`
-*   `apps/api/src/routes/drafts.ts`
-*   `apps/api/src/organization-settings.ts`
-*   `apps/api/src/organization-settings.test.ts`
-*   `apps/api/src/organization-logo-store.ts`
-*   `apps/api/src/organization-logo-store.test.ts`
-*   `apps/api/src/routes/organization.ts`
-*   `apps/web/src/pages/DraftReview.tsx`
-*   `apps/web/src/pages/DraftReview.test.tsx`
-*   `apps/web/src/pages/DraftApprovalLog.tsx`
-*   `apps/web/src/pages/OrganizationSettingsPanel.tsx`
-*   `apps/web/src/pages/OrganizationSettingsPanel.test.tsx`
-*   `apps/web/e2e/organization-settings.spec.ts`
-*   `packages/contracts/src/draft-review.ts`
-*   `packages/contracts/src/organization-settings.ts`
-*   `packages/contracts/src/organization-settings.test.ts`
-*   `packages/core/src/draft-review.ts`
-*   `packages/core/src/draft-review.test.ts`
-*   `packages/core/src/draft-footer.ts`
-*   `packages/core/src/organization-letterhead.ts`
-*   `packages/core/src/organization-letterhead.test.ts`
-*   `packages/db/src/draft-review.ts`
-*   `packages/db/src/draft-review.test.ts`
-*   `packages/db/src/organization-settings.ts`
-*   `packages/db/src/organization-settings.test.ts`
+The phone menu (sample data, a separate drafts list, a separate chat, a separate computer, approval history, firm, and about) stays absent. Sample-data mode stays absent.
+
+The migrations that already created those tables stay in the tree, so a database that applied them can still run `migrate deploy`:
+
 *   `packages/db/prisma/migrations/20261026120000_organization_settings/**`
 *   `packages/db/prisma/migrations/20261026140000_draft_approval/**`
+*   `packages/db/prisma/migrations/20261031120000_message_reports/**`
 
-`packages/db/prisma/schema.prisma` is surgical. Add the ALMA models and columns onto upstream's schema. Do not replace the schema with ALMA's file.
+Do not add a migration that drops those tables or their rows. A later deploy can drop them once nothing in production still reads them. Until then the tables sit unused, with row-level security still on.
 
 ### 8. Deploy
 
@@ -256,7 +235,7 @@ This change does not create or edit a Stripe product, price, customer, or webhoo
 
 ## What is dropped
 
-Drop an ALMA screen edit that sections 1–9 do not name. Sections 1–9 still apply, including the rebrand, the link removals, Hold to talk, the Call button, the connectors grid, the legal sentences, hidden model setup, and the $69 price.
+Drop an ALMA screen edit that sections 1–6, 8, and 9 do not name. Those sections still apply, including the rebrand, the link removals, Hold to talk, the Call button, the connectors grid, the legal sentences, hidden model setup, and the $69 price. Section 7 names the draft-review, organization-settings, and message-report surfaces, which stay out.
 
 Upstream's settings layout, Messaging settings, lettered question options, and mobile Routines screen stay. Spoken-summary controls stay; section 3 only changes which factory they call when operator voice is xAI.
 

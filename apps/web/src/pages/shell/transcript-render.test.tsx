@@ -69,7 +69,6 @@ function Host({ messages }: { messages: ThreadMessage[] }) {
   const refresh = useCallback(async () => undefined, []);
   const answer = useCallback(async () => undefined, []);
   const react = useCallback(async () => undefined, []);
-  const report = useCallback(async () => undefined, []);
   return (
     <Transcript
       scrollRef={scrollRef}
@@ -108,7 +107,6 @@ function Host({ messages }: { messages: ThreadMessage[] }) {
       speakingMessageId={null}
       onSpeak={reply}
       onOpenComputer={reply}
-      onReport={report}
     />
   );
 }

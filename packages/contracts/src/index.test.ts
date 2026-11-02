@@ -6,7 +6,6 @@ import {
   CreateGroupInput,
   CreateRoutineInput,
   canReactToThreadMessage,
-  canReportAssistantMessage,
   McpServerConfigInput,
   MessageBlock,
   ModelConnectInputSchema,

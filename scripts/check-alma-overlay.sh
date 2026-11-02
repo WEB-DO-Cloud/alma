@@ -29,6 +29,31 @@ if re.search(r"\bDictat", thread) or re.search(r"\bDictat", layout):
     sys.exit("phone composer still has a Dictate control")
 if "sample-data" in layout or "sampleData" in layout:
     sys.exit("sample-data mode is referenced from the phone home screen")
+absent = [
+    "apps/web/src/pages/DraftReview.tsx",
+    "apps/web/src/pages/DraftApprovalLog.tsx",
+    "apps/web/src/pages/OrganizationSettingsPanel.tsx",
+    "apps/api/src/message-report.ts",
+    "apps/api/src/routes/drafts.ts",
+    "apps/api/src/routes/organization.ts",
+    "packages/contracts/src/draft-review.ts",
+    "packages/contracts/src/organization-settings.ts",
+]
+for path in absent:
+    if pathlib.Path(path).exists():
+        sys.exit(f"{path} is back; draft review, organization settings, and message reports stay out")
+schema = pathlib.Path("packages/db/prisma/schema.prisma").read_text()
+for model in ("MessageReport", "OrganizationProfile", "ReviewDraft", "DraftApprovalLog"):
+    if f"model {model} " in schema:
+        sys.exit(f"schema still has {model}")
+kept = [
+    "packages/db/prisma/migrations/20261026120000_organization_settings/migration.sql",
+    "packages/db/prisma/migrations/20261026140000_draft_approval/migration.sql",
+    "packages/db/prisma/migrations/20261031120000_message_reports/migration.sql",
+]
+for path in kept:
+    if not pathlib.Path(path).is_file():
+        sys.exit(f"missing shipped migration {path}; do not delete history that production already applied")
 PY
 
 if ! git rev-parse --verify upstream/main >/dev/null 2>&1; then
