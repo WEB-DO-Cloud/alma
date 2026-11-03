@@ -4,7 +4,7 @@
     "slug": "alma",
     "owner": "damiencals-team",
     "scheme": ["alma", "rakazo"],
-    "version": "1.0.12",
+    "version": "1.0.13",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
@@ -109,7 +109,7 @@
     },
     "ios": {
       "bundleIdentifier": "do.alma.app",
-      "buildNumber": "66",
+      "buildNumber": "67",
       "supportsTablet": true,
       "icon": "./assets/icon.png",
       "config": {
@@ -128,7 +128,7 @@
     },
     "android": {
       "package": "do.alma.app",
-      "versionCode": 14,
+      "versionCode": 15,
       "softwareKeyboardLayoutMode": "resize",
       "icon": "./assets/icon.png",
       "adaptiveIcon": {

@@ -1,15 +1,15 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import {
+  applyPackagedUserData,
   DEFAULT_LOCAL_WEB_URL,
   desktopStackImageTag,
   isRakazoHealth,
+  localServerSetupAllowed,
   managedLocalOpenUrl,
   maySendDesktopStackToken,
   normalizeServerUrl,
   PROBE_RESPONSE_LIMIT_BYTES,
-  applyPackagedUserData,
-  localServerSetupAllowed,
   packagedUserDataDir,
   parseSetupInput,
   parseStoredSetup,
@@ -17,12 +17,12 @@ import {
   RAKAZO_CLOUD_URL,
   readProbeJson,
   resolveStartupTarget,
-  showLocalServerChoice,
   safeExternalUrl,
   serializeSetup,
   serverHeadersFor,
   servesBundledRenderer,
   sessionPartitionForServerUrl,
+  showLocalServerChoice,
 } from "./setup-config.js";
 
 describe("packaged desktop choices", () => {
@@ -64,9 +64,9 @@ describe("packaged desktop choices", () => {
         xdgConfigHome: "/home/person/.config",
       }),
     ).toBe("/home/person/.config/ALMA");
-    expect(
-      packagedUserDataDir({ packaged: true, platform: "linux", home: "/home/person" }),
-    ).toBe("/home/person/.config/ALMA");
+    expect(packagedUserDataDir({ packaged: true, platform: "linux", home: "/home/person" })).toBe(
+      "/home/person/.config/ALMA",
+    );
 
     const setPath = vi.fn();
     applyPackagedUserData(setPath, { packaged: false, platform: "darwin", home: "/Users/person" });

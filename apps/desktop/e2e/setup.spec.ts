@@ -97,7 +97,8 @@ function launch(extraEnv: Record<string, string> = {}) {
 }
 
 test("first run offers ALMA Cloud first, with local and existing instances", async () => {
-  app = await launch();
+  // A packaged build hides This computer unless ALMA_DESKTOP_LOCAL_SERVER=1 turns it on.
+  app = await launch({ ALMA_DESKTOP_LOCAL_SERVER: "1" });
   if (process.env.RAKAZO_E2E_EXECUTABLE) {
     expect(await app.evaluate(({ app }) => app.isPackaged)).toBe(true);
   }

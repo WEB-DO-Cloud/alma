@@ -1299,6 +1299,7 @@ export const JA_MESSAGES: Record<string, string> = {
     "{failedNames}を切り替えられませんでした。もう一度お試しください。",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS = { other: "{peer}とのメッセージ{count}件" };

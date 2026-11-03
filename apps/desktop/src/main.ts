@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { existsSync } from "node:fs";
-import { homedir } from "node:os";
 import { readFile, stat, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import path from "node:path";
 import type { HostScreen } from "@rakazo/adapters/host-screen";
 import { startUserDeviceClient } from "@rakazo/adapters/user-device-client";
@@ -84,24 +84,24 @@ import { revealSecondInstanceWindow, secondInstanceWindow } from "./second-insta
 import { installServerHeaders } from "./server-request-headers.js";
 import { installSessionPermissions } from "./session-permissions.js";
 import {
+  applyPackagedUserData,
   DEFAULT_LOCAL_WEB_URL,
   desktopStackImageTag,
   isRakazoHealth,
+  localServerSetupAllowed,
   managedLocalOpenUrl,
   maySendDesktopStackToken,
-  applyPackagedUserData,
-  localServerSetupAllowed,
   normalizeServerUrl,
   parseSetupInput,
   probeFailureMessage,
   RAKAZO_CLOUD_URL,
   readProbeJson,
   resolveStartupTarget,
-  showLocalServerChoice,
   safeExternalUrl,
   serverHeadersFor,
   servesBundledRenderer,
   sessionPartitionForServerUrl,
+  showLocalServerChoice,
 } from "./setup-config.js";
 import { clearSetup, readSetup, readUiLocale, writeSetup, writeUiLocale } from "./setup-store.js";
 import { createSystemSpeech } from "./system-speech.js";

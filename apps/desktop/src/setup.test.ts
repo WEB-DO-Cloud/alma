@@ -92,11 +92,7 @@ interface Harness {
   resolveSave: (result: DesktopSetupResult) => void;
 }
 
-function mount(
-  saved: DesktopSetup | null,
-  locale = ENGLISH,
-  localServer = true,
-): Harness {
+function mount(saved: DesktopSetup | null, locale = ENGLISH, localServer = true): Harness {
   document.body.innerHTML = setupBody ?? "";
   const checkCalls: Array<Deferred<DesktopReachability>> = [];
   const startResult = deferred<DesktopLocalStackState>();

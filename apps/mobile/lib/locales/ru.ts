@@ -1305,7 +1305,8 @@ export const RU_MESSAGES: Record<string, string> = {
     "Не удалось переключить {failedNames}. Попробуйте снова.",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {
   one: "{count} сообщение с {peer}",

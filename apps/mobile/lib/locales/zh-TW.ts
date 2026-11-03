@@ -1276,6 +1276,7 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Could not switch {failedNames}. Try again.": "無法切換 {failedNames}，請再試一次。",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS = { other: "與{peer}的 {count} 則訊息" };

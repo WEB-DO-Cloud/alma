@@ -14,12 +14,12 @@ expo = app["expo"]
 def ver(value):
     parts = [int(p) for p in str(value).split(".")]
     return parts
-if ver(expo["version"]) < [1, 0, 12]:
-    sys.exit(f"expo.version is {expo['version']}, expected at least 1.0.12")
-if int(expo["ios"]["buildNumber"]) < 66:
-    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected at least 66")
-if int(expo["android"]["versionCode"]) < 14:
-    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected at least 14")
+if ver(expo["version"]) < [1, 0, 13]:
+    sys.exit(f"expo.version is {expo['version']}, expected at least 1.0.13")
+if int(expo["ios"]["buildNumber"]) < 67:
+    sys.exit(f"ios.buildNumber is {expo['ios']['buildNumber']}, expected at least 67")
+if int(expo["android"]["versionCode"]) < 15:
+    sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected at least 15")
 domain = pathlib.Path("packages/contracts/src/domain.ts").read_text()
 if "BYOK_MONTHLY_PRICE_CENTS: number | null = 5900" not in domain:
     sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 5900")

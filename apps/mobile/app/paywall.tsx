@@ -276,7 +276,9 @@ export default function Paywall() {
   const subscribed = dismissible ? subscribedPlan(status) : null;
   const annualCents = status.byokPriceCents ? status.byokAnnualPriceCents : null;
   const yearly = interval === "year" && annualCents;
-  const monthlyPrice = status.byokPriceCents ? formatUsdAmount(status.byokPriceCents, locale) : null;
+  const monthlyPrice = status.byokPriceCents
+    ? formatUsdAmount(status.byokPriceCents, locale)
+    : null;
   const annualMonthlyPrice = annualCents
     ? formatUsdAmount(Math.round(annualCents / 12), locale)
     : null;

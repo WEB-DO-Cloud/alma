@@ -1272,7 +1272,8 @@ export const DE_MESSAGES: Record<string, string> = {
     "{failedNames} konnte nicht umgestellt werden. Versuche es erneut.",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {
   other: DE_MESSAGES["{count} messages with {peer}"],

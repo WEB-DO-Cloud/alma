@@ -57,7 +57,8 @@ export const ES_MESSAGES: Record<string, string> = {
   "We couldn't approve your changes to the {name} page.":
     "No pudimos aprobar tus cambios en la página de {name}.",
   "Thanks for submitting a plugin to the ALMA marketplace.":
-    "Gracias por enviar un plugin al marketplace de ALMA.",  "We review every submission and will email you when it's done.":
+    "Gracias por enviar un plugin al marketplace de ALMA.",
+  "We review every submission and will email you when it's done.":
     "Revisamos cada envío y te escribiremos cuando terminemos.",
   "If you did not submit a plugin, ignore this email.":
     "Si no enviaste ningún plugin, ignora este correo.",

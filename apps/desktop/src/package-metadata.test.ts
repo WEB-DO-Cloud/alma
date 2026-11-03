@@ -57,9 +57,7 @@ describe("desktop package metadata", () => {
       expect(actions).toContain("DESKTOP_DOWNLOADS");
     }
     expect(actions).not.toContain("api.github.com");
-    expect(home).toContain(
-      "If the download does not start, the desktop app is not published yet.",
-    );
+    expect(home).toContain("If the download does not start, the desktop app is not published yet.");
     expect(home).toContain(
       "Windows may say it does not recognize this installer. It is not signed yet.",
     );

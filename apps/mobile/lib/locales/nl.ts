@@ -1265,7 +1265,8 @@ export const NL_MESSAGES: Record<string, string> = {
     "Kon {failedNames} niet overzetten. Probeer het opnieuw.",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {
   other: NL_MESSAGES["{count} messages with {peer}"],

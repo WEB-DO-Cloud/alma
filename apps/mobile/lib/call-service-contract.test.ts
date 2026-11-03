@@ -14,9 +14,7 @@ function source(path: string) {
 describe("Android call service", () => {
   it("declares microphone and remote-messaging foreground services", () => {
     const manifest = source("AndroidManifest.xml");
-    expect(manifest).toContain(
-      'android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"',
-    );
+    expect(manifest).toContain('android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"');
     expect(manifest).toContain(
       'android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"',
     );

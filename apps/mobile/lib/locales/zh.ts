@@ -1279,7 +1279,8 @@ export const ZH_MESSAGES: Record<string, string> = {
   "Could not switch {failedNames}. Try again.": "无法切换 {failedNames}。请重试。",
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
-  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",};
+  "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+};
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {
   other: ZH_MESSAGES["{count} messages with {peer}"],

@@ -7,23 +7,14 @@ const RAKAZO_DOCS: ReadonlyArray<readonly [topics: string, url: string]> = [
     "Creating bots, chatting, bot settings, sidebar, search",
     `${HELP_DOCS_ORIGIN}/docs/bots-and-chats.md`,
   ],
-  [
-    "Importing an OpenClaw, Hermes or ChatGPT agent",
-    `${HELP_DOCS_ORIGIN}/docs/import-an-agent.md`,
-  ],
+  ["Importing an OpenClaw, Hermes or ChatGPT agent", `${HELP_DOCS_ORIGIN}/docs/import-an-agent.md`],
   [
     "Connecting apps and integrations (Gmail, GitHub, MCP tools)",
     `${HELP_DOCS_ORIGIN}/docs/integrations.md`,
   ],
-  [
-    "Slack, Telegram, WhatsApp and other chat apps",
-    `${HELP_DOCS_ORIGIN}/docs/messaging-apps.md`,
-  ],
+  ["Slack, Telegram, WhatsApp and other chat apps", `${HELP_DOCS_ORIGIN}/docs/messaging-apps.md`],
   ["Routines, schedules and triggers", `${HELP_DOCS_ORIGIN}/docs/routines.md`],
-  [
-    "The bot's computer, files, using your own computer",
-    `${HELP_DOCS_ORIGIN}/docs/computer.md`,
-  ],
+  ["The bot's computer, files, using your own computer", `${HELP_DOCS_ORIGIN}/docs/computer.md`],
   ["Memory", `${HELP_DOCS_ORIGIN}/docs/memory.md`],
   ["Skills", `${HELP_DOCS_ORIGIN}/docs/skills.md`],
   ["Approvals, Allow and Block lists", `${HELP_DOCS_ORIGIN}/docs/approvals.md`],
