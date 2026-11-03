@@ -2,6 +2,7 @@
   "expo": {
     "name": "ALMA",
     "slug": "alma",
+    "owner": "damiencals-team",
     "scheme": ["alma", "rakazo"],
     "version": "1.0.12",
     "orientation": "default",

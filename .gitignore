@@ -23,6 +23,7 @@ apps/desktop/dist
 apps/desktop/out
 apps/desktop/e2e/screenshots
 apps/mobile/.expo
+google-services.json
 apps/mobile/dist
 apps/mobile/android
 apps/mobile/ios

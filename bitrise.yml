@@ -65,6 +65,23 @@ workflows:
     steps:
       - git-clone@8: {}
       - script@1:
+          title: Decode the Android Firebase config when it is provided
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                if [[ -z "${GOOGLE_SERVICES_JSON_BASE64:-}" ]]; then
+                  exit 0
+                fi
+                dest="${BITRISE_SOURCE_DIR:-$PWD}/apps/mobile/google-services.json"
+                mkdir -p "$(dirname "$dest")"
+                printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | tr -d '[:space:]' | base64 --decode > "$dest"
+                if [[ ! -s "$dest" ]]; then
+                  echo "GOOGLE_SERVICES_JSON_BASE64 did not decode to a file." >&2
+                  exit 1
+                fi
+                envman add --key GOOGLE_SERVICES_JSON --value "$dest"
+      - script@1:
           title: Build the signed Android APK
           inputs:
             - content: |-
@@ -87,6 +104,23 @@ workflows:
         stack: ubuntu-resolute-26.04-bitrise-2026-android
     steps:
       - git-clone@8: {}
+      - script@1:
+          title: Decode the Android Firebase config when it is provided
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                if [[ -z "${GOOGLE_SERVICES_JSON_BASE64:-}" ]]; then
+                  exit 0
+                fi
+                dest="${BITRISE_SOURCE_DIR:-$PWD}/apps/mobile/google-services.json"
+                mkdir -p "$(dirname "$dest")"
+                printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | tr -d '[:space:]' | base64 --decode > "$dest"
+                if [[ ! -s "$dest" ]]; then
+                  echo "GOOGLE_SERVICES_JSON_BASE64 did not decode to a file." >&2
+                  exit 1
+                fi
+                envman add --key GOOGLE_SERVICES_JSON --value "$dest"
       - script@1:
           title: Build the signed Android App Bundle
           inputs:

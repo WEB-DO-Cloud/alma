@@ -30,7 +30,7 @@ New account email copy upstream added is ALMA, not Rakazo. Spanish (`packages/au
 
 ## 2. Push and updates
 
-`apps/mobile/lib/push.ts` already returns when `extra.eas.projectId` is missing. `apps/mobile/app.config.ts` sets `extra.eas.projectId` from `EXPO_PUBLIC_EAS_PROJECT_ID` when that variable is non-empty. No project id is committed. `GOOGLE_SERVICES_JSON` still points Android at a services file supplied at build time.
+`apps/mobile/lib/push.ts` already returns when `extra.eas.projectId` is missing. `apps/mobile/app.config.ts` sets `extra.eas.projectId` from `EXPO_PUBLIC_EAS_PROJECT_ID` when that variable is non-empty. No project id is committed. `expo.owner` is `damiencals-team`. `GOOGLE_SERVICES_JSON` still points Android at a services file supplied at build time. The `android-apk` and `android-aab` workflows decode `GOOGLE_SERVICES_JSON_BASE64` into `apps/mobile/google-services.json` when that secret is set, then export the path. The file is gitignored. iOS does not read a Google services plist.
 
 `expo.updates.enabled` stays `false`. The client already does nothing when updates are off. Do not add an updates URL or an EAS Update channel in this change. OTA waits until an ALMA-owned Expo project exists; EAS Update on that project is the host, not a new server in this repo.
 

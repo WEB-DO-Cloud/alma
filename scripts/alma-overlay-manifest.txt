@@ -1,6 +1,7 @@
 # Paths that differ from upstream/main. The prefix is informational.
 # Regenerated for the 2026-11-03 batch against upstream ade7100b.
 overlay .env.example
+overlay .gitignore
 overlay .github/ISSUE_TEMPLATE/bug.yml
 overlay .github/ISSUE_TEMPLATE/config.yml
 overlay .github/ISSUE_TEMPLATE/self-host.yml
