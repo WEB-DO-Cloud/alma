@@ -51,7 +51,12 @@ export const NO_TOOLS_RULE =
 const DENY = ["Bash", "Edit", "Write", "Read", "Grep", "WebFetch", "MCPTool"] as const;
 const AUTH_FAILURE = /auth|login|unauthorized|expired/i;
 const SESSION_TAKEN = /already in use|already exists/i;
-const RATE_LIMITED = /resource-exhausted|too many requests|rate limit/i;
+// Rate limits on the shared subscription, and start-up failures when too many grok
+// processes run at once (thread creation EAGAIN panics, leader/worker start races).
+const RATE_LIMITED =
+  /resource-exhausted|too many requests|rate limit|panicked|resource temporarily unavailable|couldn't start session|failed to start the acp-agent-worker/i;
+/** Each grok process starts ~100 threads; the api container allows 256 pids. */
+const MAX_CONCURRENT = 2;
 const RATE_LIMIT_BACKOFF_MS = [3_000, 8_000];
 
 interface LiveRun {
@@ -104,6 +109,7 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
     context?: Partial<AdapterContext>,
   ): AsyncIterable<AgentRuntimeEvent> {
     const release = await acquireThread(request.threadId);
+    const releaseSlot = await acquireSlot();
     const controller = new AbortController();
     const live: LiveRun = { controller, child: null };
     running.set(request.runId, live);
@@ -163,6 +169,7 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
       }
     } finally {
       if (running.get(request.runId) === live) running.delete(request.runId);
+      releaseSlot();
       release();
     }
   }
@@ -205,6 +212,7 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
     let stderr = "";
     let closed = false;
     let exitCode: number | null = null;
+    let exitSignal: NodeJS.Signals | null = null;
     let spawnFailed: string | undefined;
     let wake: (() => void) | undefined;
     const notify = () => {
@@ -240,8 +248,9 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
       closed = true;
       notify();
     });
-    child.on("close", (code) => {
+    child.on("close", (code, killSignal) => {
       exitCode = code;
+      exitSignal = killSignal;
       closed = true;
       notify();
     });
@@ -310,19 +319,23 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
       return "done";
     }
     const failureText = `${stderr}\n${events.map((event) => event.message ?? "").join("\n")}`;
-    const failed = spawnFailed || (exitCode !== null && exitCode !== 0);
+    // A crash (e.g. SIGABRT from a panic) closes with code null; that is a failure too,
+    // otherwise the run "completes" with no text and the chat shows "done.".
+    const failed = spawnFailed || exitSignal !== null || (exitCode !== null && exitCode !== 0);
     if (!failed) {
       yield { type: "done" };
       return "done";
     }
     if (!input.resume && SESSION_TAKEN.test(failureText)) return "retry-resume";
-    if (!yieldedText && !input.lastTry && RATE_LIMITED.test(failureText)) return "retry-rate";
+    if (!yieldedText && !input.lastTry && (RATE_LIMITED.test(failureText) || exitSignal !== null))
+      return "retry-rate";
     if (AUTH_FAILURE.test(failureText)) {
       getLogger().error("alma.managed-model.auth-rejected", { exitCode });
     } else {
       getLogger().error("alma.managed-model.runtime-failed", {
-        reason: spawnFailed ? "spawn" : "exit",
+        reason: spawnFailed ? "spawn" : exitSignal ? "signal" : "exit",
         exitCode,
+        exitSignal,
       });
     }
     if (!yieldedText) yield { type: "text", text: ALMA_UNAVAILABLE_MESSAGE };
@@ -491,6 +504,27 @@ async function killChild(child: ChildProcess | null): Promise<void> {
       clearTimeout(timer);
       resolve();
     });
+  });
+}
+
+let activeSlots = 0;
+const slotWaiters: Array<() => void> = [];
+
+/** Process-wide cap on concurrent grok children; extra runs wait their turn. */
+function acquireSlot(): Promise<() => void> {
+  return new Promise((resolve) => {
+    const grant = () => {
+      activeSlots += 1;
+      let released = false;
+      resolve(() => {
+        if (released) return;
+        released = true;
+        activeSlots -= 1;
+        slotWaiters.shift()?.();
+      });
+    };
+    if (activeSlots < MAX_CONCURRENT) grant();
+    else slotWaiters.push(grant);
   });
 }
 
