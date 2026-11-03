@@ -1160,6 +1160,7 @@ msgid "Can't reach the server."
 msgstr "Не удаётся связаться с сервером."
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "Не может читать изображения"
@@ -2130,6 +2131,10 @@ msgstr "Не удалось переименовать пространство"
 msgid "Could not render chart"
 msgstr "Не удалось отобразить диаграмму"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "Не удалось пожаловаться на этот ответ"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "Не удалось сбросить пароль"
@@ -3033,6 +3038,7 @@ msgid "Forgot password?"
 msgstr "Забыли пароль?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "Бесплатно"
 
@@ -3719,6 +3725,10 @@ msgstr "Память {position}"
 msgid "Memory for {title}"
 msgstr "Память для {title}"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "Памятью управляет ALMA"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "Область памяти"
@@ -3828,6 +3838,7 @@ msgstr "Режим"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3849,6 +3860,7 @@ msgid "Model id"
 msgstr "Идентификатор модели"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Варианты модели"
@@ -4092,6 +4104,7 @@ msgid "No matching artifacts on this page."
 msgstr ""
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4921,6 +4934,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "Пожаловаться на ответ"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "Жалоба отправлена"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Запросите новый код"
@@ -5209,6 +5230,7 @@ msgstr "Экран не подключён"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5243,6 +5265,7 @@ msgstr "Поиск integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -6428,6 +6451,10 @@ msgstr "Разбудить"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "Мы проверим этот ответ."
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

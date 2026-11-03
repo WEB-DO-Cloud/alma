@@ -1160,6 +1160,7 @@ msgid "Can't reach the server."
 msgstr "सर्वर तक नहीं पहुंचा जा सका।"
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "तस्वीरें नहीं पढ़ सकता"
@@ -2130,6 +2131,10 @@ msgstr "स्पेस का नाम नहीं बदला जा सक
 msgid "Could not render chart"
 msgstr "चार्ट रेंडर नहीं हो सका"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "इस जवाब की रिपोर्ट नहीं की जा सकी"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "पासवर्ड रीसेट नहीं किया जा सका"
@@ -3033,6 +3038,7 @@ msgid "Forgot password?"
 msgstr "पासवर्ड भूल गए?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr ""
 
@@ -3719,6 +3725,10 @@ msgstr "मेमोरी {position}"
 msgid "Memory for {title}"
 msgstr "{title} के लिए मेमोरी"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "मेमोरी ALMA द्वारा प्रबंधित है"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "मेमोरी स्कोप"
@@ -3828,6 +3838,7 @@ msgstr "मोड"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3849,6 +3860,7 @@ msgid "Model id"
 msgstr "मॉडल आईडी"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "मॉडल विकल्प"
@@ -4092,6 +4104,7 @@ msgid "No matching artifacts on this page."
 msgstr ""
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4921,6 +4934,14 @@ msgstr ""
 msgid "Replying to {0}"
 msgstr ""
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "जवाब की रिपोर्ट करें"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "रिपोर्ट भेजी गई"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "नया कोड मँगाएँ"
@@ -5209,6 +5230,7 @@ msgstr "स्क्रीन कनेक्ट नहीं है"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5243,6 +5265,7 @@ msgstr ""
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -6428,6 +6451,10 @@ msgstr "जगाएँ"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "हम इस जवाब की समीक्षा करेंगे।"
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

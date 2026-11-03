@@ -1160,6 +1160,7 @@ msgid "Can't reach the server."
 msgstr "无法连接服务器。"
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "无法读取图像"
@@ -2130,6 +2131,10 @@ msgstr "无法重命名工作区"
 msgid "Could not render chart"
 msgstr "无法渲染图表"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "无法举报此回复"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "无法重置密码"
@@ -3033,6 +3038,7 @@ msgid "Forgot password?"
 msgstr "忘记密码？"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "免费"
 
@@ -3719,6 +3725,10 @@ msgstr "记忆 {position}"
 msgid "Memory for {title}"
 msgstr "{title} 的记忆"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "记忆由 ALMA 管理"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "记忆范围"
@@ -3828,6 +3838,7 @@ msgstr "模式"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3849,6 +3860,7 @@ msgid "Model id"
 msgstr "模型 ID"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "模型选项"
@@ -4092,6 +4104,7 @@ msgid "No matching artifacts on this page."
 msgstr "这一页没有匹配的产物。"
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4921,6 +4934,14 @@ msgstr "已取消回复"
 msgid "Replying to {0}"
 msgstr "正在回复 {0}"
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "举报回复"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "举报已发送"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "请重新获取验证码"
@@ -5209,6 +5230,7 @@ msgstr "屏幕未连接"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5243,6 +5265,7 @@ msgstr "搜索 integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -6428,6 +6451,10 @@ msgstr "唤醒"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr "钱包"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "我们会审核此回复。"
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

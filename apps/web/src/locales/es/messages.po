@@ -1160,6 +1160,7 @@ msgid "Can't reach the server."
 msgstr "No se puede alcanzar el servidor."
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "No puede leer imágenes"
@@ -2130,6 +2131,10 @@ msgstr "No se pudo renombrar el space"
 msgid "Could not render chart"
 msgstr "No se pudo renderizar el gráfico"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "No se pudo reportar esta respuesta"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "No se pudo restablecer la contraseña"
@@ -2471,9 +2476,6 @@ msgstr "Predeterminado de OpenClaw"
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Default scope"
 msgstr "Alcance predeterminado"
-
-msgid "Memory is managed by ALMA"
-msgstr "La memoria está gestionada por ALMA"
 
 #: src/components/AccountAccess.tsx
 #: src/components/PasskeySettings.tsx
@@ -3036,6 +3038,7 @@ msgid "Forgot password?"
 msgstr "¿Olvidaste la contraseña?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "Gratis"
 
@@ -3722,6 +3725,10 @@ msgstr "Memoria {position}"
 msgid "Memory for {title}"
 msgstr "Memoria para {title}"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "La memoria está gestionada por ALMA"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "Alcance de memoria"
@@ -3831,6 +3838,7 @@ msgstr "Modo"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3852,6 +3860,7 @@ msgid "Model id"
 msgstr "ID del modelo"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Opciones del modelo"
@@ -4095,6 +4104,7 @@ msgid "No matching artifacts on this page."
 msgstr "No hay artefactos que coincidan en esta página."
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4282,7 +4292,7 @@ msgstr "Compra única. Los créditos no vencen."
 
 #: src/components/AskCard.tsx
 msgid "Only enter a code {codeHost} sent you."
-msgstr ""
+msgstr "Solo ingresa un código que te haya enviado {codeHost}."
 
 #: src/components/markdown-link-prompt.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
@@ -4924,6 +4934,14 @@ msgstr "Respuesta cancelada"
 msgid "Replying to {0}"
 msgstr "Respondiendo a {0}"
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "Reportar respuesta"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "Reporte enviado"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Solicita un código nuevo"
@@ -5212,6 +5230,7 @@ msgstr "Pantalla no conectada"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5246,6 +5265,7 @@ msgstr "Buscar en integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -6431,6 +6451,10 @@ msgstr "Activar"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr "Billetera"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "Revisaremos esta respuesta."
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"

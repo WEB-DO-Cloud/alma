@@ -1160,6 +1160,7 @@ msgid "Can't reach the server."
 msgstr "De server is niet bereikbaar."
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "Kan afbeeldingen niet lezen"
@@ -2130,6 +2131,10 @@ msgstr "Space hernoemen mislukt"
 msgid "Could not render chart"
 msgstr "Grafiek weergeven mislukt"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "Kon dit antwoord niet melden"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "Wachtwoord opnieuw instellen mislukt"
@@ -3033,6 +3038,7 @@ msgid "Forgot password?"
 msgstr "Wachtwoord vergeten?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "Gratis"
 
@@ -3719,6 +3725,10 @@ msgstr "Geheugen {position}"
 msgid "Memory for {title}"
 msgstr "Geheugen voor {title}"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "Het geheugen wordt beheerd door ALMA"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "Geheugenbereik"
@@ -3828,6 +3838,7 @@ msgstr "Modus"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3849,6 +3860,7 @@ msgid "Model id"
 msgstr "Model-id"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Modelopties"
@@ -4092,6 +4104,7 @@ msgid "No matching artifacts on this page."
 msgstr "Geen overeenkomende artefacten op deze pagina."
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4921,6 +4934,14 @@ msgstr "Antwoord geannuleerd"
 msgid "Replying to {0}"
 msgstr "Antwoordt op {0}"
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "Antwoord melden"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "Melding verzonden"
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Vraag een nieuwe code aan"
@@ -5209,6 +5230,7 @@ msgstr "Scherm niet verbonden"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5243,6 +5265,7 @@ msgstr "integrations.sh doorzoeken"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -6428,6 +6451,10 @@ msgstr "Wekken"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "We bekijken dit antwoord."
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
