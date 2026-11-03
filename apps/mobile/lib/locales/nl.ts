@@ -1224,28 +1224,9 @@ export const NL_MESSAGES: Record<string, string> = {
   "Could not move the ticket": "Kon ticket niet verplaatsen",
   "No tickets yet.": "Nog geen tickets.",
 
-  "Connect apps through Zapier.": "Connect apps through Zapier.",
-  "Could not add MCP server": "Could not add MCP server",
-  "Could not search the MCP registry": "Could not search the MCP registry",
-  "Create and export Canva designs.": "Create and export Canva designs.",
   "Create your ALMA account": "Create your ALMA account",
-  "Find and manage Linear issues and projects.": "Find and manage Linear issues and projects.",
-  "List and update Google Calendar events.": "List and update Google Calendar events.",
-  "List and update Outlook Calendar events.": "List and update Outlook Calendar events.",
-  "Manage GitHub repositories, issues, and pull requests.":
-    "Manage GitHub repositories, issues, and pull requests.",
-  "No remote MCP servers found": "No remote MCP servers found",
-  Popular: "Popular",
   Report: "Report",
-  "Search and edit your Notion workspace.": "Search and edit your Notion workspace.",
-  "Search and update Jira and Confluence.": "Search and update Jira and Confluence.",
-  "Search, read, and draft Gmail.": "Search, read, and draft Gmail.",
-  "Search, read, and draft Outlook mail.": "Search, read, and draft Outlook mail.",
-  "Send messages and read Slack channels.": "Send messages and read Slack channels.",
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
-  "This server needs a header.": "This server needs a header.",
-  "Work with Stripe customers, products, and payments.":
-    "Work with Stripe customers, products, and payments.",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

@@ -498,18 +498,12 @@ msgstr "Actief"
 msgid "Activity"
 msgstr "Activiteit"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 msgid "Add"
 msgstr "Toevoegen"
-
-#. placeholder {0}: server.name
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Add {0}"
-msgstr ""
 
 #. placeholder {0}: bot.name
 #: src/pages/GroupPanel.tsx
@@ -630,13 +624,11 @@ msgstr "Trigger toevoegen"
 msgid "Add workspace"
 msgstr "Werkruimte toevoegen"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Added"
 msgstr "Toegevoegd"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -1628,10 +1620,6 @@ msgstr "API-sleutel koppelen"
 msgid "Connect apps"
 msgstr "Apps verbinden"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Connect apps through Zapier."
-msgstr ""
-
 #: src/pages/shell/message-cards.tsx
 msgid "Connect MCP server “{name}”"
 msgstr "MCP-server “{name}” koppelen"
@@ -1784,7 +1772,6 @@ msgstr "Kosten"
 msgid "Could not add"
 msgstr "Toevoegen mislukt"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Could not add MCP server"
 msgstr "MCP-server toevoegen mislukt"
@@ -2213,10 +2200,6 @@ msgstr "Deze keuze opslaan mislukt"
 msgid "Could not search catalog"
 msgstr "Catalogus doorzoeken mislukt"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Could not search the MCP registry"
-msgstr ""
-
 #: src/pages/Auth.tsx
 msgid "Could not send reset email"
 msgstr "Herstellingsmail versturen mislukt"
@@ -2342,10 +2325,6 @@ msgstr "Maak een sectie aan en verplaats {0} erin."
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "Account aanmaken"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Create and export Canva designs."
-msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "Create group"
@@ -3006,10 +2985,6 @@ msgstr "Filters"
 msgid "Finance"
 msgstr ""
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Find and manage Linear issues and projects."
-msgstr ""
-
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Find models"
@@ -3165,7 +3140,6 @@ msgstr "Header \"{header}\""
 msgid "Header name"
 msgstr "Headernaam"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/ModelHeadersEditor.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Header value"
@@ -3502,14 +3476,6 @@ msgstr "DM’s koppelen"
 msgid "Link SSO"
 msgstr "SSO koppelen"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "List and update Google Calendar events."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "List and update Outlook Calendar events."
-msgstr ""
-
 #: src/pages/Artifacts.tsx
 msgid "List view"
 msgstr "Lijstweergave"
@@ -3637,10 +3603,6 @@ msgstr "{0} beheren"
 #: src/pages/Paywall.tsx
 msgid "Manage billing"
 msgstr "Facturatie beheren"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Manage GitHub repositories, issues, and pull requests."
-msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Manage MCP servers"
@@ -4150,7 +4112,6 @@ msgid "No OpenClaw, Hermes or agent document found."
 msgstr "Geen OpenClaw-, Hermes- of agentdocument gevonden."
 
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/components/integrations/McpRegistryBrowse.tsx
 msgid "No remote MCP servers found"
 msgstr "Geen externe MCP-servers gevonden"
 
@@ -4571,10 +4532,6 @@ msgstr ""
 
 #: src/components/integrations/skills-dialog.tsx
 msgid "Plugins"
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Popular"
 msgstr ""
 
 #: src/pages/RoutineEditor.tsx
@@ -5256,14 +5213,6 @@ msgstr "Scherm niet verbonden"
 msgid "Search"
 msgstr "Zoeken"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search and edit your Notion workspace."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search and update Jira and Confluence."
-msgstr ""
-
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Search apps"
@@ -5285,10 +5234,6 @@ msgstr "Zoeken op domein"
 msgid "Search integrations.sh"
 msgstr "integrations.sh doorzoeken"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search MCP servers"
-msgstr ""
-
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5304,20 +5249,11 @@ msgstr "Runs zoeken"
 msgid "Search skills"
 msgstr ""
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search, read, and draft Gmail."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search, read, and draft Outlook mail."
-msgstr ""
-
 #. placeholder {0}: filters.query.trim()
 #: src/pages/ActivityList.tsx
 msgid "Search: {0}"
 msgstr "Zoeken: {0}"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/SpaceSearch.tsx
 msgid "Searching…"
@@ -5366,10 +5302,6 @@ msgstr "Verwijderingscode verzenden"
 #: src/components/AskCard.tsx
 msgid "Send it"
 msgstr "Verzenden"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Send messages and read Slack channels."
-msgstr ""
 
 #: src/components/composer/HoldToTalk.tsx
 msgid "Send recording"
@@ -6067,10 +5999,6 @@ msgstr "Deze server heeft geen browserautorisatie aangevraagd."
 msgid "This server is already connected. Disconnect it first to authorize again."
 msgstr "Deze server is al gekoppeld. Koppel hem eerst los om opnieuw te autoriseren."
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "This server needs a header."
-msgstr ""
-
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "This server's tool result does not fit the model. Turn off Keep tool results whole for that server, or choose another model."
@@ -6572,10 +6500,6 @@ msgstr "Wordt niet gedaan"
 
 #: src/components/SignupSurvey.tsx
 msgid "Work"
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Work with Stripe customers, products, and payments."
 msgstr ""
 
 #: src/pages/shell/agent-import.tsx

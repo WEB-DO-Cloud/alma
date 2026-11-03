@@ -45,7 +45,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ConnectorIcon } from "../../components/connector-icon";
-import { McpRegistryBrowse } from "../../components/mcp-registry-browse";
 import { MenuPicker } from "../../components/menu-picker";
 import { NativeActionButton } from "../../components/native-action-button";
 import { NativeSymbol } from "../../components/native-symbol";
@@ -1383,25 +1382,6 @@ export default function Integrations() {
               />
             ) : null}
 
-            {!detailItem ? (
-              <McpRegistryBrowse
-                query={query}
-                installedEndpoints={
-                  new Set(
-                    mcpServers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])),
-                  )
-                }
-                botId={lastBotId || undefined}
-                onInstalled={() => {
-                  void rpc("mcp/servers/list")
-                    .then((servers) => {
-                      if (mounted.current) setMcpServers(servers);
-                    })
-                    .catch(() => undefined);
-                }}
-              />
-            ) : null}
-
             {!detailItem && (categories.length >= 2 || category) ? (
               <View style={styles.categoryPicker}>
                 <MenuPicker
@@ -1527,11 +1507,13 @@ export default function Integrations() {
                 ) : null}
 
                 {renderPlugins()}
-                {pluginsState !== "loading" ? (
+                {pluginsState !== "loading" && SUBMIT_PLUGIN_URL ? (
                   <NativeActionButton
                     fill={false}
                     label={t("Submit a plugin")}
-                    onPress={() => void Linking.openURL(SUBMIT_PLUGIN_URL)}
+                    onPress={() => {
+                      if (SUBMIT_PLUGIN_URL) void Linking.openURL(SUBMIT_PLUGIN_URL);
+                    }}
                     prominence="quiet"
                     size="compact"
                     variant="text"

@@ -43,7 +43,6 @@ import { ChevronLeft, Ellipsis, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AgentAccess } from "../components/integrations/agent-access";
 import { AgentAccessControl } from "../components/integrations/agent-access";
-import { McpRegistryBrowse } from "../components/integrations/McpRegistryBrowse";
 import {
   AvailabilityControl,
   reachesOtherSpaces,
@@ -952,15 +951,6 @@ export function McpServersOverlay({
           </p>
         ) : null}
         <div className="rk-scroll min-h-0 overflow-y-auto px-6 py-5">
-          <McpRegistryBrowse
-            showSearch
-            installedEndpoints={
-              new Set(servers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])))
-            }
-            onInstalled={() => {
-              void refresh();
-            }}
-          />
           {formOpen ? (
             renderForm()
           ) : (

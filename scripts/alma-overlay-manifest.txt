@@ -26,8 +26,6 @@ overlay apps/api/src/computer-status.ts
 overlay apps/api/src/env.test.ts
 overlay apps/api/src/marketing-email.test.ts
 overlay apps/api/src/marketing-email.ts
-overlay apps/api/src/mcp-registry.test.ts
-overlay apps/api/src/mcp-registry.ts
 overlay apps/api/src/messaging-inbound.ts
 overlay apps/api/src/model-credentials.ts
 overlay apps/api/src/monitoring.test.ts
@@ -40,7 +38,6 @@ overlay apps/api/src/router.test.ts
 overlay apps/api/src/routes/account.ts
 overlay apps/api/src/routes/bots.ts
 overlay apps/api/src/routes/context.ts
-overlay apps/api/src/routes/mcp.ts
 overlay apps/api/src/routes/routines.ts
 overlay apps/api/src/routes/shared.ts
 overlay apps/api/src/routes/threads.ts
@@ -110,7 +107,6 @@ overlay apps/mobile/assets/notification-icon.png
 overlay apps/mobile/assets/splash-icon-android.png
 overlay apps/mobile/assets/splash-icon.png
 overlay apps/mobile/components/app-mark.tsx
-overlay apps/mobile/components/mcp-registry-browse.tsx
 overlay apps/mobile/e2e/README.md
 overlay apps/mobile/e2e/ios-screenshots/README.md
 overlay apps/mobile/e2e/ios-screenshots/flows/auth.yaml
@@ -163,7 +159,6 @@ overlay apps/mobile/lib/endpoint.test.ts
 overlay apps/mobile/lib/endpoint.ts
 overlay apps/mobile/lib/i18n.test.ts
 overlay apps/mobile/lib/i18n.ts
-overlay apps/mobile/lib/integrations-screen.test.tsx
 overlay apps/mobile/lib/model-settings.test.tsx
 overlay apps/mobile/lib/monitoring.test.ts
 overlay apps/mobile/lib/monitoring.ts
@@ -205,17 +200,15 @@ overlay apps/mobile/scripts/bump-native.mjs
 overlay apps/mobile/scripts/fix-android-namespace.mjs
 overlay apps/mobile/scripts/generate-mark.mjs
 overlay apps/web/e2e/agent-import.spec.ts
-overlay apps/web/e2e/alma-overlay-shots.spec.ts
 overlay apps/web/e2e/auth-lifecycle.spec.ts
 overlay apps/web/e2e/avatar-studio.spec.ts
 overlay apps/web/e2e/billing-paywall.spec.ts
-overlay apps/web/e2e/direct-mcp-integrations.spec.ts
 overlay apps/web/e2e/fixtures/logo-avatars.html
 overlay apps/web/e2e/fixtures/logo-avatars.tsx
 overlay apps/web/e2e/fixtures/marketing-shots.tsx
 overlay apps/web/e2e/github-star-prompt.spec.ts
-overlay apps/web/e2e/golden.spec.ts
 overlay apps/web/e2e/helpers.ts
+overlay apps/web/e2e/integrations-passkey-shots.spec.ts
 overlay apps/web/e2e/logo-avatars.spec.ts
 overlay apps/web/e2e/model-header-discovery.spec.ts
 overlay apps/web/e2e/model-settings.spec.ts
@@ -239,9 +232,6 @@ overlay apps/web/src/components/SidebarFooter.test.tsx
 overlay apps/web/src/components/SidebarFooter.tsx
 overlay apps/web/src/components/SignupSurvey.tsx
 overlay apps/web/src/components/SubscriptionGate.tsx
-overlay apps/web/src/components/integrations/McpRegistryBrowse.test.tsx
-overlay apps/web/src/components/integrations/McpRegistryBrowse.tsx
-overlay apps/web/src/lib/add-remote-mcp.ts
 overlay apps/web/src/lib/billing.ts
 overlay apps/web/src/lib/desktop-speech.test.ts
 overlay apps/web/src/lib/dictation.ts
@@ -382,7 +372,6 @@ overlay docs/context-and-evals-tasks.md
 overlay docs/designs/2026-10-31-store-release-signing.md
 overlay docs/designs/alma-managed-model.md
 overlay docs/designs/alma-managed-voice-calls.md
-overlay docs/designs/alma-mcp-registry.md
 overlay docs/designs/alma-mobile-app.md
 overlay docs/designs/alma-rebrand.md
 overlay docs/designs/alma-restore-original-ui.md
@@ -524,7 +513,6 @@ overlay packages/contracts/src/desktop.ts
 overlay packages/contracts/src/domain.ts
 overlay packages/contracts/src/mcp.ts
 overlay packages/contracts/src/openai-compatible-ui.ts
-overlay packages/contracts/src/rpc.ts
 overlay packages/core/src/agent-import/config.ts
 overlay packages/core/src/agent-import/hermes.ts
 overlay packages/core/src/agent-import/openclaw.ts
@@ -533,10 +521,6 @@ overlay packages/core/src/alma-unavailable.ts
 overlay packages/core/src/compose-update.test.ts
 overlay packages/core/src/compose-update.ts
 overlay packages/core/src/index.ts
-overlay packages/core/src/mcp-registry-featured.ts
-overlay packages/core/src/mcp-registry-icons.ts
-overlay packages/core/src/mcp-registry.test.ts
-overlay packages/core/src/mcp-registry.ts
 overlay packages/core/src/node/terminal-server.ts
 overlay packages/core/src/run-error.ts
 overlay packages/core/src/secrets-guard.ts
@@ -553,7 +537,6 @@ overlay packages/db/src/row-security.postgres.test.ts
 overlay packages/logging/src/monitoring.ts
 overlay packages/logging/src/sentry.test.ts
 overlay packages/logging/src/sentry.ts
-overlay packages/testkit/src/authorization.test.ts
 overlay packages/testkit/src/backup-scripts.test.ts
 overlay packages/testkit/src/cli/desktop-performance.ts
 overlay packages/testkit/src/cli/harness.ts

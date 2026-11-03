@@ -14,7 +14,10 @@ test("does not ask for a GitHub star", async ({ page }) => {
 
   const prompt = page.getByRole("complementary", { name: "Star on GitHub" });
   await expect(
-    page.getByTestId("transcript").getByText("What should I work on today?"),
+    page
+      .getByTestId("transcript")
+      .getByTestId("message-user-bubble")
+      .filter({ hasText: "What should I work on today?" }),
   ).toBeVisible();
   await expect(prompt).toHaveCount(0);
 });

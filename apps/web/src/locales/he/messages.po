@@ -498,18 +498,12 @@ msgstr "פעיל"
 msgid "Activity"
 msgstr "פעילות"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/ScratchpadSection.tsx
 msgid "Add"
 msgstr "הוספה"
-
-#. placeholder {0}: server.name
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Add {0}"
-msgstr ""
 
 #. placeholder {0}: bot.name
 #: src/pages/GroupPanel.tsx
@@ -630,13 +624,11 @@ msgstr "הוספת טריגר"
 msgid "Add workspace"
 msgstr "הוספת סביבת עבודה"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Added"
 msgstr "נוסף"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -1628,10 +1620,6 @@ msgstr "חיבור מפתח API"
 msgid "Connect apps"
 msgstr "חיבור אפליקציות"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Connect apps through Zapier."
-msgstr ""
-
 #: src/pages/shell/message-cards.tsx
 msgid "Connect MCP server “{name}”"
 msgstr "חיבור שרת MCP “{name}”"
@@ -1784,7 +1772,6 @@ msgstr "עלות"
 msgid "Could not add"
 msgstr "לא ניתן להוסיף"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Could not add MCP server"
 msgstr "לא ניתן להוסיף את שרת ה-MCP"
@@ -2213,10 +2200,6 @@ msgstr "לא ניתן לשמור את הבחירה הזו"
 msgid "Could not search catalog"
 msgstr "לא ניתן לחפש בקטלוג"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Could not search the MCP registry"
-msgstr ""
-
 #: src/pages/Auth.tsx
 msgid "Could not send reset email"
 msgstr "לא ניתן לשלוח אימייל לאיפוס"
@@ -2342,10 +2325,6 @@ msgstr "יצירת קטע והעברת {0} אליו."
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "יצירת חשבון"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Create and export Canva designs."
-msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "Create group"
@@ -3006,10 +2985,6 @@ msgstr "מסננים"
 msgid "Finance"
 msgstr ""
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Find and manage Linear issues and projects."
-msgstr ""
-
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Find models"
@@ -3165,7 +3140,6 @@ msgstr "Header \"{header}\""
 msgid "Header name"
 msgstr "שם ה-header"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/components/ModelHeadersEditor.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Header value"
@@ -3502,14 +3476,6 @@ msgstr "קישור הודעות פרטיות"
 msgid "Link SSO"
 msgstr "קישור SSO"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "List and update Google Calendar events."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "List and update Outlook Calendar events."
-msgstr ""
-
 #: src/pages/Artifacts.tsx
 msgid "List view"
 msgstr "תצוגת רשימה"
@@ -3637,10 +3603,6 @@ msgstr "ניהול {0}"
 #: src/pages/Paywall.tsx
 msgid "Manage billing"
 msgstr "ניהול חיוב"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Manage GitHub repositories, issues, and pull requests."
-msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Manage MCP servers"
@@ -4150,7 +4112,6 @@ msgid "No OpenClaw, Hermes or agent document found."
 msgstr "לא נמצאו קבצי OpenClaw, Hermes או מסמך סוכן."
 
 #: src/components/integrations/IntegrationSetup.tsx
-#: src/components/integrations/McpRegistryBrowse.tsx
 msgid "No remote MCP servers found"
 msgstr "לא נמצאו שרתי MCP מרוחקים"
 
@@ -4571,10 +4532,6 @@ msgstr ""
 
 #: src/components/integrations/skills-dialog.tsx
 msgid "Plugins"
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Popular"
 msgstr ""
 
 #: src/pages/RoutineEditor.tsx
@@ -5256,14 +5213,6 @@ msgstr "המסך אינו מחובר"
 msgid "Search"
 msgstr "חיפוש"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search and edit your Notion workspace."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search and update Jira and Confluence."
-msgstr ""
-
 #: src/components/integrations/IntegrationSetup.tsx
 #: src/pages/PluginsOverlay.tsx
 msgid "Search apps"
@@ -5285,10 +5234,6 @@ msgstr "חיפוש לפי דומיין"
 msgid "Search integrations.sh"
 msgstr "חיפוש ב-integrations.sh"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search MCP servers"
-msgstr ""
-
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5304,20 +5249,11 @@ msgstr "חיפוש הרצות"
 msgid "Search skills"
 msgstr ""
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search, read, and draft Gmail."
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Search, read, and draft Outlook mail."
-msgstr ""
-
 #. placeholder {0}: filters.query.trim()
 #: src/pages/ActivityList.tsx
 msgid "Search: {0}"
 msgstr "חיפוש: {0}"
 
-#: src/components/integrations/McpRegistryBrowse.tsx
 #: src/pages/PluginsOverlay.tsx
 #: src/pages/SpaceSearch.tsx
 msgid "Searching…"
@@ -5366,10 +5302,6 @@ msgstr "שליחת קוד מחיקה"
 #: src/components/AskCard.tsx
 msgid "Send it"
 msgstr "שליחה"
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Send messages and read Slack channels."
-msgstr ""
 
 #: src/components/composer/HoldToTalk.tsx
 msgid "Send recording"
@@ -6067,10 +5999,6 @@ msgstr "השרת הזה לא ביקש הרשאה דרך הדפדפן."
 msgid "This server is already connected. Disconnect it first to authorize again."
 msgstr "השרת הזה כבר מחובר. יש לנתק אותו קודם כדי לאשר מחדש."
 
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "This server needs a header."
-msgstr ""
-
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "This server's tool result does not fit the model. Turn off Keep tool results whole for that server, or choose another model."
@@ -6572,10 +6500,6 @@ msgstr "לא יבוצע"
 
 #: src/components/SignupSurvey.tsx
 msgid "Work"
-msgstr ""
-
-#: src/components/integrations/McpRegistryBrowse.tsx
-msgid "Work with Stripe customers, products, and payments."
 msgstr ""
 
 #: src/pages/shell/agent-import.tsx
