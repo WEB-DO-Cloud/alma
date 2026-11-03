@@ -2,8 +2,9 @@
   "expo": {
     "name": "ALMA",
     "slug": "alma",
+    "owner": "damiencals-team",
     "scheme": ["alma", "rakazo"],
-    "version": "1.0.12",
+    "version": "1.0.13",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
@@ -45,14 +46,14 @@
         "expo-audio",
         {
           "enableBackgroundPlayback": false,
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       [
         "expo-speech-recognition",
         {
           "speechRecognitionPermission": "ALMA turns your speech into a message.",
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       "expo-localization",
@@ -69,7 +70,7 @@
         {
           "photosPermission": "ALMA uses your photo library so you can attach an image to a message.",
           "cameraPermission": "ALMA uses the camera so you can attach a photo to a message.",
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       [
@@ -101,14 +102,15 @@
       "./plugins/with-scene-lifecycle",
       "./plugins/with-lan-cleartext",
       "./plugins/with-strip-foreground-services",
-      "./plugins/with-app-intents"
+      "./plugins/with-app-intents",
+      "./plugins/with-credential-versions"
     ],
     "locales": {
       "es": "./locales/es.json"
     },
     "ios": {
       "bundleIdentifier": "do.alma.app",
-      "buildNumber": "66",
+      "buildNumber": "67",
       "supportsTablet": true,
       "icon": "./assets/icon.png",
       "config": {
@@ -117,6 +119,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "ALMA uses the camera so you can attach a photo to a message.",
         "NSPhotoLibraryUsageDescription": "ALMA uses your photo library so you can attach an image to a message.",
+        "NSMicrophoneUsageDescription": "ALMA uses the microphone for dictation and voice calls.",
         "NSLocalNetworkUsageDescription": "ALMA connects to your firm's server on the local network.",
         "CFBundleDisplayName": "ALMA",
         "NSAppTransportSecurity": {
@@ -126,7 +129,7 @@
     },
     "android": {
       "package": "do.alma.app",
-      "versionCode": 14,
+      "versionCode": 15,
       "softwareKeyboardLayoutMode": "resize",
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
@@ -140,7 +143,21 @@
     },
     "extra": {
       "router": {},
-      "supportsRTL": true
+      "supportsRTL": true,
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "RakazoWidgets",
+                  "bundleIdentifier": "do.alma.app.widgets"
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "runtimeVersion": {
       "policy": "appVersion"

@@ -186,6 +186,19 @@ export function MemorySettingsOverlay({
             <p className="text-[13px] text-muted-foreground">
               <Spinner aria-label={t`Loading memory settings…`} />
             </p>
+          ) : config?.managedByServer ? (
+            <section className="rounded-xl border border-border px-4 py-4">
+              <p className="text-[14px] text-foreground">
+                <Trans>Memory is managed by ALMA</Trans>
+              </p>
+              <div className="mt-4">
+                <ScopePicker
+                  value={defaultScope}
+                  disabled={busy}
+                  onChange={(scope) => void updateDefaultScope(scope)}
+                />
+              </div>
+            </section>
           ) : config ? (
             <section className="rounded-xl border border-border px-4 py-4">
               <div className="flex items-center justify-between gap-3">

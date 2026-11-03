@@ -1,4 +1,9 @@
-import { credentialIssue, MAX_PASSWORD_LENGTH, PASSWORD_RULES } from "@rakazo/core";
+import {
+  credentialIssue,
+  MAX_PASSWORD_LENGTH,
+  PASSWORD_RULES,
+  suggestEmailCorrection,
+} from "@rakazo/core";
 import { Redirect, useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -52,6 +57,9 @@ export default function SignIn() {
   const [mode, setMode] = useState<AuthMode>(() => initialAuthMode(requestedMode));
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailBlurred, setEmailBlurred] = useState(false);
+  const [warnedEmail, setWarnedEmail] = useState<string | null>(null);
+  const emailSuggestion = mode === "up" ? suggestEmailCorrection(email) : null;
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -149,6 +157,14 @@ export default function SignIn() {
     });
     if (issue) {
       setError(credentialIssueText(issue));
+      return;
+    }
+    if (emailSuggestion && warnedEmail !== email) {
+      setWarnedEmail(email);
+      setEmailBlurred(true);
+      AccessibilityInfo.announceForAccessibility(
+        t("Did you mean {email}?", { email: emailSuggestion }),
+      );
       return;
     }
     // An unfinished code would spend one of the code's three attempts.
@@ -255,6 +271,7 @@ export default function SignIn() {
                     height: Math.round((logoWidth * 67) / 259),
                     alignSelf: "center",
                     marginBottom: 28,
+                    tintColor: tokens.foreground,
                   }}
                 />
               ) : null}
@@ -398,7 +415,11 @@ export default function SignIn() {
                         placeholder={t("Email")}
                         placeholderTextColor={tokens.mutedForeground}
                         value={email}
-                        onChangeText={setEmail}
+                        onChangeText={(value) => {
+                          setEmail(value);
+                          setEmailBlurred(false);
+                        }}
+                        onBlur={() => setEmailBlurred(true)}
                         style={{
                           marginTop: mode === "up" ? 12 : 28,
                           backgroundColor: tokens.muted,
@@ -407,6 +428,18 @@ export default function SignIn() {
                           color: tokens.foreground,
                         }}
                       />
+                      {emailSuggestion && emailBlurred ? (
+                        <Pressable
+                          accessibilityRole="button"
+                          hitSlop={8}
+                          onPress={() => setEmail(emailSuggestion)}
+                          style={{ marginTop: 8, paddingHorizontal: 4 }}
+                        >
+                          <Text style={{ color: tokens.warning, fontSize: 14 }}>
+                            {t("Did you mean {email}?", { email: emailSuggestion })}
+                          </Text>
+                        </Pressable>
+                      ) : null}
                       {mode !== "forgot" ? (
                         <View
                           style={{

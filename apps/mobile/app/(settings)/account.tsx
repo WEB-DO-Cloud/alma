@@ -160,6 +160,7 @@ export default function Account() {
   }, [t]);
   const colorScheme = useResolvedAppearance();
   const trustedSites = useTrustedLinkSites();
+  const [messagingEnabled, setMessagingEnabled] = useState(false);
   const [archivedCount, setArchivedCount] = useState(0);
   // A list that fails to refresh keeps its last count, so a passing error doesn't hide the row.
   const archivedCounts = useRef({ bots: 0, groups: 0 });
@@ -273,6 +274,22 @@ export default function Account() {
   useFocusEffect(
     useCallback(() => {
       void loadTrustedLinkSites().catch(() => undefined);
+    }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      void rpc("messaging/status")
+        .then((status) => {
+          if (active) setMessagingEnabled(status.enabled);
+        })
+        .catch(() => {
+          if (active) setMessagingEnabled(false);
+        });
+      return () => {
+        active = false;
+      };
     }, []),
   );
 
@@ -647,7 +664,7 @@ export default function Account() {
                 : []),
               { title: t("Integrations"), href: "/integrations" },
               { title: t("Skills"), href: "/skills" },
-              { title: t("Messaging"), href: "/messaging" },
+              ...(messagingEnabled ? [{ title: t("Messaging"), href: "/messaging" } as const] : []),
               ...(me?.managedModel
                 ? []
                 : [{ title: t("AI data sharing"), href: "/ai-data-sharing" as const }]),

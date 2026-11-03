@@ -94,10 +94,32 @@ describe("billing checkout return", () => {
 
   it("hands a mobile checkout back to the app without a session", async () => {
     const { app, syncForActor } = mount(() => null, { actor: null });
-    const res = await app.request(`${BILLING_RETURN_PATH}?client=mobile`);
-    expect(res.status).toBe(303);
-    expect(res.headers.get("location")).toBe("rakazo://billing");
+    const res = await app.request(`${BILLING_RETURN_PATH}?client=mobile`, {
+      headers: {
+        "accept-language": "es-DO,es;q=0.9",
+        "user-agent": "Mozilla/5.0 (Linux; Android 16)",
+      },
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("text/html");
+    const html = await res.text();
+    expect(html).toContain("Pago completado");
+    expect(html).toContain("Volver a ALMA");
+    expect(html).toContain("intent://billing#Intent;scheme=rakazo;package=do.alma.app;end");
+    expect(html).toContain("location.replace");
     expect(syncForActor).not.toHaveBeenCalled();
+  });
+
+  it("uses English and the app scheme when the phone is not Android", async () => {
+    const { app } = mount(() => null, { actor: null });
+    const res = await app.request(`${BILLING_RETURN_PATH}?client=mobile&result=canceled`, {
+      headers: { "accept-language": "en-US", "user-agent": "Mozilla/5.0 (iPhone)" },
+    });
+    const html = await res.text();
+    expect(html).toContain("Payment canceled");
+    expect(html).toContain("Back to ALMA");
+    expect(html).toContain("rakazo://billing");
+    expect(html).not.toContain("intent://");
   });
 
   it("sends a signed-out visitor to the web origin", async () => {

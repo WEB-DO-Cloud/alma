@@ -130,5 +130,8 @@ describe("desktop release workflow", () => {
     );
     expect(workflow).toContain("CHANGELOG.md has no [$version] section");
     expect(workflow).toContain("--draft=false --latest");
+    expect(workflow).toContain('--title "ALMA $RELEASE_TAG"');
+    expect(workflow).toContain('if [[ "$app_id" != "do.alma.desktop" ]]; then');
+    expect(workflow).not.toContain("Rakazo $RELEASE_TAG");
   });
 });

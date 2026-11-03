@@ -12,34 +12,26 @@ function source(path: string) {
 }
 
 describe("Android call service", () => {
-  it("strips microphone and remote-messaging foreground services from the manifest", () => {
+  it("declares microphone and remote-messaging foreground services", () => {
     const manifest = source("AndroidManifest.xml");
+    expect(manifest).toContain('android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"');
     expect(manifest).toContain(
-      'android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" tools:node="remove"',
+      'android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"',
     );
-    expect(manifest).toContain(
-      'android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" tools:node="remove"',
-    );
-    expect(manifest).toContain(
-      'android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove"',
-    );
+    expect(manifest).toContain('android:name="android.permission.FOREGROUND_SERVICE"');
+    expect(manifest).not.toContain('tools:node="remove"');
     expect(manifest).toContain("android.permission.WAKE_LOCK");
     expect(manifest).toContain('android:name=".RakazoCallService"');
+    expect(manifest).toContain('android:foregroundServiceType="microphone"');
     expect(manifest).toContain('android:name=".RakazoNotificationService"');
-    expect(manifest).toContain('tools:remove="android:foregroundServiceType"');
-    expect(manifest).not.toContain("android:foregroundServiceType=");
-    expect(manifest).not.toContain('FOREGROUND_SERVICE_MICROPHONE" />');
-    expect(manifest).not.toContain('FOREGROUND_SERVICE_REMOTE_MESSAGING" />');
+    expect(manifest).toContain('android:foregroundServiceType="remoteMessaging"');
   });
 
-  it("does not start a microphone foreground service", () => {
+  it("starts a microphone foreground service for a call", () => {
     const service = source("java/com/rakazo/notifications/RakazoCallService.kt");
-    expect(service).not.toContain("startForeground");
-    expect(service).not.toContain("FOREGROUND_SERVICE_TYPE_MICROPHONE");
-    expect(service).not.toContain("startForegroundService");
-    expect(service).toContain("onResult(false)");
-    expect(service).toContain("context.stopService");
-    expect(service).toContain("runCatching");
+    expect(service).toContain("startForeground");
+    expect(service).toContain("FOREGROUND_SERVICE_TYPE_MICROPHONE");
+    expect(service).toContain("startForegroundService");
   });
 
   it("provides call strings in every shipped mobile locale", () => {

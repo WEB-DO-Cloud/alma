@@ -97,7 +97,8 @@ function launch(extraEnv: Record<string, string> = {}) {
 }
 
 test("first run offers ALMA Cloud first, with local and existing instances", async () => {
-  app = await launch();
+  // A packaged build hides This computer unless ALMA_DESKTOP_LOCAL_SERVER=1 turns it on.
+  app = await launch({ ALMA_DESKTOP_LOCAL_SERVER: "1" });
   if (process.env.RAKAZO_E2E_EXECUTABLE) {
     expect(await app.evaluate(({ app }) => app.isPackaged)).toBe(true);
   }
@@ -171,6 +172,19 @@ test("setup opens in the language the app last used", async () => {
   await expect(setup.getByRole("button", { name: "Continuar" })).toBeEnabled();
   await setup.screenshot({
     path: path.join(import.meta.dirname, "screenshots", "10-setup-spanish.png"),
+  });
+});
+
+test("setup lays out right to left in Hebrew", async () => {
+  await writeFile(path.join(userData, "ui-locale.txt"), "he\n");
+  app = await launch();
+  const setup = await app.firstWindow();
+
+  await expect(setup.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(setup.getByRole("heading", { name: "ברוכים הבאים ל-ALMA" })).toBeVisible();
+  await expect(setup.getByRole("button", { name: "המשך" })).toBeEnabled();
+  await setup.screenshot({
+    path: path.join(import.meta.dirname, "screenshots", "11-setup-hebrew.png"),
   });
 });
 

@@ -61,6 +61,16 @@ export async function passkeysAvailable(
   return (await loadNative()) !== null;
 }
 
+/** Name and code from the native sheet, so a failed create or get can be diagnosed. */
+function nativePasskeyError(error: unknown): Error {
+  const record = (error ?? {}) as { code?: unknown; name?: unknown; message?: unknown };
+  const name = typeof record.name === "string" ? record.name : "";
+  const code = record.code == null || record.code === "" ? "" : String(record.code);
+  console.warn("passkey failed", { name, code, message: record.message });
+  const detail = [name, code].filter(Boolean).join(" ");
+  return new Error(detail ? `${t("Could not continue")} (${detail})` : t("Could not continue"));
+}
+
 /** A dismissed native sheet resolves to null or rejects with a cancellation, never an error to show. */
 function cancelled(error: unknown): boolean {
   const { code, message } = (error ?? {}) as { code?: unknown; message?: unknown };
@@ -138,7 +148,7 @@ export function signInWithPasskey(): Promise<boolean> {
       credential = await passkeys.get(options.body);
     } catch (error) {
       if (cancelled(error)) return false;
-      throw new Error(t("Could not continue"));
+      throw nativePasskeyError(error);
     }
     if (!credential) return false;
     flow.requireCurrent();
@@ -190,7 +200,7 @@ export function addPasskey(): Promise<boolean> {
       credential = await passkeys.create(options.body);
     } catch (error) {
       if (cancelled(error)) return false;
-      throw new Error(t("Could not continue"));
+      throw nativePasskeyError(error);
     }
     if (!credential) return false;
     flow.requireCurrent();

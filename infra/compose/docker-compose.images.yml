@@ -138,6 +138,12 @@ x-app-environment: &app-environment
   GOOGLE_CLOUD_API_KEY:
   GROQ_API_KEY:
   HF_TOKEN:
+  # Server-wide memory provider (MEMORY_PROVIDER=honcho); see docs/self-host.md.
+  HONCHO_API_KEY:
+  HONCHO_BASE_URL:
+  HONCHO_REASONING_LEVEL:
+  MEMORY_DEFAULT_SCOPE:
+  MEMORY_PROVIDER:
   KIMI_API_KEY:
   META_API_KEY:
   MINIMAX_API_KEY:
@@ -492,6 +498,9 @@ services:
     # Directly, not through pnpm, so a stop reaches it (see the api command).
     working_dir: /app/apps/worker
     command: ["node", "--enable-source-maps", "dist/index.js"]
+    # A stop lets the running jobs finish rather than killing them mid-way, which would leave each
+    # locked for hours. Above JOB_DRAIN_TIMEOUT_MS in packages/adapters/src/wakeup.ts.
+    stop_grace_period: 50m
     healthcheck:
       test: ["CMD", "node", "dist/health-check.js"]
       interval: 30s

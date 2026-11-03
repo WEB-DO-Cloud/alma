@@ -52,6 +52,11 @@ jobs:
             echo "Tag $RELEASE_TAG does not match desktop version $version." >&2
             exit 1
           fi
+          app_id="$(node -p "require('./apps/desktop/package.json').build.appId")"
+          if [[ "$app_id" != "do.alma.desktop" ]]; then
+            echo "Desktop appId must stay do.alma.desktop." >&2
+            exit 1
+          fi
 
           tag_sha="$(git rev-parse "${RELEASE_TAG}^{commit}")"
           if [[ "$tag_sha" != "$GITHUB_SHA" ]]; then
@@ -496,7 +501,7 @@ jobs:
           ' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
           gh release create "$RELEASE_TAG" release-artifacts/* \
             --draft --notes-file "$RUNNER_TEMP/release-notes.md" --generate-notes \
-            --title "Rakazo $RELEASE_TAG" --verify-tag
+            --title "ALMA $RELEASE_TAG" --verify-tag
       - name: Publish the completed release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

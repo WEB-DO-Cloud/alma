@@ -3,6 +3,9 @@
 default_platform(:ios)
 
 APP_IDENTIFIER = "do.alma.app"
+# The Record Message Live Activity is drawn by this widget extension, signed with its own profile.
+WIDGET_IDENTIFIER = "#{APP_IDENTIFIER}.widgets"
+WIDGET_TARGET = "RakazoWidgets"
 PACKAGE_NAME = "do.alma.app"
 MOBILE_ROOT = File.expand_path("..", __dir__)
 REPO_ROOT = File.expand_path("../../..", __dir__)
@@ -45,7 +48,7 @@ def sync_certificates(type)
   options = {
     type: type,
     readonly: ci? && ENV["ALMA_MATCH_CREATE"] != "true",
-    app_identifier: APP_IDENTIFIER,
+    app_identifier: [APP_IDENTIFIER, WIDGET_IDENTIFIER],
   }
   options[:api_key] = app_store_api_key! if ci? || api_key_env?
   match(options)
@@ -95,7 +98,18 @@ def use_match_signing!
     code_sign_identity: "Apple Distribution",
     profile_name: profile
   )
-  profile
+  widget_profile = ENV["sigh_#{WIDGET_IDENTIFIER}_appstore_profile-name"].to_s
+  UI.user_error!("match did not export an App Store profile name for #{WIDGET_IDENTIFIER}.") if widget_profile.empty?
+  update_code_signing_settings(
+    path: project,
+    use_automatic_signing: false,
+    team_id: team,
+    targets: [WIDGET_TARGET],
+    bundle_identifier: WIDGET_IDENTIFIER,
+    code_sign_identity: "Apple Distribution",
+    profile_name: widget_profile
+  )
+  { APP_IDENTIFIER => profile, WIDGET_IDENTIFIER => widget_profile }
 end
 
 def ios_workspace
@@ -242,8 +256,7 @@ platform :ios do
     export_options = { method: "app-store" }
     unless ENV["BITRISE_USE_UPLOADED_SIGNING"] == "true"
       sync_certificates("appstore")
-      profile = use_match_signing!
-      export_options[:provisioningProfiles] = { APP_IDENTIFIER => profile }
+      export_options[:provisioningProfiles] = use_match_signing!
       export_options[:signingStyle] = "manual"
     end
     gym(

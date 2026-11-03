@@ -14,9 +14,9 @@ describe("ALMA skill", () => {
     expect(urls).toEqual(RAKAZO_DOCS_URLS);
     for (const url of urls) {
       const slug =
-        url === "https://alma.com.do/docs.md"
+        url === "https://app.alma.com.do/docs.md"
           ? publishedSlugs[0]
-          : /^https:\/\/alma\.com\.do\/docs\/([\w-]+)\.md$/.exec(url)?.[1];
+          : /^https:\/\/app\.alma\.com\.do\/docs\/([\w-]+)\.md$/.exec(url)?.[1];
       expect(publishedSlugs, url).toContain(slug);
       expect(existsSync(repoFile(`docs/${slug}.md`)), url).toBe(true);
     }

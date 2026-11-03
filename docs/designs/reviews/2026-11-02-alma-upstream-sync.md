@@ -15,8 +15,8 @@ Passes asked: implementation readiness, product scope, adversarial, comprehensio
 *   **Four deletions** are named: the APK download route, the Rakazo mark, `RepoCard.astro`, and `github.ts`.
 *   **Store URLs** are the App Store id `6829162072`, Play id `do.alma.app`, and `https://app.alma.com.do`.
 *   **Voice switch.** `ALMA_VOICE_PROVIDER` unset is off. Only `xai` enables it. Managed model does not override it. Spoken summaries keep upstream's control; playback uses the factory, which returns xAI only when operator voice is on.
-*   **Billing.** `price_data.unit_amount` is the resolved price (env, else `6900`, and `0` means free). It is not upstream's `1500` added beside `6900`. Tests that expect `1500` or `$10 / month` for this plan move to `6900`.
-*   **Spanish money.** Locale `es` formats USD with `es-DO`, which is `US$69`. The catalog `{price} / mes` then reads `US$69 / mes`.
+*   **Billing.** `price_data.unit_amount` is the resolved price (env, else `5900`, and `0` means free). It is not upstream's `1500` added beside `5900`. Tests that expect `1500` or `$10 / month` for this plan move to `5900`.
+*   **Spanish money.** Locale `es` formats USD with `es-DO`, which is `US$59`. The catalog `{price} / mes` then reads `US$59 / mes`.
 *   **Versions.** The check requires `1.0.12`, build `64`, and `versionCode` `13`, compared as numbers.
 *   **Legal sentences are quoted.** Dominican Republic, Santo Domingo, D.N. Party name and copyright are quoted. The xAI voice sentence is quoted, with the privacy-policy URL. A street address on the upstream page is deleted.
 *   **Drop list.** "Drop an ALMA screen edit that sections 1–9 do not name" replaces the shorter exception list that omitted legal copy, Hold to talk, and the draft pages.

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
-import { filterModelCatalog } from "@rakazo/core";
+import { filterModelChoices } from "@rakazo/core";
 import {
   Command,
   CommandEmpty,
@@ -18,6 +18,18 @@ import type { ModelCatalogEntry } from "../../lib/model-auth";
 
 function optionValue(option: ModelCatalogEntry) {
   return `${option.provider}:${option.id}`;
+}
+
+function filterModelCatalog(options: readonly ModelCatalogEntry[], query: string) {
+  const choices = options.map((option) => ({
+    option,
+    key: optionValue(option),
+    label: option.label,
+    provider: option.provider,
+    modelId: option.id,
+    providerLabel: option.providerName,
+  }));
+  return filterModelChoices(choices, query).map((choice) => choice.option);
 }
 
 export function ModelPicker({

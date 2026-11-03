@@ -49,6 +49,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     result = { ...result, android: { ...result.android, googleServicesFile } };
   }
 
+  const easProjectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID?.trim();
+  if (easProjectId) {
+    const extra = result.extra ?? {};
+    const eas =
+      extra.eas && typeof extra.eas === "object" ? (extra.eas as Record<string, unknown>) : {};
+    result = { ...result, extra: { ...extra, eas: { ...eas, projectId: easProjectId } } };
+  }
+
   // Upload hooks talk to hosted Sentry unless SENTRY_URL is a self-hosted collector.
   if (sentryUploadAllowed(process.env)) {
     result = {

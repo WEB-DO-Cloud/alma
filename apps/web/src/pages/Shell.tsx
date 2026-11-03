@@ -19,7 +19,7 @@ import {
 } from "@rakazo/core";
 import { fetchFresh, writeSaved } from "@rakazo/core/query";
 import type { GroupAvatarMember } from "@rakazo/ui-web";
-import { Button } from "@rakazo/ui-web";
+import { Button, toast } from "@rakazo/ui-web";
 import { useIsMobile } from "@rakazo/ui-web/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { Lock, Monitor, Moon, Plug, Plus, ScrollText, Sun, Users } from "lucide-react";
@@ -67,6 +67,7 @@ import { getToolActivityEnabled, subscribeToolActivity } from "../lib/tool-activ
 import type { AppearancePreference } from "../lib/ui-appearance";
 import { getUiAppearancePreference, setUiAppearance } from "../lib/ui-appearance";
 import { useDesktopBadge } from "../lib/use-desktop-badge";
+import { errorText } from "../lib/user-error";
 import { HostComputerPrompt } from "./HostComputerPrompt";
 import { RoutineList } from "./RoutineEditor";
 import { useSettingsNavItems } from "./settings-nav";
@@ -684,6 +685,22 @@ function SpaceShell() {
     },
     [active?.id, groupId, read.markBotUnread, read.markGroupUnreadFrom],
   );
+  const reportAssistantResponse = useCallback(
+    async (message: ThreadMessage) => {
+      const botId = active?.id;
+      if (!botId && !groupId) return;
+      try {
+        await rpc.threads.report({
+          ...(groupId ? { groupId } : { botId: botId! }),
+          messageId: message.id,
+        });
+        toast.success(t`Report sent`, { description: t`We'll review this response.` });
+      } catch (error) {
+        toast.error(errorText(error, t`Could not report this response`));
+      }
+    },
+    [groupId, active?.id, rpc, t],
+  );
   const openPeerMessages = useCallback(
     (peer: { peerBotId: string; peerBotName: string }) => {
       setPeerConversation(peer);
@@ -994,6 +1011,7 @@ function SpaceShell() {
             activeGroup={activeGroup}
             activeSnapshot={activeSnapshot}
             phoneCallsEnabled={Boolean(bootstrapMe?.phoneCallsEnabled)}
+            voiceReady={Boolean(voiceStatus?.ready)}
             inCall={Boolean(active) && call?.botId === active?.id}
             panelOpen={chatPanelOpen}
             onOpenNavigation={() => setMobileSidebarOpen(true)}
@@ -1050,6 +1068,7 @@ function SpaceShell() {
               onAnswer={composer.answerMessage}
               onReply={replyToMessage}
               onMarkUnread={markMessageUnread}
+              onReport={reportAssistantResponse}
               onQuote={quoteMessage}
               onReact={composer.reactToMessage}
               onJumpToMessage={jumpToReplyMessage}

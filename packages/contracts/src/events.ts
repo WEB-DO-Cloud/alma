@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { AgentImportSetupItemSchema } from "./agent-import-setup.js";
-import { botSecretDestinationSchema, LoginFieldLabels } from "./bot-secrets.js";
+import { botSecretDestinationSchema, LoginFieldLabels, OneTimeCodeTarget } from "./bot-secrets.js";
 import { Id, ThinkingLevelSchema } from "./ids.js";
 import { McpTransportSchema } from "./mcp.js";
 
@@ -136,6 +136,8 @@ export const MessageBlock = z.discriminatedUnion("kind", [
     // an ask persisted before an owner toggles the private-HTTP flag still
     // validates on replay.
     credential: botSecretDestinationSchema({ allowPrivateHttpOrigin: true }).optional(),
+    /** A texted or emailed code for this site's page; answered once, never saved. */
+    oneTimeCode: OneTimeCodeTarget.optional(),
     /** The fields a login card asks for, by label; absent means DEFAULT_LOGIN_FIELD_LABELS. */
     loginFields: LoginFieldLabels.optional(),
     /** On a fetch approval, the site an "always" answer allows. */
@@ -456,6 +458,14 @@ export const ThreadMessageSchema = z.object({
   createdAt: z.string(),
 });
 export type ThreadMessage = z.infer<typeof ThreadMessageSchema>;
+
+export function canReportAssistantMessage(message: Pick<ThreadMessage, "id" | "role">): boolean {
+  return (
+    message.role === "bot" &&
+    !message.id.startsWith("progress:") &&
+    !message.id.startsWith("subagent:")
+  );
+}
 
 export function canReactToThreadMessage(message: Pick<ThreadMessage, "id" | "blocks">): boolean {
   return (

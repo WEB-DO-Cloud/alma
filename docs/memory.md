@@ -10,6 +10,10 @@ indexed in a file called `MEMORY.md`.
 
 You can also just tell it: "remember that invoices go to the finance folder".
 
+A bot keeps its notes short, one fact per line. When something changes, it rewrites the old note
+instead of adding a second one, and it deletes notes that no longer hold. It keeps at most 4 KB of
+notes in `MEMORY.md`, merging or removing notes to make room. You can still add more by hand.
+
 To see what a bot remembers, click its name at the top of the chat and open **Memory**. Each note can
 be downloaded or deleted.
 
@@ -20,6 +24,18 @@ written. Those go in **Shared memory**: every bot in the [space](./spaces.md) re
 keeps them up to date.
 
 Find it in **Settings → Memory**.
+
+## Server-managed memory
+
+A deployment can set one memory provider for every Space:
+
+- `MEMORY_PROVIDER=honcho`
+- `HONCHO_BASE_URL`, for example `http://honcho-api:8000`
+- `HONCHO_API_KEY`
+- `HONCHO_REASONING_LEVEL=low`
+- `MEMORY_DEFAULT_SCOPE=isolated` or `shared`
+
+Each Space still gets its own Honcho workspace. The address and key stay on the server. They are not shown in the app and do not need `MCP_ALLOW_PRIVATE_ENDPOINT`, because the address comes from the server's own configuration. **Settings → Memory** then says the memory is managed by ALMA. **Default scope** and `MEMORY.md` stay.
 
 ## Memory providers
 

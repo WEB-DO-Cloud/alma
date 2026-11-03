@@ -420,6 +420,10 @@ msgstr "{toolCount, plural, one {#個のツール} other {#個のツール}}"
 msgid "@{0}"
 msgstr "@{0}"
 
+#: src/components/ModelCredits.tsx
+msgid "/ month"
+msgstr "/ 月"
+
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
 msgstr ""
@@ -1032,6 +1036,10 @@ msgstr "Bearerトークン"
 msgid "Billing"
 msgstr "請求"
 
+#: src/components/ModelCredits.tsx
+msgid "Billing period"
+msgstr "請求期間"
+
 #: src/components/ApprovalRulesSettings.tsx
 msgid "Block"
 msgstr "ブロック"
@@ -1161,6 +1169,7 @@ msgstr "画像を読み取れません"
 #: src/components/ComputerMaintenanceActions.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/components/markdown-link-prompt.tsx
+#: src/components/ModelCredits.tsx
 #: src/components/PasskeySettings.tsx
 #: src/components/teach/TeachComputerOverlay.tsx
 #: src/components/VaultSettings.tsx
@@ -1476,10 +1485,6 @@ msgstr "列 {index}"
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Comfortable"
 msgstr "ゆったり"
-
-#: src/pages/RoutineEditor.tsx
-msgid "Coming soon"
-msgstr "近日公開"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/RoutineEditor.tsx
@@ -2126,6 +2131,10 @@ msgstr "スペースの名前を変更できませんでした"
 msgid "Could not render chart"
 msgstr "チャートを表示できませんでした"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "この回答を報告できませんでした"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "パスワードをリセットできませんでした"
@@ -2410,6 +2419,10 @@ msgstr "{label}をカスタマイズ"
 msgid "Customize bot avatar"
 msgstr "ボットのアバターをカスタマイズ"
 
+#: src/pages/shell/bot-panel.tsx
+msgid "Daily check-ins on unfinished work"
+msgstr "未完了の作業を毎日確認"
+
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Shell.tsx
 msgid "Dark"
@@ -2585,6 +2598,10 @@ msgstr ""
 #: src/lib/dictation.ts
 msgid "Dictation failed."
 msgstr ""
+
+#: src/pages/Auth.tsx
+msgid "Did you mean <0>{emailSuggestion}</0>?"
+msgstr "<0>{emailSuggestion}</0> のことですか？"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disable a tool"
@@ -3460,10 +3477,6 @@ msgstr "MEMORY.md に加えて、ボットが意味に基づいて事実を保�
 msgid "Light"
 msgstr "ライト"
 
-#: src/pages/RoutineEditor.tsx
-msgid "Linear issue"
-msgstr "Linear課題"
-
 #: src/pages/SpaceSearch.tsx
 msgid "Link"
 msgstr ""
@@ -3712,6 +3725,10 @@ msgstr "メモリ {position}"
 msgid "Memory for {title}"
 msgstr "{title}のメモリ"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "メモリーは ALMA が管理しています"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "メモリの範囲"
@@ -3842,6 +3859,7 @@ msgstr "モデル接続"
 msgid "Model id"
 msgstr "モデルID"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
@@ -3855,8 +3873,8 @@ msgstr "モデル"
 msgid "Models at provider cost"
 msgstr "プロバイダー原価でのモデル利用"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/Onboarding.tsx
 msgid "Models from server"
 msgstr "サーバーのモデル"
 
@@ -3872,6 +3890,7 @@ msgstr "月曜日"
 msgid "month"
 msgstr "月"
 
+#: src/components/ModelCredits.tsx
 #: src/lib/cron.ts
 msgid "Monthly"
 msgstr "毎月"
@@ -4271,6 +4290,10 @@ msgstr "1回のみ"
 msgid "One-time purchase. Credits do not expire."
 msgstr "1回限りの購入です。クレジットは失効しません。"
 
+#: src/components/AskCard.tsx
+msgid "Only enter a code {codeHost} sent you."
+msgstr ""
+
 #: src/components/markdown-link-prompt.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/shell/computer-panel.tsx
@@ -4364,8 +4387,8 @@ msgstr ""
 msgid "Original message unavailable"
 msgstr "元のメッセージを表示できません"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/Onboarding.tsx
 msgid "Other model…"
 msgstr "その他のモデル…"
 
@@ -4385,10 +4408,6 @@ msgstr "{page} / {count} ページ"
 #: src/pages/NotFound.tsx
 msgid "Page not found"
 msgstr "ページが見つかりません"
-
-#: src/pages/RoutineEditor.tsx
-msgid "PagerDuty incident"
-msgstr "PagerDutyインシデント"
 
 #: src/components/PasskeySettings.tsx
 msgid "Passkey"
@@ -4785,6 +4804,7 @@ msgid "Release control"
 msgstr "操作を戻す"
 
 #: src/components/InstructionSettings.tsx
+#: src/lib/client-update.ts
 msgid "Reload"
 msgstr "再読み込み"
 
@@ -4913,6 +4933,14 @@ msgstr "返信をキャンセルしました"
 #: src/pages/shell/composer.tsx
 msgid "Replying to {0}"
 msgstr "{0}に返信中"
+
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "回答を報告"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "報告を送信しました"
 
 #: src/lib/user-error.ts
 msgid "Request a new code"
@@ -5200,6 +5228,7 @@ msgstr "スコープ（任意）"
 msgid "Screen not connected"
 msgstr "画面が接続されていません"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
@@ -5234,6 +5263,7 @@ msgstr "ドメインで検索"
 msgid "Search integrations.sh"
 msgstr "integrations.shを検索"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5322,10 +5352,6 @@ msgstr "送信中…"
 #: src/components/AskCard.tsx
 msgid "Sent"
 msgstr ""
-
-#: src/pages/RoutineEditor.tsx
-msgid "Sentry alert"
-msgstr "Sentryアラート"
 
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Serenity endpoint is required."
@@ -5623,9 +5649,21 @@ msgstr ""
 msgid "Start {trialDays}-day free trial"
 msgstr "{trialDays}日間の無料トライアルを開始"
 
+#: src/components/ModelCredits.tsx
+msgid "Start plan"
+msgstr "プランを開始"
+
+#: src/components/ModelCredits.tsx
+msgid "Start plan now"
+msgstr "今すぐプランを開始"
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Start recording"
 msgstr "録画を開始"
+
+#: src/components/ModelCredits.tsx
+msgid "Start your plan now?"
+msgstr "今すぐプランを開始しますか？"
 
 #: src/pages/ActivityList.tsx
 msgid "Starting"
@@ -5702,6 +5740,10 @@ msgid "Subscribe"
 msgstr "申し込む"
 
 #: src/components/ModelCredits.tsx
+msgid "Subscribe for {annualPrice} / year"
+msgstr "年額 {annualPrice} で登録"
+
+#: src/components/ModelCredits.tsx
 msgid "Subscribe for {price} / month"
 msgstr "月額 {price} で登録"
 
@@ -5731,9 +5773,18 @@ msgstr "画像に対応"
 msgid "Supports thinking"
 msgstr "思考に対応"
 
+#: src/components/ModelCredits.tsx
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Switch"
 msgstr "切り替え"
+
+#: src/components/ModelCredits.tsx
+msgid "Switch to yearly"
+msgstr "年払いに切り替え"
+
+#: src/components/ModelCredits.tsx
+msgid "Switch to yearly?"
+msgstr "年払いに切り替えますか？"
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Switching…"
@@ -5771,10 +5822,6 @@ msgstr "チームのコンピューター"
 #: src/pages/RoutineEditor.tsx
 msgid "Teams message"
 msgstr "Teamsメッセージ"
-
-#: src/pages/RoutineEditor.tsx
-msgid "Teams not enabled"
-msgstr "Teamsが有効になっていません"
 
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Test"
@@ -6115,12 +6162,17 @@ msgstr "トライアル"
 msgid "Trial ends {day}"
 msgstr "トライアル終了: {day}"
 
+#: src/components/ModelCredits.tsx
+msgid "Trials get fewer hours to prevent abuse."
+msgstr "不正利用を防ぐため、トライアルでは時間が少なくなっています。"
+
 #: src/components/TrustedLinkSitesSettings.tsx
 msgid "Trusted sites"
 msgstr "信頼済みサイト"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Onboarding.tsx
+#: src/pages/SpaceSearch.tsx
 msgid "Try again"
 msgstr "再試行"
 
@@ -6205,6 +6257,10 @@ msgstr "指示を更新しますか？"
 #: src/components/ComputerUpdateProgress.tsx
 msgid "Update progress"
 msgstr "更新の進行状況"
+
+#: src/lib/client-update.ts
+msgid "Update required"
+msgstr "アップデートが必要です"
 
 #: src/components/VaultSettings.tsx
 msgid "Updated {updated}"
@@ -6396,6 +6452,10 @@ msgstr "起動"
 msgid "Wallet"
 msgstr ""
 
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "この回答を確認します。"
+
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
 msgstr "Web、デスクトップ、モバイル"
@@ -6525,6 +6585,10 @@ msgstr "ワークスペース"
 msgid "year"
 msgstr "年"
 
+#: src/components/ModelCredits.tsx
+msgid "Yearly"
+msgstr "年払い"
+
 #: src/pages/shell/chat-context.tsx
 #: src/pages/shell/sidebar-roster.tsx
 msgid "Yesterday"
@@ -6559,6 +6623,10 @@ msgstr "あなたが操作中"
 msgid "Your Anthropic"
 msgstr "お使いのAnthropic"
 
+#: src/components/ModelCredits.tsx
+msgid "Your card is charged {annualPrice} today, less the unused part of this month."
+msgstr "本日カードに{annualPrice}が請求されます（今月の未使用分を差し引きます）。"
+
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
 msgstr ""
@@ -6590,6 +6658,10 @@ msgstr "お使いのOpenAI"
 msgid "Your OpenRouter"
 msgstr "お使いのOpenRouter"
 
+#: src/components/ModelCredits.tsx
+msgid "Your plan becomes {annualPrice} / year when your trial ends."
+msgstr "トライアル終了後、プランは年額 {annualPrice} になります。"
+
 #: src/components/integrations/skills-dialog.tsx
 msgid "Your skills"
 msgstr ""
@@ -6601,6 +6673,14 @@ msgstr "自分のサブスクリプションまたはAPIキー"
 #: src/pages/Welcome.tsx
 msgid "Your team of always-on agents<0/>that you can give real work to."
 msgstr "実際の仕事を任せられる、<0/>常時稼働のエージェントチーム。"
+
+#: src/components/ModelCredits.tsx
+msgid "Your trial ends and your card is charged {price} today."
+msgstr "トライアルが終了し、本日カードに{price}が請求されます。"
+
+#: src/components/ModelCredits.tsx
+msgid "Your trial ends and your card is charged today."
+msgstr "トライアルが終了し、本日カードに請求されます。"
 
 #: src/lib/user-error.ts
 msgid "Your voice provider is out of credit."

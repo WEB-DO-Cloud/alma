@@ -1,10 +1,10 @@
 import type { BillingProvider } from "@rakazo/adapter-kit";
 import type { Actor } from "@rakazo/contracts";
-import { MOBILE_BILLING_CALLBACK_URL } from "@rakazo/contracts";
 import { getLogger } from "@rakazo/logging";
 import type { Hono } from "hono";
 import type { BillingService } from "./billing.js";
 import { BILLING_RETURN_PATH } from "./billing.js";
+import { billingReturnPage } from "./billing-return-page.js";
 import { readBoundedBody } from "./http-body.js";
 
 export const BILLING_WEBHOOK_PATH = "/api/v1/billing/webhook";
@@ -38,7 +38,18 @@ export function mountBillingRoutes(
 
   app.get(BILLING_RETURN_PATH, async (c) => {
     // The in-app browser has no session; the app refreshes billing once it is back.
-    if (c.req.query("client") === "mobile") return c.redirect(MOBILE_BILLING_CALLBACK_URL, 303);
+    // Android Custom Tabs block a custom-scheme redirect, so the page offers a button too.
+    if (c.req.query("client") === "mobile") {
+      return c.body(
+        billingReturnPage({
+          acceptLanguage: c.req.header("accept-language"),
+          userAgent: c.req.header("user-agent"),
+          canceled: c.req.query("result") === "canceled",
+        }),
+        200,
+        { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" },
+      );
+    }
     const actor = await deps.authenticate(c.req.raw);
     if (!actor) return c.redirect(deps.webOrigin, 303);
     try {

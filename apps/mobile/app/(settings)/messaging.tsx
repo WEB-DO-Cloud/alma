@@ -222,209 +222,217 @@ export default function MessagingSettings() {
       ) : shownError ? (
         <Text style={styles.error}>{shownError}</Text>
       ) : null}
-      <SettingsGroup label={t("Requests")}>
-        {invitedChannels.map((channel) => (
-          <SettingsRow
-            key={channel.id}
-            title={channel.name ?? t("Group")}
-            detail={channelDetail(channel)}
-            trailing={respond((accept) =>
-              rpc("messaging/channels/respond", { membershipId: channel.id, accept }),
-            )}
-          />
-        ))}
-        {incomingConnections.map((connection) => (
-          <SettingsRow
-            key={connection.id}
-            title={`${connection.peerOwnerLabel}'s ${connection.peerBotName}`}
-            trailing={respond((accept) =>
-              rpc("messaging/connections/respond", { connectionId: connection.id, accept }),
-            )}
-          />
-        ))}
-      </SettingsGroup>
-      {slackInstall || slackInstallations.length ? (
-        <SettingsGroup>
-          {slackInstallations.length === 0 ? (
-            <SettingsRow
-              title={messagingProviderName("slack")}
-              detail={t("Chat with your bot from Slack.")}
-              trailing={
-                <View style={styles.actions}>
-                  {memberLink ? memberLinkButton : null}
-                  <NativeActionButton
-                    label={t("Connect")}
-                    prominence="quiet"
-                    size="compact"
-                    fill={false}
-                    variant="text"
-                    disabled={busy}
-                    onPress={installSlack}
-                  />
-                </View>
-              }
-            />
-          ) : (
-            slackInstallations.map((installation) => (
+      {status && !status.enabled ? (
+        <Text style={styles.empty}>{t("No chat apps are connected on this server")}</Text>
+      ) : null}
+      {status?.enabled ? (
+        <>
+          <SettingsGroup label={t("Requests")}>
+            {invitedChannels.map((channel) => (
               <SettingsRow
-                key={installation.id}
-                title={messagingProviderName(installation.provider)}
-                detail={[
-                  installation.workspaceName,
-                  installation.botName ?? botName(installation.botId),
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-                trailing={
-                  <View style={styles.actions}>
-                    {status?.providers.includes(installation.provider) ? (
+                key={channel.id}
+                title={channel.name ?? t("Group")}
+                detail={channelDetail(channel)}
+                trailing={respond((accept) =>
+                  rpc("messaging/channels/respond", { membershipId: channel.id, accept }),
+                )}
+              />
+            ))}
+            {incomingConnections.map((connection) => (
+              <SettingsRow
+                key={connection.id}
+                title={`${connection.peerOwnerLabel}'s ${connection.peerBotName}`}
+                trailing={respond((accept) =>
+                  rpc("messaging/connections/respond", { connectionId: connection.id, accept }),
+                )}
+              />
+            ))}
+          </SettingsGroup>
+          {slackInstall || slackInstallations.length ? (
+            <SettingsGroup>
+              {slackInstallations.length === 0 ? (
+                <SettingsRow
+                  title={messagingProviderName("slack")}
+                  detail={t("Chat with your bot from Slack.")}
+                  trailing={
+                    <View style={styles.actions}>
+                      {memberLink ? memberLinkButton : null}
                       <NativeActionButton
-                        label={t("Link DMs")}
+                        label={t("Connect")}
                         prominence="quiet"
                         size="compact"
                         fill={false}
                         variant="text"
                         disabled={busy}
-                        onPress={() => startLink(installation.provider, installation.botId)}
+                        onPress={installSlack}
                       />
-                    ) : null}
-                    {textAction(
-                      t("Disconnect"),
-                      () => rpc("messaging/installations/remove", { id: installation.id }),
-                      "destructive",
-                    )}
-                  </View>
-                }
-              />
-            ))
-          )}
-          {memberLink && slackInstallations.length ? (
-            <SettingsRow title={messagingProviderName("slack")} trailing={memberLinkButton} />
-          ) : null}
-          {slackInstall && slackInstallations.length ? (
-            <SettingsRow
-              accessibilityRole="button"
-              disabled={busy}
-              onPress={installSlack}
-              title={t("Add workspace")}
-            />
-          ) : null}
-        </SettingsGroup>
-      ) : null}
-      <SettingsGroup>
-        {status?.identities.map((identity) => (
-          <SettingsRow
-            key={identity.id}
-            title={messagingProviderName(identity.provider)}
-            detail={`${identity.address}, ${identity.botName}`}
-            trailing={textAction(
-              t("Unlink"),
-              () => rpc("messaging/identities/unlink", { identityId: identity.id }),
-              "destructive",
-            )}
-          />
-        ))}
-      </SettingsGroup>
-      <SettingsGroup>
-        {bots.length > 1 && (connectChoices.length || memberLink) ? (
-          <MenuPicker
-            label={t("Bot")}
-            choices={bots.map((bot) => ({ key: bot.id, label: bot.name }))}
-            value={botId}
-            onChange={(id) => {
-              setSelectedBotId(id);
-              setLink(null);
-            }}
-          />
-        ) : null}
-        {botId && connectChoices.length ? (
-          <MenuPickerMenu
-            label={t("Connect a chat app")}
-            choices={connectChoices}
-            value=""
-            disabled={busy}
-            onChange={(provider) => startLink(provider)}
-          >
-            <View>
-              <SettingsRow
-                accessibilityLabel={t("Connect a chat app")}
-                accessibilityRole="button"
-                accessible
-                title={t("Connect a chat app")}
-                trailing={
-                  <NativeSymbol
-                    android="chevron-expand"
-                    color={native.tertiaryLabel}
-                    ios="chevron.up.chevron.down"
-                    size={13}
+                    </View>
+                  }
+                />
+              ) : (
+                slackInstallations.map((installation) => (
+                  <SettingsRow
+                    key={installation.id}
+                    title={messagingProviderName(installation.provider)}
+                    detail={[
+                      installation.workspaceName,
+                      installation.botName ?? botName(installation.botId),
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                    trailing={
+                      <View style={styles.actions}>
+                        {status?.providers.includes(installation.provider) ? (
+                          <NativeActionButton
+                            label={t("Link DMs")}
+                            prominence="quiet"
+                            size="compact"
+                            fill={false}
+                            variant="text"
+                            disabled={busy}
+                            onPress={() => startLink(installation.provider, installation.botId)}
+                          />
+                        ) : null}
+                        {textAction(
+                          t("Disconnect"),
+                          () => rpc("messaging/installations/remove", { id: installation.id }),
+                          "destructive",
+                        )}
+                      </View>
+                    }
                   />
+                ))
+              )}
+              {memberLink && slackInstallations.length ? (
+                <SettingsRow title={messagingProviderName("slack")} trailing={memberLinkButton} />
+              ) : null}
+              {slackInstall && slackInstallations.length ? (
+                <SettingsRow
+                  accessibilityRole="button"
+                  disabled={busy}
+                  onPress={installSlack}
+                  title={t("Add workspace")}
+                />
+              ) : null}
+            </SettingsGroup>
+          ) : null}
+          <SettingsGroup>
+            {status?.identities.map((identity) => (
+              <SettingsRow
+                key={identity.id}
+                title={messagingProviderName(identity.provider)}
+                detail={`${identity.address}, ${identity.botName}`}
+                trailing={textAction(
+                  t("Unlink"),
+                  () => rpc("messaging/identities/unlink", { identityId: identity.id }),
+                  "destructive",
+                )}
+              />
+            ))}
+          </SettingsGroup>
+          <SettingsGroup>
+            {bots.length > 1 && (connectChoices.length || memberLink) ? (
+              <MenuPicker
+                label={t("Bot")}
+                choices={bots.map((bot) => ({ key: bot.id, label: bot.name }))}
+                value={botId}
+                onChange={(id) => {
+                  setSelectedBotId(id);
+                  setLink(null);
+                }}
+              />
+            ) : null}
+            {botId && connectChoices.length ? (
+              <MenuPickerMenu
+                label={t("Connect a chat app")}
+                choices={connectChoices}
+                value=""
+                disabled={busy}
+                onChange={(provider) => startLink(provider)}
+              >
+                <View>
+                  <SettingsRow
+                    accessibilityLabel={t("Connect a chat app")}
+                    accessibilityRole="button"
+                    accessible
+                    title={t("Connect a chat app")}
+                    trailing={
+                      <NativeSymbol
+                        android="chevron-expand"
+                        color={native.tertiaryLabel}
+                        ios="chevron.up.chevron.down"
+                        size={13}
+                      />
+                    }
+                  />
+                </View>
+              </MenuPickerMenu>
+            ) : null}
+          </SettingsGroup>
+          {link && Date.parse(link.expiresAt) > Date.now() ? (
+            <Text selectable style={styles.code}>
+              {linkAddress
+                ? t("Send {code} to {address} from {app} within 10 minutes.", {
+                    code: link.code,
+                    address: linkAddress,
+                    app: messagingProviderName(link.provider),
+                  })
+                : t("Send {code} from {app} within 10 minutes.", {
+                    code: link.code,
+                    app: messagingProviderName(link.provider),
+                  })}
+            </Text>
+          ) : null}
+          <SettingsGroup label={t("Conversations")}>
+            {joinedChannels.map((channel) => (
+              <SettingsRow
+                key={channel.id}
+                title={channel.name ?? t("Group")}
+                detail={channelDetail(channel)}
+                trailing={textAction(t("Leave"), () =>
+                  rpc("messaging/channels/leave", { membershipId: channel.id }),
+                )}
+              />
+            ))}
+            {otherConnections.map((connection) => (
+              <SettingsRow
+                key={connection.id}
+                title={`${connection.peerOwnerLabel}'s ${connection.peerBotName}`}
+                value={connection.status === "pending" ? t("Pending") : undefined}
+                trailing={
+                  connection.status === "approved"
+                    ? textAction(t("Revoke"), () =>
+                        rpc("messaging/connections/revoke", { connectionId: connection.id }),
+                      )
+                    : undefined
                 }
               />
-            </View>
-          </MenuPickerMenu>
-        ) : null}
-      </SettingsGroup>
-      {link && Date.parse(link.expiresAt) > Date.now() ? (
-        <Text selectable style={styles.code}>
-          {linkAddress
-            ? t("Send {code} to {address} from {app} within 10 minutes.", {
-                code: link.code,
-                address: linkAddress,
-                app: messagingProviderName(link.provider),
-              })
-            : t("Send {code} from {app} within 10 minutes.", {
-                code: link.code,
-                app: messagingProviderName(link.provider),
-              })}
-        </Text>
+            ))}
+            {rooms.map((room) => (
+              <SettingsRow
+                key={room.id}
+                title={room.displayName || t("External conversation")}
+                detail={messagingProviderName(room.provider)}
+                chevron="right"
+                accessibilityRole="button"
+                onPress={() =>
+                  router.push({
+                    pathname: "/team-conversation",
+                    params: { conversationId: room.id },
+                  })
+                }
+              />
+            ))}
+          </SettingsGroup>
+        </>
       ) : null}
-      <SettingsGroup label={t("Conversations")}>
-        {joinedChannels.map((channel) => (
-          <SettingsRow
-            key={channel.id}
-            title={channel.name ?? t("Group")}
-            detail={channelDetail(channel)}
-            trailing={textAction(t("Leave"), () =>
-              rpc("messaging/channels/leave", { membershipId: channel.id }),
-            )}
-          />
-        ))}
-        {otherConnections.map((connection) => (
-          <SettingsRow
-            key={connection.id}
-            title={`${connection.peerOwnerLabel}'s ${connection.peerBotName}`}
-            value={connection.status === "pending" ? t("Pending") : undefined}
-            trailing={
-              connection.status === "approved"
-                ? textAction(t("Revoke"), () =>
-                    rpc("messaging/connections/revoke", { connectionId: connection.id }),
-                  )
-                : undefined
-            }
-          />
-        ))}
-        {rooms.map((room) => (
-          <SettingsRow
-            key={room.id}
-            title={room.displayName || t("External conversation")}
-            detail={messagingProviderName(room.provider)}
-            chevron="right"
-            accessibilityRole="button"
-            onPress={() =>
-              router.push({
-                pathname: "/team-conversation",
-                params: { conversationId: room.id },
-              })
-            }
-          />
-        ))}
-      </SettingsGroup>
     </ScrollView>
   );
 }
 function createStyles() {
   return StyleSheet.create({
     content: { padding: 16, gap: 16 },
+    empty: { color: native.label, fontSize: 16, lineHeight: 22 },
     actions: { flexDirection: "row", alignItems: "center", gap: 8 },
     code: { color: native.label, padding: 12 },
     error: { color: mobileTokens().destructive, padding: 12 },

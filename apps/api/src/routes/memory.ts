@@ -11,6 +11,7 @@ import { isDeletableMemoryDocument } from "@rakazo/contracts";
 import { findSpaceMemoryConfig, IsolationError } from "@rakazo/db";
 import {
   disconnectMemoryProvider,
+  managedMemoryView,
   persistMemoryProviderConfig,
   serializeSpaceMemoryConfig,
   updateMemoryProviderDefaultScope,
@@ -137,7 +138,14 @@ export function memoryRoutes(ctx: RouterContext) {
         return docs.map((d) => `# ${d.path}\n\n${d.content}`).join("\n\n");
       }),
       providerConfig: authed.memory.providerConfig.handler(async ({ context }) => {
+        const deployment = deps.env.deploymentMemory;
         const config = await findSpaceMemoryConfig(deps.prisma, context.actor.spaceId);
+        if (deployment) {
+          return managedMemoryView({
+            defaultMemoryScope: config?.defaultMemoryScope ?? deployment.defaultScope,
+            updatedAt: config?.updatedAt,
+          });
+        }
         return config ? serializeSpaceMemoryConfig(config) : null;
       }),
       connectProvider: authed.memory.connectProvider.handler(async ({ context, input }) =>

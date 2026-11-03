@@ -10,7 +10,7 @@ export function formatBillingPrice(price: Price, locale: string): string {
   return t`${amount} / ${period}`;
 }
 
-/** Spanish (DR) renders USD as US$69, which the `{price} / mes` catalog then shows as US$69 / mes. */
+/** Spanish (DR) renders USD as US$59, which the `{price} / mes` catalog then shows as US$59 / mes. */
 function moneyLocale(locale: string): string {
   return locale === "es" ? "es-DO" : locale;
 }

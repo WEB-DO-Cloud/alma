@@ -1,37 +1,36 @@
 import { buildSkillMd } from "@rakazo/core";
 
+const HELP_DOCS_ORIGIN = "https://app.alma.com.do";
 const RAKAZO_DOCS: ReadonlyArray<readonly [topics: string, url: string]> = [
-  ["Getting started, first bot, what ALMA does", "https://alma.com.do/docs.md"],
+  ["Getting started, first bot, what ALMA does", `${HELP_DOCS_ORIGIN}/docs.md`],
   [
     "Creating bots, chatting, bot settings, sidebar, search",
-    "https://alma.com.do/docs/bots-and-chats.md",
+    `${HELP_DOCS_ORIGIN}/docs/bots-and-chats.md`,
   ],
-  ["Importing an OpenClaw, Hermes or ChatGPT agent", "https://alma.com.do/docs/import-an-agent.md"],
+  ["Importing an OpenClaw, Hermes or ChatGPT agent", `${HELP_DOCS_ORIGIN}/docs/import-an-agent.md`],
   [
     "Connecting apps and integrations (Gmail, GitHub, MCP tools)",
-    "https://alma.com.do/docs/integrations.md",
+    `${HELP_DOCS_ORIGIN}/docs/integrations.md`,
   ],
-  ["Slack, Telegram, WhatsApp and other chat apps", "https://alma.com.do/docs/messaging-apps.md"],
-  ["Routines, schedules and triggers", "https://alma.com.do/docs/routines.md"],
-  ["The bot's computer, files, using your own computer", "https://alma.com.do/docs/computer.md"],
-  ["Memory", "https://alma.com.do/docs/memory.md"],
-  ["Skills", "https://alma.com.do/docs/skills.md"],
-  ["Approvals, Allow and Block lists", "https://alma.com.do/docs/approvals.md"],
-  ["Group chats, bots working together, subagents", "https://alma.com.do/docs/groups.md"],
-  ["Voice, calls, spoken replies", "https://alma.com.do/docs/voice-and-calls.md"],
-  ["Models, providers, API keys, fallbacks, usage", "https://alma.com.do/docs/models.md"],
-  ["Spaces", "https://alma.com.do/docs/spaces.md"],
-  ["Saved credentials and website logins", "https://alma.com.do/docs/bot-secrets.md"],
+  ["Slack, Telegram, WhatsApp and other chat apps", `${HELP_DOCS_ORIGIN}/docs/messaging-apps.md`],
+  ["Routines, schedules and triggers", `${HELP_DOCS_ORIGIN}/docs/routines.md`],
+  ["The bot's computer, files, using your own computer", `${HELP_DOCS_ORIGIN}/docs/computer.md`],
+  ["Memory", `${HELP_DOCS_ORIGIN}/docs/memory.md`],
+  ["Skills", `${HELP_DOCS_ORIGIN}/docs/skills.md`],
+  ["Approvals, Allow and Block lists", `${HELP_DOCS_ORIGIN}/docs/approvals.md`],
+  ["Group chats, bots working together, subagents", `${HELP_DOCS_ORIGIN}/docs/groups.md`],
+  ["Voice, calls, spoken replies", `${HELP_DOCS_ORIGIN}/docs/voice-and-calls.md`],
+  ["Models, providers, API keys, fallbacks, usage", `${HELP_DOCS_ORIGIN}/docs/models.md`],
+  ["Spaces", `${HELP_DOCS_ORIGIN}/docs/spaces.md`],
+  ["Saved credentials and website logins", `${HELP_DOCS_ORIGIN}/docs/bot-secrets.md`],
   [
     "Account, preferences, data export, credits, plans, billing",
-    "https://alma.com.do/docs/account.md",
+    `${HELP_DOCS_ORIGIN}/docs/account.md`,
   ],
-  ["Desktop app", "https://alma.com.do/docs/desktop-app.md"],
-  ["Mobile app", "https://alma.com.do/docs/mobile-app.md"],
-  ["Bots that create and manage bots", "https://alma.com.do/docs/fleet-management.md"],
-  ["Building a plugin", "https://alma.com.do/docs/build-a-plugin.md"],
-  ["Self-hosting", "https://alma.com.do/docs/self-host.md"],
-  ["Self-hosted server configuration", "https://alma.com.do/docs/self-host-configuration.md"],
+  ["Desktop app", `${HELP_DOCS_ORIGIN}/docs/desktop-app.md`],
+  ["Mobile app", `${HELP_DOCS_ORIGIN}/docs/mobile-app.md`],
+  ["Bots that create and manage bots", `${HELP_DOCS_ORIGIN}/docs/fleet-management.md`],
+  ["Building a plugin", `${HELP_DOCS_ORIGIN}/docs/build-a-plugin.md`],
 ];
 
 /** Fixed URLs, so fetching one can't carry anything out of a run. */

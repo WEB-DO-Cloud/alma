@@ -5,6 +5,7 @@ import {
   captureApiRequestContext,
   currentApiBase,
   isServerReachable,
+  passwordChangeInFlight,
   rpc,
   selectedSpaceId,
   subscribeServerReachable,
@@ -15,12 +16,19 @@ import { integrationsCacheScope } from "./integrations-cache";
 import { openModelSettings } from "./model-settings";
 import { outboxDisk } from "./outbox-disk";
 import {
+  currentReadySessionGeneration,
   currentSessionGeneration,
   loadSessionToken,
   loadVerifiedIntegrationsScope,
+  subscribeSessionGeneration,
 } from "./session";
 import type { OutboxScope } from "./thread-feedback";
-import { configureUnsentSends, restoreUnsentSends, sendWaitingMessages } from "./thread-feedback";
+import {
+  configureUnsentSends,
+  hasUnsentSends,
+  restoreUnsentSends,
+  sendWaitingMessages,
+} from "./thread-feedback";
 import { errorText } from "./user-error";
 
 function promptConnectModel() {
@@ -80,6 +88,7 @@ configureUnsentSends({
     );
   },
   serverReachable: isServerReachable,
+  passwordChanging: passwordChangeInFlight,
   scope,
   disk: outboxDisk,
   errorText: (error) => errorText(error, t("Failed to send message")),
@@ -111,9 +120,14 @@ export function startUnsentSends(): () => void {
   const appState = AppState.addEventListener("change", (state) => {
     if (state === "active") retry(true);
   });
+  // Other session changes empty the queue; a password change keeps it for the new session.
+  const session = subscribeSessionGeneration(() => {
+    if (currentReadySessionGeneration() === currentSessionGeneration() && hasUnsentSends()) retry();
+  });
   return () => {
     stopped = true;
     reachable();
     appState.remove();
+    session();
   };
 }

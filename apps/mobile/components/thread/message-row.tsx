@@ -1,6 +1,10 @@
 import { markdownCodeBlocks } from "@rakazo/chat-ui/native";
 import type { BotAvatarSet, LoginFieldInput, MessageReaction } from "@rakazo/contracts";
-import { canReactToThreadMessage, MESSAGE_REACTIONS } from "@rakazo/contracts";
+import {
+  canReactToThreadMessage,
+  canReportAssistantMessage,
+  MESSAGE_REACTIONS,
+} from "@rakazo/contracts";
 import type { ChildBotBlock, PeerExchange } from "@rakazo/core";
 import { canMarkMessageUnread, isPeerReceiptBlocks, liveMessageComposing } from "@rakazo/core";
 import * as Clipboard from "expo-clipboard";
@@ -44,6 +48,7 @@ export type MessageRowActions = {
   speak: (message: MobileMessage) => void;
   react: (message: MobileMessage, reaction: MessageReaction) => Promise<boolean>;
   markUnread: (message: MobileMessage) => void;
+  report: (message: MobileMessage) => void;
   answer: (
     message: MobileMessage,
     answer: string,
@@ -223,6 +228,9 @@ export const MessageRow = memo(function MessageRow({
       ...(includeSpeak ? [{ name: "speak", text: t("Speak message"), onPress: speakMessage }] : []),
       ...(includeSelect ? [{ name: "select", text: t("Select text"), onPress: select }] : []),
       { name: "copy", text: t("Copy"), onPress: copy },
+      ...(canReportAssistantMessage(message)
+        ? [{ name: "report", text: t("Report response"), onPress: () => actions.report(message) }]
+        : []),
       ...(codeBlocks.length === 1
         ? [{ name: "copyCode", text: t("Copy code"), onPress: copyCode }]
         : []),
@@ -231,6 +239,7 @@ export const MessageRow = memo(function MessageRow({
       labels: {
         reply: t("Reply"),
         copy: t("Copy"),
+        report: t("Report response"),
         react: t("React"),
         quote: t("Quote"),
         speak: t("Speak message"),
@@ -245,6 +254,7 @@ export const MessageRow = memo(function MessageRow({
         speak: includeSpeak,
         select: includeSelect,
         unread: includeUnread,
+        report: canReportAssistantMessage(message),
       },
     });
     const openSheet = (event: GestureResponderEvent) =>

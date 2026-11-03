@@ -1,12 +1,16 @@
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import {
+  applyPackagedUserData,
   DEFAULT_LOCAL_WEB_URL,
   desktopStackImageTag,
   isRakazoHealth,
+  localServerSetupAllowed,
   managedLocalOpenUrl,
   maySendDesktopStackToken,
   normalizeServerUrl,
   PROBE_RESPONSE_LIMIT_BYTES,
+  packagedUserDataDir,
   parseSetupInput,
   parseStoredSetup,
   probeFailureMessage,
@@ -18,7 +22,63 @@ import {
   serverHeadersFor,
   servesBundledRenderer,
   sessionPartitionForServerUrl,
+  showLocalServerChoice,
 } from "./setup-config.js";
+
+describe("packaged desktop choices", () => {
+  it("hides This computer in a packaged build and rejects mode new", () => {
+    expect(showLocalServerChoice({ packaged: true })).toBe(false);
+    expect(showLocalServerChoice({ packaged: true, localServerEnv: "" })).toBe(false);
+    expect(localServerSetupAllowed("new", false)).toBe(false);
+    expect(localServerSetupAllowed("existing", false)).toBe(true);
+  });
+
+  it("shows This computer when unpackaged or when the packaged override is set", () => {
+    expect(showLocalServerChoice({ packaged: false })).toBe(true);
+    expect(showLocalServerChoice({ packaged: false, localServerEnv: undefined })).toBe(true);
+    expect(showLocalServerChoice({ packaged: true, localServerEnv: "1" })).toBe(true);
+    expect(localServerSetupAllowed("new", true)).toBe(true);
+  });
+
+  it("points a packaged app at the ALMA directory and leaves an unpackaged path alone", () => {
+    expect(
+      packagedUserDataDir({
+        packaged: true,
+        platform: "darwin",
+        home: "/Users/person",
+      }),
+    ).toBe("/Users/person/Library/Application Support/ALMA");
+    expect(
+      packagedUserDataDir({
+        packaged: true,
+        platform: "win32",
+        home: "C:\\Users\\person",
+        appData: "C:\\Users\\person\\AppData\\Roaming",
+      }),
+    ).toBe(path.join("C:\\Users\\person\\AppData\\Roaming", "ALMA"));
+    expect(
+      packagedUserDataDir({
+        packaged: true,
+        platform: "linux",
+        home: "/home/person",
+        xdgConfigHome: "/home/person/.config",
+      }),
+    ).toBe("/home/person/.config/ALMA");
+    expect(packagedUserDataDir({ packaged: true, platform: "linux", home: "/home/person" })).toBe(
+      "/home/person/.config/ALMA",
+    );
+
+    const setPath = vi.fn();
+    applyPackagedUserData(setPath, { packaged: false, platform: "darwin", home: "/Users/person" });
+    expect(setPath).not.toHaveBeenCalled();
+    applyPackagedUserData(setPath, { packaged: true, platform: "darwin", home: "/Users/person" });
+    expect(setPath).toHaveBeenCalledTimes(1);
+    expect(setPath).toHaveBeenCalledWith(
+      "userData",
+      "/Users/person/Library/Application Support/ALMA",
+    );
+  });
+});
 
 describe("server address normalization", () => {
   it("assumes http locally and https for a bare public host", () => {

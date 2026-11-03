@@ -194,6 +194,18 @@ function listCalls() {
   return vi.mocked(rpc).mock.calls.filter(([path]) => path === "messaging/channels/list").length;
 }
 
+it("says when the server has no chat apps instead of a blank page", async () => {
+  responses["messaging/status"] = {
+    enabled: false,
+    providers: [],
+    openSignup: false,
+    identities: [],
+  };
+  await act(async () => root.render(<MessagingSettings />));
+  expect(container.textContent).toContain("No chat apps are connected on this server");
+  expect(container.querySelector("[data-row]")).toBeNull();
+});
+
 it("answers requests and manages conversations by their own ids, then refreshes", async () => {
   await act(async () => root.render(<MessagingSettings />));
   const before = listCalls();

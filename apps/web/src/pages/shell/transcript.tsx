@@ -75,6 +75,7 @@ export const Transcript = memo(function Transcript({
   onAnswer,
   onReply,
   onMarkUnread,
+  onReport,
   markedUnreadMessageId,
   onQuote,
   onReact,
@@ -122,6 +123,7 @@ export const Transcript = memo(function Transcript({
   ) => Promise<void>;
   onReply: (message: ThreadMessage) => void;
   onMarkUnread: (message: ThreadMessage) => void;
+  onReport?: (message: ThreadMessage) => Promise<void>;
   markedUnreadMessageId?: string;
   onQuote: (message: ThreadMessage, quote: string) => void;
   onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
@@ -546,7 +548,7 @@ export const Transcript = memo(function Transcript({
                         : message.blocks.some(
                               (block) => block.kind === "ask" || block.kind === "mcp_approval",
                             )
-                          ? "relative w-full min-w-0 max-w-full"
+                          ? "relative w-full min-w-0 max-w-xl"
                           : `relative ${message.blocks.some((block) => block.kind === "app_connect") ? "w-full" : "w-fit"} min-w-0 ${bubbleFrameWidth(message.role)}`
                     }
                   >
@@ -587,6 +589,7 @@ export const Transcript = memo(function Transcript({
                       showToolActivity={showToolActivity}
                       onReply={onReply}
                       onMarkUnread={onMarkUnread}
+                      onReport={onReport}
                       onReact={onReact}
                     />
                   </div>

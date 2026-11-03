@@ -179,9 +179,15 @@ describe("passkey sign-in", () => {
     expect(fetchMobileJson).toHaveBeenCalledOnce();
   });
 
-  it("explains other native failures without technical detail", async () => {
-    vi.mocked(get).mockRejectedValue({ code: "ERR_NOT_CONFIGURED", message: "AASA" });
-    await expect(signInWithPasskey()).rejects.toThrow("Could not continue");
+  it("includes the native error name and code when the sheet fails", async () => {
+    vi.mocked(get).mockRejectedValue({
+      name: "NotSupportedError",
+      code: "ERR_NOT_CONFIGURED",
+      message: "AASA",
+    });
+    await expect(signInWithPasskey()).rejects.toThrow(
+      "Could not continue (NotSupportedError ERR_NOT_CONFIGURED)",
+    );
     expect(replaceSessionTokenIfCurrent).not.toHaveBeenCalled();
   });
 
@@ -290,6 +296,19 @@ describe("passkey registration", () => {
     vi.mocked(create).mockRejectedValue({ code: "ERR_USER_CANCELLED" });
     await expect(addPasskey()).resolves.toBe(false);
     expect(fetchMobileJson).toHaveBeenCalledOnce();
+  });
+
+  it("includes the native error name and code when registration fails", async () => {
+    vi.mocked(fetchMobileJson).mockResolvedValueOnce(
+      challengeResponse({
+        challenge: "register",
+        rp: { id: "rakazo.example.test", name: "ALMA" },
+      }),
+    );
+    vi.mocked(create).mockRejectedValue({ name: "ConstraintError", code: "ERR_CONSTRAINT" });
+    await expect(addPasskey()).rejects.toThrow(
+      "Could not continue (ConstraintError ERR_CONSTRAINT)",
+    );
   });
 
   it("does not send another server's session", async () => {

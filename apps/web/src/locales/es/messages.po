@@ -420,6 +420,10 @@ msgstr "{toolCount, plural, one {# herramienta} other {# herramientas}}"
 msgid "@{0}"
 msgstr "@{0}"
 
+#: src/components/ModelCredits.tsx
+msgid "/ month"
+msgstr "/ mes"
+
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
 msgstr "1 espacio"
@@ -1032,6 +1036,10 @@ msgstr "Token Bearer"
 msgid "Billing"
 msgstr "Facturación"
 
+#: src/components/ModelCredits.tsx
+msgid "Billing period"
+msgstr "Periodo de facturación"
+
 #: src/components/ApprovalRulesSettings.tsx
 msgid "Block"
 msgstr "Bloquear"
@@ -1161,6 +1169,7 @@ msgstr "No puede leer imágenes"
 #: src/components/ComputerMaintenanceActions.tsx
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/components/markdown-link-prompt.tsx
+#: src/components/ModelCredits.tsx
 #: src/components/PasskeySettings.tsx
 #: src/components/teach/TeachComputerOverlay.tsx
 #: src/components/VaultSettings.tsx
@@ -1476,10 +1485,6 @@ msgstr "columna {index}"
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Comfortable"
 msgstr "Cómoda"
-
-#: src/pages/RoutineEditor.tsx
-msgid "Coming soon"
-msgstr "Próximamente"
 
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/RoutineEditor.tsx
@@ -2126,6 +2131,10 @@ msgstr "No se pudo renombrar el space"
 msgid "Could not render chart"
 msgstr "No se pudo renderizar el gráfico"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "No se pudo reportar esta respuesta"
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "No se pudo restablecer la contraseña"
@@ -2410,6 +2419,10 @@ msgstr "Personalizar {label}"
 msgid "Customize bot avatar"
 msgstr "Personalizar avatar del bot"
 
+#: src/pages/shell/bot-panel.tsx
+msgid "Daily check-ins on unfinished work"
+msgstr "Seguimiento diario del trabajo pendiente"
+
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Shell.tsx
 msgid "Dark"
@@ -2585,6 +2598,10 @@ msgstr "Falló el dictado: {code}"
 #: src/lib/dictation.ts
 msgid "Dictation failed."
 msgstr "Falló el dictado."
+
+#: src/pages/Auth.tsx
+msgid "Did you mean <0>{emailSuggestion}</0>?"
+msgstr "¿Quisiste decir <0>{emailSuggestion}</0>?"
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Disable a tool"
@@ -3460,10 +3477,6 @@ msgstr "Permite a los bots guardar y recordar datos por significado, además de 
 msgid "Light"
 msgstr "Claro"
 
-#: src/pages/RoutineEditor.tsx
-msgid "Linear issue"
-msgstr "Issue de Linear"
-
 #: src/pages/SpaceSearch.tsx
 msgid "Link"
 msgstr "Enlace"
@@ -3712,6 +3725,10 @@ msgstr "Memoria {position}"
 msgid "Memory for {title}"
 msgstr "Memoria para {title}"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "La memoria está gestionada por ALMA"
+
 #: src/pages/shell/bot-panel.tsx
 msgid "Memory scope"
 msgstr "Alcance de memoria"
@@ -3842,6 +3859,7 @@ msgstr "Conexiones de modelos"
 msgid "Model id"
 msgstr "ID del modelo"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
@@ -3855,8 +3873,8 @@ msgstr "Modelos"
 msgid "Models at provider cost"
 msgstr "Modelos a precio del proveedor"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/Onboarding.tsx
 msgid "Models from server"
 msgstr "Modelos del servidor"
 
@@ -3872,6 +3890,7 @@ msgstr "lunes"
 msgid "month"
 msgstr "mes"
 
+#: src/components/ModelCredits.tsx
 #: src/lib/cron.ts
 msgid "Monthly"
 msgstr "Mensual"
@@ -4271,6 +4290,10 @@ msgstr "Una vez"
 msgid "One-time purchase. Credits do not expire."
 msgstr "Compra única. Los créditos no vencen."
 
+#: src/components/AskCard.tsx
+msgid "Only enter a code {codeHost} sent you."
+msgstr "Solo ingresa un código que te haya enviado {codeHost}."
+
 #: src/components/markdown-link-prompt.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/shell/computer-panel.tsx
@@ -4364,8 +4387,8 @@ msgstr "Original"
 msgid "Original message unavailable"
 msgstr "Mensaje original no disponible"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/Onboarding.tsx
 msgid "Other model…"
 msgstr "Otro modelo…"
 
@@ -4385,10 +4408,6 @@ msgstr "Página {page} de {count}"
 #: src/pages/NotFound.tsx
 msgid "Page not found"
 msgstr "Página no encontrada"
-
-#: src/pages/RoutineEditor.tsx
-msgid "PagerDuty incident"
-msgstr "Incidente de PagerDuty"
 
 #: src/components/PasskeySettings.tsx
 msgid "Passkey"
@@ -4785,6 +4804,7 @@ msgid "Release control"
 msgstr "Ceder el control"
 
 #: src/components/InstructionSettings.tsx
+#: src/lib/client-update.ts
 msgid "Reload"
 msgstr "Recargar"
 
@@ -4913,6 +4933,14 @@ msgstr "Respuesta cancelada"
 #: src/pages/shell/composer.tsx
 msgid "Replying to {0}"
 msgstr "Respondiendo a {0}"
+
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "Reportar respuesta"
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "Reporte enviado"
 
 #: src/lib/user-error.ts
 msgid "Request a new code"
@@ -5200,6 +5228,7 @@ msgstr "Ámbitos (opcional)"
 msgid "Screen not connected"
 msgstr "Pantalla no conectada"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
@@ -5234,6 +5263,7 @@ msgstr "Buscar por dominio"
 msgid "Search integrations.sh"
 msgstr "Buscar en integrations.sh"
 
+#: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
@@ -5322,10 +5352,6 @@ msgstr "Enviando…"
 #: src/components/AskCard.tsx
 msgid "Sent"
 msgstr "Enviado"
-
-#: src/pages/RoutineEditor.tsx
-msgid "Sentry alert"
-msgstr "Alerta de Sentry"
 
 #: src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Serenity endpoint is required."
@@ -5623,9 +5649,21 @@ msgstr "Iniciar"
 msgid "Start {trialDays}-day free trial"
 msgstr "Empezar prueba gratuita de {trialDays} días"
 
+#: src/components/ModelCredits.tsx
+msgid "Start plan"
+msgstr "Iniciar plan"
+
+#: src/components/ModelCredits.tsx
+msgid "Start plan now"
+msgstr "Iniciar el plan ahora"
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Start recording"
 msgstr "Iniciar grabación"
+
+#: src/components/ModelCredits.tsx
+msgid "Start your plan now?"
+msgstr "¿Iniciar tu plan ahora?"
 
 #: src/pages/ActivityList.tsx
 msgid "Starting"
@@ -5702,6 +5740,10 @@ msgid "Subscribe"
 msgstr "Suscribirse"
 
 #: src/components/ModelCredits.tsx
+msgid "Subscribe for {annualPrice} / year"
+msgstr "Suscribirse por {annualPrice} / año"
+
+#: src/components/ModelCredits.tsx
 msgid "Subscribe for {price} / month"
 msgstr "Suscribirse por {price} / mes"
 
@@ -5731,9 +5773,18 @@ msgstr "Admite imágenes"
 msgid "Supports thinking"
 msgstr "Admite razonamiento"
 
+#: src/components/ModelCredits.tsx
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Switch"
 msgstr "Cambiar"
+
+#: src/components/ModelCredits.tsx
+msgid "Switch to yearly"
+msgstr "Cambiar a anual"
+
+#: src/components/ModelCredits.tsx
+msgid "Switch to yearly?"
+msgstr "¿Cambiar a anual?"
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Switching…"
@@ -5771,10 +5822,6 @@ msgstr "Team Computer"
 #: src/pages/RoutineEditor.tsx
 msgid "Teams message"
 msgstr "Mensaje de Teams"
-
-#: src/pages/RoutineEditor.tsx
-msgid "Teams not enabled"
-msgstr "Teams no está activado"
 
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Test"
@@ -6115,12 +6162,17 @@ msgstr "Prueba"
 msgid "Trial ends {day}"
 msgstr "La prueba termina el {day}"
 
+#: src/components/ModelCredits.tsx
+msgid "Trials get fewer hours to prevent abuse."
+msgstr "Las pruebas tienen menos horas para evitar abusos."
+
 #: src/components/TrustedLinkSitesSettings.tsx
 msgid "Trusted sites"
 msgstr "Sitios de confianza"
 
 #: src/pages/ActivityList.tsx
 #: src/pages/Onboarding.tsx
+#: src/pages/SpaceSearch.tsx
 msgid "Try again"
 msgstr "Intentarlo de nuevo"
 
@@ -6205,6 +6257,10 @@ msgstr "¿Actualizar instrucciones?"
 #: src/components/ComputerUpdateProgress.tsx
 msgid "Update progress"
 msgstr "Progreso de la actualización"
+
+#: src/lib/client-update.ts
+msgid "Update required"
+msgstr "Actualización necesaria"
 
 #: src/components/VaultSettings.tsx
 msgid "Updated {updated}"
@@ -6396,6 +6452,10 @@ msgstr "Activar"
 msgid "Wallet"
 msgstr "Billetera"
 
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "Revisaremos esta respuesta."
+
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
 msgstr "Web, escritorio y móvil"
@@ -6525,6 +6585,10 @@ msgstr "Espacio de trabajo"
 msgid "year"
 msgstr "año"
 
+#: src/components/ModelCredits.tsx
+msgid "Yearly"
+msgstr "Anual"
+
 #: src/pages/shell/chat-context.tsx
 #: src/pages/shell/sidebar-roster.tsx
 msgid "Yesterday"
@@ -6559,6 +6623,10 @@ msgstr "Tienes el control"
 msgid "Your Anthropic"
 msgstr "Tu Anthropic"
 
+#: src/components/ModelCredits.tsx
+msgid "Your card is charged {annualPrice} today, less the unused part of this month."
+msgstr "Hoy se cobrará {annualPrice} a tu tarjeta, menos la parte no usada de este mes."
+
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
 msgstr ""
@@ -6590,6 +6658,10 @@ msgstr "Tu OpenAI"
 msgid "Your OpenRouter"
 msgstr "Tu OpenRouter"
 
+#: src/components/ModelCredits.tsx
+msgid "Your plan becomes {annualPrice} / year when your trial ends."
+msgstr "Cuando termine tu prueba, tu plan pasará a {annualPrice} / año."
+
 #: src/components/integrations/skills-dialog.tsx
 msgid "Your skills"
 msgstr "Tus habilidades"
@@ -6601,6 +6673,14 @@ msgstr "Tu suscripción o clave de API"
 #: src/pages/Welcome.tsx
 msgid "Your team of always-on agents<0/>that you can give real work to."
 msgstr "Tu equipo de agentes siempre activos<0/>a los que puedes dar trabajo real."
+
+#: src/components/ModelCredits.tsx
+msgid "Your trial ends and your card is charged {price} today."
+msgstr "Tu prueba termina y se cobrará {price} a tu tarjeta hoy."
+
+#: src/components/ModelCredits.tsx
+msgid "Your trial ends and your card is charged today."
+msgstr "Tu prueba termina y se cobrará a tu tarjeta hoy."
 
 #: src/lib/user-error.ts
 msgid "Your voice provider is out of credit."
