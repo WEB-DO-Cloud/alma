@@ -1019,6 +1019,7 @@ export const ES_MESSAGES: Record<string, string> = {
   Show: "Mostrar",
   Submitted: "Enviado",
   Messaging: "Mensajería",
+  "No chat apps are connected on this server": "No hay apps de chat conectadas en este servidor",
   Unlink: "Desvincular",
   "Connect a chat app": "Conectar una app de chat",
   Conversations: "Conversaciones",
@@ -1215,7 +1216,8 @@ export const ES_MESSAGES: Record<string, string> = {
     "No se pudo cambiar {failedNames}. Vuelve a intentarlo.",
   "Create your ALMA account": "Crea tu cuenta de ALMA",
   Report: "Reportar",
-  "That URL did not look like an ALMA server": "Esa URL no parece de un servidor de ALMA",};
+  "That URL did not look like an ALMA server": "Esa URL no parece de un servidor de ALMA",
+};
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {
   other: ES_MESSAGES["{count} messages with {peer}"],

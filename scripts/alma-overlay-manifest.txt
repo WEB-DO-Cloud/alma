@@ -2113,3 +2113,5 @@ overlay apps/mobile/plugins/with-credential-versions.js
 overlay apps/mobile/plugins/with-credential-versions.test.js
 overlay apps/web/e2e/billing-return-and-logo.spec.ts
 overlay apps/web/public/alma-logo-white.svg
+overlay apps/mobile/app/(settings)/messaging.tsx
+overlay apps/mobile/lib/messaging-screen.test.tsx

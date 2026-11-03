@@ -35,6 +35,7 @@ const { element, account } = vi.hoisted(() => ({
     >,
     push: vi.fn(),
     approvals: { mode: "ask", enabled: false, skipApprovals: false, checkerAvailable: true },
+    messagingEnabled: true,
     rules: [] as { id: string }[],
   },
 }));
@@ -180,7 +181,9 @@ vi.mock("./api", () => ({
         ? account.approvals
         : method === "approvalRules/list"
           ? account.rules
-          : {},
+          : method === "messaging/status"
+            ? { enabled: account.messagingEnabled }
+            : {},
   ),
   selectedSpaceId: () => "space-1",
   signOut: vi.fn(),
@@ -271,6 +274,7 @@ let container: HTMLDivElement | undefined;
 beforeEach(() => {
   vi.clearAllMocks();
   account.me = { userId: "user-1", name: "Tester", email: "tester@example.test" };
+  account.messagingEnabled = true;
   account.rules = [];
   vi.mocked(fetchAccountSecurity).mockResolvedValue(security());
 });
@@ -485,6 +489,12 @@ it.each([false, true])(
     }
   },
 );
+
+it("hides Messaging when the server has no chat apps", async () => {
+  account.messagingEnabled = false;
+  const view = await renderAccount();
+  expect(view.button("Messaging")).toBeUndefined();
+});
 
 it("lists trusted link sites only when there is one, each with a remove action", async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
