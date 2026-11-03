@@ -535,7 +535,6 @@ overlay packages/db/src/row-security.postgres.test.ts
 overlay packages/logging/src/monitoring.ts
 overlay packages/logging/src/sentry.test.ts
 overlay packages/logging/src/sentry.ts
-overlay packages/testkit/src/authorization.test.ts
 overlay packages/testkit/src/backup-scripts.test.ts
 overlay packages/testkit/src/cli/desktop-performance.ts
 overlay packages/testkit/src/cli/harness.ts
