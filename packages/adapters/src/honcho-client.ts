@@ -1,10 +1,5 @@
 import type { LocalServiceConnection } from "./local-service-endpoint.js";
 import { fetchLocalService } from "./local-service-endpoint.js";
-import {
-  fetchPublicHoncho,
-  PUBLIC_HONCHO_TIMEOUT_MS,
-  publicHonchoTransportError,
-} from "./public-honcho-endpoint.js";
 import { truncateUtf8 } from "./utf8.js";
 import { readBodyCapped } from "./web-ssrf.js";
 
@@ -30,11 +25,6 @@ export type HonchoReasoningLevel = (typeof HONCHO_REASONING_LEVELS)[number];
 export interface HonchoConnectionConfig extends LocalServiceConnection {
   apiKey: string;
   reasoningLevel: HonchoReasoningLevel;
-  /**
-   * Owner-supplied public HTTPS. The server-env Honcho leaves this unset and may use a
-   * private address. Public egress never follows redirects and uses a short timeout.
-   */
-  egress?: "public";
 }
 
 export type HonchoResponse<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -76,11 +66,7 @@ async function honchoRequest(
     allowNotFound?: boolean;
   } = {},
 ): Promise<HonchoResponse<unknown>> {
-  const timeoutMs =
-    config.egress === "public"
-      ? PUBLIC_HONCHO_TIMEOUT_MS
-      : (options.timeoutMs ?? HONCHO_TIMEOUT_MS);
-  const signal = requestSignal(timeoutMs, options.signal);
+  const signal = requestSignal(options.timeoutMs ?? HONCHO_TIMEOUT_MS, options.signal);
   const url = `${config.baseUrl.replace(/\/+$/, "")}${path}`;
   const method = options.method ?? "POST";
   const init: RequestInit = {
@@ -96,18 +82,13 @@ async function honchoRequest(
   let response: Response;
   try {
     response =
-      config.egress === "public"
-        ? await fetchPublicHoncho(config, url, init, timeoutMs)
-        : config.baseUrl === HONCHO_CLOUD_BASE_URL
-          ? await (config.fetch ?? fetch)(url, init)
-          : await fetchLocalService(config, url, init);
-  } catch (error) {
+      config.baseUrl === HONCHO_CLOUD_BASE_URL
+        ? await (config.fetch ?? fetch)(url, init)
+        : await fetchLocalService(config, url, init);
+  } catch {
     return {
       ok: false,
-      error:
-        config.egress === "public"
-          ? publicHonchoTransportError(error)
-          : "Honcho is unreachable or the request timed out.",
+      error: "Honcho is unreachable or the request timed out.",
     };
   }
   if (!response.ok || !options.readJson) {

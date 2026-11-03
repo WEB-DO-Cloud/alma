@@ -361,7 +361,6 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["memory/connectProvider"],
       ["memory/setDefaultScope"],
       ["memory/disconnectProvider"],
-      ["memory/probeOwnerServer", { baseUrl: "https://memory.example.test", apiKey: "" }],
       ["routines/list", { botId: "missing-bot" }],
       ["routines/listForMentions", { botIds: ["missing-bot"] }],
       ["routines/create", routineInput("missing-bot")],

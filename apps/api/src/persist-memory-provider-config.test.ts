@@ -4,8 +4,6 @@ import { describe, expect, it, vi } from "vitest";
 import {
   disconnectMemoryProvider,
   persistMemoryProviderConfig,
-  probeOwnerHonchoConnection,
-  readMemoryProviderSettings,
   updateMemoryProviderDefaultScope,
 } from "./memory-provider-config.js";
 
@@ -19,15 +17,7 @@ const deploymentOwner = { ...actor, isDeploymentOwner: true };
 
 function makeDeps(
   overrides: {
-    existing?: {
-      id: string;
-      secretId: string;
-      settings?: Record<string, string>;
-      secret?: { id: string; ciphertext: string };
-      defaultMemoryScope?: string;
-      updatedAt?: Date;
-      provider?: string;
-    } | null;
+    existing?: { id: string; secretId: string } | null;
     upsertResult?: {
       provider: string;
       settings: Record<string, string>;
@@ -81,10 +71,7 @@ function makeDeps(
   );
   const deps = {
     prisma: prisma as unknown as PrismaClient,
-    secrets: {
-      put: vi.fn().mockResolvedValue({ id: "secret-new", ciphertext: "cipher" }),
-      load: vi.fn(),
-    },
+    secrets: { put: vi.fn().mockResolvedValue({ id: "secret-new", ciphertext: "cipher" }) },
   };
   return {
     deps,
@@ -563,220 +550,5 @@ describe("server-managed memory", () => {
     });
     expect(JSON.stringify(result)).not.toContain("honcho-api");
     expect(JSON.stringify(result)).not.toContain("should-not-leak");
-  });
-
-  it("stores an owner Honcho key encrypted and does not return it", async () => {
-    const apiKey = "owner-honcho-key";
-    const { deps, upsert } = makeDeps({
-      upsertResult: {
-        provider: "honcho",
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://memory.example.test",
-        },
-        defaultMemoryScope: "isolated",
-        updatedAt: new Date("2026-08-20T00:00:00.000Z"),
-      },
-    });
-    const probeOwnerHoncho = vi.fn(async () => ({ ok: true as const, value: undefined }));
-    const result = await persistMemoryProviderConfig(
-      {
-        ...deps,
-        env: managed,
-        resolveHostname: async () => [{ address: "203.0.113.10", family: 4 }],
-        probeOwnerHoncho,
-      },
-      actor,
-      {
-        provider: "honcho",
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://memory.example.test/",
-        },
-        credentials: { apiKey },
-        defaultMemoryScope: "isolated",
-      },
-    );
-    expect(probeOwnerHoncho).toHaveBeenCalledWith(
-      expect.objectContaining({
-        baseUrl: "https://memory.example.test",
-        apiKey,
-        workspaceId: "rakazo-ws-1",
-      }),
-    );
-    expect(deps.secrets.put).toHaveBeenCalledWith(JSON.stringify({ apiKey }), expect.anything());
-    expect(upsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        create: expect.objectContaining({
-          settings: {
-            source: "owner-honcho",
-            mode: "public",
-            baseUrl: "https://memory.example.test",
-          },
-        }),
-      }),
-    );
-    expect(result).toMatchObject({
-      ownerServer: true,
-      managedByServer: true,
-      settings: { source: "owner-honcho", baseUrl: "https://memory.example.test" },
-    });
-    expect(JSON.stringify(result)).not.toContain(apiKey);
-    expect(result.settings).not.toHaveProperty("apiKey");
-  });
-
-  it("rejects a private owner URL and a private DNS answer before storing the key", async () => {
-    const { deps } = makeDeps();
-    const input = {
-      provider: "honcho",
-      settings: { source: "owner-honcho", mode: "public", baseUrl: "https://10.0.0.8" },
-      credentials: { apiKey: "owner-honcho-key" },
-      defaultMemoryScope: "isolated" as const,
-    };
-    await expect(
-      persistMemoryProviderConfig({ ...deps, env: managed }, actor, input),
-    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-    await expect(
-      persistMemoryProviderConfig(
-        {
-          ...deps,
-          env: managed,
-          resolveHostname: async () => [{ address: "192.168.5.5", family: 4 }],
-        },
-        actor,
-        {
-          ...input,
-          settings: { ...input.settings, baseUrl: "https://memory.example.test" },
-        },
-      ),
-    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-    expect(deps.secrets.put).not.toHaveBeenCalled();
-  });
-
-  it("does not send a stored key to a different host", async () => {
-    const probeOwnerHoncho = vi.fn(async () => ({ ok: true as const, value: undefined }));
-    const { deps } = makeDeps({
-      existing: {
-        id: "cfg-1",
-        secretId: "secret-1",
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://memory.example.test",
-        },
-        secret: { id: "secret-1", ciphertext: "cipher" },
-      },
-    });
-    deps.secrets.load.mockResolvedValue(JSON.stringify({ apiKey: "stored-owner-key" }));
-    const depsWithProbe = {
-      ...deps,
-      env: managed,
-      resolveHostname: async () => [{ address: "203.0.113.10" as const, family: 4 as const }],
-      probeOwnerHoncho,
-    };
-    await expect(
-      persistMemoryProviderConfig(depsWithProbe, actor, {
-        provider: "honcho",
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://other.example.test",
-        },
-        credentials: { apiKey: "" },
-        defaultMemoryScope: "isolated",
-      }),
-    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
-    await expect(
-      probeOwnerHonchoConnection(depsWithProbe, actor, {
-        baseUrl: "https://other.example.test",
-        apiKey: "",
-      }),
-    ).resolves.toEqual({ ok: false, error: "missing-key" });
-    expect(probeOwnerHoncho).not.toHaveBeenCalled();
-    expect(deps.secrets.put).not.toHaveBeenCalled();
-    expect(JSON.stringify(probeOwnerHoncho.mock.calls)).not.toContain("stored-owner-key");
-  });
-
-  it("lets only the Space owner change or test the server", async () => {
-    const { deps } = makeDeps({ spaceOwner: false });
-    const input = {
-      provider: "honcho",
-      settings: { source: "owner-honcho", mode: "public", baseUrl: "https://memory.example.test" },
-      credentials: { apiKey: "owner-honcho-key" },
-      defaultMemoryScope: "isolated" as const,
-    };
-    await expect(
-      persistMemoryProviderConfig({ ...deps, env: managed }, actor, input),
-    ).rejects.toMatchObject({ code: "FORBIDDEN" });
-    await expect(
-      probeOwnerHonchoConnection({ ...deps, env: managed }, actor, {
-        baseUrl: "https://10.0.0.8",
-        apiKey: "owner-honcho-key",
-      }),
-    ).rejects.toMatchObject({ code: "FORBIDDEN" });
-    expect(deps.secrets.put).not.toHaveBeenCalled();
-  });
-
-  it("returns to server memory and deletes the owner key", async () => {
-    const { deps, secretDeleteMany, update } = makeDeps({
-      existing: {
-        id: "cfg-1",
-        secretId: "secret-old",
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://memory.example.test",
-        },
-      },
-    });
-    await expect(disconnectMemoryProvider({ ...deps, env: managed }, actor)).resolves.toEqual({
-      ok: true,
-    });
-    expect(deps.secrets.put).toHaveBeenCalledWith("{}", expect.anything());
-    expect(update).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          settings: { source: "deployment-scope" },
-        }),
-      }),
-    );
-    expect(secretDeleteMany).toHaveBeenCalledWith({ where: { id: "secret-old" } });
-  });
-
-  it("warns the owner when their Honcho cannot be reached and still hides the key", async () => {
-    const apiKey = "owner-honcho-key";
-    const { deps } = makeDeps({
-      existing: {
-        id: "cfg-1",
-        secretId: "secret-1",
-        provider: "honcho",
-        defaultMemoryScope: "isolated",
-        updatedAt: new Date("2026-08-20T00:00:00.000Z"),
-        settings: {
-          source: "owner-honcho",
-          mode: "public",
-          baseUrl: "https://memory.example.test",
-          apiKey,
-        },
-        secret: { id: "secret-1", ciphertext: "cipher" },
-      },
-    });
-    deps.secrets.load.mockResolvedValue(JSON.stringify({ apiKey }));
-    const result = await readMemoryProviderSettings(
-      {
-        ...deps,
-        env: managed,
-        probeOwnerHoncho: async () => ({ ok: false, error: "Honcho is unreachable" }),
-      },
-      actor.spaceId,
-    );
-    expect(result).toMatchObject({
-      ownerServer: true,
-      connectionWarning: "unreachable",
-      settings: { source: "owner-honcho", baseUrl: "https://memory.example.test" },
-    });
-    expect(JSON.stringify(result)).not.toContain(apiKey);
   });
 });

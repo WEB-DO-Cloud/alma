@@ -45,7 +45,7 @@ describe("deployment memory", () => {
     expect(() => deploymentMemoryFromEnv(env({ HONCHO_API_KEY: "short" }))).toThrow(/apiKey/);
   });
 
-  it("uses the server provider unless the Space saved its own Honcho", async () => {
+  it("uses the server provider for every Space and keeps a saved scope", async () => {
     const scopes = new Map<string, string>([["space-a", "shared"]]);
     const prisma = {
       spaceMemoryConfig: {
@@ -67,59 +67,6 @@ describe("deployment memory", () => {
     expect(shared?.defaultScope).toBe("shared");
     expect(fresh?.defaultScope).toBe("isolated");
     expect(shared?.provider).toBe(fresh?.provider);
-    expect(secrets.load).not.toHaveBeenCalled();
-  });
-
-  it("prefers a Space's public Honcho over the server provider", async () => {
-    vi.stubEnv("MCP_ALLOW_PRIVATE_ENDPOINT", "true");
-    const ownerKey = "owner-honcho-key";
-    const prisma = {
-      spaceMemoryConfig: {
-        findUnique: vi.fn(async ({ where }: { where: { spaceId: string } }) =>
-          where.spaceId === "space-own"
-            ? {
-                provider: "honcho",
-                defaultMemoryScope: "shared",
-                settings: {
-                  source: "owner-honcho",
-                  mode: "public",
-                  baseUrl: "https://memory.example.test",
-                },
-                secret: { id: "secret-1", ciphertext: "cipher" },
-              }
-            : null,
-        ),
-      },
-    };
-    const secrets = { load: vi.fn(async () => JSON.stringify({ apiKey: ownerKey })) };
-    const resolver = createMemoryProviderResolver(prisma as never, secrets as never, env());
-    const own = await resolver.resolve("space-own");
-    const server = await resolver.resolve("space-other");
-    expect(own?.defaultScope).toBe("shared");
-    expect(own?.provider).not.toBe(server?.provider);
-    expect(own?.provider.describe().id).toBe("honcho");
-    expect(secrets.load).toHaveBeenCalledWith("cipher", "secret-1");
-  });
-
-  it("skips an owner Honcho on a private address without failing the chat", async () => {
-    vi.stubEnv("MCP_ALLOW_PRIVATE_ENDPOINT", "true");
-    const prisma = {
-      spaceMemoryConfig: {
-        findUnique: vi.fn(async () => ({
-          provider: "honcho",
-          defaultMemoryScope: "isolated",
-          settings: {
-            source: "owner-honcho",
-            mode: "public",
-            baseUrl: "https://10.0.0.8",
-          },
-          secret: { id: "secret-1", ciphertext: "cipher" },
-        })),
-      },
-    };
-    const secrets = { load: vi.fn(async () => JSON.stringify({ apiKey: "owner-honcho-key" })) };
-    const resolver = createMemoryProviderResolver(prisma as never, secrets as never, env());
-    await expect(resolver.resolve("space-own")).resolves.toBeNull();
     expect(secrets.load).not.toHaveBeenCalled();
   });
 

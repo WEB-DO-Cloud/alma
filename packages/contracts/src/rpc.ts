@@ -767,21 +767,6 @@ export const appContract = {
       .input(z.object({ defaultMemoryScope: MemoryScopeSchema }))
       .output(SpaceMemoryConfigSchema),
     disconnectProvider: oc.output(z.object({ ok: z.literal(true) })),
-    probeOwnerServer: oc
-      .input(
-        z.object({
-          baseUrl: z.string().min(1).max(2048),
-          apiKey: z.string().max(4096),
-        }),
-      )
-      .output(
-        z.object({
-          ok: z.boolean(),
-          error: z
-            .enum(["public-https", "redirect", "unreachable", "rejected-key", "missing-key"])
-            .optional(),
-        }),
-      ),
   },
   routines: {
     listForMentions: oc

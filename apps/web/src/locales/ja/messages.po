@@ -724,10 +724,6 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr "ALMAクレジット"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "ALMA memory (recommended)"
-msgstr ""
-
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "接続済み"
@@ -816,7 +812,6 @@ msgstr "自分のキーで、あらゆるモデルを"
 #: src/components/AskCard.tsx
 #: src/lib/localized-provider-hint.ts
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/compatible-key-field.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
@@ -1165,7 +1160,6 @@ msgid "Can't reach the server."
 msgstr "サーバーに接続できません。"
 
 #: src/components/TextOnlyMark.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "画像を読み取れません"
@@ -2070,10 +2064,6 @@ msgstr "テスト音声を再生できませんでした"
 msgid "Could not preview plugin"
 msgstr ""
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Could not reach that Honcho server."
-msgstr ""
-
 #: src/lib/model-connection-preflight.ts
 msgid "Could not reach the model server."
 msgstr "モデルサーバーに接続できませんでした。"
@@ -2140,10 +2130,6 @@ msgstr "スペースの名前を変更できませんでした"
 msgid "Could not render chart"
 msgstr "チャートを表示できませんでした"
 
-#: src/pages/Shell.tsx
-msgid "Could not report this response"
-msgstr ""
-
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "パスワードをリセットできませんでした"
@@ -2209,10 +2195,6 @@ msgstr "そのボイスを保存できませんでした"
 #: src/components/VaultSettings.tsx
 msgid "Could not save the credential"
 msgstr "認証情報を保存できませんでした"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Could not save the Honcho server"
-msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2830,10 +2812,6 @@ msgstr "画像の上限には1〜1000の整数を入力してください。"
 msgid "Enter an API key before testing."
 msgstr "テストする前にAPIキーを入力してください。"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Enter the API key."
-msgstr ""
-
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
 msgstr "環境変数"
@@ -2909,10 +2887,6 @@ msgstr "毎週"
 #: src/pages/PluginsOverlay.tsx
 msgid "Executor token"
 msgstr "実行トークン"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Existing memories are not moved to the other server."
-msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Expand"
@@ -3059,7 +3033,6 @@ msgid "Forgot password?"
 msgstr "パスワードをお忘れですか？"
 
 #: src/components/ModelCredits.tsx
-#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "無料"
 
@@ -3230,10 +3203,6 @@ msgstr "長押しで話す"
 msgid "Hold to talk, release to send"
 msgstr "長押しで話し、離すと送信"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Honcho refused the API key."
-msgstr ""
-
 #: src/lib/cron.ts
 msgid "hour"
 msgstr "時間"
@@ -3266,10 +3235,6 @@ msgstr "確認方法"
 #: src/components/SignupSurvey.tsx
 msgid "How will you use ALMA?"
 msgstr "ALMAをどのように使いますか？"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "HTTPS address"
-msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "I’m done"
@@ -3863,7 +3828,6 @@ msgstr "モード"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3885,7 +3849,6 @@ msgid "Model id"
 msgstr "モデルID"
 
 #: src/components/FoundModelPicker.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "モデルのオプション"
@@ -3964,10 +3927,6 @@ msgstr "ミュート"
 #: src/components/call/CallCard.tsx
 msgid "Muted"
 msgstr "ミュート中"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "My own Honcho server"
-msgstr ""
 
 #: src/components/teach/SkillDraftCard.tsx
 #: src/components/VaultSettings.tsx
@@ -4133,7 +4092,6 @@ msgid "No matching artifacts on this page."
 msgstr "このページに一致するアーティファクトはありません。"
 
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4963,14 +4921,6 @@ msgstr "返信をキャンセルしました"
 msgid "Replying to {0}"
 msgstr "{0}に返信中"
 
-#: src/pages/shell/message-hover-actions.tsx
-msgid "Report response"
-msgstr ""
-
-#: src/pages/Shell.tsx
-msgid "Report sent"
-msgstr ""
-
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "新しいコードをリクエスト"
@@ -5177,7 +5127,6 @@ msgstr "土曜日"
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5234,7 +5183,6 @@ msgstr "保存中..."
 #: src/components/VaultSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5261,7 +5209,6 @@ msgstr "画面が接続されていません"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5296,7 +5243,6 @@ msgstr "integrations.shを検索"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -5864,7 +5810,6 @@ msgstr "APIキーをテスト"
 
 #: src/components/ModelConnectionPreflightNotice.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 msgid "Test connection"
 msgstr "接続をテスト"
 
@@ -5876,17 +5821,9 @@ msgstr "テスト実行"
 msgid "Testing"
 msgstr ""
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Testing connection…"
-msgstr ""
-
 #: src/components/ModelConnectionPreflightNotice.tsx
 msgid "Testing…"
 msgstr "テスト中…"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "That address redirects. ALMA does not follow redirects."
-msgstr ""
 
 #: src/pages/shell/composer-error.tsx
 msgid "The bot can use the file but won't see the picture."
@@ -6363,10 +6300,6 @@ msgstr "アクセストークンには{oauthEnvReference}を使用してくだ�
 msgid "Use a found model"
 msgstr "見つかったモデルを使用"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Use a public HTTPS address. Private and local addresses are not allowed."
-msgstr ""
-
 #: src/components/ModelCredits.tsx
 msgid "Use ALMA credits"
 msgstr "ALMAクレジットを使用"
@@ -6494,10 +6427,6 @@ msgstr "起動"
 
 #: src/pages/settings-nav.ts
 msgid "Wallet"
-msgstr ""
-
-#: src/pages/Shell.tsx
-msgid "We'll review this response."
 msgstr ""
 
 #: src/components/ModelCredits.tsx
@@ -6682,10 +6611,6 @@ msgstr "デフォルト設定"
 #: src/pages/Auth.tsx
 msgid "Your email address"
 msgstr "メールアドレス"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Your Honcho server could not be reached. Chats continue without this memory."
-msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts

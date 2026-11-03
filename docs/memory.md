@@ -35,13 +35,7 @@ A deployment can set one memory provider for every Space:
 - `HONCHO_REASONING_LEVEL=low`
 - `MEMORY_DEFAULT_SCOPE=isolated` or `shared`
 
-Each Space still gets its own Honcho workspace. The address and key stay on the server. They are not shown in the app and do not need `MCP_ALLOW_PRIVATE_ENDPOINT`, because the address comes from the server's own configuration.
-
-**Settings → Memory** offers two choices. **ALMA memory (recommended)** is the default and has nothing to configure. A Space owner can choose **My own Honcho server** and enter a public HTTPS address and an API key. The key is stored encrypted and is not sent back to the app. **Test connection** checks that Honcho by creating the Space's workspace. Memories already stored are not copied across. **Default scope** and `MEMORY.md` stay.
-
-If that server does not answer, chats continue and semantic recall is skipped. Memory settings shows a warning. The server's own Honcho is not used for a Space that opted out.
-
-- A Space owner can run Honcho on their own computer. The guide is [Honcho on your own server](./memory-self-hosted-honcho.md).
+Each Space still gets its own Honcho workspace. The address and key stay on the server. They are not shown in the app and do not need `MCP_ALLOW_PRIVATE_ENDPOINT`, because the address comes from the server's own configuration. **Settings → Memory** then says the memory is managed by ALMA. **Default scope** and `MEMORY.md` stay.
 
 ## Memory providers
 

@@ -724,10 +724,6 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr "ALMA 额度"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "ALMA memory (recommended)"
-msgstr ""
-
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "已连接"
@@ -816,7 +812,6 @@ msgstr "任意模型，使用你自己的密钥"
 #: src/components/AskCard.tsx
 #: src/lib/localized-provider-hint.ts
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/compatible-key-field.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
@@ -1165,7 +1160,6 @@ msgid "Can't reach the server."
 msgstr "无法连接服务器。"
 
 #: src/components/TextOnlyMark.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "无法读取图像"
@@ -2070,10 +2064,6 @@ msgstr "无法播放测试片段"
 msgid "Could not preview plugin"
 msgstr "无法预览插件"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Could not reach that Honcho server."
-msgstr ""
-
 #: src/lib/model-connection-preflight.ts
 msgid "Could not reach the model server."
 msgstr "无法连接到模型服务器。"
@@ -2140,10 +2130,6 @@ msgstr "无法重命名工作区"
 msgid "Could not render chart"
 msgstr "无法渲染图表"
 
-#: src/pages/Shell.tsx
-msgid "Could not report this response"
-msgstr ""
-
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "无法重置密码"
@@ -2209,10 +2195,6 @@ msgstr "无法保存该语音"
 #: src/components/VaultSettings.tsx
 msgid "Could not save the credential"
 msgstr "无法保存凭据"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Could not save the Honcho server"
-msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2830,10 +2812,6 @@ msgstr "请输入 1 到 1000 之间的整数作为图像限制。"
 msgid "Enter an API key before testing."
 msgstr "测试前请输入 API 密钥。"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Enter the API key."
-msgstr ""
-
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
 msgstr "环境变量"
@@ -2909,10 +2887,6 @@ msgstr "每周"
 #: src/pages/PluginsOverlay.tsx
 msgid "Executor token"
 msgstr "Executor 令牌"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Existing memories are not moved to the other server."
-msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Expand"
@@ -3059,7 +3033,6 @@ msgid "Forgot password?"
 msgstr "忘记密码？"
 
 #: src/components/ModelCredits.tsx
-#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "免费"
 
@@ -3230,10 +3203,6 @@ msgstr "按住说话"
 msgid "Hold to talk, release to send"
 msgstr "按住说话，松开发送"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Honcho refused the API key."
-msgstr ""
-
 #: src/lib/cron.ts
 msgid "hour"
 msgstr "小时"
@@ -3266,10 +3235,6 @@ msgstr "如何检查"
 #: src/components/SignupSurvey.tsx
 msgid "How will you use ALMA?"
 msgstr "你会如何使用 ALMA？"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "HTTPS address"
-msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "I’m done"
@@ -3863,7 +3828,6 @@ msgstr "模式"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3885,7 +3849,6 @@ msgid "Model id"
 msgstr "模型 ID"
 
 #: src/components/FoundModelPicker.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "模型选项"
@@ -3964,10 +3927,6 @@ msgstr "静音"
 #: src/components/call/CallCard.tsx
 msgid "Muted"
 msgstr "已静音"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "My own Honcho server"
-msgstr ""
 
 #: src/components/teach/SkillDraftCard.tsx
 #: src/components/VaultSettings.tsx
@@ -4133,7 +4092,6 @@ msgid "No matching artifacts on this page."
 msgstr "这一页没有匹配的产物。"
 
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4963,14 +4921,6 @@ msgstr "已取消回复"
 msgid "Replying to {0}"
 msgstr "正在回复 {0}"
 
-#: src/pages/shell/message-hover-actions.tsx
-msgid "Report response"
-msgstr ""
-
-#: src/pages/Shell.tsx
-msgid "Report sent"
-msgstr ""
-
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "请重新获取验证码"
@@ -5177,7 +5127,6 @@ msgstr "周六"
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5234,7 +5183,6 @@ msgstr "正在保存…"
 #: src/components/VaultSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5261,7 +5209,6 @@ msgstr "屏幕未连接"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5296,7 +5243,6 @@ msgstr "搜索 integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
-#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -5864,7 +5810,6 @@ msgstr "测试 API 密钥"
 
 #: src/components/ModelConnectionPreflightNotice.tsx
 #: src/pages/McpServersOverlay.tsx
-#: src/pages/MemorySettingsOverlay.tsx
 msgid "Test connection"
 msgstr "测试连接"
 
@@ -5876,17 +5821,9 @@ msgstr "测试运行"
 msgid "Testing"
 msgstr "测试"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Testing connection…"
-msgstr ""
-
 #: src/components/ModelConnectionPreflightNotice.tsx
 msgid "Testing…"
 msgstr "正在测试…"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "That address redirects. ALMA does not follow redirects."
-msgstr ""
 
 #: src/pages/shell/composer-error.tsx
 msgid "The bot can use the file but won't see the picture."
@@ -6363,10 +6300,6 @@ msgstr "访问令牌请使用 {oauthEnvReference}。"
 msgid "Use a found model"
 msgstr "使用找到的模型"
 
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Use a public HTTPS address. Private and local addresses are not allowed."
-msgstr ""
-
 #: src/components/ModelCredits.tsx
 msgid "Use ALMA credits"
 msgstr "使用 ALMA 额度"
@@ -6495,10 +6428,6 @@ msgstr "唤醒"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr "钱包"
-
-#: src/pages/Shell.tsx
-msgid "We'll review this response."
-msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
@@ -6682,10 +6611,6 @@ msgstr "你的默认设置"
 #: src/pages/Auth.tsx
 msgid "Your email address"
 msgstr "你的邮箱"
-
-#: src/pages/MemorySettingsOverlay.tsx
-msgid "Your Honcho server could not be reached. Chats continue without this memory."
-msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts

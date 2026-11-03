@@ -8,7 +8,6 @@ import {
   DialogTitle,
   Field,
   FieldLabel,
-  Input,
   NativeSelect,
   NativeSelectOption,
   Spinner,
@@ -65,7 +64,6 @@ export function MemorySettingsOverlay({
   onConfigChange,
   embedded = false,
   onBusyChange,
-  canChangeProvider = true,
 }: {
   onClose: () => void;
   config: SpaceMemoryConfig | null | undefined;
@@ -73,8 +71,6 @@ export function MemorySettingsOverlay({
   /** Render panel body only for the shared Settings shell. */
   embedded?: boolean;
   onBusyChange?: (busy: boolean) => void;
-  /** False for a Space member who is not the owner. */
-  canChangeProvider?: boolean;
 }) {
   const rpc = useSpaceRpc();
   const { t } = useLingui();
@@ -86,14 +82,7 @@ export function MemorySettingsOverlay({
   const [defaultScope, setDefaultScope] = useState<"isolated" | "shared">(
     config?.defaultMemoryScope ?? "isolated",
   );
-  const [pending, setPending] = useState<
-    "connect" | "disconnect" | "scope" | "probe" | "save" | null
-  >(null);
-  const [memoryChoice, setMemoryChoice] = useState<"alma" | "owner">(
-    config?.ownerServer ? "owner" : "alma",
-  );
-  const [ownerBaseUrl, setOwnerBaseUrl] = useState(config?.settings.baseUrl ?? "");
-  const [ownerApiKey, setOwnerApiKey] = useState("");
+  const [pending, setPending] = useState<"connect" | "disconnect" | "scope" | null>(null);
   const [addingProvider, setAddingProvider] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -101,8 +90,6 @@ export function MemorySettingsOverlay({
     if (config) {
       setSelectedProvider(config.provider);
       setDefaultScope(config.defaultMemoryScope);
-      setMemoryChoice(config.ownerServer ? "owner" : "alma");
-      if (config.ownerServer) setOwnerBaseUrl(config.settings.baseUrl ?? "");
       return;
     }
     if (config === null && !memoryProviderSettings(selectedProvider)) {
@@ -117,7 +104,7 @@ export function MemorySettingsOverlay({
     return () => onBusyChange?.(false);
   }, [onBusyChange]);
 
-  function markPending(next: "connect" | "disconnect" | "scope" | "probe" | "save" | null) {
+  function markPending(next: "connect" | "disconnect" | "scope" | null) {
     setPending(next);
     onBusyChange?.(next !== null);
   }
@@ -151,83 +138,6 @@ export function MemorySettingsOverlay({
       onConfigChange(null);
     } catch (err) {
       setError(errorText(err, t`Could not disconnect memory provider`));
-    } finally {
-      markPending(null);
-    }
-  }
-
-  function ownerHonchoProblem(code: string | undefined): string {
-    switch (code) {
-      case "public-https":
-        return t`Use a public HTTPS address. Private and local addresses are not allowed.`;
-      case "rejected-key":
-        return t`Honcho refused the API key.`;
-      case "redirect":
-        return t`That address redirects. ALMA does not follow redirects.`;
-      case "missing-key":
-        return t`Enter the API key.`;
-      default:
-        return t`Could not reach that Honcho server.`;
-    }
-  }
-
-  const savedOwnerUrl = config?.ownerServer ? (config.settings.baseUrl ?? "") : "";
-  const ownerKeyOnFile =
-    Boolean(config?.ownerServer) &&
-    ownerBaseUrl.trim().replace(/\/$/, "") === savedOwnerUrl.replace(/\/$/, "") &&
-    ownerApiKey.trim() === "";
-
-  async function chooseAlmaMemory() {
-    setMemoryChoice("alma");
-    if (!config?.ownerServer) return;
-    setError(null);
-    markPending("save");
-    try {
-      await rpc.memory.disconnectProvider();
-      onConfigChange(await rpc.memory.providerConfig());
-    } catch (err) {
-      setMemoryChoice("owner");
-      setError(errorText(err, t`Could not save the Honcho server`));
-    } finally {
-      markPending(null);
-    }
-  }
-
-  async function saveOwnerServer() {
-    setError(null);
-    markPending("save");
-    try {
-      const next = await rpc.memory.connectProvider({
-        provider: "honcho",
-        settings: { source: "owner-honcho", mode: "public", baseUrl: ownerBaseUrl.trim() },
-        credentials: { apiKey: ownerApiKey.trim() },
-        defaultMemoryScope: defaultScope,
-      });
-      setOwnerApiKey("");
-      onConfigChange(next);
-    } catch (err) {
-      const message = err && typeof err === "object" && "message" in err ? String(err.message) : "";
-      setError(
-        ["public-https", "rejected-key", "redirect", "missing-key", "unreachable"].includes(message)
-          ? ownerHonchoProblem(message)
-          : errorText(err, t`Could not save the Honcho server`),
-      );
-    } finally {
-      markPending(null);
-    }
-  }
-
-  async function testOwnerServer() {
-    setError(null);
-    markPending("probe");
-    try {
-      const result = await rpc.memory.probeOwnerServer({
-        baseUrl: ownerBaseUrl.trim(),
-        apiKey: ownerApiKey.trim(),
-      });
-      if (!result.ok) setError(ownerHonchoProblem(result.error));
-    } catch (err) {
-      setError(errorText(err, t`Could not reach that Honcho server.`));
     } finally {
       markPending(null);
     }
@@ -278,107 +188,13 @@ export function MemorySettingsOverlay({
             </p>
           ) : config?.managedByServer ? (
             <section className="rounded-xl border border-border px-4 py-4">
-              <h3 id={providerSelectId} className="text-heading3 font-medium text-foreground">
-                <Trans>Provider</Trans>
-              </h3>
-              <div className="mt-3 grid grid-cols-1 gap-1 rounded-lg bg-muted p-1 sm:grid-cols-2">
-                <Toggle
-                  pressed={memoryChoice === "alma"}
-                  disabled={busy || !canChangeProvider}
-                  onPressedChange={() => void chooseAlmaMemory()}
-                  className="text-[13px] aria-pressed:bg-background aria-pressed:shadow-sm"
-                >
-                  <Trans>ALMA memory (recommended)</Trans>
-                </Toggle>
-                <Toggle
-                  pressed={memoryChoice === "owner"}
-                  disabled={busy || !canChangeProvider}
-                  onPressedChange={() => setMemoryChoice("owner")}
-                  className="text-[13px] aria-pressed:bg-background aria-pressed:shadow-sm"
-                >
-                  <Trans>My own Honcho server</Trans>
-                </Toggle>
-              </div>
-              {memoryChoice === "owner" ? (
-                <div className="mt-4 space-y-4">
-                  <Field>
-                    <FieldLabel htmlFor={`${providerSelectId}-url`}>
-                      <Trans>HTTPS address</Trans>
-                    </FieldLabel>
-                    <Input
-                      id={`${providerSelectId}-url`}
-                      value={ownerBaseUrl}
-                      disabled={busy || !canChangeProvider}
-                      onChange={(event) => setOwnerBaseUrl(event.target.value)}
-                      placeholder="https://"
-                      type="url"
-                      autoComplete="off"
-                    />
-                  </Field>
-                  {canChangeProvider ? (
-                    <Field>
-                      <FieldLabel htmlFor={`${providerSelectId}-key`}>
-                        <Trans>API key</Trans>
-                      </FieldLabel>
-                      <Input
-                        id={`${providerSelectId}-key`}
-                        value={ownerApiKey}
-                        disabled={busy}
-                        onChange={(event) => setOwnerApiKey(event.target.value)}
-                        placeholder={config.ownerServer ? "••••••••" : ""}
-                        type="password"
-                        autoComplete="new-password"
-                      />
-                    </Field>
-                  ) : null}
-                  <p className="text-[13px] text-muted-foreground">
-                    <Trans>Existing memories are not moved to the other server.</Trans>
-                  </p>
-                  {config.connectionWarning === "unreachable" ? (
-                    <p className="text-[13px] text-destructive">
-                      <Trans>
-                        Your Honcho server could not be reached. Chats continue without this memory.
-                      </Trans>
-                    </p>
-                  ) : null}
-                  {canChangeProvider ? (
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        disabled={
-                          busy ||
-                          !ownerBaseUrl.trim() ||
-                          (!ownerKeyOnFile && ownerApiKey.trim().length < 8)
-                        }
-                        onClick={() => void testOwnerServer()}
-                      >
-                        {pending === "probe" ? (
-                          <Trans>Testing connection…</Trans>
-                        ) : (
-                          <Trans>Test connection</Trans>
-                        )}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        disabled={
-                          busy ||
-                          !ownerBaseUrl.trim() ||
-                          (!ownerKeyOnFile && ownerApiKey.trim().length < 8)
-                        }
-                        onClick={() => void saveOwnerServer()}
-                      >
-                        {pending === "save" ? <Trans>Saving…</Trans> : <Trans>Save</Trans>}
-                      </Button>
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
+              <p className="text-[14px] text-foreground">
+                <Trans>Memory is managed by ALMA</Trans>
+              </p>
               <div className="mt-4">
                 <ScopePicker
                   value={defaultScope}
-                  disabled={busy || !canChangeProvider}
+                  disabled={busy}
                   onChange={(scope) => void updateDefaultScope(scope)}
                 />
               </div>
