@@ -87,8 +87,8 @@ import {
   reconcileComputerUpdates,
   reconcilePurchases,
   removePiUserSessions,
+  createMemoryProviderResolver,
   resolveDeploymentModel,
-  SpaceMemoryProviderResolver,
   StripeBillingProvider,
   sandboxProviderOptionsFromEnv,
   selectChatRuntime,
@@ -410,7 +410,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
     remoteConnectors,
     env.mcpAllowPrivateEndpoint,
   );
-  const memoryProviders = new SpaceMemoryProviderResolver(prisma, secrets);
+  const memoryProviders = createMemoryProviderResolver(prisma, secrets);
   const oauthLogins = new PiOAuthLogins(undefined, { prisma, secrets });
   const home = createAgentHomeStore(env.dataDir, prisma);
   void home.removeStaleStaging().catch((error) => getLogger().error("home staging cleanup", error));
@@ -820,6 +820,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       gitSha: env.gitSha,
       integrationsCatalogUrl: env.integrationsCatalogUrl,
       mcpAllowPrivateEndpoint: env.mcpAllowPrivateEndpoint,
+      deploymentMemory: env.deploymentMemory,
       desktopHostChoiceEnabled: Boolean(env.desktopStackToken),
       mcpStdioEnabled: env.mcpStdioEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,

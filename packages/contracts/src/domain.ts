@@ -1665,6 +1665,8 @@ export const SpaceMemoryConfigSchema = z.object({
   settings: z.record(z.string(), z.string()),
   defaultMemoryScope: MemoryScopeSchema,
   updatedAt: z.string(),
+  /** The deployment chose the provider. Settings then omit the URL and key. */
+  managedByServer: z.boolean().optional(),
 });
 export type SpaceMemoryConfig = z.infer<typeof SpaceMemoryConfigSchema>;
 

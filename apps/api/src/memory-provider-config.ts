@@ -2,6 +2,7 @@ import { ORPCError } from "@orpc/server";
 import type { SecretStore } from "@rakazo/adapter-kit";
 import {
   classifyMemoryProviderSettings,
+  DEPLOYMENT_MEMORY_SCOPE_SOURCE,
   MemoryProviderPrivateEndpointRequiredError,
   memoryProviderRequiresPrivateEndpoint,
   prepareMemoryProviderConnection,
@@ -14,7 +15,10 @@ import { withSerializableRetry } from "./serializable-retry.js";
 
 export interface MemoryProviderConfigDeps {
   prisma: PrismaClient;
-  env?: { mcpAllowPrivateEndpoint?: boolean };
+  env?: {
+    mcpAllowPrivateEndpoint?: boolean;
+    deploymentMemory?: { defaultScope: "isolated" | "shared" } | null;
+  };
   secrets: Pick<SecretStore, "put">;
   /** Test seam: override DNS/trust classification without probing. */
   classifySettings?: (
@@ -36,6 +40,30 @@ async function requireSpaceOwner(prisma: PrismaClient, actor: Actor): Promise<vo
   if (!roles?.includes("owner")) throw new ORPCError("FORBIDDEN");
 }
 
+function deploymentManaged(deps: MemoryProviderConfigDeps): boolean {
+  return Boolean(deps.env?.deploymentMemory);
+}
+
+function refuseManagedProvider(): never {
+  throw new ORPCError("CONFLICT", { message: "Memory is managed by ALMA" });
+}
+
+export function managedMemoryView(input: { defaultMemoryScope: string; updatedAt?: Date }): {
+  provider: string;
+  settings: Record<string, string>;
+  defaultMemoryScope: "isolated" | "shared";
+  updatedAt: string;
+  managedByServer: true;
+} {
+  return {
+    provider: "honcho",
+    settings: {},
+    defaultMemoryScope: input.defaultMemoryScope === "shared" ? "shared" : "isolated",
+    updatedAt: (input.updatedAt ?? new Date(0)).toISOString(),
+    managedByServer: true,
+  };
+}
+
 export async function persistMemoryProviderConfig(
   deps: MemoryProviderConfigDeps,
   actor: Actor,
@@ -46,6 +74,7 @@ export async function persistMemoryProviderConfig(
     defaultMemoryScope: "isolated" | "shared";
   },
 ) {
+  if (deploymentManaged(deps)) refuseManagedProvider();
   await requireSpaceOwner(deps.prisma, actor);
   let prepared: Awaited<ReturnType<typeof prepareMemoryProviderConnection>>;
   try {
@@ -142,11 +171,41 @@ export async function updateMemoryProviderDefaultScope(
 ) {
   await requireSpaceOwner(deps.prisma, actor);
   const existing = await findSpaceMemoryConfig(deps.prisma, actor.spaceId);
-  if (!existing) throw new ORPCError("NOT_FOUND");
+  if (!existing) {
+    if (!deploymentManaged(deps)) throw new ORPCError("NOT_FOUND");
+    const stored = await deps.secrets.put("{}", {
+      operationId: "memory-provider-config",
+      traceId: "memory-provider-config",
+      spaceId: actor.spaceId,
+      userId: actor.userId,
+      signal: new AbortController().signal,
+    });
+    await deps.prisma.secret.create({
+      data: {
+        id: stored.id,
+        userId: actor.userId,
+        spaceId: actor.spaceId,
+        kind: "memory-provider",
+        ciphertext: stored.ciphertext,
+      },
+    });
+    const created = await deps.prisma.spaceMemoryConfig.create({
+      data: {
+        spaceId: actor.spaceId,
+        userId: actor.userId,
+        provider: "honcho",
+        settings: { source: DEPLOYMENT_MEMORY_SCOPE_SOURCE },
+        secretId: stored.id,
+        defaultMemoryScope,
+      },
+    });
+    return managedMemoryView(created);
+  }
   const updated = await deps.prisma.spaceMemoryConfig.update({
     where: { id: existing.id },
     data: { defaultMemoryScope },
   });
+  if (deploymentManaged(deps)) return managedMemoryView(updated);
   return serializeSpaceMemoryConfig(updated);
 }
 
@@ -165,6 +224,7 @@ export function serializeSpaceMemoryConfig(config: {
 }
 
 export async function disconnectMemoryProvider(deps: MemoryProviderConfigDeps, actor: Actor) {
+  if (deploymentManaged(deps)) refuseManagedProvider();
   await requireSpaceOwner(deps.prisma, actor);
   await withSerializableRetry(() =>
     deps.prisma.$transaction(

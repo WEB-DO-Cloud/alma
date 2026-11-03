@@ -2115,3 +2115,12 @@ overlay apps/web/e2e/billing-return-and-logo.spec.ts
 overlay apps/web/public/alma-logo-white.svg
 overlay apps/mobile/app/(settings)/messaging.tsx
 overlay apps/mobile/lib/messaging-screen.test.tsx
+overlay apps/api/src/env.ts
+overlay apps/api/src/memory-provider-config.ts
+overlay apps/api/src/persist-memory-provider-config.test.ts
+overlay apps/api/src/router.ts
+overlay apps/api/src/routes/memory.ts
+overlay apps/web/src/pages/MemorySettingsOverlay.tsx
+overlay docs/memory.md
+overlay packages/adapters/src/deployment-memory.test.ts
+overlay packages/adapters/src/deployment-memory.ts

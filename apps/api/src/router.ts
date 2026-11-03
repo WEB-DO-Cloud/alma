@@ -134,6 +134,7 @@ export interface RouterDeps {
     gitSha?: string;
     integrationsCatalogUrl?: string;
     mcpAllowPrivateEndpoint?: boolean;
+    deploymentMemory?: { defaultScope: "isolated" | "shared" } | null;
     desktopHostChoiceEnabled?: boolean;
     mcpStdioEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];

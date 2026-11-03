@@ -71,8 +71,8 @@ import {
   reconcilePurchases,
   resolveDeploymentModel,
   resolvePiSessionRoot,
+  createMemoryProviderResolver,
   resolveSandboxProvider,
-  SpaceMemoryProviderResolver,
   sandboxProviderOptionsFromEnv,
   selectChatRuntime,
   shutdownPiTelemetry,
@@ -228,7 +228,7 @@ async function main() {
     mcp,
   ]);
   integrationSettings.warmDirectories();
-  const memoryProviders = new SpaceMemoryProviderResolver(prisma, secrets);
+  const memoryProviders = createMemoryProviderResolver(prisma, secrets);
   const home = createAgentHomeStore(dataDir, prisma);
   void home.removeStaleStaging().catch((error) => logger.error("home staging cleanup", error));
   const artifacts = createArtifactStore(dataDir, prisma);

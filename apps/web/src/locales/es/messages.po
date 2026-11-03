@@ -2472,6 +2472,9 @@ msgstr "Predeterminado de OpenClaw"
 msgid "Default scope"
 msgstr "Alcance predeterminado"
 
+msgid "Memory is managed by ALMA"
+msgstr "La memoria está gestionada por ALMA"
+
 #: src/components/AccountAccess.tsx
 #: src/components/PasskeySettings.tsx
 #: src/pages/Artifacts.tsx

@@ -513,3 +513,42 @@ describe("updateMemoryProviderDefaultScope", () => {
     expect(update).not.toHaveBeenCalled();
   });
 });
+
+describe("server-managed memory", () => {
+  const managed = { deploymentMemory: { defaultScope: "isolated" as const } };
+
+  it("refuses a user connection and does not store the submitted key", async () => {
+    const { deps } = makeDeps();
+    await expect(
+      persistMemoryProviderConfig({ ...deps, env: managed }, actor, connectionInput("cloud")),
+    ).rejects.toMatchObject({ code: "CONFLICT" });
+    expect(deps.secrets.put).not.toHaveBeenCalled();
+  });
+
+  it("saves only the scope and returns no URL or key", async () => {
+    const { deps, update } = makeDeps({
+      existing: { id: "cfg-1", secretId: "secret-existing" },
+      updateResult: {
+        provider: "supermemory",
+        settings: { baseUrl: "http://honcho-api:8000", apiKey: "should-not-leak" },
+        defaultMemoryScope: "shared",
+        updatedAt: new Date("2026-08-20T00:00:00.000Z"),
+      },
+    });
+    const result = await updateMemoryProviderDefaultScope(
+      { ...deps, env: managed },
+      actor,
+      "shared",
+    );
+    expect(update).toHaveBeenCalled();
+    expect(result).toEqual({
+      provider: "honcho",
+      settings: {},
+      defaultMemoryScope: "shared",
+      updatedAt: "2026-08-20T00:00:00.000Z",
+      managedByServer: true,
+    });
+    expect(JSON.stringify(result)).not.toContain("honcho-api");
+    expect(JSON.stringify(result)).not.toContain("should-not-leak");
+  });
+});

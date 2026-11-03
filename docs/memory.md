@@ -25,6 +25,18 @@ keeps them up to date.
 
 Find it in **Settings → Memory**.
 
+## Server-managed memory
+
+A deployment can set one memory provider for every Space:
+
+- `MEMORY_PROVIDER=honcho`
+- `HONCHO_BASE_URL`, for example `http://honcho-api:8000`
+- `HONCHO_API_KEY`
+- `HONCHO_REASONING_LEVEL=low`
+- `MEMORY_DEFAULT_SCOPE=isolated` or `shared`
+
+Each Space still gets its own Honcho workspace. The address and key stay on the server. They are not shown in the app and do not need `MCP_ALLOW_PRIVATE_ENDPOINT`, because the address comes from the server's own configuration. **Settings → Memory** then says the memory is managed by ALMA. **Default scope** and `MEMORY.md` stay.
+
 ## Memory providers
 
 Optionally, connect a memory service so bots can also recall facts by meaning, not just by reading
