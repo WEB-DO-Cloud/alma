@@ -81,7 +81,11 @@ export * from "./grok-build-runtime.js";
 export * from "./group-handoff.js";
 export * from "./home.js";
 export * from "./home-object-store.js";
-export { HonchoMemoryProvider } from "./honcho-memory-provider.js";
+export {
+  HonchoMemoryProvider,
+  honchoWorkspaceId,
+  probePublicHoncho,
+} from "./honcho-memory-provider.js";
 export * from "./host-aware-sandbox.js";
 export * from "./http-decisions.js";
 export * from "./infisical-secret-store.js";
@@ -152,6 +156,7 @@ export * from "./pipedream-connector.js";
 export * from "./plugin-connectors.js";
 export * from "./plugin-marketplace.js";
 export * from "./product-analytics.js";
+export * from "./public-honcho-endpoint.js";
 export * from "./purchase-poll.js";
 export * from "./purchase-service.js";
 export * from "./push-token-store.js";

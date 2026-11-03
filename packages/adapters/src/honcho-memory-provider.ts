@@ -32,6 +32,14 @@ import {
 } from "./local-service-endpoint.js";
 import type { ResolveHostname } from "./network-address.js";
 import { egressRefused } from "./network-address.js";
+import {
+  assertPublicHonchoBaseUrl,
+  assertPublicHonchoBaseUrlSync,
+  normalizePublicHonchoBaseUrl,
+  PUBLIC_HONCHO_ERRORS,
+  PUBLIC_HONCHO_MODE,
+  publicHonchoTransportError,
+} from "./public-honcho-endpoint.js";
 import { MemoryProviderPrivateEndpointRequiredError } from "./serenity-memory-provider.js";
 import { truncateUtf8 } from "./utf8.js";
 
@@ -55,6 +63,8 @@ const MAX_DELETIONS_PER_FORGET = 200;
  * Fails closed: any mode other than an absent one or "cloud" needs the owner.
  */
 export function honchoRequiresPrivateEndpoint(settings: Record<string, string>): boolean {
+  // Public mode is an owner's own HTTPS server. It is not the private-endpoint escape.
+  if (settings.mode === PUBLIC_HONCHO_MODE) return false;
   return settings.mode !== undefined && settings.mode !== "cloud";
 }
 
@@ -80,10 +90,14 @@ function parseHonchoConnection(
   // Configurations saved before local mode carry no mode and always meant Honcho Cloud.
   // Match exactly, as honchoRequiresPrivateEndpoint does, so the owner gate sees the same mode.
   const mode = settings.mode ?? "cloud";
-  if (mode !== "cloud" && mode !== "local") throw new Error("mode must be cloud or local");
+  if (mode !== "cloud" && mode !== "local" && mode !== PUBLIC_HONCHO_MODE) {
+    throw new Error("mode must be cloud, local, or public");
+  }
   const local = mode === "local";
-  const baseUrl = local ? settings.baseUrl?.trim() : HONCHO_CLOUD_BASE_URL;
+  const publicHost = mode === PUBLIC_HONCHO_MODE;
+  const baseUrl = local || publicHost ? settings.baseUrl?.trim() : HONCHO_CLOUD_BASE_URL;
   if (!baseUrl) throw new Error("baseUrl is required");
+  if (publicHost) assertPublicHonchoBaseUrlSync(baseUrl);
   if (local) {
     // The cloud origin takes the unpinned cloud transport, so it cannot be a local endpoint.
     if (parseServiceBaseUrl(baseUrl).origin === HONCHO_CLOUD_BASE_URL) {
@@ -117,11 +131,57 @@ function parseHonchoConnection(
     throw new Error("userPeerId requires the workspace that holds that peer");
   }
   return {
-    connection: { baseUrl, apiKey, reasoningLevel },
+    connection: {
+      baseUrl,
+      apiKey,
+      reasoningLevel,
+      ...(publicHost ? { egress: "public" as const } : {}),
+    },
     workspaceId,
     userPeerId,
     local,
   };
+}
+
+/**
+ * Health check for an owner's public Honcho: workspace get-or-create.
+ * Refuses private, loopback, and link-local hosts before and after DNS. Redirects are not followed.
+ * The server-env Honcho does not use this path.
+ */
+export async function probePublicHoncho(input: {
+  baseUrl: string;
+  apiKey: string;
+  workspaceId: string;
+  resolveHostname?: ResolveHostname;
+  fetch?: typeof globalThis.fetch;
+}): Promise<{ ok: true; value: undefined } | { ok: false; error: string }> {
+  const apiKey = input.apiKey.trim();
+  if (!apiKey) return { ok: false, error: PUBLIC_HONCHO_ERRORS.missingKey };
+  if (apiKey.length < 8 || apiKey.length > 4096) {
+    return { ok: false, error: "apiKey must contain 8–4096 characters" };
+  }
+  let baseUrl: string;
+  try {
+    await assertPublicHonchoBaseUrl(input.baseUrl, input.resolveHostname);
+    baseUrl = normalizePublicHonchoBaseUrl(input.baseUrl);
+  } catch (error) {
+    return { ok: false, error: publicHonchoTransportError(error) };
+  }
+  const result = await ensureHonchoWorkspace(
+    {
+      baseUrl,
+      apiKey,
+      reasoningLevel: DEFAULT_REASONING_LEVEL,
+      egress: "public",
+      fetch: input.fetch,
+      resolveHostname: input.resolveHostname,
+    },
+    input.workspaceId,
+  );
+  if (!result.ok && /failed: 40[13]\b/.test(result.error)) {
+    return { ok: false, error: PUBLIC_HONCHO_ERRORS.rejectedKey };
+  }
+  return result.ok ? { ok: true, value: undefined } : result;
 }
 
 export async function prepareHonchoConnection(
@@ -137,6 +197,9 @@ export async function prepareHonchoConnection(
     settings,
     credentials,
   );
+  if (connection.egress === "public") {
+    await assertPublicHonchoBaseUrl(connection.baseUrl, options?.resolveHostname);
+  }
   // Loopback needs no DNS pin, so refuse non-owners here before any request is sent.
   if (local && options?.allowPrivateEndpoint !== true) {
     throw egressRefused(
@@ -168,6 +231,9 @@ export async function prepareHonchoConnection(
   return {
     settings: {
       ...(local ? { mode: "local", baseUrl: connection.baseUrl } : {}),
+      ...(connection.egress === "public"
+        ? { mode: PUBLIC_HONCHO_MODE, baseUrl: connection.baseUrl }
+        : {}),
       reasoningLevel: connection.reasoningLevel,
       ...(workspaceId ? { workspaceId } : {}),
       ...(userPeerId ? { userPeerId } : {}),
@@ -222,6 +288,17 @@ export class HonchoMemoryProvider implements SemanticMemoryProvider {
 
   /** Local hosts are checked and pinned before the first request, then reused. */
   private async connectionForRequest(): Promise<SemanticMemoryResponse<HonchoConnectionConfig>> {
+    if (this.connection.egress === "public") {
+      try {
+        assertPublicHonchoBaseUrlSync(this.connection.baseUrl);
+      } catch (error) {
+        return {
+          ok: false,
+          error: error instanceof Error ? error.message : PUBLIC_HONCHO_ERRORS.publicHttps,
+        };
+      }
+      return { ok: true, value: this.connection };
+    }
     if (!this.localHost) return { ok: true, value: this.connection };
     const blocked = await this.localHost.block();
     if (blocked) return { ok: false, error: blocked };

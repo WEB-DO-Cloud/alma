@@ -1665,8 +1665,12 @@ export const SpaceMemoryConfigSchema = z.object({
   settings: z.record(z.string(), z.string()),
   defaultMemoryScope: MemoryScopeSchema,
   updatedAt: z.string(),
-  /** The deployment chose the provider. Settings then omit the URL and key. */
+  /** The deployment offers its Honcho. Settings omit that server's URL and key. */
   managedByServer: z.boolean().optional(),
+  /** The Space owner pointed memory at their own public Honcho. The key is not included. */
+  ownerServer: z.boolean().optional(),
+  /** The owner's Honcho did not answer. Chats continue without that memory. */
+  connectionWarning: z.enum(["unreachable"]).optional(),
 });
 export type SpaceMemoryConfig = z.infer<typeof SpaceMemoryConfigSchema>;
 

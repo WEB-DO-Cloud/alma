@@ -8,12 +8,12 @@ import {
   readAgentMemory,
 } from "@rakazo/adapters";
 import { isDeletableMemoryDocument } from "@rakazo/contracts";
-import { findSpaceMemoryConfig, IsolationError } from "@rakazo/db";
+import { IsolationError } from "@rakazo/db";
 import {
   disconnectMemoryProvider,
-  managedMemoryView,
   persistMemoryProviderConfig,
-  serializeSpaceMemoryConfig,
+  probeOwnerHonchoConnection,
+  readMemoryProviderSettings,
   updateMemoryProviderDefaultScope,
 } from "../memory-provider-config.js";
 import type { RouterContext } from "./context.js";
@@ -137,17 +137,9 @@ export function memoryRoutes(ctx: RouterContext) {
         });
         return docs.map((d) => `# ${d.path}\n\n${d.content}`).join("\n\n");
       }),
-      providerConfig: authed.memory.providerConfig.handler(async ({ context }) => {
-        const deployment = deps.env.deploymentMemory;
-        const config = await findSpaceMemoryConfig(deps.prisma, context.actor.spaceId);
-        if (deployment) {
-          return managedMemoryView({
-            defaultMemoryScope: config?.defaultMemoryScope ?? deployment.defaultScope,
-            updatedAt: config?.updatedAt,
-          });
-        }
-        return config ? serializeSpaceMemoryConfig(config) : null;
-      }),
+      providerConfig: authed.memory.providerConfig.handler(async ({ context }) =>
+        readMemoryProviderSettings(deps, context.actor.spaceId),
+      ),
       connectProvider: authed.memory.connectProvider.handler(async ({ context, input }) =>
         persistMemoryProviderConfig(deps, context.actor, input),
       ),
@@ -156,6 +148,9 @@ export function memoryRoutes(ctx: RouterContext) {
       ),
       disconnectProvider: authed.memory.disconnectProvider.handler(async ({ context }) =>
         disconnectMemoryProvider(deps, context.actor),
+      ),
+      probeOwnerServer: authed.memory.probeOwnerServer.handler(async ({ context, input }) =>
+        probeOwnerHonchoConnection(deps, context.actor, input),
       ),
     },
     scratchpad: {

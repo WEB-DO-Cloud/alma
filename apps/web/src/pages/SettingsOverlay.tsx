@@ -420,6 +420,7 @@ export function SettingsOverlay({
                       config={memoryConfig}
                       onConfigChange={onMemoryConfigChange}
                       onBusyChange={setMemoryBusy}
+                      canChangeProvider={space?.canRename !== false}
                     />
                   ) : null}
                   {section === "voice" && !hideVoice ? (

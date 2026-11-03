@@ -724,6 +724,10 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr ""
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "ALMA memory (recommended)"
+msgstr ""
+
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "כבר מחובר"
@@ -812,6 +816,7 @@ msgstr "כל מודל, עם מפתח משלך"
 #: src/components/AskCard.tsx
 #: src/lib/localized-provider-hint.ts
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/compatible-key-field.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
@@ -1160,6 +1165,7 @@ msgid "Can't reach the server."
 msgstr "אין גישה לשרת."
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "לא ניתן לקרוא תמונות"
@@ -2064,6 +2070,10 @@ msgstr "לא ניתן להשמיע קטע בדיקה"
 msgid "Could not preview plugin"
 msgstr ""
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Could not reach that Honcho server."
+msgstr ""
+
 #: src/lib/model-connection-preflight.ts
 msgid "Could not reach the model server."
 msgstr "אין גישה לשרת המודל."
@@ -2130,6 +2140,10 @@ msgstr "לא ניתן לשנות את שם המרחב"
 msgid "Could not render chart"
 msgstr "לא ניתן להציג את התרשים"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "לא ניתן לאפס את הסיסמה"
@@ -2195,6 +2209,10 @@ msgstr "לא ניתן לשמור את הקול"
 #: src/components/VaultSettings.tsx
 msgid "Could not save the credential"
 msgstr "לא ניתן לשמור את פרטי הגישה"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Could not save the Honcho server"
+msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2812,6 +2830,10 @@ msgstr "יש להזין מספר שלם בין 1 ל-1000 עבור מגבלת ה�
 msgid "Enter an API key before testing."
 msgstr "יש להזין מפתח API לפני הבדיקה."
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Enter the API key."
+msgstr ""
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
 msgstr "משתני סביבה"
@@ -2887,6 +2909,10 @@ msgstr "כל שבוע"
 #: src/pages/PluginsOverlay.tsx
 msgid "Executor token"
 msgstr "טוקן Executor"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Existing memories are not moved to the other server."
+msgstr ""
 
 #: src/pages/shell/message-cards.tsx
 msgid "Expand"
@@ -3033,6 +3059,7 @@ msgid "Forgot password?"
 msgstr "שכחת סיסמה?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "חינם"
 
@@ -3203,6 +3230,10 @@ msgstr ""
 msgid "Hold to talk, release to send"
 msgstr ""
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Honcho refused the API key."
+msgstr ""
+
 #: src/lib/cron.ts
 msgid "hour"
 msgstr "שעה"
@@ -3234,6 +3265,10 @@ msgstr "איך לבדוק"
 
 #: src/components/SignupSurvey.tsx
 msgid "How will you use ALMA?"
+msgstr ""
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "HTTPS address"
 msgstr ""
 
 #: src/pages/shell/computer-release-actions.tsx
@@ -3828,6 +3863,7 @@ msgstr "מצב"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3849,6 +3885,7 @@ msgid "Model id"
 msgstr "מזהה מודל"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "אפשרויות מודל"
@@ -3926,6 +3963,10 @@ msgstr "השתקה"
 
 #: src/components/call/CallCard.tsx
 msgid "Muted"
+msgstr ""
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "My own Honcho server"
 msgstr ""
 
 #: src/components/teach/SkillDraftCard.tsx
@@ -4092,6 +4133,7 @@ msgid "No matching artifacts on this page."
 msgstr "אין תוצרים תואמים בדף הזה."
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4921,6 +4963,14 @@ msgstr "התשובה בוטלה"
 msgid "Replying to {0}"
 msgstr "תשובה ל-{0}"
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "יש לבקש קוד חדש"
@@ -5127,6 +5177,7 @@ msgstr "שבת"
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5183,6 +5234,7 @@ msgstr "שומר..."
 #: src/components/VaultSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5209,6 +5261,7 @@ msgstr "המסך אינו מחובר"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5243,6 +5296,7 @@ msgstr "חיפוש ב-integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -5810,6 +5864,7 @@ msgstr "בדיקת מפתח API"
 
 #: src/components/ModelConnectionPreflightNotice.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 msgid "Test connection"
 msgstr "בדיקת חיבור"
 
@@ -5821,9 +5876,17 @@ msgstr "הרצת בדיקה"
 msgid "Testing"
 msgstr ""
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Testing connection…"
+msgstr ""
+
 #: src/components/ModelConnectionPreflightNotice.tsx
 msgid "Testing…"
 msgstr "בודק…"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "That address redirects. ALMA does not follow redirects."
+msgstr ""
 
 #: src/pages/shell/composer-error.tsx
 msgid "The bot can use the file but won't see the picture."
@@ -6300,6 +6363,10 @@ msgstr "השתמש ב-{oauthEnvReference} עבור אסימון הגישה."
 msgid "Use a found model"
 msgstr "שימוש במודל שנמצא"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Use a public HTTPS address. Private and local addresses are not allowed."
+msgstr ""
+
 #: src/components/ModelCredits.tsx
 msgid "Use ALMA credits"
 msgstr ""
@@ -6427,6 +6494,10 @@ msgstr "הער"
 
 #: src/pages/settings-nav.ts
 msgid "Wallet"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
 msgstr ""
 
 #: src/components/ModelCredits.tsx
@@ -6611,6 +6682,10 @@ msgstr "ברירות המחדל שלך"
 #: src/pages/Auth.tsx
 msgid "Your email address"
 msgstr "כתובת האימייל"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Your Honcho server could not be reached. Chats continue without this memory."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts

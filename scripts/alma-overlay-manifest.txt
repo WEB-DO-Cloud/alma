@@ -2124,3 +2124,7 @@ overlay apps/web/src/pages/MemorySettingsOverlay.tsx
 overlay docs/memory.md
 overlay packages/adapters/src/deployment-memory.test.ts
 overlay packages/adapters/src/deployment-memory.ts
+overlay packages/adapters/src/honcho-client.ts
+overlay packages/adapters/src/public-honcho-endpoint.test.ts
+overlay packages/adapters/src/public-honcho-endpoint.ts
+overlay docs/memory-self-hosted-honcho.md

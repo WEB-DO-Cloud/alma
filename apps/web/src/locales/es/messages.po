@@ -724,6 +724,10 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr "Créditos de ALMA"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "ALMA memory (recommended)"
+msgstr "Memoria ALMA (recomendado)"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "Ya conectado"
@@ -812,6 +816,7 @@ msgstr "Cualquier modelo, con tu propia clave"
 #: src/components/AskCard.tsx
 #: src/lib/localized-provider-hint.ts
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/compatible-key-field.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
@@ -1160,6 +1165,7 @@ msgid "Can't reach the server."
 msgstr "No se puede alcanzar el servidor."
 
 #: src/components/TextOnlyMark.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "No puede leer imágenes"
@@ -2064,6 +2070,10 @@ msgstr "No se pudo reproducir un clip de prueba"
 msgid "Could not preview plugin"
 msgstr "No se pudo previsualizar el plugin"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Could not reach that Honcho server."
+msgstr "No se pudo contactar ese servidor Honcho."
+
 #: src/lib/model-connection-preflight.ts
 msgid "Could not reach the model server."
 msgstr "No se pudo acceder al servidor del modelo."
@@ -2130,6 +2140,10 @@ msgstr "No se pudo renombrar el space"
 msgid "Could not render chart"
 msgstr "No se pudo renderizar el gráfico"
 
+#: src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "No se pudo restablecer la contraseña"
@@ -2195,6 +2209,10 @@ msgstr "No se pudo guardar esa voz"
 #: src/components/VaultSettings.tsx
 msgid "Could not save the credential"
 msgstr "No se pudo guardar la credencial"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Could not save the Honcho server"
+msgstr "No se pudo guardar el servidor Honcho"
 
 #: src/pages/shell/message-cards.tsx
 msgid "Could not save this choice"
@@ -2471,9 +2489,6 @@ msgstr "Predeterminado de OpenClaw"
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Default scope"
 msgstr "Alcance predeterminado"
-
-msgid "Memory is managed by ALMA"
-msgstr "La memoria está gestionada por ALMA"
 
 #: src/components/AccountAccess.tsx
 #: src/components/PasskeySettings.tsx
@@ -2815,6 +2830,10 @@ msgstr "Introduce un número entero del 1 al 1000 para el límite de imágenes."
 msgid "Enter an API key before testing."
 msgstr "Introduce una clave de API antes de probar."
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Enter the API key."
+msgstr "Escribe la clave de API."
+
 #: src/pages/McpServersOverlay.tsx
 msgid "Environment variables"
 msgstr "Variables de entorno"
@@ -2890,6 +2909,10 @@ msgstr "Cada semana"
 #: src/pages/PluginsOverlay.tsx
 msgid "Executor token"
 msgstr "Token de Executor"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Existing memories are not moved to the other server."
+msgstr "Las memorias existentes no se trasladan al otro servidor."
 
 #: src/pages/shell/message-cards.tsx
 msgid "Expand"
@@ -3036,6 +3059,7 @@ msgid "Forgot password?"
 msgstr "¿Olvidaste la contraseña?"
 
 #: src/components/ModelCredits.tsx
+#: src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "Gratis"
 
@@ -3206,6 +3230,10 @@ msgstr "Mantén pulsado para hablar"
 msgid "Hold to talk, release to send"
 msgstr "Mantén para hablar, suelta para enviar"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Honcho refused the API key."
+msgstr "Honcho rechazó la clave de API."
+
 #: src/lib/cron.ts
 msgid "hour"
 msgstr "hora"
@@ -3238,6 +3266,10 @@ msgstr "Cómo comprobar"
 #: src/components/SignupSurvey.tsx
 msgid "How will you use ALMA?"
 msgstr "¿Cómo usarás ALMA?"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "HTTPS address"
+msgstr "Dirección HTTPS"
 
 #: src/pages/shell/computer-release-actions.tsx
 msgid "I’m done"
@@ -3831,6 +3863,7 @@ msgstr "Modo"
 
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/Onboarding.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
@@ -3852,6 +3885,7 @@ msgid "Model id"
 msgstr "ID del modelo"
 
 #: src/components/FoundModelPicker.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Opciones del modelo"
@@ -3930,6 +3964,10 @@ msgstr "Silenciar"
 #: src/components/call/CallCard.tsx
 msgid "Muted"
 msgstr "Silenciado"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "My own Honcho server"
+msgstr "Mi propio servidor Honcho"
 
 #: src/components/teach/SkillDraftCard.tsx
 #: src/components/VaultSettings.tsx
@@ -4095,6 +4133,7 @@ msgid "No matching artifacts on this page."
 msgstr "No hay artefactos que coincidan en esta página."
 
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -4924,6 +4963,14 @@ msgstr "Respuesta cancelada"
 msgid "Replying to {0}"
 msgstr "Respondiendo a {0}"
 
+#: src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: src/lib/user-error.ts
 msgid "Request a new code"
 msgstr "Solicita un código nuevo"
@@ -5130,6 +5177,7 @@ msgstr "sábado"
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5186,6 +5234,7 @@ msgstr "Guardando..."
 #: src/components/VaultSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -5212,6 +5261,7 @@ msgstr "Pantalla no conectada"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -5246,6 +5296,7 @@ msgstr "Buscar en integrations.sh"
 
 #: src/components/FoundModelPicker.tsx
 #: src/pages/model-settings/compatible-model-fields.tsx
+#: src/pages/model-settings/model-picker.tsx
 #: src/pages/model-settings/role-model-picker.tsx
 #: src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -5813,6 +5864,7 @@ msgstr "Probar clave de API"
 
 #: src/components/ModelConnectionPreflightNotice.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/MemorySettingsOverlay.tsx
 msgid "Test connection"
 msgstr "Probar conexión"
 
@@ -5824,9 +5876,17 @@ msgstr "Ejecución de prueba"
 msgid "Testing"
 msgstr "Pruebas"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Testing connection…"
+msgstr "Probando conexión…"
+
 #: src/components/ModelConnectionPreflightNotice.tsx
 msgid "Testing…"
 msgstr "Probando…"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "That address redirects. ALMA does not follow redirects."
+msgstr "Esa dirección redirige. ALMA no sigue redirecciones."
 
 #: src/pages/shell/composer-error.tsx
 msgid "The bot can use the file but won't see the picture."
@@ -6303,6 +6363,10 @@ msgstr "Usa {oauthEnvReference} para el token de acceso."
 msgid "Use a found model"
 msgstr "Usar un modelo encontrado"
 
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Use a public HTTPS address. Private and local addresses are not allowed."
+msgstr "Usa una dirección HTTPS pública. Las direcciones privadas y locales no están permitidas."
+
 #: src/components/ModelCredits.tsx
 msgid "Use ALMA credits"
 msgstr "Usar créditos de ALMA"
@@ -6431,6 +6495,10 @@ msgstr "Activar"
 #: src/pages/settings-nav.ts
 msgid "Wallet"
 msgstr "Billetera"
+
+#: src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
@@ -6614,6 +6682,10 @@ msgstr "Tus predeterminados"
 #: src/pages/Auth.tsx
 msgid "Your email address"
 msgstr "Tu dirección de correo"
+
+#: src/pages/MemorySettingsOverlay.tsx
+msgid "Your Honcho server could not be reached. Chats continue without this memory."
+msgstr "No se pudo contactar tu servidor Honcho. Los chats siguen sin esta memoria."
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
