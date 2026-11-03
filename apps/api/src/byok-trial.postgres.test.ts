@@ -54,7 +54,7 @@ dbTests("own-key trial", () => {
     expect(provider.byokCheckouts.get(customer)).toMatchObject({
       trialDays: TRIAL_DAYS,
       successUrl: "https://example.test/api/v1/billing/return?client=mobile",
-      cancelUrl: "https://example.test/api/v1/billing/return?client=mobile",
+      cancelUrl: "https://example.test/api/v1/billing/return?client=mobile&result=canceled",
     });
     provider.completeByokCheckout(customer);
     await service.sync(customer);

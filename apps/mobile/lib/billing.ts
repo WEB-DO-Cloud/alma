@@ -2,6 +2,7 @@ import type { BillingStatus } from "@rakazo/contracts";
 import { MOBILE_BILLING_CALLBACK_URL } from "@rakazo/contracts";
 import { Linking } from "react-native";
 import { rpc } from "./api";
+import { openAndroidBillingAuth } from "./billing-auth";
 
 export type Plan = "byok" | "credits";
 
@@ -96,13 +97,18 @@ export function isPaywallShown() {
  * app does not wait on the webhook.
  */
 export async function openBillingPage(url: string): Promise<BillingStatus> {
-  // Defer the native module so billing still opens (in Safari) on older binaries.
-  const browser = await import("expo-web-browser").catch(() => null);
-  // Ephemeral, so iOS opens checkout without asking to "sign in" with the payment site first.
-  if (browser)
-    await browser.openAuthSessionAsync(url, MOBILE_BILLING_CALLBACK_URL, {
-      preferEphemeralSession: true,
-    });
-  else await Linking.openURL(url);
+  // Android uses Chrome's Auth Tab, which closes when the page jumps back to the app.
+  // Older binaries and browsers keep the in-app browser; the return page's button closes that.
+  const opened = await openAndroidBillingAuth(url);
+  if (!opened) {
+    // Defer the native module so billing still opens (in Safari) on older binaries.
+    const browser = await import("expo-web-browser").catch(() => null);
+    // Ephemeral, so iOS opens checkout without asking to "sign in" with the payment site first.
+    if (browser)
+      await browser.openAuthSessionAsync(url, MOBILE_BILLING_CALLBACK_URL, {
+        preferEphemeralSession: true,
+      });
+    else await Linking.openURL(url);
+  }
   return rpc("billing/refresh");
 }

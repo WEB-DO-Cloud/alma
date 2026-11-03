@@ -271,6 +271,7 @@ export default function SignIn() {
                     height: Math.round((logoWidth * 67) / 259),
                     alignSelf: "center",
                     marginBottom: 28,
+                    tintColor: tokens.foreground,
                   }}
                 />
               ) : null}

@@ -1,15 +1,20 @@
 import type { BillingStatus } from "@rakazo/contracts";
 import { describe, expect, it, vi } from "vitest";
+import { rpc } from "./api";
 import {
   currentPlan,
+  openBillingPage,
   ownKeyOffer,
   ownKeySubscriptionCents,
   planEndsAt,
   purchaseCompleted,
   subscribedPlan,
 } from "./billing";
+import { openAndroidBillingAuth } from "./billing-auth";
 
 vi.mock("./api", () => ({ rpc: vi.fn() }));
+vi.mock("./billing-auth", () => ({ openAndroidBillingAuth: vi.fn() }));
+vi.mock("expo-web-browser", () => ({ openAuthSessionAsync: vi.fn() }));
 vi.mock("react-native", () => ({ Linking: { openURL: vi.fn() } }));
 
 function status(overrides: Partial<BillingStatus> = {}): BillingStatus {
@@ -120,5 +125,32 @@ describe("subscribed plan", () => {
 
   it("shows no own-key price for a subscription that is not on the own-key plan", () => {
     expect(ownKeySubscriptionCents(status({ access: true, state: "active" }))).toBeNull();
+  });
+});
+
+describe("checkout return", () => {
+  it("refreshes after the Auth Tab closes and does not open a second browser", async () => {
+    vi.mocked(openAndroidBillingAuth).mockResolvedValue(true);
+    vi.mocked(rpc).mockResolvedValue(status({ access: true }));
+    const { openAuthSessionAsync } = await import("expo-web-browser");
+    await expect(openBillingPage("https://checkout.example/pay")).resolves.toMatchObject({
+      access: true,
+    });
+    expect(openAndroidBillingAuth).toHaveBeenCalledWith("https://checkout.example/pay");
+    expect(openAuthSessionAsync).not.toHaveBeenCalled();
+    expect(rpc).toHaveBeenCalledWith("billing/refresh");
+  });
+
+  it("uses the in-app browser when the Auth Tab is unavailable, then refreshes", async () => {
+    vi.mocked(openAndroidBillingAuth).mockResolvedValue(false);
+    vi.mocked(rpc).mockResolvedValue(status());
+    const { openAuthSessionAsync } = await import("expo-web-browser");
+    await openBillingPage("https://checkout.example/pay");
+    expect(openAuthSessionAsync).toHaveBeenCalledWith(
+      "https://checkout.example/pay",
+      "rakazo://billing",
+      { preferEphemeralSession: true },
+    );
+    expect(rpc).toHaveBeenCalledWith("billing/refresh");
   });
 });

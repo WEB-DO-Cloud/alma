@@ -122,6 +122,7 @@ export function createBillingService(deps: {
   const returnUrl = `${deps.webOrigin}${BILLING_RETURN_PATH}`;
   /** A mobile checkout returns through the API either way, which hands back to the app. */
   const mobileReturnUrl = `${returnUrl}?client=mobile`;
+  const mobileCancelUrl = `${mobileReturnUrl}&result=canceled`;
   const modelCredits = provider.describe().capabilities.modelCredits === true;
   const referrals = createReferrals(deps);
   let cachedPrice: { value: BillingPrice; expiresAt: number } | undefined;
@@ -312,7 +313,7 @@ export function createBillingService(deps: {
           interval,
           ...(byokTrialAvailable(account, credits) ? { trialDays: TRIAL_DAYS } : {}),
           successUrl: client === "mobile" ? mobileReturnUrl : returnUrl,
-          cancelUrl: client === "mobile" ? mobileReturnUrl : appUrl,
+          cancelUrl: client === "mobile" ? mobileCancelUrl : appUrl,
         }),
       );
     } catch (error) {
@@ -366,7 +367,7 @@ export function createBillingService(deps: {
             customerId,
             ...input,
             successUrl: client === "mobile" ? mobileReturnUrl : returnUrl,
-            cancelUrl: client === "mobile" ? mobileReturnUrl : `${appUrl}?billing=canceled`,
+            cancelUrl: client === "mobile" ? mobileCancelUrl : `${appUrl}?billing=canceled`,
           }),
         );
         await prisma.modelCreditAccount.update({
@@ -432,8 +433,7 @@ export function createBillingService(deps: {
           monthlyAmountCents: account?.creditAmountCents ?? null,
           creditPurchasesEnabled: deps.managedModelsAvailable ?? true,
           byokPriceCents:
-            resolveByokMonthlyPriceCents() &&
-              (subscribed?.cents ?? resolveByokMonthlyPriceCents()),
+            resolveByokMonthlyPriceCents() && (subscribed?.cents ?? resolveByokMonthlyPriceCents()),
           byokInterval: subscribed?.interval ?? "month",
           byokAnnualPriceCents: byokOfferCents("year"),
           byokFreeUntil: freeUntil?.toISOString() ?? null,
@@ -509,7 +509,7 @@ export function createBillingService(deps: {
             seats,
             ...trial,
             successUrl: client === "mobile" ? mobileReturnUrl : returnUrl,
-            cancelUrl: client === "mobile" ? mobileReturnUrl : appUrl,
+            cancelUrl: client === "mobile" ? mobileCancelUrl : appUrl,
           }),
         );
       } catch (error) {

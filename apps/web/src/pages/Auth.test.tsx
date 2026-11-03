@@ -149,6 +149,7 @@ it.each(["in", "up"] as const)("shows the ALMA logo above the title on %s", asyn
   const title = host.querySelector("h1");
   expect(logo?.getAttribute("alt")).toBe("ALMA");
   expect(logo?.getAttribute("src")).toBe("/alma-logo-black.svg");
+  expect(host.querySelector('img[src="/alma-logo-white.svg"]')).toBeTruthy();
   expect(title).toBeTruthy();
   expect(logo!.compareDocumentPosition(title!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });

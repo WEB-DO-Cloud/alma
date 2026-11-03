@@ -555,7 +555,18 @@ export function AuthFrame({
     <div className="flex min-h-full items-center justify-center bg-background px-6 py-16 text-foreground">
       <form onSubmit={onSubmit} className="flex w-[460px] flex-col items-center">
         {logo ? (
-          <img alt="ALMA" src="/alma-logo-black.svg" className="h-auto w-[min(45vw,13rem)]" />
+          <>
+            <img
+              alt="ALMA"
+              src="/alma-logo-black.svg"
+              className="h-auto w-[min(45vw,13rem)] dark:hidden"
+            />
+            <img
+              alt=""
+              src="/alma-logo-white.svg"
+              className="hidden h-auto w-[min(45vw,13rem)] dark:block"
+            />
+          </>
         ) : (
           <div className="flex h-[74px] w-[74px] items-center justify-center gap-[11px] rounded-full bg-muted">
             <span className="h-5 w-[9px] rounded-full bg-primary" />
