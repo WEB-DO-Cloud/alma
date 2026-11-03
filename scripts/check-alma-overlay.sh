@@ -107,8 +107,9 @@ if "ALMA uses the microphone for dictation and voice calls." not in pathlib.Path
 manifest_xml = pathlib.Path("apps/mobile/modules/rakazo-notifications/android/src/main/AndroidManifest.xml").read_text()
 if 'android:foregroundServiceType="microphone"' not in manifest_xml:
     sys.exit("Android call service is missing the microphone foreground type")
-if "with-strip-foreground-services" in pathlib.Path("apps/mobile/app.json").read_text():
-    sys.exit("foreground-service strip plugin is registered")
+# 1.0.13 ships without foreground services until the Play declaration and demo video are done.
+if "with-strip-foreground-services" not in pathlib.Path("apps/mobile/app.json").read_text():
+    sys.exit("foreground-service strip plugin is not registered")
 if 'tools:node="remove"' in manifest_xml and "FOREGROUND_SERVICE" in manifest_xml:
     sys.exit("Android foreground service permissions are still stripped")
 skills = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()

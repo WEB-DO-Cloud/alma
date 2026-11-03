@@ -138,6 +138,12 @@ x-app-environment: &app-environment
   GOOGLE_CLOUD_API_KEY:
   GROQ_API_KEY:
   HF_TOKEN:
+  # Server-wide memory provider (MEMORY_PROVIDER=honcho); see docs/self-host.md.
+  HONCHO_API_KEY:
+  HONCHO_BASE_URL:
+  HONCHO_REASONING_LEVEL:
+  MEMORY_DEFAULT_SCOPE:
+  MEMORY_PROVIDER:
   KIMI_API_KEY:
   META_API_KEY:
   MINIMAX_API_KEY:

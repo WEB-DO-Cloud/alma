@@ -178,7 +178,7 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 The native `apps/mobile/ios` project is not checked in. Prebuild reads `supportsTablet: true` and includes iPad in `UIDeviceFamily` and `TARGETED_DEVICE_FAMILY`.
 
-Do not register `./plugins/with-strip-foreground-services`. The 2026-11-03 batch restored the microphone and remote-messaging foreground services. The plugin file can stay in the tree, but `expo.plugins` must not run it.
+`./plugins/with-strip-foreground-services` stays registered for 1.0.13. The rakazo-notifications module still declares the microphone and remote-messaging foreground services, but the app manifest removes them until Google Play's foreground-service declaration and demo video are done. Background calls on Android ship in a later release that unregisters the plugin.
 
 Do not run a Bitrise workflow.
 
