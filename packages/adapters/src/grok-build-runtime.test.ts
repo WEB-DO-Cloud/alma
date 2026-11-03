@@ -5,7 +5,12 @@ import type { AgentRunRequest } from "@rakazo/adapter-kit";
 import { ALMA_UNAVAILABLE_MESSAGE } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
 import { afterEach, expect, it, vi } from "vitest";
-import { GrokBuildAgentRuntime, threadSessionId } from "./grok-build-runtime.js";
+import {
+  DISALLOWED_TOOLS,
+  GrokBuildAgentRuntime,
+  NO_TOOLS_RULE,
+  threadSessionId,
+} from "./grok-build-runtime.js";
 import { resolveManagedModel } from "./managed-model.js";
 import { UnavailableManagedRuntime } from "./unavailable-managed-runtime.js";
 
@@ -30,6 +35,19 @@ if (mode === "auth") {
 if (mode === "tool") {
   process.stdout.write(JSON.stringify({ type: "tool_call", toolName: "run_terminal_cmd" }) + "\\n");
   setInterval(() => {}, 1000);
+}
+if (mode === "ratelimit") {
+  if (previous.length === 1) {
+    process.stdout.write(JSON.stringify({ type: "error", message: "resource-exhausted: Too many requests for team" }) + "\\n");
+    process.exit(1);
+  }
+  process.stdout.write(JSON.stringify({ type: "text", data: "listo" }) + "\\n");
+  process.stdout.write(JSON.stringify({ type: "end" }) + "\\n");
+  process.exit(0);
+}
+if (mode === "ratelimit-always") {
+  process.stdout.write(JSON.stringify({ type: "error", message: "resource-exhausted: Too many requests" }) + "\\n");
+  process.exit(1);
 }
 if (mode === "busy") {
   const count = previous.length;
@@ -74,6 +92,40 @@ it("streams text from a fake grok and denies its tools", async () => {
   );
   expect(argv[0]?.cwd).toContain("scratch");
   expect(argv[0]?.argv.includes("-s")).toBe(true);
+  const args = argv[0]?.argv ?? [];
+  expect(args).toEqual(
+    expect.arrayContaining(["--no-subagents", "--no-plan", "--disable-web-search"]),
+  );
+  const disallowed = args[args.indexOf("--disallowed-tools") + 1] ?? "";
+  expect(disallowed).toBe(DISALLOWED_TOOLS);
+  for (const name of ["monitor", "search_tool", "use_tool", "workflow", "write"])
+    expect(disallowed.split(",")).toContain(name);
+  const rules = args[args.indexOf("--rules") + 1] ?? "";
+  expect(rules.startsWith("Prepara borradores para revisión.")).toBe(true);
+  expect(rules).toContain(NO_TOOLS_RULE);
+});
+
+it("retries once after a Grok rate limit and then answers", async () => {
+  const warn = vi.spyOn(getLogger(), "warn").mockImplementation(() => undefined);
+  const { runtime, home } = await fixture("ratelimit", {}, [10, 10]);
+  const events = [];
+  for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
+  expect(events).toEqual([{ type: "text", text: "listo" }, { type: "done" }]);
+  const argv = JSON.parse(await readFile(path.join(home, "argv.json"), "utf8")) as unknown[];
+  expect(argv).toHaveLength(2);
+  expect(warn).toHaveBeenCalledWith("alma.managed-model.rate-limited", { retry: 1 });
+});
+
+it("shows the Spanish sentence when the rate limit persists", async () => {
+  vi.spyOn(getLogger(), "warn").mockImplementation(() => undefined);
+  const error = vi.spyOn(getLogger(), "error").mockImplementation(() => undefined);
+  const { runtime, home } = await fixture("ratelimit-always", {}, [10, 10]);
+  const events = [];
+  for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
+  expect(events).toEqual([{ type: "text", text: ALMA_UNAVAILABLE_MESSAGE }, { type: "done" }]);
+  const argv = JSON.parse(await readFile(path.join(home, "argv.json"), "utf8")) as unknown[];
+  expect(argv).toHaveLength(3);
+  expect(error).toHaveBeenCalledWith("alma.managed-model.runtime-failed", expect.any(Object));
 });
 
 it("shows the Spanish sentence when grok rejects the session and does not log the key", async () => {
@@ -159,7 +211,7 @@ it("uses the Spanish sentence for an unknown runtime id", async () => {
   );
 });
 
-async function fixture(mode: string, extra: NodeJS.ProcessEnv = {}) {
+async function fixture(mode: string, extra: NodeJS.ProcessEnv = {}, backoff?: number[]) {
   const root = path.join(os.tmpdir(), `alma-grok-${mode}-${Date.now()}-${Math.random()}`);
   roots.push(root);
   const home = path.join(root, "home");
@@ -176,6 +228,7 @@ async function fixture(mode: string, extra: NodeJS.ProcessEnv = {}) {
       GROK_HOME: home,
       ALMA_GROK_SCRATCH: scratch,
     }),
+    backoff,
   );
   return { runtime, home, scratch };
 }

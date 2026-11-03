@@ -51,6 +51,8 @@ describe("onboarding connection suggestions", () => {
     // The reply to the user's pick is read; suggestions after the catalog wait stay unread.
     expect(posted[0]?.markUnread).toBe(false);
     expect(posted.slice(1).every((message) => message.markUnread === true)).toBe(true);
+    // Nothing can be checked, so the reply must not promise to look at connections.
+    expect(JSON.stringify(posted)).not.toContain("already connected");
   });
   it("uses the available connector and omits unavailable apps", async () => {
     const { deps, actor } = fixture([

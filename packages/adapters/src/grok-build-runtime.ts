@@ -18,11 +18,41 @@ import { managedRuntimeModel, writeAlmaModelTable } from "./managed-model.js";
 const RULES_LIMIT = 32_000;
 const PROMPT_LIMIT = 100_000;
 const RULES_OVERFLOW = "Follow the rules at the start of the prompt.";
-const DISALLOWED_TOOLS =
-  "run_terminal_cmd,grep,read_file,search_replace,list_dir,web_search,web_fetch,todo_write,task,Agent";
+// grok 1.0.70 renamed its built-in tools; `--tools ""` alone leaves them on. Keep the old and
+// new names so a tool call (which ends the run with the Spanish sentence) cannot happen.
+export const DISALLOWED_TOOLS = [
+  "run_terminal_cmd",
+  "grep",
+  "read_file",
+  "search_replace",
+  "list_dir",
+  "web_search",
+  "web_fetch",
+  "todo_write",
+  "task",
+  "Agent",
+  "monitor",
+  "search_tool",
+  "use_tool",
+  "workflow",
+  "enter_plan_mode",
+  "exit_plan_mode",
+  "ask_user_question",
+  "send_feedback",
+  "image_gen",
+  "image_edit",
+  "image_to_video",
+  "reference_to_video",
+  "write",
+].join(",");
+/** Appended to the bot's rules: this runtime has no tools, so the model must answer in text. */
+export const NO_TOOLS_RULE =
+  "You have no tools in this chat: you cannot run commands, search, browse, read files, or see or connect the user's apps (Gmail, calendar, Slack). Always answer directly in text. Never ask the user for MCP server details, endpoints, tokens, or other technical parameters. If they ask to connect an app, say plainly that connecting apps is not available in ALMA chat yet and help with what they need in text.";
 const DENY = ["Bash", "Edit", "Write", "Read", "Grep", "WebFetch", "MCPTool"] as const;
 const AUTH_FAILURE = /auth|login|unauthorized|expired/i;
 const SESSION_TAKEN = /already in use|already exists/i;
+const RATE_LIMITED = /resource-exhausted|too many requests|rate limit/i;
+const RATE_LIMIT_BACKOFF_MS = [3_000, 8_000];
 
 interface LiveRun {
   controller: AbortController;
@@ -43,7 +73,10 @@ export function threadSessionId(threadId: string): string {
 }
 
 export class GrokBuildAgentRuntime implements AgentRuntime {
-  constructor(private readonly config: ManagedModelConfig) {}
+  constructor(
+    private readonly config: ManagedModelConfig,
+    private readonly rateLimitBackoffMs: readonly number[] = RATE_LIMIT_BACKOFF_MS,
+  ) {}
 
   describe() {
     return {
@@ -101,7 +134,9 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
       if (this.config.baseUrl) await writeAlmaModelTable(this.config);
       const sessionId = threadSessionId(request.threadId);
       let resume = false;
-      for (let attempt = 0; attempt < 2; attempt += 1) {
+      let rateRetries = 0;
+      const backoff = this.rateLimitBackoffMs;
+      for (let attempt = 0; attempt < 2 + backoff.length; attempt += 1) {
         const outcome = yield* this.spawnOnce({
           request,
           live,
@@ -111,7 +146,18 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
           resume,
           prompt: resume ? built.user : built.full,
           rules: built.rules,
+          lastTry: rateRetries >= backoff.length,
         });
+        if (outcome === "retry-rate") {
+          getLogger().warn("alma.managed-model.rate-limited", { retry: rateRetries + 1 });
+          await sleep(backoff[rateRetries] ?? 8_000, signal);
+          rateRetries += 1;
+          if (signal.aborted) {
+            yield { type: "done" };
+            return;
+          }
+          continue;
+        }
         if (outcome !== "retry-resume" || resume) return;
         resume = true;
       }
@@ -130,7 +176,8 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
     resume: boolean;
     prompt: string;
     rules: string;
-  }): AsyncIterable<AgentRuntimeEvent, "done" | "retry-resume"> {
+    lastTry: boolean;
+  }): AsyncIterable<AgentRuntimeEvent, "done" | "retry-resume" | "retry-rate"> {
     const args = grokArgs(this.config, input);
     if (input.prompt.length > PROMPT_LIMIT) {
       const file = path.join(input.scratch, "prompt.txt");
@@ -269,6 +316,7 @@ export class GrokBuildAgentRuntime implements AgentRuntime {
       return "done";
     }
     if (!input.resume && SESSION_TAKEN.test(failureText)) return "retry-resume";
+    if (!yieldedText && !input.lastTry && RATE_LIMITED.test(failureText)) return "retry-rate";
     if (AUTH_FAILURE.test(failureText)) {
       getLogger().error("alma.managed-model.auth-rejected", { exitCode });
     } else {
@@ -327,12 +375,12 @@ export function grokArgs(
     DISALLOWED_TOOLS,
   ];
   for (const name of DENY) args.push("--deny", name);
-  args.push("--verbatim");
+  args.push("--no-subagents", "--no-plan", "--disable-web-search", "--verbatim");
   if (config.baseUrl) args.push("-m", "alma");
   else if (config.modelId) args.push("-m", config.modelId);
   args.push(
     "--rules",
-    input.rules,
+    input.rules ? `${input.rules}\n\n${NO_TOOLS_RULE}` : NO_TOOLS_RULE,
     "-p",
     input.prompt,
     input.resume ? "-r" : "-s",
@@ -406,6 +454,22 @@ async function* unavailable(
   getLogger().error(event, bindings);
   yield { type: "text", text: ALMA_UNAVAILABLE_MESSAGE };
   yield { type: "done" };
+}
+
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    if (signal.aborted) {
+      resolve();
+      return;
+    }
+    const timer = setTimeout(done, ms);
+    function done() {
+      clearTimeout(timer);
+      signal.removeEventListener("abort", done);
+      resolve();
+    }
+    signal.addEventListener("abort", done, { once: true });
+  });
 }
 
 function errorName(error: unknown): string {

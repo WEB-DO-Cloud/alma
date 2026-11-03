@@ -246,18 +246,6 @@ export async function chooseFocus(
 
   // Keep the name and title the user chose when creating the bot; the focus
   // step only suggests apps, it must not rename the bot.
-  await post(
-    deps,
-    target,
-    [
-      {
-        kind: "text",
-        text: `Got it. ${capitalize(option.summary)}. I’ll see what’s already connected so I don’t make you set something up twice.`,
-      },
-    ],
-    false,
-  );
-
   const providers = deps.connectors.managedProviders();
   const catalog = (
     await Promise.all(
@@ -280,9 +268,31 @@ export async function chooseFocus(
     return entry ? [appConnectCard(entry)] : [];
   });
   if (!cards.length) {
-    await post(deps, target, [{ kind: "text", text: "What would you like to work on first?" }]);
+    // No app connector is configured (ALMA today): don't promise to check connections.
+    await post(
+      deps,
+      target,
+      [
+        {
+          kind: "text",
+          text: `Got it. ${capitalize(option.summary)}. What would you like to work on first?`,
+        },
+      ],
+      false,
+    );
     return;
   }
+  await post(
+    deps,
+    target,
+    [
+      {
+        kind: "text",
+        text: `Got it. ${capitalize(option.summary)}. I’ll see what’s already connected so I don’t make you set something up twice.`,
+      },
+    ],
+    false,
+  );
   const cardNames = cards
     .map((card) => (card.kind === "app_connect" ? card.name : ""))
     .filter(Boolean);
