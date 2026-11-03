@@ -87,6 +87,7 @@ overlay apps/mobile/app/(settings)/_layout.tsx
 overlay apps/mobile/app/(settings)/account.tsx
 overlay apps/mobile/app/(settings)/ai-data-sharing.tsx
 overlay apps/mobile/app/(settings)/billing.tsx
+overlay apps/mobile/app/(settings)/integrations.tsx
 overlay apps/mobile/app/(settings)/model-connection.tsx
 overlay apps/mobile/app/(settings)/models.tsx
 overlay apps/mobile/app/(settings)/signup-survey.tsx
@@ -245,6 +246,7 @@ overlay apps/web/src/pages/Auth.tsx
 overlay apps/web/src/pages/McpOAuthCallback.tsx
 overlay apps/web/src/pages/McpServersOverlay.tsx
 overlay apps/web/src/pages/Onboarding.tsx
+overlay apps/web/src/pages/PluginsOverlay.tsx
 overlay apps/web/src/pages/SettingsOverlay.test.tsx
 overlay apps/web/src/pages/SettingsOverlay.tsx
 overlay apps/web/src/pages/Shell.tsx

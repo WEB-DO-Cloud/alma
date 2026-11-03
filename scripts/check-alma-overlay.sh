@@ -87,8 +87,14 @@ if 'OFFICIAL_REPO_URL = "https://github.com/WEB-DO-Cloud/alma"' not in pathlib.P
     sys.exit("update repository is not the ALMA repo")
 if 'PUBLISHED_IMAGE_REPO = "web-do-cloud/alma"' not in pathlib.Path("packages/core/src/compose-update.ts").read_text():
     sys.exit("published image repository is not the ALMA repo")
-if 'SUBMIT_PLUGIN_URL = "https://alma.com.do/plugins/submit/"' not in domain:
-    sys.exit("plugin submit URL is not on alma.com.do")
+if "export const SUBMIT_PLUGIN_URL: string | null = null" not in domain:
+    sys.exit("plugin submit URL is set; Integrations must hide Submit a plugin")
+web_integrations = pathlib.Path("apps/web/src/pages/PluginsOverlay.tsx").read_text()
+phone_integrations = pathlib.Path("apps/mobile/app/(settings)/integrations.tsx").read_text()
+if "SUBMIT_PLUGIN_URL ?" not in web_integrations:
+    sys.exit("web Integrations always shows Submit a plugin")
+if "SUBMIT_PLUGIN_URL ?" not in phone_integrations:
+    sys.exit("mobile Integrations always shows Submit a plugin")
 skills = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()
 if "rakazo.com" in skills or "github.com/elie222" in skills:
     sys.exit("built-in skill docs still point at a Rakazo host")

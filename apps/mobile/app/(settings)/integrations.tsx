@@ -1507,11 +1507,13 @@ export default function Integrations() {
                 ) : null}
 
                 {renderPlugins()}
-                {pluginsState !== "loading" ? (
+                {pluginsState !== "loading" && SUBMIT_PLUGIN_URL ? (
                   <NativeActionButton
                     fill={false}
                     label={t("Submit a plugin")}
-                    onPress={() => void Linking.openURL(SUBMIT_PLUGIN_URL)}
+                    onPress={() => {
+                      if (SUBMIT_PLUGIN_URL) void Linking.openURL(SUBMIT_PLUGIN_URL);
+                    }}
                     prominence="quiet"
                     size="compact"
                     variant="text"

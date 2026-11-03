@@ -905,7 +905,8 @@ export const PluginMarketplaceCatalogSchema = z.object({
 export type PluginMarketplaceCatalog = z.infer<typeof PluginMarketplaceCatalogSchema>;
 
 export const PLUGIN_SUBMISSIONS_PATH = "/api/v1/plugin-submissions";
-export const SUBMIT_PLUGIN_URL = "https://alma.com.do/plugins/submit/";
+/** Integrations shows "Submit a plugin" only when this is set. */
+export const SUBMIT_PLUGIN_URL: string | null = null;
 
 const HttpsUrlSchema = z
   .string()
