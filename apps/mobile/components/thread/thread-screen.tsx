@@ -155,6 +155,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
     maxAttachmentsPerMessage?: number;
   }>();
   const [needsModel, setNeedsModel] = useState<boolean>();
+  const [managedModel, setManagedModel] = useState(false);
   // Re-read on focus so returning from Models settings updates unsent missing-model messages.
   useFocusEffect(
     useCallback(() => {
@@ -164,6 +165,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
           if (cancelled) return;
           setUploadConfig(me);
           setNeedsModel(me.needsModel);
+          setManagedModel(me.managedModel === true);
         })
         .catch(() => undefined);
       return () => {
@@ -419,7 +421,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   });
 
   const { runError, normalizedRunError, runErrorAction, detailsOpen, setDetailsOpen } =
-    useThreadRunError(snap?.run, botId);
+    useThreadRunError(snap?.run, botId, managedModel);
 
   // Event actions read the latest committed screen state without invalidating settled rows.
   const rowActions = useLatestRowActions({

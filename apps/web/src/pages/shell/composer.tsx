@@ -65,6 +65,7 @@ export const Composer = memo(function Composer({
   onDraftEdited,
   onOpenModels,
   onOpenConnections,
+  managedModel,
   runError,
   runErrorId,
   onRunErrorPresented,
@@ -99,6 +100,7 @@ export const Composer = memo(function Composer({
   onDraftEdited?: () => void;
   onOpenModels: () => void;
   onOpenConnections: () => void;
+  managedModel?: boolean;
   runError: string | null;
   runErrorId: string | null;
   onRunErrorPresented: (runId: string) => void;
@@ -587,6 +589,7 @@ export const Composer = memo(function Composer({
         onRunErrorPresented={onRunErrorPresented}
         onOpenModels={onOpenModels}
         onOpenConnections={onOpenConnections}
+        managedModel={managedModel}
         onDismissError={onDismissError}
         textareaRef={textareaRef}
       />

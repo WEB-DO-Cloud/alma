@@ -269,3 +269,15 @@ it("draws the error notice as a filled card without an outline", () => {
   expect(style).not.toHaveProperty("borderWidth");
   expect(style).not.toHaveProperty("borderColor");
 });
+
+describe("managed model recovery", () => {
+  it.each([
+    "Connect your own API key in Models or choose ALMA credits in Billing.",
+    "401: Unauthorized",
+    '404: {"message":"Model unavailable"}',
+  ])("offers no model or key action for %s when ALMA manages the model", (details) => {
+    const error = normalizeRunError(details);
+    expect(runErrorActionLabel((key) => key, error)).not.toBeNull();
+    expect(runErrorActionLabel((key) => key, error, { managedModel: true })).toBeNull();
+  });
+});

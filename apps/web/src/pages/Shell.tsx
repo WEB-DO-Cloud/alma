@@ -1119,6 +1119,7 @@ function SpaceShell() {
                 } else openSettings("models");
               }}
               onOpenConnections={() => openSettings("models")}
+              managedModel={bootstrapMe?.managedModel === true}
               runError={composer.displayedRunError}
               runErrorId={composer.displayedRunErrorId}
               onRunErrorPresented={composer.handleRunErrorPresented}

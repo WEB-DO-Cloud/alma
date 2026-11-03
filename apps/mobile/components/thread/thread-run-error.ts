@@ -7,7 +7,11 @@ import { runErrorActionLabel } from "../../lib/run-error-presentation";
 import { useRunError } from "../run-error-sheet";
 
 /** The chat's failed run: its error, the recovery action, and whether its details are open. */
-export function useThreadRunError(run: MobileSnapshot["run"] | undefined, botId?: string) {
+export function useThreadRunError(
+  run: MobileSnapshot["run"] | undefined,
+  botId?: string,
+  managedModel = false,
+) {
   const { t } = useI18n();
   const router = useRouter();
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -15,7 +19,9 @@ export function useThreadRunError(run: MobileSnapshot["run"] | undefined, botId?
   const normalizedRunError = useRunError(runError, false);
   const failedRunId = runError ? run?.id : null;
   useEffect(() => setDetailsOpen(false), [failedRunId]);
-  const label = normalizedRunError ? runErrorActionLabel(t, normalizedRunError) : null;
+  const label = normalizedRunError
+    ? runErrorActionLabel(t, normalizedRunError, { managedModel })
+    : null;
   const runBotId = run?.botId ?? botId;
   const runErrorAction = label
     ? {
