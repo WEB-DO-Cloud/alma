@@ -7,6 +7,7 @@ overlay .github/ISSUE_TEMPLATE/config.yml
 overlay .github/ISSUE_TEMPLATE/self-host.yml
 overlay .github/prompts/weekly-dependencies.md
 overlay .github/workflows/ci.yml
+overlay .github/workflows/playwright.yml
 overlay .github/workflows/desktop-macos-screenshot.yml
 overlay .github/workflows/release-android-apk.yml
 overlay .github/workflows/release-desktop.yml
