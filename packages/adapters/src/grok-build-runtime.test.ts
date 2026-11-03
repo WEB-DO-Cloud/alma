@@ -49,6 +49,20 @@ if (mode === "ratelimit-always") {
   process.stdout.write(JSON.stringify({ type: "error", message: "resource-exhausted: Too many requests" }) + "\\n");
   process.exit(1);
 }
+if (mode === "crash") {
+  if (previous.length === 1) process.kill(process.pid, "SIGABRT");
+  process.stdout.write(JSON.stringify({ type: "text", data: "vivo" }) + "\\n");
+  process.stdout.write(JSON.stringify({ type: "end" }) + "\\n");
+  process.exit(0);
+}
+if (mode === "crash-always") process.kill(process.pid, "SIGABRT");
+if (mode === "slow") {
+  setTimeout(() => {
+    process.stdout.write(JSON.stringify({ type: "text", data: "ok" }) + "\\n");
+    process.stdout.write(JSON.stringify({ type: "end" }) + "\\n");
+    process.exit(0);
+  }, 150);
+}
 if (mode === "busy") {
   const count = previous.length;
   if (count === 1) {
@@ -59,7 +73,7 @@ if (mode === "busy") {
   process.stdout.write(JSON.stringify({ type: "end" }) + "\\n");
   process.exit(0);
 }
-process.exit(1);
+if (mode !== "slow") process.exit(1);
 `;
 
 const roots: string[] = [];
@@ -152,6 +166,47 @@ it("hides a tool call and logs the tool name", async () => {
     "alma.managed-model.tool-blocked",
     expect.objectContaining({ tool: "run_terminal_cmd" }),
   );
+});
+
+it("retries a grok crash (signal exit) instead of completing with no text", async () => {
+  vi.spyOn(getLogger(), "warn").mockImplementation(() => undefined);
+  const { runtime } = await fixture("crash", {}, [10, 10]);
+  const events = [];
+  for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
+  expect(events).toEqual([{ type: "text", text: "vivo" }, { type: "done" }]);
+});
+
+it("shows the Spanish sentence when grok keeps crashing", async () => {
+  vi.spyOn(getLogger(), "warn").mockImplementation(() => undefined);
+  const error = vi.spyOn(getLogger(), "error").mockImplementation(() => undefined);
+  const { runtime } = await fixture("crash-always", {}, [10, 10]);
+  const events = [];
+  for await (const event of runtime.run(request("Hola"), undefined)) events.push(event);
+  expect(events).toEqual([{ type: "text", text: ALMA_UNAVAILABLE_MESSAGE }, { type: "done" }]);
+  expect(error).toHaveBeenCalledWith(
+    "alma.managed-model.runtime-failed",
+    expect.objectContaining({ reason: "signal" }),
+  );
+});
+
+it("runs at most two grok processes at once", async () => {
+  const { runtime, home } = await fixture("slow");
+  const started: number[] = [];
+  const runs = [1, 2, 3, 4].map(async (n) => {
+    const req = { ...request(`Hola ${n}`), threadId: `thread-${n}` } as AgentRunRequest;
+    const events = [];
+    for await (const event of runtime.run(req, undefined)) events.push(event);
+    started.push(Date.now());
+    return events;
+  });
+  const t0 = Date.now();
+  const all = await Promise.all(runs);
+  expect(all.every((events) => JSON.stringify(events[0]) === '{"type":"text","text":"ok"}')).toBe(
+    true,
+  );
+  // Four 150 ms runs, two at a time: the last finishes after ~300 ms, not ~150 ms.
+  expect(Math.max(...started) - t0).toBeGreaterThanOrEqual(280);
+  void home;
 });
 
 it("resumes with -r when the session id is already in use", async () => {
