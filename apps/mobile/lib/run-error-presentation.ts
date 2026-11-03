@@ -4,7 +4,10 @@ import type { RunErrorTranslator } from "@rakazo/core";
 export function runErrorActionLabel(
   t: RunErrorTranslator,
   error: { recovery?: "connection" | "model"; kind?: string },
+  options: { managedModel?: boolean } = {},
 ) {
+  // ALMA runs one operator-managed model: there is no model or key for the user to change.
+  if (options.managedModel) return null;
   if (error.recovery === "model") return t("Change model");
   if (error.recovery === "connection")
     return error.kind === "auth" ? t("Replace key") : t("Add Model");

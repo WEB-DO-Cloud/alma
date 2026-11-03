@@ -18,6 +18,7 @@ export function ComposerError({
   onOpenConnections,
   onDismissError,
   textareaRef,
+  managedModel = false,
 }: {
   sendError: string | null;
   /** A recoverable image/model mismatch: a warning with its two ways forward. */
@@ -30,6 +31,8 @@ export function ComposerError({
   onOpenConnections: () => void;
   onDismissError: () => void;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  /** ALMA runs one operator-managed model: no model or key recovery to offer. */
+  managedModel?: boolean;
 }) {
   const { t } = useLingui();
   const runErrorRef = useRef<HTMLDivElement>(null);
@@ -115,7 +118,7 @@ export function ComposerError({
     ? normalizeRunError(runError, translateRunError, i18n.locale || "en")
     : null;
   // The one action that fixes the failure; a transient one already says to try again.
-  const recovery = sendError ? undefined : normalizedRunError?.recovery;
+  const recovery = sendError || managedModel ? undefined : normalizedRunError?.recovery;
   const recoveryAction =
     recovery === "model"
       ? { label: t`Choose a model`, onClick: onOpenModels }
