@@ -167,6 +167,11 @@ export interface DesktopSetupState {
   defaultLocalUrl: string;
   /** Hosted ALMA origin, saved as an `existing` server when chosen. */
   cloudUrl: string;
+  /**
+   * When false, the packaged app hides **This computer** and rejects a local Docker setup.
+   * Unpackaged development and `ALMA_DESKTOP_LOCAL_SERVER=1` leave it true.
+   */
+  localServer: boolean;
   saved: DesktopSetup | null;
   /** Present when a saved or newly selected server could not be reopened. */
   error?: string;

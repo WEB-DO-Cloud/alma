@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { existsSync } from "node:fs";
+import { homedir } from "node:os";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { HostScreen } from "@rakazo/adapters/host-screen";
@@ -88,12 +89,15 @@ import {
   isRakazoHealth,
   managedLocalOpenUrl,
   maySendDesktopStackToken,
+  applyPackagedUserData,
+  localServerSetupAllowed,
   normalizeServerUrl,
   parseSetupInput,
   probeFailureMessage,
   RAKAZO_CLOUD_URL,
   readProbeJson,
   resolveStartupTarget,
+  showLocalServerChoice,
   safeExternalUrl,
   serverHeadersFor,
   servesBundledRenderer,
@@ -166,7 +170,20 @@ markOnce("rk:main:module-evaluated");
 if (PERFORMANCE_USER_DATA) {
   app.setPath("userData", PERFORMANCE_USER_DATA);
   app.setPath("sessionData", path.join(PERFORMANCE_USER_DATA, "session"));
+} else {
+  applyPackagedUserData((name, dir) => app.setPath(name, dir), {
+    packaged: app.isPackaged,
+    platform: process.platform,
+    home: homedir(),
+    appData: process.env.APPDATA,
+    xdgConfigHome: process.env.XDG_CONFIG_HOME,
+  });
 }
+
+const localServerChoice = showLocalServerChoice({
+  packaged: app.isPackaged,
+  localServerEnv: process.env.ALMA_DESKTOP_LOCAL_SERVER,
+});
 app.once("will-finish-launching", () => markOnce("rk:main:will-finish-launching"));
 app.once("ready", () => markOnce("rk:main:ready"));
 // Includes fresh partitions and popup-created sessions, before they load remote content.
@@ -1413,6 +1430,9 @@ app.whenReady().then(async () => {
     },
   });
   currentSetup = await readSetup(userDataDir);
+  if (currentSetup !== null && !localServerSetupAllowed(currentSetup.mode, localServerChoice)) {
+    currentSetup = null;
+  }
   const target = resolveStartupTarget({
     envUrl: process.env.RAKAZO_WEB_URL,
     saved: currentSetup,
@@ -1636,7 +1656,11 @@ app.whenReady().then(async () => {
     return {
       defaultLocalUrl: localStack.webUrl(),
       cloudUrl: RAKAZO_CLOUD_URL,
-      saved: currentSetup,
+      localServer: localServerChoice,
+      saved:
+        currentSetup !== null && localServerSetupAllowed(currentSetup.mode, localServerChoice)
+          ? currentSetup
+          : null,
       error: setupError ?? undefined,
     };
   });
@@ -1666,6 +1690,9 @@ app.whenReady().then(async () => {
             "Enter a valid server address. Public servers require HTTPS; a new local instance must use localhost.",
           ),
         };
+      }
+      if (!localServerSetupAllowed(setup.mode, localServerChoice)) {
+        return { ok: false, error: t("This install does not run a server on this computer.") };
       }
 
       // Only open the exact origin selected and authenticated by the managed stack.
@@ -1749,7 +1776,7 @@ app.whenReady().then(async () => {
     fromSetupWindow(event) ? localStack.state() : null,
   );
   ipcMain.handle("desktop.setup.stack.start", (event) => {
-    if (!fromSetupWindow(event)) return null;
+    if (!fromSetupWindow(event) || !localServerChoice) return null;
     // Respond right away; the setup window polls `stack.state` until a terminal phase.
     void localStack.start();
     return localStack.state();

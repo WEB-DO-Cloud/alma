@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import path from "node:path";
 import type { DesktopSetup, DesktopStackProbeResponse } from "@rakazo/contracts";
 import { parseServerHeaders } from "@rakazo/contracts";
 import { isLoopbackHost, isPrivateNetworkHost } from "@rakazo/contracts/network-host";
@@ -6,6 +7,64 @@ import { t } from "./i18n.js";
 
 /** Managed desktop origin; development keeps its usual web/API ports. */
 export const DEFAULT_LOCAL_WEB_URL = "http://127.0.0.1:45173";
+
+/**
+ * Packaged ALMA hides the local Docker server. An unpackaged launch, including
+ * `pnpm dev` and the desktop Playwright suite, keeps it. `ALMA_DESKTOP_LOCAL_SERVER=1`
+ * shows it in a packaged build.
+ */
+export function showLocalServerChoice(input: {
+  packaged: boolean;
+  localServerEnv?: string;
+}): boolean {
+  if (!input.packaged) return true;
+  return input.localServerEnv === "1";
+}
+
+/** A saved or submitted local Docker setup is refused when that choice is hidden. */
+export function localServerSetupAllowed(mode: string, localServer: boolean): boolean {
+  return localServer || mode !== "new";
+}
+
+/**
+ * Directory for a packaged app. Null when unpackaged, so the caller does not
+ * call `app.setPath`. macOS is `~/Library/Application Support/ALMA`, Windows is
+ * `%APPDATA%\\ALMA`, Linux is `$XDG_CONFIG_HOME/ALMA` or `~/.config/ALMA`.
+ */
+export function packagedUserDataDir(input: {
+  packaged: boolean;
+  platform: string;
+  home: string;
+  appData?: string;
+  xdgConfigHome?: string;
+}): string | null {
+  if (!input.packaged) return null;
+  if (input.platform === "win32") {
+    const base = input.appData?.trim() || path.join(input.home, "AppData", "Roaming");
+    return path.join(base, "ALMA");
+  }
+  if (input.platform === "darwin") {
+    return path.join(input.home, "Library", "Application Support", "ALMA");
+  }
+  const config = input.xdgConfigHome?.trim() || path.join(input.home, ".config");
+  return path.join(config, "ALMA");
+}
+
+/** Sets `userData` only for a packaged app. An unpackaged call does not touch the path. */
+export function applyPackagedUserData(
+  setPath: (name: "userData", dir: string) => void,
+  input: {
+    packaged: boolean;
+    platform: string;
+    home: string;
+    appData?: string;
+    xdgConfigHome?: string;
+  },
+): void {
+  const dir = packagedUserDataDir(input);
+  if (dir === null) return;
+  setPath("userData", dir);
+}
 /** Hosted ALMA; setup saves it as an `existing` server so it opens like any other. */
 export const RAKAZO_CLOUD_URL = "https://app.alma.com.do";
 export const PROBE_RESPONSE_LIMIT_BYTES = 64 * 1024;

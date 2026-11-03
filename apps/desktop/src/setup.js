@@ -80,6 +80,8 @@
 
   let defaultLocalUrl = "";
   let cloudUrl = "";
+  /** Packaged ALMA hides This computer. Missing means show it, so an old bridge still works. */
+  let localServer = true;
   /** Bumped on user edits, mode switches, and new async runs; a run left behind is stale. */
   let requestGeneration = 0;
   /** Generation of the check in flight; an edit or mode switch retires it and releases its lock. */
@@ -116,9 +118,20 @@
     serverHeaders.disabled = locked;
   }
 
+  function applyLocalServer() {
+    const choice = document.querySelector('label[for="mode-new"]');
+    const input = document.getElementById("mode-new");
+    if (choice) choice.hidden = !localServer;
+    if (input) input.disabled = !localServer;
+    if (!localServer && selectedMode() === "new") {
+      const cloud = document.getElementById("mode-cloud");
+      if (cloud) cloud.checked = true;
+    }
+  }
+
   function syncPanels() {
     const mode = selectedMode();
-    panelNew.hidden = mode !== "new";
+    panelNew.hidden = !localServer || mode !== "new";
     panelExisting.hidden = mode !== "existing";
     checkButton.hidden = mode !== "existing";
     if (mode !== "new") continueButton.textContent = t("Continue");
@@ -407,7 +420,10 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const mode = selectedMode();
-    if (mode === "new") void runStack();
+    if (mode === "new") {
+      if (!localServer) return;
+      void runStack();
+    }
     // Cloud is an existing server at a fixed address.
     else if (mode === "cloud") void save("existing", cloudUrl);
     else {
@@ -423,7 +439,7 @@
       wakePoll?.();
       // A follow that ended on an error restarts here instead of leaving the panel frozen;
       // hold the controls until it has rendered the state it is restarting on.
-      if (!stackPolling && selectedMode() === "new") {
+      if (localServer && !stackPolling && selectedMode() === "new") {
         setBusy(true);
         void followStack();
       }
@@ -445,7 +461,9 @@
       if (state === null) throw new Error("Setup is not active");
       defaultLocalUrl = state.defaultLocalUrl;
       cloudUrl = state.cloudUrl;
-      if (state.saved !== null) {
+      localServer = state.localServer !== false;
+      applyLocalServer();
+      if (state.saved !== null && (localServer || state.saved.mode !== "new")) {
         const savedCloud = state.saved.mode === "existing" && state.saved.serverUrl === cloudUrl;
         const mode = savedCloud ? "cloud" : state.saved.mode;
         const modeInput = document.querySelector(`input[name="mode"][value="${mode}"]`);
@@ -461,7 +479,7 @@
       // A relaunch with the stack down starts it before this window opens; show that
       // attempt instead of the saved mode, and follow it while it is still running.
       const stack = await bridge.stack.state();
-      const attached = stack !== null && stack.phase !== "idle";
+      const attached = localServer && stack !== null && stack.phase !== "idle";
       if (attached) document.getElementById("mode-new").checked = true;
       syncPanels();
       setBusy(false);

@@ -1,6 +1,6 @@
 ---
 import type { HomeCopy } from "../i18n/home";
-import { APP_URL, IOS_APP_URL } from "../site";
+import { APP_URL, DESKTOP_DOWNLOADS, IOS_APP_URL } from "../site";
 
 type Props = {
   class: string;
@@ -16,10 +16,36 @@ const { class: className, copy, placement } = Astro.props;
   <a
     class="button button--primary"
     href={APP_URL}
-    data-show="mac windows linux web"
+    data-show="web"
     data-attr={`${placement}-start`}
   >
     {copy.getStarted}
   </a>
+  <a
+    class="button button--primary"
+    href={DESKTOP_DOWNLOADS.mac}
+    data-show="mac"
+    data-attr={`${placement}-mac`}
+  >
+    {copy.download.mac}
+  </a>
+  <a
+    class="button button--primary"
+    href={DESKTOP_DOWNLOADS.windows}
+    data-show="windows"
+    data-attr={`${placement}-windows`}
+  >
+    {copy.download.windows}
+  </a>
+  <a
+    class="button button--primary"
+    href={DESKTOP_DOWNLOADS.linux}
+    data-show="linux"
+    data-attr={`${placement}-linux`}
+  >
+    {copy.download.linux}
+  </a>
   <a class="button button--primary" href={IOS_APP_URL} data-show="ios">{copy.download.ios}</a>
+  <p class="download-note" data-show="windows">{copy.windowsUnsigned}</p>
+  <p class="download-note" data-show="mac windows linux">{copy.downloadNote}</p>
 </div>

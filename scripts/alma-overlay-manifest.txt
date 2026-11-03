@@ -1883,6 +1883,7 @@ overlay apps/www/src/pages/terms.astro
 overlay apps/www/src/roundup.ts
 overlay apps/www/src/site.ts
 overlay apps/www/src/structured-data.ts
+overlay apps/www/src/styles/global.css
 overlay apps/www/src/subscription-faq.ts
 overlay apps/www/src/vs-points.ts
 overlay apps/www/vercel.json
@@ -1899,6 +1900,7 @@ overlay docs/content-encryption.md
 overlay docs/context-and-evals-tasks.md
 overlay docs/designs/2026-10-31-store-release-signing.md
 overlay docs/designs/2026-11-03-alma-batch.md
+overlay docs/designs/alma-desktop-local-memory.md
 overlay docs/designs/alma-managed-model.md
 overlay docs/designs/alma-managed-voice-calls.md
 overlay docs/designs/alma-mobile-app.md
@@ -1914,6 +1916,7 @@ overlay docs/designs/reviews/2026-11-02-alma-upstream-sync-drift.md
 overlay docs/designs/reviews/2026-11-02-alma-upstream-sync.md
 overlay docs/designs/reviews/2026-11-03-alma-batch.md
 overlay docs/desktop-app.md
+overlay docs/desktop-release.md
 overlay docs/getting-started.md
 overlay docs/import-an-agent.md
 overlay docs/integrations.md

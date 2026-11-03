@@ -1,43 +1,39 @@
 # Desktop app
 
-The desktop app for Mac, Windows and Linux runs the same ALMA as the web, and can also run
-everything on your own computer.
+The installed desktop app for Mac, Windows and Linux is a client of ALMA Cloud, or of a server you
+already run. It does not install a server on the computer.
 
 ## Install
 
-Download it from [alma.com.do](https://alma.com.do). The Linux AppImage needs FUSE 2.
+Download it from [alma.com.do](https://alma.com.do). The files are `ALMA-mac.dmg`,
+`ALMA-Setup.exe`, and `ALMA-linux.AppImage`. The Linux AppImage needs FUSE 2. Windows may say it
+does not recognize the installer. That build is not signed yet.
 
 ## Choose a server
 
 The first time it opens, the app asks which server to use:
 
 - **ALMA Cloud**: sign in to your account at app.alma.com.do.
-- **This computer**: run ALMA locally in Docker. If Docker isn't installed, the app links
-  to Docker Desktop, OrbStack and Docker Engine. Everything, including your bots' computers, then
-  runs on your machine.
 - **Existing instance**: connect to an ALMA server you or your team already run. Enter its
   **Server address** and choose **Check connection**.
 
+The installed app does not offer **This computer**. That choice starts a local Docker server, and
+it is only in an unpackaged development build, or a packaged build started with
+`ALMA_DESKTOP_LOCAL_SERVER=1`.
+
 To switch later, use **Change ALMA Server…** in the app menu (Cmd+Shift+K, or Ctrl+Shift+K on
 Windows and Linux).
-
-> [!NOTE]
-> A local server keeps running after you quit the app, so routines still run. Choose
-> **Stop Local Stack** in the app menu to shut it down.
 
 ## Let bots use this computer
 
 The desktop app can give bots access to the computer it runs on, to run commands and work with your
 files.
 
-- With **This computer**, the app asks **Where should bots run?** Choose **Docker** to keep bots in
-  their own isolated computers, or **Use this Mac** (**Use this computer** on Windows and Linux) to
-  let them work directly on yours. **Computer Access…** in the app menu changes this later, and
-  **Revoke Local Computer Access** turns it off.
-- With any server, turn on **Let bots use this computer** in **Settings → General** under
-  **Computers**. Your computer then shows as **Connected** or **Offline** there.
+- Turn on **Let bots use this computer** in **Settings → General** under **Computers**. Your
+  computer then shows as **Connected** or **Offline** there. **Computer Access…** in the app menu
+  changes this later, and **Revoke Local Computer Access** turns it off.
 
-Either way, the app asks **Allow bots to use this computer?** before access is granted. See
+The app asks **Allow bots to use this computer?** before access is granted. See
 [The bot's computer](./computer.md#use-your-own-computer).
 
 > [!WARNING]

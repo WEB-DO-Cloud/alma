@@ -467,7 +467,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         heading: "Setup",
         paragraphs: [
-          "ALMA's self-host path is the published Docker installer, or the desktop app starting that stack on this computer. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
+          "ALMA's self-host path is the published Docker installer. The desktop app connects to that server, or to ALMA Cloud. It does not install a local server. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
           "Hermes Desktop is a native app on macOS, Windows, and Linux. It shares config, API keys, sessions, skills, and memory with the CLI. The desktop guide says first-run onboarding gets you to a first message in seconds, and Choose provider later skips provider setup. Settings cover providers, models, tools, credentials, MCP servers, the gateway, and sessions. The app starts its own local `hermes serve` backend. That chat does not require the CLI or the web dashboard.",
           "The CLI quickstart is a separate path: a shell install (`install.sh` on Linux, macOS, and WSL2; a PowerShell script on Windows), then `hermes setup` (Quick Setup with Nous Portal, Full Setup, or Blank Slate) and `hermes model`. Secrets go in `~/.hermes/.env` and other settings in `~/.hermes/config.yaml`. The first terminal chat is `hermes` or `hermes --tui`. Telegram, Discord, Slack, WhatsApp, Signal, Email, and other platforms use `hermes gateway setup` and a gateway process you start separately. The desktop guide says that messaging gateway is a different process from the app's local backend.",
         ],
@@ -484,7 +484,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         topic: "Setup",
         rakazo:
-          "Docker installer or the desktop app's local stack, then an account and a model. After that ALMA AI is just chat: a new bot interviews you, and you manage it from the chat.",
+          "Docker installer, then an account and a model. The desktop app connects to that server or to ALMA Cloud. After that ALMA AI is just chat: a new bot interviews you, and you manage it from the chat.",
         other:
           "Desktop: first-run onboarding in the app, with Choose provider later if you skip a provider. The app shares `~/.hermes/` with the CLI and starts its own local backend. CLI: `hermes setup` and `hermes model`, then `hermes` or `hermes --tui`. Messaging platforms use `hermes gateway setup` and a separate gateway process.",
       },
@@ -553,7 +553,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         question: "Is ALMA simpler to set up than Hermes Agent?",
         answer:
-          "The documented paths are different. ALMA's self-host guide is a Docker installer, or the desktop app starting that stack, then an account and a model. After that ALMA AI is just chat, and you manage the bot from that chat. Hermes Desktop can reach a first message from in-app onboarding without the CLI, and you manage providers and tools in Settings. The CLI quickstart is `hermes setup`, `hermes model`, config files under `~/.hermes/`, and a terminal chat. Messaging apps are an extra gateway process on either path.",
+          "The documented paths are different. ALMA's self-host guide is a Docker installer, then an account and a model. The desktop app connects to that server. After that ALMA AI is just chat, and you manage the bot from that chat. Hermes Desktop can reach a first message from in-app onboarding without the CLI, and you manage providers and tools in Settings. The CLI quickstart is `hermes setup`, `hermes model`, config files under `~/.hermes/`, and a terminal chat. Messaging apps are an extra gateway process on either path.",
       },
       {
         question: "Is ALMA a drop-in replacement for Hermes Agent?",
