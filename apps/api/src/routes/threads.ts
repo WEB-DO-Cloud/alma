@@ -21,6 +21,7 @@ import {
   touchGroupUpdatedAt,
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
+import { reportAssistantMessage } from "../message-report.js";
 import type { RouterDeps } from "../router.js";
 import { createRoutineTestRun, routineTestRunNonce, routineTestTarget } from "../routines.js";
 import { withSerializableRetry } from "../serializable-retry.js";
@@ -325,6 +326,14 @@ export function threadsRoutes(ctx: RouterContext) {
           });
         }
         return { ok: true as const, runIds: result.runIds };
+      }),
+      report: authed.threads.report.handler(async ({ context, input }) => {
+        const target = await resolveThreadTarget(deps.prisma, context.actor, input);
+        await reportAssistantMessage(deps.prisma, context.actor, target.threadId, input.messageId, {
+          email: deps.email,
+          adminEmails: deps.env.adminEmails,
+        });
+        return { ok: true as const };
       }),
       stop: authed.threads.stop.handler(async ({ context, input }) => {
         const target = await resolveThreadTarget(deps.prisma, context.actor, input);

@@ -21,7 +21,7 @@ Sections 1–9 match the tree:
 *   Terms and privacy name Dominican Republic law and the courts of Santo Domingo, D.N. The privacy voice bullet names xAI and links `https://x.ai/legal/privacy-policy`.
 *   Draft review, organization settings, and message reports are out. Their pages, routes, RPC procedures, and Prisma models are gone. The three migrations that created the tables stay, and no migration drops those rows. The phone menu and sample-data mode stay absent.
 *   Compose passes the ALMA model and voice env names next to `XAI_API_KEY`. `SIGNUPS_ENABLED` stays. The image keeps `chmod 1777 /tmp` and the optional `INSTALL_GROK_CLI=1` block.
-*   `BYOK_MONTHLY_PRICE_CENTS` is `6900`. Unset uses that constant. A positive integer overrides it. `0` makes the own-key plan free. Checkout sends the resolved cents as Stripe `price_data.unit_amount`. `STRIPE_PRICE_ID` stays the legacy seat price. Spanish UI locale `es` formats the amount with `es-DO`, which renders `US$69`.
+*   `BYOK_MONTHLY_PRICE_CENTS` is `5900`. Unset uses that constant. A positive integer overrides it. `0` makes the own-key plan free. Checkout sends the resolved cents as Stripe `price_data.unit_amount`. `STRIPE_PRICE_ID` stays the legacy seat price. Spanish UI locale `es` formats the amount with `es-DO`, which renders `US$59`.
 
 ## Extra specificity
 
@@ -34,4 +34,4 @@ Sections 1–9 match the tree:
 
 `pnpm check` passed. `pnpm lint` passed with existing warnings and no errors. `scripts/check-alma-overlay.sh` passed. The unit suite passed: 19919 tests, 706 skipped. Desktop Electron e2e was not run.
 
-The local web harness started. One Playwright pass opened sign-in (`Sign in to ALMA`), a chat thread with the Call button, the connectors Popular grid (including MintMCP and Waystation), and the upgrade screen at locale `es` (`US$69 / mes`). The full web e2e suite was not run locally; CI runs it.
+The local web harness started. One Playwright pass opened sign-in (`Sign in to ALMA`), a chat thread with the Call button, the connectors Popular grid (including MintMCP and Waystation), and the upgrade screen at locale `es` (`US$59 / mes`). The full web e2e suite was not run locally; CI runs it.

@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -304,10 +305,16 @@ class RakazoNotificationService : Service() {
       liveBuilder.extras.putBoolean(PROMOTED_ONGOING_EXTRA, true)
       liveBuilder.setShortCriticalText(context.getString(R.string.rakazo_live_working))
     }
-    // A normal notification, not a foreground service. Background delivery is
-    // Expo push / FCM. Play rejects a remote-messaging foreground service
-    // without a video demo.
-    manager.notify(LIVE_NOTIFICATION_ID, liveBuilder.build())
+    val notification = liveBuilder.build()
+    if (Build.VERSION.SDK_INT >= 34) {
+      startForeground(
+        LIVE_NOTIFICATION_ID,
+        notification,
+        ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING,
+      )
+    } else {
+      startForeground(LIVE_NOTIFICATION_ID, notification)
+    }
   }
 
   private fun liveStatusIcon(run: RunRecord, avatarStyle: String): Icon {
@@ -338,6 +345,7 @@ class RakazoNotificationService : Service() {
   }
 
   private fun clearLive() {
+    stopForeground(STOP_FOREGROUND_REMOVE)
     manager.cancel(LIVE_NOTIFICATION_ID)
   }
 
@@ -405,6 +413,7 @@ class RakazoNotificationService : Service() {
   }
 
   private fun stop() {
+    stopForeground(STOP_FOREGROUND_REMOVE)
     manager.cancel(LIVE_NOTIFICATION_ID)
     stopSelf()
   }

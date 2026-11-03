@@ -72,7 +72,7 @@
       "entitlements": "assets/entitlements.mac.plist",
       "entitlementsInherit": "assets/entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "ALMA uses the microphone for dictation and voice calls with your bots.",
+        "NSMicrophoneUsageDescription": "ALMA uses the microphone for dictation and voice calls.",
         "NSSpeechRecognitionUsageDescription": "ALMA turns what you say into text for dictation and voice calls with your bots."
       },
       "extraResources": [

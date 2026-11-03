@@ -46,6 +46,7 @@ export function apiProxy(
     // matches other keys as prefixes, so this one is anchored to the exact path.
     [DEVICE_SOCKET]: options(true),
     "/rpc": options(false),
+    "/docs": options(false),
     // Native app domain association, served by the API from deployment settings.
     "/.well-known/apple-app-site-association": options(false),
     "/.well-known/assetlinks.json": options(false),

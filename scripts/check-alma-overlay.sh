@@ -21,8 +21,8 @@ if int(expo["ios"]["buildNumber"]) < 66:
 if int(expo["android"]["versionCode"]) < 14:
     sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected at least 14")
 domain = pathlib.Path("packages/contracts/src/domain.ts").read_text()
-if "BYOK_MONTHLY_PRICE_CENTS: number | null = 6900" not in domain:
-    sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 6900")
+if "BYOK_MONTHLY_PRICE_CENTS: number | null = 5900" not in domain:
+    sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 5900")
 thread = pathlib.Path("apps/mobile/app/thread.tsx").read_text()
 layout = pathlib.Path("apps/mobile/app/_layout.tsx").read_text()
 if re.search(r"\bDictat", thread) or re.search(r"\bDictat", layout):
@@ -39,7 +39,6 @@ absent = [
     "apps/web/src/pages/DraftReview.tsx",
     "apps/web/src/pages/DraftApprovalLog.tsx",
     "apps/web/src/pages/OrganizationSettingsPanel.tsx",
-    "apps/api/src/message-report.ts",
     "apps/api/src/routes/drafts.ts",
     "apps/api/src/routes/organization.ts",
     "packages/contracts/src/draft-review.ts",
@@ -59,9 +58,9 @@ absent = [
 ]
 for path in absent:
     if pathlib.Path(path).exists():
-        sys.exit(f"{path} is back; draft review, organization settings, message reports, and the MCP registry layer stay out")
+        sys.exit(f"{path} is back; draft review, organization settings, and the MCP registry layer stay out")
 schema = pathlib.Path("packages/db/prisma/schema.prisma").read_text()
-for model in ("MessageReport", "OrganizationProfile", "ReviewDraft", "DraftApprovalLog"):
+for model in ("OrganizationProfile", "ReviewDraft", "DraftApprovalLog"):
     if f"model {model} " in schema:
         sys.exit(f"schema still has {model}")
 kept = [
@@ -95,6 +94,23 @@ if "SUBMIT_PLUGIN_URL ?" not in web_integrations:
     sys.exit("web Integrations always shows Submit a plugin")
 if "SUBMIT_PLUGIN_URL ?" not in phone_integrations:
     sys.exit("mobile Integrations always shows Submit a plugin")
+skills_text = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()
+if "https://app.alma.com.do" not in skills_text or "/docs.md" not in skills_text or "self-host" in skills_text:
+    sys.exit("help skill must use app.alma.com.do docs and omit self-host pages")
+if 'href="https://app.alma.com.do/docs"' not in pathlib.Path("apps/web/src/components/SidebarFooter.tsx").read_text():
+    sys.exit("sidebar Docs link is not the app docs")
+mic = pathlib.Path("apps/mobile/locales/es.json").read_text()
+if "ALMA usa el micrófono para dictar y para llamadas de voz." not in mic:
+    sys.exit("Spanish microphone purpose is missing")
+if "ALMA uses the microphone for dictation and voice calls." not in pathlib.Path("apps/mobile/app.json").read_text():
+    sys.exit("English microphone purpose is missing")
+manifest_xml = pathlib.Path("apps/mobile/modules/rakazo-notifications/android/src/main/AndroidManifest.xml").read_text()
+if 'android:foregroundServiceType="microphone"' not in manifest_xml:
+    sys.exit("Android call service is missing the microphone foreground type")
+if "with-strip-foreground-services" in pathlib.Path("apps/mobile/app.json").read_text():
+    sys.exit("foreground-service strip plugin is registered")
+if 'tools:node="remove"' in manifest_xml and "FOREGROUND_SERVICE" in manifest_xml:
+    sys.exit("Android foreground service permissions are still stripped")
 skills = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()
 if "rakazo.com" in skills or "github.com/elie222" in skills:
     sys.exit("built-in skill docs still point at a Rakazo host")

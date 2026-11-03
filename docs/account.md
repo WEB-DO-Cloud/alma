@@ -16,7 +16,7 @@ Under **Advanced**:
 - **Show tool activity**: list the tools a bot used under its reply. Off by default.
 - **Load web images automatically**: show images from outside sites in chat.
 
-When you open an outside link from a chat, Rakazo asks first. Choose **Always open** for a site you
+When you open an outside link from a chat, ALMA asks first. Choose **Always open** for a site you
 trust; those sites are listed under **Trusted sites**, where you can remove them.
 
 ## Sign-in and security
@@ -57,6 +57,3 @@ plan:
 
 **Invite friends** in the account menu gives you a link. You get a free month for each friend who
 starts a trial.
-
-> [!NOTE]
-> A self-hosted server has no billing. See [Self-hosting](./self-host.md).

@@ -234,7 +234,7 @@ export function SidebarFooter({
             ) : null}
             <a
               className={`${buttonVariants({ variant: "ghost" })} h-9 w-full justify-start gap-2.5 font-normal`}
-              href="https://alma.com.do/self-hosted-ai-agent/"
+              href="https://app.alma.com.do/docs"
               target="_blank"
               rel="noreferrer"
             >

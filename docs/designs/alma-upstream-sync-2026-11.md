@@ -51,7 +51,7 @@ Finish the merge only when `git status` shows no unmerged paths. `git add -A` in
 
 `scripts/sync-upstream.sh` repeats these steps against a later `upstream/main`. `scripts/check-alma-overlay.sh` fails the tree when any of these are true. Comparisons are numeric, not lexicographic.
 
-*   `packages/contracts/src/domain.ts` does not set `BYOK_MONTHLY_PRICE_CENTS` to `6900`.
+*   `packages/contracts/src/domain.ts` does not set `BYOK_MONTHLY_PRICE_CENTS` to `5900`.
 *   `apps/mobile/app.json` `expo.version` is below `1.0.12`, `expo.ios.buildNumber` is below `66`, or `expo.android.versionCode` is below `14`.
 *   The phone composer source contains a Dictate or Dictar control, or a sample-data mode is referenced from the phone home screen. The check looks at `apps/mobile/app/thread.tsx` and `apps/mobile/app/_layout.tsx`, not the whole repo.
 *   `git diff --name-only upstream/main` lists a tracked path outside the manifest and outside the globs above.
@@ -178,15 +178,17 @@ Restore from ALMA `HEAD` (absent on upstream):
 
 The native `apps/mobile/ios` project is not checked in. Prebuild reads `supportsTablet: true` and includes iPad in `UIDeviceFamily` and `TARGETED_DEVICE_FAMILY`.
 
-Also register `./plugins/with-strip-foreground-services` in `expo.plugins` if upstream's plugin list does not already include it.
+Do not register `./plugins/with-strip-foreground-services`. The 2026-11-03 batch restored the microphone and remote-messaging foreground services. The plugin file can stay in the tree, but `expo.plugins` must not run it.
 
 Do not run a Bitrise workflow.
 
-### 7. Draft review, organization settings, and message reports stay out
+### 7. Draft review and organization settings stay out
 
 Upstream does not have these screens. They are not part of the overlay.
 
-Do not restore the draft-review pages, the organization-settings page, the message Report action, their routes, their RPC procedures, or the Prisma models `OrganizationProfile`, `OrganizationLawyer`, `OrganizationLogo`, `OrganizationSettingsAudit`, `ReviewDraft`, `DraftApprovalLog`, and `MessageReport`.
+Do not restore the draft-review pages, the organization-settings page, their routes, their RPC procedures, or the Prisma models `OrganizationProfile`, `OrganizationLawyer`, `OrganizationLogo`, `OrganizationSettingsAudit`, `ReviewDraft`, and `DraftApprovalLog`.
+
+The message Report action is restored. See `docs/designs/2026-11-03-alma-batch.md`. `MessageReport` is in the schema again. Do not add a migration; `20261031120000_message_reports` already created the table.
 
 The phone menu (sample data, a separate drafts list, a separate chat, a separate computer, approval history, firm, and about) stays absent. Sample-data mode stays absent.
 
@@ -196,7 +198,7 @@ The migrations that already created those tables stay in the tree, so a database
 *   `packages/db/prisma/migrations/20261026140000_draft_approval/**`
 *   `packages/db/prisma/migrations/20261031120000_message_reports/**`
 
-Do not add a migration that drops those tables or their rows. A later deploy can drop them once nothing in production still reads them. Until then the tables sit unused, with row-level security still on.
+Do not add a migration that drops those tables or their rows. A later deploy can drop the organization and draft tables once nothing in production still reads them. Until then those two tables sit unused, with row-level security still on. `message_reports` is in use again.
 
 ### 8. Deploy
 
@@ -214,25 +216,25 @@ Do not change DNS, Cloudflare, or a live host.
 
 ### 9. Billing price
 
-`BYOK_MONTHLY_PRICE_CENTS` in `packages/contracts/src/domain.ts` is `6900`. That is USD 69 per month.
+`BYOK_MONTHLY_PRICE_CENTS` in `packages/contracts/src/domain.ts` is `5900`. That is USD 59 per month.
 
 The server reads `BYOK_MONTHLY_PRICE_CENTS` from the environment in `apps/api/src/billing.ts` before using the constant:
 
-*   Unset: `6900`.
+*   Unset: `5900`.
 *   A positive integer: that many cents.
 *   `0`: the own-key plan is free (`null`).
 
 Own-key Checkout keeps using Stripe `price_data` and sets `unit_amount` to that resolved value only. It does not also send `1500`, and it does not add `STRIPE_PRICE_ID` on that checkout. `STRIPE_PRICE_ID` stays the legacy seat price.
 
-Tests and e2e fixtures that assert this plan's amount follow the resolved value. A fixture that used `1000` cents or the text `$10 / month` for the own-key plan becomes `6900` and `$69 / month`. A test that expected upstream's `1500` for this plan expects `6900`.
+Tests and e2e fixtures that assert this plan's amount follow the resolved value. A fixture that used `1000` cents or the text `$10 / month` for the own-key plan becomes `5900` and `$59 / month`. A test that expected upstream's `1500` for this plan expects `5900`.
 
-`formatBillingAmount` in `apps/web/src/lib/billing.ts`, and the mobile own-key price string, format USD with locale `es-DO` when the UI locale is `es`. Node's `es-DO` currency format of 6900 cents with zero fraction digits is `US$69`. The Spanish catalog already says `{price} / mes`, so the line reads `US$69 / mes`. Mobile does not prefix a bare `$` onto this price.
+`formatBillingAmount` in `apps/web/src/lib/billing.ts`, and the mobile own-key price string, format USD with locale `es-DO` when the UI locale is `es`. Node's `es-DO` currency format of 5900 cents with zero fraction digits is `US$59`. The Spanish catalog already says `{price} / mes`, so the line reads `US$59 / mes`. Mobile does not prefix a bare `$` onto this price.
 
 This change does not create or edit a Stripe product, price, customer, or webhook. An existing subscription keeps the amount Stripe already stored. `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` turn billing on.
 
 ## What is dropped
 
-Drop an ALMA screen edit that sections 1–6, 8, and 9 do not name. Those sections still apply, including the rebrand, the link removals, Hold to talk, the Call button, the connectors grid, the legal sentences, hidden model setup, and the $69 price. Section 7 names the draft-review, organization-settings, and message-report surfaces, which stay out.
+Drop an ALMA screen edit that sections 1–6, 8, and 9 do not name. Those sections still apply, including the rebrand, the link removals, Hold to talk, the Call button, the connectors grid, the legal sentences, hidden model setup, and the $59 price. Section 7 names the draft-review and organization-settings surfaces, which stay out. The message Report action is part of the product again.
 
 Upstream's settings layout, Messaging settings, lettered question options, and mobile Routines screen stay. Spoken-summary controls stay; section 3 only changes which factory they call when operator voice is xAI.
 
@@ -257,7 +259,7 @@ Screenshots, as pull-request artifacts:
 *   A chat thread.
 *   The connectors screen: search, category chips, the top row of Gmail, Google Calendar, Google Drive, Slack, and Notion, Recommended, and the per-category sections.
 *   The Call button on the composer.
-*   Billing or upgrade with the own-key line `US$69 / mes` at locale `es`.
+*   Billing or upgrade with the own-key line `US$59 / mes` at locale `es`.
 
 ## Out of scope
 

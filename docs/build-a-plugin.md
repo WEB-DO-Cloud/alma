@@ -3,7 +3,7 @@
 ## Most plugins wrap an MCP server
 
 Host your tools, describe the connection in two JSON files, then publish them in a public
-GitHub repository. Rakazo reads the plugin files; it never runs code from the repository.
+GitHub repository. ALMA reads the plugin files; it never runs code from the repository.
 Start with the [MCP server example](../examples/plugins/mcp-server/README.md).
 
 ### 1. Host your server
@@ -64,7 +64,7 @@ names to string values. Use headers only for non-secret configuration, for examp
 or put them in the endpoint URL.
 
 - **OAuth:** users choose **Sign in** on the installed server and authorize in the browser.
-  Rakazo discovers OAuth from the server; no OAuth fields belong in the plugin files.
+  ALMA discovers OAuth from the server; no OAuth fields belong in the plugin files.
   If dynamic client registration is unavailable, users can supply their registered client ID
   and optional secret under **Manage MCP servers** → edit the server → **Advanced**.
 - **API key or bearer token:** users open **Integrations** → **+** → **Manage MCP servers**,
@@ -92,9 +92,9 @@ description: Search the connected documentation server. Use when the user asks h
 
 Use the actual tool names and workflows your server exposes. Skills require nonempty YAML
 `name` (up to 80 characters) and `description` (up to 2000). Keep skill names distinct from
-each other and from Rakazo's built-in skills.
+each other and from ALMA's built-in skills.
 
-### 4. Test in Rakazo
+### 4. Test in ALMA
 
 1. Publish your plugin files in a public GitHub repository. Private repositories and local
    folders are not supported sources.
@@ -136,7 +136,7 @@ become skills that instruct the bot to call `run_subagent`.
 
 ## Compatibility and updates
 
-Rakazo also reads Agent Plugins 1.0.0 and legacy `.cursor-plugin/plugin.json` or
+ALMA also reads Agent Plugins 1.0.0 and legacy `.cursor-plugin/plugin.json` or
 `.grok-plugin/plugin.json` manifests. Legacy formats use `mcp.json` or `.mcp.json` and also
 accept `http` as an alias for `streamable-http`. Component locations are fixed; manifest
 fields cannot relocate them.

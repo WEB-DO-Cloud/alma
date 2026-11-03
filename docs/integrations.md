@@ -17,7 +17,7 @@ bot. From an app's page you can **Reconnect** it, rename an account, or **Uninst
 
 > [!NOTE]
 > The app catalog depends on your server. A self-hosted server shows it only when the operator has
-> configured an app catalog. See [Self-hosting](./self-host.md). Custom sources, below, work on any
+> configured an app catalog. Custom sources, below, work on any
 > server.
 
 ## Add your own tools
@@ -40,7 +40,7 @@ During one bot run, every call to an MCP server added under **Integrations** (Tr
 your own MCP URL) reuses one session, so servers that keep state in the session (a paused step
 you confirm mid-run, for example) see the same session until the run ends. Two runs never share
 such a session, and each closes when its run ends or after about ten minutes without a call. A
-paused step can be resumed only while the run continues in the same Rakazo instance, within that
+paused step can be resumed only while the run continues in the same ALMA instance, within that
 window and within the server's own pause window (Executor keeps a pause for about four minutes).
 After ten idle minutes, or when the run continues on another instance, the next call opens a fresh
 session.

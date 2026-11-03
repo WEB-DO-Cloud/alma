@@ -433,6 +433,11 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
     speak,
     react: composer.react,
     markUnread: markUnreadFrom,
+    report: (message) => {
+      const target = groupId ? { groupId } : botId ? { botId } : null;
+      if (!target) return;
+      void rpc("threads/report", { ...target, messageId: message.id }).catch(() => undefined);
+    },
     answer: composer.answer,
     openBot,
     openComputer,

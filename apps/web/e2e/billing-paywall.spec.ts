@@ -43,7 +43,7 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
   let status = billingStatus({
     creditPurchasesEnabled: true,
-    byokPriceCents: 6900,
+    byokPriceCents: 5900,
     funding: null,
     balanceUsd: 0,
     monthlyAmountCents: null,
@@ -51,7 +51,7 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
   await page.route("**/rpc/billing/status", (route) => route.fulfill({ json: { json: status } }));
   await page.reload();
   await expect(page.getByRole("heading", { name: "Choose how to use ALMA" })).toBeVisible();
-  await expect(page.getByText("$69 / month", { exact: true })).toBeVisible();
+  await expect(page.getByText("$59 / month", { exact: true })).toBeVisible();
   await expect(
     page.getByText("Works with your ChatGPT or Claude plan.", { exact: true }),
   ).toBeVisible();
@@ -148,7 +148,7 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
     access: true,
     trialAvailable: false,
     creditPurchasesEnabled: true,
-    byokPriceCents: 6900,
+    byokPriceCents: 5900,
     byokFreeUntil: "2030-01-15T12:00:00.000Z",
     funding: "byok",
     balanceUsd: 0,
@@ -159,7 +159,7 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
   await captureScreenshot(page, testInfo, "sidebar-free-plan-ends");
   await page.getByRole("button", { name: "Upgrade", exact: true }).click();
   const plans = page.getByRole("dialog", { name: "Choose how to use ALMA" });
-  await expect(plans.getByText("$69 / month", { exact: true })).toBeVisible();
+  await expect(plans.getByText("$59 / month", { exact: true })).toBeVisible();
   await expect(
     plans.getByRole("button", { name: "Subscribe with your own AI", exact: true }),
   ).toBeVisible();
@@ -195,7 +195,7 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
     freePlan.getByText("Using your API key. Free plan ends Jan 15, 2030.", { exact: true }),
   ).toBeVisible();
   await expect(
-    freePlan.getByRole("button", { name: "Subscribe for $69 / month", exact: true }),
+    freePlan.getByRole("button", { name: "Subscribe for $59 / month", exact: true }),
   ).toBeVisible();
   await captureScreenshot(page, testInfo, "billing-free-plan-ends");
   await page.keyboard.press("Escape");

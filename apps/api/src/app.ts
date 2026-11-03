@@ -165,6 +165,7 @@ import { configuredEmailProvider } from "./email.js";
 import type { AppEnv } from "./env.js";
 import { loadEnv } from "./env.js";
 import { healthRoutes } from "./health.js";
+import { helpIndexHtml, helpIndexMarkdown, readHelpDoc } from "./help-docs.js";
 import { trackInFlightRequests } from "./in-flight-requests.js";
 import { mountLocalComputerHost } from "./local-settings.js";
 import { marketingEmailRoutes, sendWelcomeEmail } from "./marketing-email.js";
@@ -828,6 +829,17 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
     clientInterceptors: [onError((error, { path, signal }) => handleRpcError(error, path, signal))],
   });
   const app = new Hono();
+  app.get("/docs", (c) =>
+    c.body(helpIndexHtml(), 200, { "content-type": "text/html; charset=utf-8" }),
+  );
+  app.get("/docs.md", (c) => c.text(helpIndexMarkdown()));
+  app.get("/docs/:file", (c) => {
+    const file = c.req.param("file");
+    if (!file.endsWith(".md")) return c.notFound();
+    const page = readHelpDoc(file.slice(0, -3));
+    if (!page) return c.notFound();
+    return c.text(page.markdown);
+  });
   const inFlight = trackInFlightRequests();
   app.use("*", inFlight.middleware);
   app.use("*", requestLogging(logger));

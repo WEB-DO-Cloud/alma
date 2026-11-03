@@ -45,14 +45,14 @@
         "expo-audio",
         {
           "enableBackgroundPlayback": false,
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       [
         "expo-speech-recognition",
         {
           "speechRecognitionPermission": "ALMA turns your speech into a message.",
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       "expo-localization",
@@ -69,7 +69,7 @@
         {
           "photosPermission": "ALMA uses your photo library so you can attach an image to a message.",
           "cameraPermission": "ALMA uses the camera so you can attach a photo to a message.",
-          "microphonePermission": "ALMA uses the microphone so you can dictate a message."
+          "microphonePermission": "ALMA uses the microphone for dictation and voice calls."
         }
       ],
       [
@@ -100,7 +100,6 @@
       "./plugins/with-worklets-headers",
       "./plugins/with-scene-lifecycle",
       "./plugins/with-lan-cleartext",
-      "./plugins/with-strip-foreground-services",
       "./plugins/with-app-intents"
     ],
     "locales": {
@@ -117,6 +116,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "ALMA uses the camera so you can attach a photo to a message.",
         "NSPhotoLibraryUsageDescription": "ALMA uses your photo library so you can attach an image to a message.",
+        "NSMicrophoneUsageDescription": "ALMA uses the microphone for dictation and voice calls.",
         "NSLocalNetworkUsageDescription": "ALMA connects to your firm's server on the local network.",
         "CFBundleDisplayName": "ALMA",
         "NSAppTransportSecurity": {

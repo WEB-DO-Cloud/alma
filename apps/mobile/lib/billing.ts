@@ -5,7 +5,7 @@ import { rpc } from "./api";
 
 export type Plan = "byok" | "credits";
 
-/** Whole USD amounts. Spanish uses es-DO so 6900 cents is `US$69`. */
+/** Whole USD amounts. Spanish uses es-DO so 5900 cents is `US$59`. */
 export function formatUsdAmount(cents: number, locale: string): string {
   const formatLocale = locale === "es" ? "es-DO" : locale;
   const value = cents / 100;

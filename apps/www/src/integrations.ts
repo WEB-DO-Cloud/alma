@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { PLUGIN_CATEGORIES } from "@rakazo/core";
 import type { PluginCategory } from "@rakazo/core";
 import { z } from "zod";
-import { SITE_URL } from "./site";
+import { APP_URL, SITE_URL } from "./site";
 const IntegrationSchema = z.object({
   slug: z.string().regex(/^[a-z0-9_-]+$/),
   name: z.string(),
@@ -39,6 +39,39 @@ function defaultCatalogPath(): string {
 }
 
 const DEFAULT_CATALOG = defaultCatalogPath();
+
+const ClaimsSchema = z.object({
+  claims: z.array(
+    z.object({
+      slug: z.string(),
+      website: z.url(),
+    }),
+  ),
+});
+
+/** Owners' reviewed links to their sites, keyed by page URL slug. */
+async function loadClaims(): Promise<Map<string, z.infer<typeof ClaimsSchema>["claims"][number]>> {
+  try {
+    const response = await fetch(`${APP_URL}/api/v1/integration-claims`, {
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!response.ok) throw new Error(`Claims fetch failed: ${response.status}`);
+    const { claims } = ClaimsSchema.parse(await response.json());
+    return new Map(claims.map((claim) => [claim.slug, claim]));
+  } catch (error) {
+    console.warn(`Integration claims unavailable: ${String(error)}`);
+    return new Map();
+  }
+}
+
+async function loadIntegrations(): Promise<Integration[]> {
+  const [catalog, claims] = await Promise.all([loadCatalog(), loadClaims()]);
+  return catalog.map((integration) => {
+    const claim = claims.get(integrationUrlSlug(integration.slug));
+    return claim ? { ...integration, website: claim.website } : integration;
+  });
+}
+
 async function loadCatalog(): Promise<Integration[]> {
   const source = process.env.CATALOG_URL?.trim() || DEFAULT_CATALOG;
   try {
@@ -194,7 +227,7 @@ const POPULAR_SLUGS = [
   "twitter",
 ];
 
-export const INTEGRATIONS = await loadIntegrations();
+export const INTEGRATIONS: Integration[] = await loadIntegrations();
 
 const BY_SLUG = new Map(INTEGRATIONS.map((integration) => [integration.slug, integration]));
 

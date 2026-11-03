@@ -1,6 +1,6 @@
 # Desktop app
 
-The desktop app for Mac, Windows and Linux runs the same Rakazo as the web, and can also run
+The desktop app for Mac, Windows and Linux runs the same ALMA as the web, and can also run
 everything on your own computer.
 
 ## Install
@@ -12,10 +12,10 @@ Download it from [alma.com.do](https://alma.com.do). The Linux AppImage needs FU
 The first time it opens, the app asks which server to use:
 
 - **ALMA Cloud**: sign in to your account at app.alma.com.do.
-- **This computer**: run your own Rakazo locally in Docker. If Docker isn't installed, the app links
+- **This computer**: run ALMA locally in Docker. If Docker isn't installed, the app links
   to Docker Desktop, OrbStack and Docker Engine. Everything, including your bots' computers, then
   runs on your machine.
-- **Existing instance**: connect to a Rakazo server you or your team already run. Enter its
+- **Existing instance**: connect to an ALMA server you or your team already run. Enter its
   **Server address** and choose **Check connection**.
 
 To switch later, use **Change ALMA Server…** in the app menu (Cmd+Shift+K, or Ctrl+Shift+K on

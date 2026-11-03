@@ -8,7 +8,7 @@ The note is implementable after the resolutions below. They are applied to the n
 
 ## Resolutions
 
-*   **Conflict rule.** On a three-way conflict, upstream wins the behavior and the ALMA rule wins the product value: name ALMA, host `app.alma.com.do` or `alma.com.do`, price `6900`, no Models or Voice settings, `SUBMIT_PLUGIN_URL` null, version floors `1.0.12` / iOS `66` / Android `14`. A conflict that is only a rebrand is resolved to ALMA.
+*   **Conflict rule.** On a three-way conflict, upstream wins the behavior and the ALMA rule wins the product value: name ALMA, host `app.alma.com.do` or `alma.com.do`, price `5900`, no Models or Voice settings, `SUBMIT_PLUGIN_URL` null, version floors `1.0.12` / iOS `66` / Android `14`. A conflict that is only a rebrand is resolved to ALMA.
 *   **Docs languages.** The index is Spanish, with an English list under it. Each article stays the English page upstream wrote, with ALMA wording. Self-host pages are omitted, not translated. A link inside an article that pointed at a self-host page is removed.
 *   **Report mail.** No address is written in the repo. The recipient list is `RAKAZO_ADMIN_EMAILS`. Subject is `ALMA response report`. Damien adds the mailbox he reads to that env on the server, and transactional email must already be on.
 *   **Push secrets.** Nothing secret is committed. Bitrise gets `EXPO_PUBLIC_EAS_PROJECT_ID` and `GOOGLE_SERVICES_JSON` after the Expo project and the Firebase Android app exist. FCM v1 and the APNs key are uploaded to that Expo project, not to the API.

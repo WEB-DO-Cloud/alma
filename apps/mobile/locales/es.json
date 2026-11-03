@@ -3,7 +3,7 @@
     "NSCameraUsageDescription": "ALMA usa la cámara para que puedas adjuntar una foto a un mensaje.",
     "NSPhotoLibraryUsageDescription": "ALMA usa tu fototeca para que puedas adjuntar una imagen a un mensaje.",
     "NSLocalNetworkUsageDescription": "ALMA se conecta al servidor de tu organización en la red local.",
-    "NSMicrophoneUsageDescription": "ALMA usa el micrófono para que puedas dictar un mensaje.",
+    "NSMicrophoneUsageDescription": "ALMA usa el micrófono para dictar y para llamadas de voz.",
     "NSSpeechRecognitionUsageDescription": "ALMA convierte lo que dices en un mensaje.",
     "NSFaceIDUsageDescription": "Permite que ALMA acceda a tus datos biométricos de Face ID."
   }

@@ -311,6 +311,7 @@ describeWithDatabase("API authorization and resource isolation", () => {
         "threads/sendWithRoutines",
         { botId: "missing-bot", clientNonce: "nope", routineIds: ["missing-routine"] },
       ],
+      ["threads/report", { botId: "missing-bot", messageId: "missing-message" }],
       ["threads/stop", { botId: "missing-bot" }],
       ["threads/clear", { botId: "missing-bot" }],
       ["threads/followUp", { botId: "missing-bot", text: "Nope" }],

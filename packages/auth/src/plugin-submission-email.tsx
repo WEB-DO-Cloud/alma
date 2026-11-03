@@ -31,7 +31,7 @@ export function integrationClaimConfirmEmail(
   return message(
     email,
     locale,
-    say("Confirm your Rakazo page claim"),
+    say("Confirm your ALMA page claim"),
     <>
       <Text>
         <Link href={url} style={linkStyle}>

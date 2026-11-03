@@ -3,10 +3,9 @@
   xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
-  <!-- v1 has no foreground service. Remove these even if a dependency merges them in. -->
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" tools:node="remove" />
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" tools:node="remove" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
 
   <queries>
@@ -19,10 +18,10 @@
     <service
       android:name=".RakazoNotificationService"
       android:exported="false"
-      tools:remove="android:foregroundServiceType" />
+      android:foregroundServiceType="remoteMessaging" />
     <service
       android:name=".RakazoCallService"
       android:exported="false"
-      tools:remove="android:foregroundServiceType" />
+      android:foregroundServiceType="microphone" />
   </application>
 </manifest>

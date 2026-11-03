@@ -5,6 +5,7 @@ import { buildMessageContextMenu, messageMenuReaction } from "./message-context-
 const labels: Record<MessageMenuSymbol, string> = {
   reply: "Reply",
   copy: "Copy",
+  report: "Report response",
   react: "React",
   quote: "Quote",
   speak: "Speak message",

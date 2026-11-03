@@ -5,8 +5,7 @@ computer, and keeps working on the web, desktop, and mobile apps.
 
 ## Create your first bot
 
-1. Sign in at [app.alma.com.do](https://app.alma.com.do), or run your own instance with the
-   [self-hosting guide](./self-host.md).
+1. Sign in at [app.alma.com.do](https://app.alma.com.do).
 2. Tell the bot its job in plain words. It asks for anything else it needs.
 
 More in [Bots and chats](./bots-and-chats.md).

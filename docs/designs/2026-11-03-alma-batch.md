@@ -2,7 +2,7 @@
 
 Build on `cursor/restore-integrations-ui-dd22` (`f8800cdb`). One pull request whose base is that branch. Do not merge, deploy, or start a store build. Do not bump `expo.version`, iOS `buildNumber`, or Android `versionCode`. Do not print secrets.
 
-The overlay rules in `docs/designs/alma-upstream-sync-2026-11.md` still apply: rebrand, no Rakazo links, Grok Build and Grok Voice only, no Models or Voice settings, $69 billing, default server `https://app.alma.com.do`.
+The overlay rules in `docs/designs/alma-upstream-sync-2026-11.md` still apply: rebrand, no Rakazo links, Grok Build and Grok Voice only, no Models or Voice settings, $59 billing, default server `https://app.alma.com.do`.
 
 ## 1. Upstream sync
 
@@ -63,9 +63,20 @@ The same English sentence is the `microphonePermission` string on the Expo plugi
 
 Undo the stripping from `597ccc14`. The call foreground service declares `microphone`. The agent-working notification service declares `remoteMessaging`. The manifest requests `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MICROPHONE`, and `FOREGROUND_SERVICE_REMOTE_MESSAGING`. Do not remove those with a plugin. Android 14 requires the permission that matches each `foregroundServiceType`.
 
+Play Console foreground-service demo, about 30 seconds, in this order:
+
+1. Start a voice call with ALMA and show the in-call screen.
+2. Leave the app (home screen or recents) and show the ongoing call notification, which is the microphone foreground service.
+3. Return to the call, then hang up.
+4. Send a message that starts a bot run and show the agent-working notification while the app is in the background. That notification is the remote-messaging foreground service.
+
+## 7. Price
+
+`BYOK_MONTHLY_PRICE_CENTS` is `5900` (USD 59 per month). The yearly amount stays unset, so only the monthly plan is offered. Spanish `es-DO` renders that as `US$59 / mes`.
+
 ## Decisions from review
 
-A three-way conflict keeps upstream behavior and the ALMA value: the name ALMA, hosts `app.alma.com.do` and `alma.com.do`, price `6900`, no Models or Voice settings, `SUBMIT_PLUGIN_URL` null, and version floors `1.0.12`, iOS build `66`, Android `versionCode` `14`.
+A three-way conflict keeps upstream behavior and the ALMA value: the name ALMA, hosts `app.alma.com.do` and `alma.com.do`, price `5900`, no Models or Voice settings, `SUBMIT_PLUGIN_URL` null, and version floors `1.0.12`, iOS build `66`, Android `versionCode` `14`.
 
 The docs index is Spanish, then English. Article bodies stay the English pages, rebranded. Self-host pages are left out, and links to them are removed.
 

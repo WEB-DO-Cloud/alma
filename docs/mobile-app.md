@@ -12,8 +12,7 @@ You can also choose **Get the mobile app** from the account menu in the web or d
 ## Sign in
 
 Sign in with your ALMA account. The app opens on `https://app.alma.com.do`. To use your own server instead, tap **Use a custom server** on
-the sign-in screen and enter its address. For a server on your local network, follow
-[Connecting a phone on the same network](./self-host-clients.md#connecting-a-phone-on-the-same-network).
+the sign-in screen and enter its address.
 
 ## What you can do
 

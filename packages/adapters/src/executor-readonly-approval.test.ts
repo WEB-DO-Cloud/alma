@@ -2445,13 +2445,13 @@ describe("outbound destinations", () => {
     f.setCalls([
       {
         name: "web_fetch",
-        args: { url: "https://alma.com.do/docs/routines.md" },
+        args: { url: "https://app.alma.com.do/docs/routines.md" },
         executionId: "call-1",
       },
       { name: "web_fetch", args: { url: "https://alma.com.do/?q=secret" }, executionId: "call-2" },
     ]);
     await f.run();
-    expect(f.fetchedUrls).toEqual(["https://alma.com.do/docs/routines.md"]);
+    expect(f.fetchedUrls).toEqual(["https://app.alma.com.do/docs/routines.md"]);
     expect(isApprovalPausedResult(f.results[1])).toBe(true);
   });
 
