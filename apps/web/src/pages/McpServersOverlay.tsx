@@ -43,7 +43,6 @@ import { ChevronLeft, Ellipsis, Plus, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AgentAccess } from "../components/integrations/agent-access";
 import { AgentAccessControl } from "../components/integrations/agent-access";
-import { McpRegistryBrowse } from "../components/integrations/McpRegistryBrowse";
 import {
   AvailabilityControl,
   reachesOtherSpaces,
@@ -60,7 +59,7 @@ const INSTALL_POLL_MS = 2500;
 
 type EnvRow = { id: number; name: string; value: string; file: boolean };
 
-/** How an env value asks ALMA to inject the granted OAuth access token. */
+/** How an env value asks Rakazo to inject the granted OAuth access token. */
 const oauthEnvReference = "{{oauth.access_token}}";
 
 let nextEnvRowId = 0;
@@ -952,15 +951,6 @@ export function McpServersOverlay({
           </p>
         ) : null}
         <div className="rk-scroll min-h-0 overflow-y-auto px-6 py-5">
-          <McpRegistryBrowse
-            showSearch
-            installedEndpoints={
-              new Set(servers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])))
-            }
-            onInstalled={() => {
-              void refresh();
-            }}
-          />
           {formOpen ? (
             renderForm()
           ) : (

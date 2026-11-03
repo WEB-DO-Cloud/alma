@@ -45,7 +45,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ConnectorIcon } from "../../components/connector-icon";
-import { McpRegistryBrowse } from "../../components/mcp-registry-browse";
 import { MenuPicker } from "../../components/menu-picker";
 import { NativeActionButton } from "../../components/native-action-button";
 import { NativeSymbol } from "../../components/native-symbol";
@@ -1380,25 +1379,6 @@ export default function Integrations() {
                 autoCorrect={false}
                 returnKeyType="search"
                 style={styles.input}
-              />
-            ) : null}
-
-            {!detailItem ? (
-              <McpRegistryBrowse
-                query={query}
-                installedEndpoints={
-                  new Set(
-                    mcpServers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])),
-                  )
-                }
-                botId={lastBotId || undefined}
-                onInstalled={() => {
-                  void rpc("mcp/servers/list")
-                    .then((servers) => {
-                      if (mounted.current) setMcpServers(servers);
-                    })
-                    .catch(() => undefined);
-                }}
               />
             ) : null}
 

@@ -59,7 +59,6 @@ import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, Plus, X } from "l
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { IntegrationSetup } from "../components/integrations/IntegrationSetup";
-import { McpRegistryBrowse } from "../components/integrations/McpRegistryBrowse";
 import type {
   ManagedAppLink,
   PluginSelection,
@@ -1676,18 +1675,6 @@ export function PluginsOverlay({
             renderBrowseMcp()
           ) : (
             <>
-              <McpRegistryBrowse
-                query={query}
-                installedEndpoints={
-                  new Set(
-                    mcpServers.flatMap((server) => (server.endpoint ? [server.endpoint] : [])),
-                  )
-                }
-                botId={activeBotId}
-                onInstalled={() => {
-                  void mcpQuery.refetch();
-                }}
-              />
               {catalogLoaded && showFeatured && !category ? (
                 <div className="mb-6" data-testid="featured-connectors">
                   {catalog.length === 0 ? (

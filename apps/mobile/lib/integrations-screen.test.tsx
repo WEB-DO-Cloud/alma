@@ -121,7 +121,6 @@ vi.mock("../components/native-action-button", () => ({
   ),
 }));
 vi.mock("react-native-svg", () => ({
-  SvgXml: () => null,
   SvgUri: ({ uri, onError }: { uri: string; onError: () => void }) => {
     if (uri.includes("unrenderable"))
       throw new SyntaxError('Expected transform functions but "t" found.');
@@ -396,7 +395,7 @@ it("persists a completed connection before refreshing", async () => {
     return Promise.resolve([]);
   });
   const add = [...container.querySelectorAll("button")].find(
-    (button) => button.textContent === "Add" && !button.closest("[data-testid='mcp-registry']"),
+    (button) => button.textContent === "Add",
   );
   await act(async () => add?.click());
   expect(state.write).toHaveBeenLastCalledWith(expect.anything(), {
