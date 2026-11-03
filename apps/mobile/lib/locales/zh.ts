@@ -1280,6 +1280,8 @@ export const ZH_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+  "Report response": "举报回复",
+  "No chat apps are connected on this server": "此服务器未连接任何聊天应用",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

@@ -1217,6 +1217,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Crea tu cuenta de ALMA",
   Report: "Reportar",
   "That URL did not look like an ALMA server": "Esa URL no parece de un servidor de ALMA",
+  "Report response": "Reportar respuesta",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

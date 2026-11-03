@@ -1273,6 +1273,8 @@ export const DE_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+  "Report response": "Antwort melden",
+  "No chat apps are connected on this server": "Auf diesem Server sind keine Chat-Apps verbunden",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

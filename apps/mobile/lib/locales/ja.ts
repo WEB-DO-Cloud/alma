@@ -1300,6 +1300,9 @@ export const JA_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+  "Report response": "回答を報告",
+  "No chat apps are connected on this server":
+    "このサーバーには接続されたチャットアプリがありません",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "{peer}とのメッセージ{count}件" };

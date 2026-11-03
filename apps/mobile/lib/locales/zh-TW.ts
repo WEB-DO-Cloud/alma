@@ -1277,6 +1277,8 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   Report: "Report",
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
+  "Report response": "檢舉回覆",
+  "No chat apps are connected on this server": "此伺服器沒有已連接的聊天應用程式",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "與{peer}的 {count} 則訊息" };
