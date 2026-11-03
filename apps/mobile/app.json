@@ -140,7 +140,21 @@
     },
     "extra": {
       "router": {},
-      "supportsRTL": true
+      "supportsRTL": true,
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "RakazoWidgets",
+                  "bundleIdentifier": "do.alma.app.widgets"
+                }
+              ]
+            }
+          }
+        }
+      }
     },
     "runtimeVersion": {
       "policy": "appVersion"

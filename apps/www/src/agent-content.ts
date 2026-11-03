@@ -1,4 +1,5 @@
 import { ALTERNATIVES, alternativeMarkdown } from "./alternatives";
+import { BRAND_COLORS, BRAND_LOGOS } from "./brand";
 import { GROK_ALTERNATIVE_MARKDOWN } from "./grok-alternative";
 import { OPENCLAW_MARKDOWN, SELF_HOST_MARKDOWN } from "./guide";
 import {
@@ -79,11 +80,10 @@ ${home.cta.copy}
 - [Blog](https://alma.com.do/blog/)
 - [Grok Bot alternatives](https://alma.com.do/grok-bot-alternative/)
 - [About](https://alma.com.do/about/)
-- [Support](https://alma.com.do/support/)
+- [Support](https://alma.com.do/en/soporte/)
 - [Privacy](https://alma.com.do/privacy/)
 - [Terms](https://alma.com.do/terms/)
-- [Sitemap](https://alma.com.do/sitemap-index.xml)
-`;
+- [Sitemap](https://alma.com.do/sitemap-index.xml)`;
 
 export const ABOUT_MARKDOWN = `# About ALMA
 
@@ -94,7 +94,7 @@ The project started from a simple premise: useful agents should be understandabl
 ALMA targets the web, macOS, Windows, Linux, iOS, and Android. The source is available under the Apache-2.0 license and accepts public issues and contributions on GitHub. Inbox Zero Inc. maintains the project and offers support at hello@alma.com.do.
 
 - [Self-hosting guide](https://alma.com.do/self-hosted-ai-agent/)
-- [Support](https://alma.com.do/support/)
+- [Support](https://alma.com.do/en/soporte/)
 `;
 
 export const SUPPORT_MARKDOWN = `# ALMA support
@@ -175,14 +175,13 @@ ALMA Cloud at https://app.alma.com.do is in beta. Self-hosting is also available
 - [Integrations](https://alma.com.do/integrations/): every app a bot can connect to. [Markdown list](https://alma.com.do/integrations.md); each app page has a Markdown version with its actions.
 - [Submit a plugin](https://alma.com.do/plugins/submit/): list a plugin in the ALMA marketplace. [Markdown with the API](https://alma.com.do/plugins/submit.md).
 - [Blog](https://alma.com.do/blog/)
-- [Support](https://alma.com.do/support/)
+- [Support](https://alma.com.do/en/soporte/)
 - [Privacy](https://alma.com.do/privacy/)
 - [Terms](https://alma.com.do/terms/)
 - [Sitemap](https://alma.com.do/sitemap-index.xml)
 `;
 
 export const PLUGIN_SUBMIT_MARKDOWN = `# Submit a plugin to ALMA
-
 List a plugin in the ALMA marketplace. We review every submission and email the result.
 
 The plugin must be a public GitHub repository with a plugin manifest (\`plugin.json\` following [Agent Plugins](https://agent-plugins.org), \`.cursor-plugin/plugin.json\`, or \`.grok-plugin/plugin.json\`) and skills, a hosted MCP server, or both.
@@ -226,6 +225,7 @@ The requested ALMA page does not exist.
 const MARKDOWN_DOCUMENTS = new Map<string, string>([
   ["/", HOME_MARKDOWN],
   ["/about", ABOUT_MARKDOWN],
+  ["/brand", BRAND_MARKDOWN],
   ["/openclaw-alternative", OPENCLAW_MARKDOWN],
   ["/grok-bot-alternative", GROK_ALTERNATIVE_MARKDOWN],
   ["/privacy", PRIVACY_MARKDOWN],

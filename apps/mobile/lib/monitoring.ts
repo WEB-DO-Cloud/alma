@@ -5,6 +5,7 @@ import {
   createClientErrorReporter,
   isMonitoringUserId,
   nativeMonitoringDsn,
+  sanitizeMonitoringBreadcrumb,
   sanitizeMonitoringEvent,
 } from "@rakazo/logging/monitoring";
 import type * as NativeSentry from "@sentry/react-native";
@@ -79,6 +80,7 @@ export function reportMobileError(
 export function setMobileMonitoringScreen(next: string | undefined): void {
   screen = next ?? "other";
   sdk?.setTag("screen", screen);
+  sdk?.addBreadcrumb({ type: "navigation", category: "navigation", data: { to: screen } });
 }
 
 /** Clear account context synchronously, before a server/session change starts any I/O. */
@@ -170,12 +172,11 @@ export function configureMobileMonitoring(
         enableLogs: false,
         enableAutoSessionTracking: false,
         enableAutoPerformanceTracing: false,
-        maxBreadcrumbs: 0,
         attachScreenshot: false,
         attachViewHierarchy: false,
         enableNativeNagger: false,
-        integrations: (defaults) =>
-          defaults.filter((integration) =>
+        integrations: (defaults) => [
+          ...defaults.filter((integration) =>
             [
               "ReactNativeErrorHandlers",
               "LinkedErrors",
@@ -190,7 +191,9 @@ export function configureMobileMonitoring(
               "EventOrigin",
             ].includes(integration.name),
           ),
-        beforeBreadcrumb: () => null,
+          Sentry.breadcrumbsIntegration({ console: false, sentry: false }),
+        ],
+        beforeBreadcrumb: sanitizeMonitoringBreadcrumb,
         beforeSend: (event, hint) => {
           if (
             current !== generation ||

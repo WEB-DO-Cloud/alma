@@ -45,9 +45,19 @@ export const ES_MESSAGES: Record<string, string> = {
   "If you're enjoying ALMA,": "Si te está gustando ALMA,",
   "give us a star on GitHub": "danos una estrella en GitHub",
   "We received your ALMA plugin": "Recibimos tu plugin de ALMA",
+  "Confirm your ALMA page claim": "Confirma tu solicitud de página en ALMA",
+  "Confirm claim": "Confirmar solicitud",
+  "We review every claim once it's confirmed and will email you when it's done.":
+    "Revisamos cada solicitud una vez confirmada y te escribiremos cuando terminemos.",
+  "This link expires in one day. If you did not claim a page, ignore this email.":
+    "Este enlace vence en un día. Si no reclamaste ninguna página, ignora este correo.",
+  "Your ALMA page claim: {name}": "Tu solicitud de página en ALMA: {name}",
+  "Your changes to the {name} page are approved.":
+    "Tus cambios en la página de {name} están aprobados.",
+  "We couldn't approve your changes to the {name} page.":
+    "No pudimos aprobar tus cambios en la página de {name}.",
   "Thanks for submitting a plugin to the ALMA marketplace.":
-    "Gracias por enviar un plugin al marketplace de ALMA.",
-  "We review every submission and will email you when it's done.":
+    "Gracias por enviar un plugin al marketplace de ALMA.",  "We review every submission and will email you when it's done.":
     "Revisamos cada envío y te escribiremos cuando terminemos.",
   "If you did not submit a plugin, ignore this email.":
     "Si no enviaste ningún plugin, ignora este correo.",

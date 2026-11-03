@@ -6,7 +6,6 @@ import { PLUGIN_CATEGORIES } from "@rakazo/core";
 import type { PluginCategory } from "@rakazo/core";
 import { z } from "zod";
 import { SITE_URL } from "./site";
-
 const IntegrationSchema = z.object({
   slug: z.string().regex(/^[a-z0-9_-]+$/),
   name: z.string(),
@@ -15,6 +14,8 @@ const IntegrationSchema = z.object({
   categories: z.array(z.string()),
   auth: z.enum(["oauth", "key", "none"]),
   actions: z.array(z.object({ name: z.string(), description: z.string(), readOnly: z.boolean() })),
+  /** The owner's site, once they claim the page. */
+  website: z.url().optional(),
 });
 
 const CatalogSchema = z.object({
@@ -38,7 +39,6 @@ function defaultCatalogPath(): string {
 }
 
 const DEFAULT_CATALOG = defaultCatalogPath();
-
 async function loadCatalog(): Promise<Integration[]> {
   const source = process.env.CATALOG_URL?.trim() || DEFAULT_CATALOG;
   try {
@@ -194,7 +194,7 @@ const POPULAR_SLUGS = [
   "twitter",
 ];
 
-export const INTEGRATIONS = await loadCatalog();
+export const INTEGRATIONS = await loadIntegrations();
 
 const BY_SLUG = new Map(INTEGRATIONS.map((integration) => [integration.slug, integration]));
 
@@ -207,6 +207,10 @@ export function integrationUrlSlug(slug: string): string {
 
 export function integrationPath(slug: string): string {
   return `${INTEGRATIONS_PATH}${integrationUrlSlug(slug)}/`;
+}
+
+export function integrationClaimPath(slug: string): string {
+  return `${integrationPath(slug)}claim/`;
 }
 
 /** Round down so the headline count stays true as the catalog shifts. */
@@ -275,7 +279,6 @@ export function integrationMarkdown(integration: Integration): string {
 ${integration.description}
 
 Category: ${CATEGORY_LABELS[categoryOf(integration)]}. Connect from any ALMA bot at ${SITE_URL}${integrationPath(integration.slug)}.
-
 ## Actions
 
 ${actions.join("\n")}
