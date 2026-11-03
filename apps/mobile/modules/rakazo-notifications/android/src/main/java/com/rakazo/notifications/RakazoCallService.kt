@@ -132,6 +132,19 @@ class RakazoCallService : Service() {
         onResult(false)
         return
       }
+      // Without the microphone foreground permission and type (stripped from the
+      // ALMA Play build), the service could never reach the foreground and Android
+      // would crash the app. The call then stays in the app with the screen kept on.
+      if (!ForegroundServiceGate.canStart(
+          context,
+          RakazoCallService::class.java,
+          ForegroundServiceGate.TYPE_MICROPHONE,
+          ForegroundServiceGate.FOREGROUND_SERVICE_MICROPHONE,
+        )
+      ) {
+        onResult(false)
+        return
+      }
       pendingStart = onResult
       val intent = Intent(context, RakazoCallService::class.java)
         .putExtra(EXTRA_TITLE, title)

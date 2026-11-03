@@ -34,6 +34,27 @@ describe("Android call service", () => {
     expect(service).toContain("startForegroundService");
   });
 
+  // The ALMA Play build strips the foreground-service permissions and types
+  // (plugins/with-strip-foreground-services.js). Starting a foreground service
+  // there throws, and Android then crashes the app as soon as a call opens.
+  it("checks the foreground-service permission and type before starting a call service", () => {
+    const service = source("java/com/rakazo/notifications/RakazoCallService.kt");
+    const gate = source("java/com/rakazo/notifications/ForegroundServiceGate.kt");
+    const guard = service.indexOf("ForegroundServiceGate.canStart(");
+    expect(guard).toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(service.indexOf("context.startForegroundService(intent)"));
+    expect(service).toContain("ForegroundServiceGate.TYPE_MICROPHONE");
+    expect(service).toContain("ForegroundServiceGate.FOREGROUND_SERVICE_MICROPHONE");
+    expect(gate).toContain('"android.permission.FOREGROUND_SERVICE"');
+    expect(gate).toContain("foregroundServiceType");
+  });
+
+  it("posts the live notification normally when the foreground service is unavailable", () => {
+    const service = source("java/com/rakazo/notifications/RakazoNotificationService.kt");
+    expect(service).toContain("ForegroundServiceGate.TYPE_REMOTE_MESSAGING");
+    expect(service).toContain("if (!promoted) manager.notify(LIVE_NOTIFICATION_ID, notification)");
+  });
+
   it("provides call strings in every shipped mobile locale", () => {
     const directories = {
       es: "values-es",

@@ -306,15 +306,27 @@ class RakazoNotificationService : Service() {
       liveBuilder.setShortCriticalText(context.getString(R.string.rakazo_live_working))
     }
     val notification = liveBuilder.build()
-    if (Build.VERSION.SDK_INT >= 34) {
-      startForeground(
-        LIVE_NOTIFICATION_ID,
-        notification,
-        ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING,
-      )
-    } else {
-      startForeground(LIVE_NOTIFICATION_ID, notification)
-    }
+    // The ALMA Play build strips the remote-messaging foreground permission and
+    // type; startForeground() would then throw and crash the app. Post a normal
+    // notification instead (Expo push still covers background delivery).
+    val foreground = ForegroundServiceGate.canStart(
+      this,
+      RakazoNotificationService::class.java,
+      ForegroundServiceGate.TYPE_REMOTE_MESSAGING,
+      ForegroundServiceGate.FOREGROUND_SERVICE_REMOTE_MESSAGING,
+    )
+    val promoted = foreground && runCatching {
+      if (Build.VERSION.SDK_INT >= 34) {
+        startForeground(
+          LIVE_NOTIFICATION_ID,
+          notification,
+          ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING,
+        )
+      } else {
+        startForeground(LIVE_NOTIFICATION_ID, notification)
+      }
+    }.isSuccess
+    if (!promoted) manager.notify(LIVE_NOTIFICATION_ID, notification)
   }
 
   private fun liveStatusIcon(run: RunRecord, avatarStyle: String): Icon {
