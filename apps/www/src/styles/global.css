@@ -405,6 +405,15 @@ button.button--secondary:focus-visible {
   margin-top: 34px;
 }
 
+.download-note {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
 /* The homepage sets data-platform; without it, show the macOS actions. */
 html:not([data-platform]) [data-show]:not([data-show~="mac"]),
 html[data-platform="mac"] [data-show]:not([data-show~="mac"]),

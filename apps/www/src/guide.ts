@@ -31,7 +31,7 @@ export const CADDY_SNIPPET = `app.example.com {
 }`;
 
 export const RUN_ON_YOUR_MAC =
-  "Run on your Mac with the desktop app. This computer installs ALMA on that Mac. A Mac Mini can stay on as the always-on box.";
+  "The installed desktop app opens ALMA Cloud, or Existing instance for a server you already run. It does not install a server on that Mac. Self-host with Docker.";
 
 export type FaqItem = {
   question: string;
@@ -83,7 +83,7 @@ export const SELF_HOST_FAQS: readonly FaqItem[] = [
 ];
 
 export const OPENCLAW_SETUP_PARAGRAPHS = [
-  "ALMA's self-host path is the published Docker installer, or the desktop app starting that stack on this computer. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
+  "ALMA's self-host path is the published Docker installer. The desktop app connects to that server, or to ALMA Cloud. It does not install a local server. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
   "OpenClaw's getting-started guide installs the CLI, then runs a wizard. Quick start is the short path when a Claude Code or Codex login, or an API key, is already on the machine. Custom setup walks through the full flow, and `openclaw onboard --classic` is the step-by-step wizard. Quick start leaves the Gateway in that terminal until you stop it, so you can chat before installing a service. `openclaw gateway install` is the later step that keeps it in the background: a LaunchAgent on macOS, a systemd user unit on Linux, or a Scheduled Task on Windows. You check `openclaw gateway status` (the guide says port 18789) and open `openclaw dashboard`. Messaging from a phone, such as Telegram, is a separate Channels step.",
 ] as const;
 
@@ -96,7 +96,7 @@ export const OPENCLAW_FAQS: readonly FaqItem[] = [
   {
     question: "Is ALMA simpler to set up than OpenClaw?",
     answer:
-      "The documented paths are different. ALMA's self-host guide is a Docker installer, or the desktop app starting that stack, then an account and a model. After that ALMA AI is just chat, and you manage the bot from that chat. OpenClaw's getting-started guide is an installer and a wizard (Quick start or Custom setup). You can chat while the Gateway runs in that terminal. `openclaw gateway install` keeps it running in the background, then `openclaw gateway status` and `openclaw dashboard`. Connecting a chat app is another step. OpenClaw can be short when a model login is already detected. The ongoing surface is still the Gateway and the config file.",
+      "The documented paths are different. ALMA's self-host guide is a Docker installer, then an account and a model. The desktop app connects to that server. After that ALMA AI is just chat, and you manage the bot from that chat. OpenClaw's getting-started guide is an installer and a wizard (Quick start or Custom setup). You can chat while the Gateway runs in that terminal. `openclaw gateway install` keeps it running in the background, then `openclaw gateway status` and `openclaw dashboard`. Connecting a chat app is another step. OpenClaw can be short when a model login is already detected. The ongoing surface is still the Gateway and the config file.",
   },
   {
     question: "Can I chat with OpenClaw before installing a background service?",
@@ -144,7 +144,7 @@ export const COMPARISON_ROWS: readonly ComparisonRow[] = [
   {
     aspect: "Setup",
     rakazo:
-      "Docker installer or the desktop app's local stack, then an account and a model. After that ALMA AI is just chat: a new bot interviews you, and you manage it from the chat.",
+      "Docker installer, then an account and a model. The desktop app connects to that server or to ALMA Cloud. After that ALMA AI is just chat: a new bot interviews you, and you manage it from the chat.",
     openclaw:
       "CLI install, then Quick start or Custom setup. The Gateway can stay in that terminal for a first chat. `openclaw gateway install` is the background service (LaunchAgent, systemd user unit, or Windows Scheduled Task). Then `openclaw gateway status` and `openclaw dashboard`. A phone channel is a separate step.",
   },
@@ -324,7 +324,7 @@ The Postgres overlay publishes loopback \`127.0.0.1:5433\` for host-side tools. 
 
 ## Desktop and mobile
 
-With a server already running, the Electron app's **Existing instance** option takes its \`https://\` address (HTTP is accepted only for loopback and private LAN addresses). **This computer** installs the published images with Docker Compose on that machine.
+With a server already running, the Electron app's **Existing instance** option takes its \`https://\` address (HTTP is accepted only for loopback and private LAN addresses). The installed app does not install that server itself.
 
 ${RUN_ON_YOUR_MAC}
 

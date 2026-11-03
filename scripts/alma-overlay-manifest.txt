@@ -365,6 +365,7 @@ overlay apps/www/e2e/homepage-screenshots.spec.ts
 overlay apps/www/playwright.config.ts
 overlay apps/www/src/site.ts
 overlay apps/www/src/structured-data.ts
+overlay apps/www/src/styles/global.css
 overlay apps/www/src/subscription-faq.ts
 overlay apps/www/src/vs-points.ts
 overlay apps/www/vercel.json
@@ -380,6 +381,7 @@ overlay docs/computer-runtime.md
 overlay docs/content-encryption.md
 overlay docs/context-and-evals-tasks.md
 overlay docs/designs/2026-10-31-store-release-signing.md
+overlay docs/designs/alma-desktop-local-memory.md
 overlay docs/designs/alma-managed-model.md
 overlay docs/designs/alma-managed-voice-calls.md
 overlay docs/designs/alma-mcp-registry.md
@@ -392,6 +394,7 @@ overlay docs/designs/reviews/2026-10-26-alma-rebrand-drift.md
 overlay docs/designs/reviews/2026-10-26-alma-rebrand.md
 overlay docs/designs/reviews/2026-10-27-alma-managed-voice-calls.md
 overlay docs/desktop-app.md
+overlay docs/desktop-release.md
 overlay docs/getting-started.md
 overlay docs/mobile-app.md
 overlay docs/mobile-release.md

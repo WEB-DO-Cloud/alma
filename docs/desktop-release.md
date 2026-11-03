@@ -2,7 +2,12 @@
 
 The `release-desktop` workflow builds, signs, notarizes, attests, and publishes
 the Electron app from a `vMAJOR.MINOR.PATCH` tag on `main`. Publishing the
-Docker images triggers from the same tag.
+Docker images triggers from the same tag. The app id must stay `do.alma.desktop`.
+The release fails if it does not. People download `ALMA-mac.dmg`, `ALMA-Setup.exe`,
+and `ALMA-linux.AppImage` from the latest GitHub Release. The Mac updater uses
+`ALMA-mac.zip`. The channel is the stable `latest` feed. Mac is a universal
+build, signed and notarized. Windows and Linux ship unsigned until Windows
+signing secrets are set.
 
 ## Repository secrets
 

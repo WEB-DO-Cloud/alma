@@ -71,6 +71,8 @@ function submitForm(): void {
 }
 
 interface Harness {
+  /** How many times the page asked the stack to start. */
+  starts: () => number;
   /** The oldest pending `test` call's deferred, for settling one check by handle. */
   nextCheck: () => Deferred<DesktopReachability>;
   /** Resolves the oldest pending `test` call, in call order. */
@@ -89,7 +91,11 @@ interface Harness {
   resolveSave: (result: DesktopSetupResult) => void;
 }
 
-function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
+function mount(
+  saved: DesktopSetup | null,
+  locale = ENGLISH,
+  localServer = true,
+): Harness {
   document.body.innerHTML = setupBody ?? "";
   const checkCalls: Array<Deferred<DesktopReachability>> = [];
   const startResult = deferred<DesktopLocalStackState>();
@@ -98,6 +104,7 @@ function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
   const pushListeners: Array<(state: DesktopLocalStackState) => void> = [];
   const saves: DesktopSetup[] = [];
   const saveCalls: Array<Deferred<DesktopSetupResult>> = [];
+  let starts = 0;
 
   const bridge: RakazoSetup = {
     platform: "linux",
@@ -126,7 +133,10 @@ function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
         stackStateCalls.push(call);
         return call.promise;
       },
-      start: () => startResult.promise,
+      start: () => {
+        starts += 1;
+        return startResult.promise;
+      },
       onChange: (listener) => {
         pushListeners.push(listener);
       },
@@ -137,8 +147,14 @@ function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
   new Function(setupScript)();
 
   const initState = stateCalls.shift();
-  initState?.resolve({ defaultLocalUrl: DEFAULT_LOCAL_URL, cloudUrl: CLOUD_URL, saved });
+  initState?.resolve({
+    defaultLocalUrl: DEFAULT_LOCAL_URL,
+    cloudUrl: CLOUD_URL,
+    localServer,
+    saved,
+  });
   return {
+    starts: () => starts,
     nextCheck: () => {
       const call = checkCalls.shift();
       if (call === undefined) throw new Error("no connection check is pending");
@@ -147,9 +163,12 @@ function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
     resolveCheck: (result) => checkCalls.shift()?.resolve(result),
     startResult,
     resolveAppState: (next) =>
-      stateCalls
-        .shift()
-        ?.resolve({ defaultLocalUrl: DEFAULT_LOCAL_URL, cloudUrl: CLOUD_URL, saved: next }),
+      stateCalls.shift()?.resolve({
+        defaultLocalUrl: DEFAULT_LOCAL_URL,
+        cloudUrl: CLOUD_URL,
+        localServer,
+        saved: next,
+      }),
     resolveStackState: (state) => stackStateCalls.shift()?.resolve(state),
     pushStackState: (state) => {
       for (const listener of pushListeners) listener(state);
@@ -160,8 +179,12 @@ function mount(saved: DesktopSetup | null, locale = ENGLISH): Harness {
 }
 
 /** Loads the page and lets init settle on an idle stack. */
-async function boot(saved: DesktopSetup | null, locale = ENGLISH): Promise<Harness> {
-  const ui = mount(saved, locale);
+async function boot(
+  saved: DesktopSetup | null,
+  locale = ENGLISH,
+  localServer = true,
+): Promise<Harness> {
+  const ui = mount(saved, locale, localServer);
   await flush(); // init reaches its stack.state call only after its state await resumes
   ui.resolveStackState(stackState("idle"));
   await flush();
@@ -402,6 +425,29 @@ describe("setup", () => {
     expect(element("stack-phase").getAttribute("data-tone")).toBe("ok");
     expect(ui.saves).toEqual([{ mode: "new", serverUrl: DEFAULT_LOCAL_URL }]);
     expect(element<HTMLButtonElement>("continue").disabled).toBe(false);
+  });
+
+  it("hides This computer in a packaged build and rejects that mode", async () => {
+    const ui = await boot({ mode: "new", serverUrl: DEFAULT_LOCAL_URL }, ENGLISH, false);
+    const local = document.querySelector<HTMLLabelElement>('label[for="mode-new"]');
+    expect(local?.hidden).toBe(true);
+    expect(document.querySelector<HTMLLabelElement>('label[for="mode-existing"]')?.hidden).toBe(
+      false,
+    );
+    expect(element<HTMLInputElement>("mode-cloud").checked).toBe(true);
+    expect(element<HTMLInputElement>("mode-new").checked).toBe(false);
+
+    element<HTMLInputElement>("mode-new").disabled = false;
+    element<HTMLInputElement>("mode-new").checked = true;
+    submitForm();
+    await flush();
+    expect(ui.starts()).toBe(0);
+    expect(ui.saves).toEqual([]);
+  });
+
+  it("keeps This computer when the bridge says the local server is available", async () => {
+    await boot(null);
+    expect(document.querySelector<HTMLLabelElement>('label[for="mode-new"]')?.hidden).toBe(false);
   });
 
   it("renders the page and its messages in the app's language", async () => {

@@ -38,7 +38,7 @@
     "yaml": "2.9.1"
   },
   "build": {
-    "appId": "dev.rakazo.desktop",
+    "appId": "do.alma.desktop",
     "directories": {
       "output": "out",
       "buildResources": "assets"
@@ -66,6 +66,7 @@
       "main": "dist/main.js"
     },
     "mac": {
+      "artifactName": "ALMA-mac.${ext}",
       "icon": "../../packages/ui-tokens/assets/Rakazo.icon",
       "category": "public.app-category.productivity",
       "x64ArchFiles": "{**/node_modules/@koromix/koffi-darwin-*/darwin_*/koffi.node,**/node_modules/@oxc-parser/binding-darwin-*/parser.darwin-*.node}",
@@ -92,6 +93,7 @@
       "notarize": true
     },
     "dmg": {
+      "artifactName": "ALMA-mac.${ext}",
       "title": "${productName}",
       "iconSize": 100,
       "window": {
@@ -113,7 +115,7 @@
       ]
     },
     "nsis": {
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "artifactName": "ALMA-Setup.${ext}"
     },
     "win": {
       "icon": "assets/icon.ico",
@@ -123,6 +125,7 @@
       "verifyUpdateCodeSignature": true
     },
     "linux": {
+      "artifactName": "ALMA-linux.${ext}",
       "executableName": "rakazo",
       "icon": "assets/icon.png",
       "target": [
