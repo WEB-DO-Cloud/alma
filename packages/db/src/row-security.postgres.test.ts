@@ -836,7 +836,6 @@ describePostgres("row-level security (PostgreSQL)", () => {
     // and this deploy does not drop the rows.
     const retired = new Set([
       "draft_approval_logs",
-      "message_reports",
       "organization_lawyers",
       "organization_logos",
       "organization_profiles",

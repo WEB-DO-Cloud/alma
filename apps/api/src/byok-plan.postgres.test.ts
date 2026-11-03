@@ -6,6 +6,9 @@ import { asSystem, billingAccountForOrganization, createDb, spaceHasModelAccess 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createBillingService } from "./billing.js";
 
+// ALMA does not offer a yearly own-key plan, so the yearly tests run only when a yearly price is set.
+const itYearly = it.skipIf(BYOK_ANNUAL_PRICE_CENTS === null);
+
 const dbTests =
   process.env.VERIFY_DATABASE && process.env.DATABASE_URL ? describe.sequential : describe.skip;
 dbTests("own-key plan", () => {
@@ -148,7 +151,7 @@ dbTests("own-key plan", () => {
     ).toMatchObject({ cancelAtPeriodEnd: true });
   });
 
-  it("bills the yearly plan at the yearly price and shows it as yearly", async () => {
+  itYearly("bills the yearly plan at the yearly price and shows it as yearly", async () => {
     const customer = (await billingAccountForOrganization(prisma, organizationId))!.customerId;
     for (const subscription of provider.subscriptions) subscription.status = "canceled";
     await service.sync(customer);
@@ -172,7 +175,7 @@ dbTests("own-key plan", () => {
     });
   });
 
-  it("switches a paid monthly plan to yearly, once", async () => {
+  itYearly("switches a paid monthly plan to yearly, once", async () => {
     const customer = (await billingAccountForOrganization(prisma, organizationId))!.customerId;
     for (const subscription of provider.subscriptions) subscription.status = "canceled";
     await service.sync(customer);
