@@ -1173,29 +1173,9 @@ export const ES_MESSAGES: Record<string, string> = {
   "Could not move the ticket": "No se pudo mover el ticket",
   "No tickets yet.": "Aún no hay tickets.",
 
-  "Connect apps through Zapier.": "Conecta apps a través de Zapier.",
-  "Could not add MCP server": "No se pudo agregar el servidor MCP",
-  "Could not search the MCP registry": "No se pudo buscar en el registro MCP",
-  "Create and export Canva designs.": "Crea y exporta diseños de Canva.",
   "Create your ALMA account": "Crea tu cuenta de ALMA",
-  "Find and manage Linear issues and projects.":
-    "Encuentra y gestiona incidencias y proyectos de Linear.",
-  "List and update Google Calendar events.": "Lista y actualiza eventos de Google Calendar.",
-  "List and update Outlook Calendar events.": "Lista y actualiza eventos de Outlook Calendar.",
-  "Manage GitHub repositories, issues, and pull requests.":
-    "Gestiona repositorios, incidencias y pull requests de GitHub.",
-  "No remote MCP servers found": "No se encontraron servidores MCP remotos",
-  Popular: "Populares",
   Report: "Reportar",
-  "Search and edit your Notion workspace.": "Busca y edita tu espacio de Notion.",
-  "Search and update Jira and Confluence.": "Busca y actualiza Jira y Confluence.",
-  "Search, read, and draft Gmail.": "Busca, lee y redacta en Gmail.",
-  "Search, read, and draft Outlook mail.": "Busca, lee y redacta correo de Outlook.",
-  "Send messages and read Slack channels.": "Envía mensajes y lee canales de Slack.",
   "That URL did not look like an ALMA server": "Esa URL no parece de un servidor de ALMA",
-  "This server needs a header.": "Este servidor necesita un encabezado.",
-  "Work with Stripe customers, products, and payments.":
-    "Trabaja con clientes, productos y pagos de Stripe.",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

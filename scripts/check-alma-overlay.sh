@@ -44,10 +44,22 @@ absent = [
     "apps/api/src/routes/organization.ts",
     "packages/contracts/src/draft-review.ts",
     "packages/contracts/src/organization-settings.ts",
+    "packages/core/src/mcp-registry.ts",
+    "packages/core/src/mcp-registry.test.ts",
+    "packages/core/src/mcp-registry-featured.ts",
+    "packages/core/src/mcp-registry-icons.ts",
+    "apps/api/src/mcp-registry.ts",
+    "apps/api/src/mcp-registry.test.ts",
+    "apps/web/src/components/integrations/McpRegistryBrowse.tsx",
+    "apps/web/src/components/integrations/McpRegistryBrowse.test.tsx",
+    "apps/web/src/lib/add-remote-mcp.ts",
+    "apps/mobile/components/mcp-registry-browse.tsx",
+    "apps/web/e2e/alma-overlay-shots.spec.ts",
+    "docs/designs/alma-mcp-registry.md",
 ]
 for path in absent:
     if pathlib.Path(path).exists():
-        sys.exit(f"{path} is back; draft review, organization settings, and message reports stay out")
+        sys.exit(f"{path} is back; draft review, organization settings, message reports, and the MCP registry layer stay out")
 schema = pathlib.Path("packages/db/prisma/schema.prisma").read_text()
 for model in ("MessageReport", "OrganizationProfile", "ReviewDraft", "DraftApprovalLog"):
     if f"model {model} " in schema:

@@ -91,7 +91,7 @@ Store hrefs, from `packages/contracts/src/client-build.ts`:
 
 Hosted app origin: `https://app.alma.com.do` (`apps/www/src/site.ts` `APP_URL`, desktop setup cloud URL).
 
-Every client that has not been pointed at another server uses that origin. The phone falls back to it when `EXPO_PUBLIC_API_URL` is unset (`apps/mobile/lib/server-config.ts`, the iOS shortcut Info.plist value, and the EAS production profile). The web app calls the origin it was loaded from. Desktop setup offers the same cloud URL. OAuth and MCP callbacks use that deployment's origin. Registry search uses `https://registry.modelcontextprotocol.io`. The public integrations catalog, when `INTEGRATIONS_CATALOG_URL` is unset, stays `https://integrations.sh`. Self-update tracks `https://github.com/WEB-DO-Cloud/alma` and `ghcr.io/web-do-cloud/alma`. In-app docs and plugin submission use `https://alma.com.do`. A hosted `sentry.io` DSN is refused on the phone; error reporting uses the server's collector or stays off. The marketing integrations catalog is the committed snapshot `apps/www/public/integrations/catalog.json`, served at `https://alma.com.do/integrations/catalog.json`. `CATALOG_URL` overrides that file. `scripts/sync-integrations-catalog.py` refreshes the snapshot on each upstream sync.
+Every client that has not been pointed at another server uses that origin. The phone falls back to it when `EXPO_PUBLIC_API_URL` is unset (`apps/mobile/lib/server-config.ts`, the iOS shortcut Info.plist value, and the EAS production profile). The web app calls the origin it was loaded from. Desktop setup offers the same cloud URL. OAuth and MCP callbacks use that deployment's origin. The public integrations catalog, when `INTEGRATIONS_CATALOG_URL` is unset, stays `https://integrations.sh`. Self-update tracks `https://github.com/WEB-DO-Cloud/alma` and `ghcr.io/web-do-cloud/alma`. In-app docs and plugin submission use `https://alma.com.do`. A hosted `sentry.io` DSN is refused on the phone; error reporting uses the server's collector or stays off. The marketing integrations catalog is the committed snapshot `apps/www/public/integrations/catalog.json`, served at `https://alma.com.do/integrations/catalog.json`. `CATALOG_URL` overrides that file. `scripts/sync-integrations-catalog.py` refreshes the snapshot on each upstream sync. Nothing in the app calls `registry.modelcontextprotocol.io`.
 
 The About credits sentences that named Rakazo were removed with the phone About screen and stay removed. Do not add them back.
 
@@ -120,31 +120,16 @@ Web Hold to talk is visible when `PHONE_CALLS_ENABLED` is on, or `voice/status.t
 
 ### 4. Connectors
 
-Restore from ALMA `HEAD` (absent on upstream):
+Account → Integrations, and the chat entry that opens the same screen, use upstream's Integrations UI on web and on mobile. Do not add an MCP Registry search, a Popular card grid, or an ALMA-only connectors page. `mcp.registry.search` is not a procedure. There is no client for `https://registry.modelcontextprotocol.io`.
 
-*   `packages/core/src/mcp-registry.ts`
-*   `packages/core/src/mcp-registry.test.ts`
-*   `packages/core/src/mcp-registry-featured.ts`
-*   `packages/core/src/mcp-registry-icons.ts`
-*   `apps/api/src/mcp-registry.ts`
-*   `apps/api/src/mcp-registry.test.ts`
-*   `apps/web/src/components/integrations/McpRegistryBrowse.tsx`
-*   `apps/web/src/components/integrations/McpRegistryBrowse.test.tsx`
-*   `apps/web/src/lib/add-remote-mcp.ts`
-*   `apps/mobile/components/mcp-registry-browse.tsx`
-
-`mcp-registry-featured.ts` on ALMA `HEAD` is the Popular list, including the MintMCP and Waystation rows. Do not edit that list.
-
-`apps/api/src/routes/mcp.ts` is surgical. Keep upstream's stdio refusal, duplicate-name conflict, and connect-from-approval-card flow. Add the `mcp.registry.search` procedure from ALMA `HEAD` onto that file.
-
-On web and on mobile, render `McpRegistryBrowse` inside upstream's connectors screen and, on web, inside upstream's MCP server dialog. Account → Integrations opens that screen. Do not keep ALMA's old screen layout around it.
+`apps/api/src/routes/mcp.ts` matches upstream, including stdio refusal, duplicate-name conflict, and connect-from-approval-card. The only connector copy that stays rewritten is the comment in `apps/web/src/pages/McpServersOverlay.tsx` that names ALMA instead of Rakazo.
 
 Official behavior, followed as written:
 
 *   `docs/integrations.md`, “Connect from Integrations” and “Add your own tools”: Integrations is the connectors screen. **Browse MCP servers** searches a public directory.
-*   `docs/self-host-integrations.md`, “Apps and connectors”: `INTEGRATIONS_CATALOG_URL` is an integrations.sh catalog. Rakazo appends `api/search`. Upstream's Browse MCP screen calls `capabilities.catalogSearch` with `usePublicCatalog`, which uses `https://integrations.sh` when no catalog URL is set.
+*   `docs/self-host-integrations.md`, “Apps and connectors”: `INTEGRATIONS_CATALOG_URL` is an integrations.sh catalog. The server appends `api/search`. Upstream's Browse MCP screen calls `capabilities.catalogSearch` with `usePublicCatalog`, which uses `https://integrations.sh` when no catalog URL is set.
 
-ALMA goes past that for the Popular grid and for registry search. integrations.sh is not the MCP registry. Search calls `GET https://registry.modelcontextprotocol.io/v0/servers?search=…&version=latest` and shows a page of matches. The twelve Popular cards are the fixed list in `mcp-registry-featured.ts`. Add still uses upstream `mcp.servers.create`.
+The marketing catalog stays the committed snapshot. It is not the in-app connection catalog. The in-app grid reads `connections.catalog` from the configured connector provider. Logos in `apps/www/public/integrations/catalog.json` stay on `https://alma.com.do`. `CATALOG_URL` still overrides that file. Do not point either catalog at a Rakazo host.
 
 ### 5. Legal
 
@@ -270,7 +255,7 @@ Screenshots, as pull-request artifacts:
 
 *   Sign-in, with the title `Sign in to ALMA` or `Inicia sesión en ALMA`.
 *   A chat thread.
-*   The connectors Popular grid.
+*   The connectors screen: search, category chips, the top row of Gmail, Google Calendar, Google Drive, Slack, and Notion, Recommended, and the per-category sections.
 *   The Call button on the composer.
 *   Billing or upgrade with the own-key line `US$69 / mes` at locale `es`.
 
