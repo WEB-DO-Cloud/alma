@@ -56,10 +56,7 @@ const SESSION_TAKEN = /already in use|already exists/i;
 const RATE_LIMITED =
   /resource-exhausted|too many requests|rate limit|panicked|resource temporarily unavailable|couldn't start session|failed to start the acp-agent-worker/i;
 /** Each grok process starts ~100 threads; the api container allows 256 pids. */
-const MAX_CONCURRENT = Math.max(
-  1,
-  Number.parseInt(process.env.ALMA_GROK_MAX_CONCURRENT ?? "", 10) || 2,
-);
+const MAX_CONCURRENT = 2;
 const RATE_LIMIT_BACKOFF_MS = [3_000, 8_000];
 
 interface LiveRun {
