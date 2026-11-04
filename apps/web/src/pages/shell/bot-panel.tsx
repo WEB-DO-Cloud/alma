@@ -16,6 +16,7 @@ import {
   resolveBotAvatarSet,
 } from "@rakazo/contracts";
 import {
+  catalogModelLabel,
   chatModelChoices,
   connectedModelChoices,
   credentialForModel,
@@ -303,6 +304,9 @@ export function BotSettings({
   const defaultEntry = me?.defaultModel
     ? catalogEntry(catalog, me.defaultProvider, me.defaultModel)
     : undefined;
+  const managedLabel = me?.managedModel
+    ? catalogModelLabel(catalog, me.defaultProvider, me.defaultModel)
+    : null;
   const modelChoices = chatModelChoices(
     connectedOptions,
     selectedModelKey,
@@ -610,7 +614,7 @@ export function BotSettings({
             <div ref={modelRef}>
               <div className="mb-2 flex items-center justify-between text-xs font-medium text-muted-foreground pe-1">
                 <Trans>Model</Trans>
-                {onOpenConnections ? (
+                {onOpenConnections && !managedLabel ? (
                   <Button
                     variant="ghost"
                     size="icon-xs"
@@ -622,23 +626,29 @@ export function BotSettings({
                 ) : null}
               </div>
               <div className="rounded-xl bg-muted/50 p-4 space-y-3">
-                <div className="flex min-h-11 items-center justify-between gap-3">
-                  <label htmlFor={`${ids}-model`} className="sr-only">
-                    <Trans>Model</Trans>
-                  </label>
-                  <div className="min-w-0 w-full [&>div]:mt-0 [&>button]:mt-0">
-                    <ChatModelPicker
-                      id={`${ids}-model`}
-                      choices={modelChoices}
-                      value={selectedModelKey}
-                      onChange={(key) => {
-                        setModelKey(key);
-                        setThinkingLevel("");
-                      }}
-                    />
+                {managedLabel ? (
+                  <p id={`${ids}-model`} className="text-sm text-foreground">
+                    {managedLabel}
+                  </p>
+                ) : (
+                  <div className="flex min-h-11 items-center justify-between gap-3">
+                    <label htmlFor={`${ids}-model`} className="sr-only">
+                      <Trans>Model</Trans>
+                    </label>
+                    <div className="min-w-0 w-full [&>div]:mt-0 [&>button]:mt-0">
+                      <ChatModelPicker
+                        id={`${ids}-model`}
+                        choices={modelChoices}
+                        value={selectedModelKey}
+                        onChange={(key) => {
+                          setModelKey(key);
+                          setThinkingLevel("");
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-                {thinkingOptions.length ? (
+                )}
+                {thinkingOptions.length && !managedLabel ? (
                   <label
                     htmlFor={`${ids}-thinking`}
                     className="flex min-h-11 items-center justify-between gap-3 text-sm text-foreground"

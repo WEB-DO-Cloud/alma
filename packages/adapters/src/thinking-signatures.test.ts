@@ -83,4 +83,32 @@ describe("thinking signatures bound to a different conversation", () => {
     const plain = [{ role: "user", content: "hi", timestamp: 0 }] as TranscriptContext["messages"];
     expect(withoutThinkingFrom(plain, 0)).toBe(plain);
   });
+
+  it("keeps DeepSeek reasoning_content so a rebuild can echo it", () => {
+    const message = {
+      role: "assistant",
+      content: [
+        {
+          type: "thinking",
+          thinking: "Check the statute.",
+          thinkingSignature: "reasoning_content",
+        },
+        { type: "thinking", thinking: "bound", thinkingSignature: "sig" },
+        { type: "toolCall", id: "call", name: "lookup", arguments: {} },
+      ],
+      timestamp: 0,
+    } as unknown as TranscriptContext["messages"][number];
+    const [kept] = withoutThinkingFrom([message], 0);
+    expect(kept).toMatchObject({
+      content: [
+        {
+          type: "thinking",
+          thinking: "Check the statute.",
+          thinkingSignature: "reasoning_content",
+        },
+        { type: "toolCall", id: "call" },
+      ],
+    });
+    expect(JSON.stringify(kept)).not.toContain("bound");
+  });
 });

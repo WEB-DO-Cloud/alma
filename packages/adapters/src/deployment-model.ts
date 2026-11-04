@@ -4,6 +4,8 @@ import { OpenRouterUsageLookup } from "./openrouter-usage.js";
 import { LOCAL_PROVIDER_ID, localModelIds } from "./pi-local-provider-id.js";
 
 export const DEFAULT_OPENROUTER_MODEL_ID = "openai/gpt-6-luna";
+/** DeepSeek-V4.1-Flash on api.deepseek.com. The catalog label stays human-readable. */
+export const DEFAULT_DEEPSEEK_MODEL_ID = "deepseek-flash";
 
 /**
  * What Pi reports for a provider that authenticates from the host instead of a key: an AWS
@@ -39,10 +41,12 @@ export function resolveDeploymentModel(env: NodeJS.ProcessEnv = process.env) {
   const keys: Record<string, string | undefined> = {
     openrouter: env.OPENROUTER_API_KEY,
     anthropic: env.ANTHROPIC_API_KEY,
+    deepseek: env.DEEPSEEK_API_KEY,
   };
   const models: Record<string, string> = {
     openrouter: DEFAULT_OPENROUTER_MODEL_ID,
     anthropic: "claude-sonnet-5",
+    deepseek: DEFAULT_DEEPSEEK_MODEL_ID,
   };
   const explicitModel = env.PI_DEFAULT_MODEL?.trim();
   const key = keys[provider];

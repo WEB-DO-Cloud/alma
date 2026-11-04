@@ -8,6 +8,7 @@ import {
   resolveBotAvatarSet,
 } from "@rakazo/contracts";
 import {
+  catalogModelLabel,
   credentialForModel,
   MODEL_SEARCH_THRESHOLD,
   modelOptionKey,
@@ -249,6 +250,9 @@ export default function BotSettingsScreen() {
     () => chatModelPickerChoices(me, catalog, credentials, selectedModelKey, t),
     [catalog, credentials, me, selectedModelKey, t],
   );
+  const managedLabel = me?.managedModel
+    ? catalogModelLabel(catalog, me.defaultProvider, me.defaultModel)
+    : null;
 
   const thinkingChoices: MenuPickerChoice[] = useMemo(
     () => [
@@ -601,24 +605,30 @@ export default function BotSettingsScreen() {
             }}
           >
             <SettingsGroup label={t("Model")}>
-              <MenuPicker
-                plain
-                choices={modelChoices}
-                label={t("Model")}
-                showLabel={false}
-                onChange={selectModel}
-                onPress={
-                  modelChoices.length > MODEL_SEARCH_THRESHOLD
-                    ? () =>
-                        router.push({
-                          pathname: "/bot-model",
-                          params: { botId, value: selectedModelKey },
-                        })
-                    : undefined
-                }
-                value={selectedModelKey}
-              />
-              {thinkingOptions.length ? (
+              {managedLabel ? (
+                <Text style={[styles.rowValue, { color: tokens.foreground, textAlign: "left" }]}>
+                  {managedLabel}
+                </Text>
+              ) : (
+                <MenuPicker
+                  plain
+                  choices={modelChoices}
+                  label={t("Model")}
+                  showLabel={false}
+                  onChange={selectModel}
+                  onPress={
+                    modelChoices.length > MODEL_SEARCH_THRESHOLD
+                      ? () =>
+                          router.push({
+                            pathname: "/bot-model",
+                            params: { botId, value: selectedModelKey },
+                          })
+                      : undefined
+                  }
+                  value={selectedModelKey}
+                />
+              )}
+              {thinkingOptions.length && !managedLabel ? (
                 <MenuPicker
                   plain
                   choices={thinkingChoices}

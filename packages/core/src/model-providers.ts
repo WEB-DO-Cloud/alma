@@ -376,6 +376,23 @@ export function groupModelChoices(choices: readonly ChatModelChoice[], query: st
 }
 
 /**
+ * Catalog label for a configured model. The id is the fallback, so the screen
+ * shows what the operator set and never a name that was not configured.
+ */
+export function catalogModelLabel(
+  catalog: readonly { provider: string; id: string; label: string }[],
+  provider: string | null | undefined,
+  modelId: string | null | undefined,
+): string | null {
+  if (!modelId) return null;
+  const canonical = provider ? canonicalPiProviderId(provider) : "";
+  const entry = catalog.find(
+    (item) => canonicalPiProviderId(item.provider) === canonical && item.id === modelId,
+  );
+  return entry?.label ?? modelId;
+}
+
+/**
  * A chat's model picker: the space default (key ""), then a saved model no
  * connection offers any more, then every connected model.
  */
