@@ -203,6 +203,72 @@ describe("consent grants", () => {
     );
     expect(deps.prisma.aiDataConsent.findMany).toHaveBeenCalled();
   });
+  it("treats operator voice and Honcho memory as allowed without a stored grant", async () => {
+    vi.stubEnv("ALMA_MANAGED_MODEL", "1");
+    vi.stubEnv("AGENT_RUNTIME", "pi");
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    const { deps, actor } = setup();
+    deps.env.deploymentMemory = { defaultScope: "isolated" };
+    vi.mocked(deps.prisma.userVoicePreference.findMany).mockResolvedValue([
+      { credential: { provider: "xai" } },
+      { credential: { provider: "openai" } },
+    ] as never);
+    vi.mocked(deps.prisma.spaceMemoryConfig.findUnique).mockResolvedValue({
+      provider: "honcho",
+      settings: { baseUrl: "https://honcho.example.test" },
+    } as never);
+
+    const status = await aiConsentStatus(deps, actor);
+
+    expect(status.recipients).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "xAI", use: "voice", allowed: true }),
+        expect.objectContaining({ name: "OpenAI", use: "voice", allowed: false }),
+        expect.objectContaining({
+          name: "Honcho (https://honcho.example.test)",
+          use: "memory",
+          allowed: true,
+        }),
+      ]),
+    );
+    expect(JSON.stringify(status)).not.toContain("apiKey");
+  });
+  it("still asks for voice and memory when the operator model is off", async () => {
+    vi.stubEnv("ALMA_MANAGED_MODEL", "0");
+    vi.stubEnv("AGENT_RUNTIME", "pi");
+    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    const { deps, actor } = setup();
+    deps.env.deploymentMemory = { defaultScope: "isolated" };
+    vi.mocked(deps.prisma.userVoicePreference.findMany).mockResolvedValue([
+      { credential: { provider: "xai" } },
+    ] as never);
+    vi.mocked(deps.prisma.spaceMemoryConfig.findUnique).mockResolvedValue({
+      provider: "honcho",
+      settings: { baseUrl: "https://honcho.example.test" },
+    } as never);
+
+    const status = await aiConsentStatus(deps, actor);
+
+    expect(status.recipients).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "xAI", use: "voice", allowed: false }),
+        expect.objectContaining({ use: "memory", allowed: false }),
+      ]),
+    );
+  });
+  it("still asks for a space Honcho the server does not run", async () => {
+    vi.stubEnv("ALMA_MANAGED_MODEL", "1");
+    vi.stubEnv("AGENT_RUNTIME", "pi");
+    const { deps, actor } = setup();
+    vi.mocked(deps.prisma.spaceMemoryConfig.findUnique).mockResolvedValue({
+      provider: "honcho",
+      settings: { baseUrl: "https://honcho.example.test" },
+    } as never);
+
+    const status = await aiConsentStatus(deps, actor, { uses: ["memory"] });
+
+    expect(status.recipients).toEqual([expect.objectContaining({ use: "memory", allowed: false })]);
+  });
   it("still asks for the deployment model when the operator model is off", async () => {
     vi.stubEnv("ALMA_MANAGED_MODEL", "0");
     vi.stubEnv("AGENT_RUNTIME", "pi");

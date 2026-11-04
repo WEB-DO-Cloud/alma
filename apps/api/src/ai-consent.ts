@@ -6,6 +6,7 @@ import {
   managedChatModel,
   managedModelActive,
   parseModelSecret,
+  resolveManagedVoice,
   resolveMemberMainModel,
   selectConfiguredModel,
   toStringRecord,
@@ -32,9 +33,10 @@ import { resolveThreadTarget } from "./thread-target.js";
 import { voiceCredentialServer } from "./voice.js";
 
 /**
- * The operator already chose this model for every account. Mobile asks before
- * each unallowed recipient from this status, so marking it allowed stops the
- * dialog on builds that are already installed. A missing grant does not block.
+ * The operator already chose these services for every account. Mobile asks
+ * before each unallowed recipient from this status, so marking them allowed
+ * stops the dialog on builds that are already installed. A missing grant does
+ * not block. `ALMA_MANAGED_MODEL` off leaves every check as it was.
  */
 function operatorAcceptedModel(provider: string, modelId: string | null | undefined): boolean {
   if (!managedModelActive()) return false;
@@ -44,6 +46,20 @@ function operatorAcceptedModel(provider: string, modelId: string | null | undefi
     canonicalPiProviderId(provider) === canonicalPiProviderId(managed.provider) &&
     modelId === managed.id
   );
+}
+
+function operatorAcceptedVoice(provider: string): boolean {
+  if (!managedModelActive()) return false;
+  const voice = resolveManagedVoice();
+  return voice.enabled && provider.trim().toLowerCase() === voice.provider;
+}
+
+function operatorAcceptedMemory(
+  deployment: { defaultScope: string } | null | undefined,
+  provider: string,
+): boolean {
+  if (!managedModelActive() || !deployment) return false;
+  return provider.trim().toLowerCase() === "honcho";
 }
 
 export async function aiConsentStatus(
@@ -127,9 +143,12 @@ export async function aiConsentStatus(
     ]);
   const allowed = new Set(consents.map((row) => row.recipientKey));
   const recipients = new Map<string, AiRecipient>();
-  const add = (recipient: ReturnType<typeof aiRecipient>) => {
+  const add = (recipient: ReturnType<typeof aiRecipient>, operatorAccepted = false) => {
     if (recipient)
-      recipients.set(recipient.key, { ...recipient, allowed: allowed.has(recipient.key) });
+      recipients.set(recipient.key, {
+        ...recipient,
+        allowed: operatorAccepted || allowed.has(recipient.key),
+      });
   };
   if (modelsEnabled) {
     const deployment = deps.env.deploymentModelConfigured
@@ -249,6 +268,7 @@ export async function aiConsentStatus(
         use: "voice",
         ...(endpoint ? { baseUrl: endpoint } : {}),
       }),
+      operatorAcceptedVoice(voice.credential.provider),
     );
   }
   if (memory)
@@ -258,6 +278,7 @@ export async function aiConsentStatus(
         use: "memory",
         baseUrl: toStringRecord(memory.settings).baseUrl,
       }),
+      operatorAcceptedMemory(deps.env.deploymentMemory, memory.provider),
     );
   if (
     uses.includes("model") &&
