@@ -272,6 +272,10 @@ msgstr "{name} 選項"
 msgid "{name} stopped"
 msgstr "{name} 已停止"
 
+#: src/components/ModelCredits.tsx
+msgid "{promo}/month for your first {months} months, then {price}/month"
+msgstr ""
+
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "{provider} can't run this model."
@@ -3460,6 +3464,10 @@ msgstr "上次檢查 {0}：無變化"
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "稍後"
+
+#: src/components/ModelCredits.tsx
+msgid "Launch offer"
+msgstr ""
 
 #: src/pages/MessagingSettingsPanel.tsx
 msgid "Leave"

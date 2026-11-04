@@ -118,10 +118,12 @@ export interface AppEnv {
   emailApiKey?: string;
   emailFrom: string | undefined;
   emailReplyTo?: string;
-  /** Billing turns on only when all three are set; self-hosted installs leave them unset. */
+  /** Billing turns on only when the secret and webhook are set. Price and coupon are optional. */
   stripeSecretKey: string | undefined;
   stripeWebhookSecret: string | undefined;
   stripePriceId: string | undefined;
+  /** Repeating amount-off coupon for new monthly checkouts. Unset keeps promotion codes. */
+  stripePromoCouponId: string | undefined;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -303,6 +305,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     stripeSecretKey: optional(source.STRIPE_SECRET_KEY),
     stripeWebhookSecret: optional(source.STRIPE_WEBHOOK_SECRET),
     stripePriceId: optional(source.STRIPE_PRICE_ID),
+    stripePromoCouponId: optional(source.STRIPE_PROMO_COUPON_ID),
     emailEmulator: source.EMAIL_EMULATOR === "true" && source.NODE_ENV !== "production",
     slackClientId: optional(source.SLACK_CLIENT_ID),
     slackClientSecret: optional(source.SLACK_CLIENT_SECRET),

@@ -1033,6 +1033,9 @@ export const JA_MESSAGES: Record<string, string> = {
     "{days}日間無料、その後は月額 {price}。いつでも解約できます。",
   "{days} days free": "{days}日間無料",
   "Works with your ChatGPT or Claude plan.": "ChatGPT または Claude のプランで使えます。",
+  "Launch offer": "開始記念オファー",
+  "{promo}/month for your first {months} months, then {price}/month":
+    "最初の{months}か月は月額{promo}、その後は月額{price}",
   "All {price} goes to model usage.": "{price}はすべてモデルの利用に充てられます。",
   "Full access, nothing to pay": "すべての機能を無料で利用",
   "Day {days}": "{days}日目",

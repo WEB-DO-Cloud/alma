@@ -23,6 +23,8 @@ overlay apps/api/src/account-import.ts
 overlay apps/api/src/app-association.test.ts
 overlay apps/api/src/app-association.ts
 overlay apps/api/src/app.ts
+overlay apps/api/src/billing-promo.postgres.test.ts
+overlay apps/api/src/billing-promo.test.ts
 overlay apps/api/src/billing.ts
 overlay apps/api/src/computer-status.ts
 overlay apps/api/src/env.test.ts
@@ -1908,6 +1910,7 @@ overlay docs/designs/alma-mobile-app.md
 overlay docs/designs/alma-rebrand.md
 overlay docs/designs/alma-restore-original-ui.md
 overlay docs/designs/alma-upstream-sync-2026-11.md
+overlay docs/designs/launch-promo.md
 overlay docs/designs/reviews/2026-10-26-alma-managed-model.md
 overlay docs/designs/reviews/2026-10-26-alma-mobile-app.md
 overlay docs/designs/reviews/2026-10-26-alma-rebrand-drift.md
@@ -1962,6 +1965,7 @@ overlay infra/updater/src/compose-env.test.ts
 overlay infra/updater/src/compose-images.test.ts
 overlay infra/updater/src/compose-service.test.ts
 overlay infra/updater/src/index.test.ts
+overlay packages/adapter-kit/src/interfaces.ts
 overlay packages/adapter-kit/src/messaging-installations.ts
 overlay packages/adapter-kit/src/types.ts
 overlay packages/adapters/src/agent-import-settings.test.ts
@@ -2028,6 +2032,8 @@ overlay packages/adapters/src/scripted-runtime.ts
 overlay packages/adapters/src/serenity-memory-provider.ts
 overlay packages/adapters/src/smtp-email.test.ts
 overlay packages/adapters/src/stripe-billing.ts
+overlay packages/adapters/src/stripe-promo.test.ts
+overlay packages/adapters/src/testing/stripe-emulator.ts
 overlay packages/adapters/src/unavailable-managed-runtime.ts
 overlay packages/adapters/src/voice-factory.test.ts
 overlay packages/adapters/src/voice-factory.ts

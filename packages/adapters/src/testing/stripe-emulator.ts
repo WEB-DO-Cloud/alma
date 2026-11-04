@@ -21,6 +21,13 @@ export class StripeEmulator {
   }> = [];
   /** Largest page the list endpoint returns; lower it to exercise pagination. */
   pageSize = 100;
+  /** Interval of the configured seat price. Yearly checkout must not receive the launch coupon. */
+  priceInterval: "month" | "year" = "month";
+  priceIntervalCount = 1;
+  /** Coupons `GET /v1/coupons/:id` returns. An unknown id is a missing coupon. */
+  readonly coupons = new Map<string, EmulatedCoupon>();
+  /** Monthly plan prices, matched by lookup key when a coupon is limited to a product. */
+  readonly planPrices: EmulatedPlanPrice[] = [];
   /** Upcoming responses fail with these Stripe errors, in order. */
   readonly failures: StripeFailure[] = [];
   /** A key's first executed outcome, a 500 included, replayed to every later use of the key. */
@@ -141,8 +148,45 @@ export class StripeEmulator {
         object: "price",
         unit_amount: 1000,
         currency: "usd",
-        recurring: { interval: "month", interval_count: 1 },
+        recurring: { interval: this.priceInterval, interval_count: this.priceIntervalCount },
       });
+    if (method === "GET" && path === "/v1/prices") {
+      const lookup = form["lookup_keys[0]"];
+      const data = this.planPrices
+        .filter((price) => price.lookup_key === lookup && price.active !== false)
+        .map((price) => ({
+          id: price.id,
+          object: "price",
+          unit_amount: price.unit_amount,
+          currency: price.currency ?? "usd",
+          lookup_key: price.lookup_key,
+          recurring: { interval: price.interval, interval_count: price.interval_count ?? 1 },
+          product: { id: price.product, object: "product", active: true },
+        }));
+      return Response.json({ object: "list", has_more: false, data });
+    }
+    const couponPath = /^\/v1\/coupons\/([^/]+)$/.exec(path);
+    if (method === "GET" && couponPath) {
+      const id = decodeURIComponent(couponPath[1]!);
+      const coupon = this.coupons.get(id);
+      if (!coupon)
+        return stripeError({
+          status: 404,
+          code: "resource_missing",
+          param: "id",
+          message: `No such coupon: '${id}'`,
+        });
+      return Response.json({
+        id,
+        object: "coupon",
+        valid: coupon.valid !== false,
+        amount_off: coupon.amount_off,
+        currency: coupon.currency ?? (coupon.amount_off == null ? null : "usd"),
+        duration: coupon.duration,
+        duration_in_months: coupon.duration_in_months,
+        ...(coupon.applies_to ? { applies_to: coupon.applies_to } : {}),
+      });
+    }
     if (method === "POST" && path === "/v1/customers") {
       const id = `cus_fake_${this.customers.size + 1}`;
       this.customers.set(id, { id, email: form.email ?? "", deleted: false });
@@ -162,6 +206,14 @@ export class StripeEmulator {
       });
     }
     if (method === "POST" && path === "/v1/checkout/sessions") {
+      const coupon = form["discounts[0][coupon]"];
+      if (coupon && form.allow_promotion_codes)
+        return stripeError({
+          status: 400,
+          param: "discounts",
+          message:
+            "You may only specify one of these parameters: allow_promotion_codes, discounts.",
+        });
       const id = `cs_fake_${++this.sequence}`;
       this.sessions.push({ id, customer, status: "open", form });
       return Response.json({
@@ -313,6 +365,26 @@ export class StripeEmulator {
       .filter((s) => s.customer === customerId)
       .sort((a, b) => b.created - a.created);
   }
+}
+
+export interface EmulatedCoupon {
+  valid?: boolean;
+  amount_off: number | null;
+  currency?: string | null;
+  duration: "forever" | "once" | "repeating";
+  duration_in_months: number | null;
+  applies_to?: { products: string[] };
+}
+
+export interface EmulatedPlanPrice {
+  id: string;
+  lookup_key: string;
+  unit_amount: number;
+  currency?: string;
+  interval: "month" | "year";
+  interval_count?: number;
+  product: string;
+  active?: boolean;
 }
 
 export interface StripeCheckoutSession {

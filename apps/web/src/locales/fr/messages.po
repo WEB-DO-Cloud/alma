@@ -271,6 +271,10 @@ msgstr "Options de {name}"
 msgid "{name} stopped"
 msgstr "{name} arrêté"
 
+#: src/components/ModelCredits.tsx
+msgid "{promo}/month for your first {months} months, then {price}/month"
+msgstr ""
+
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
 msgid "{provider} can't run this model."
@@ -3459,6 +3463,10 @@ msgstr "Dernière vérification {0} : aucun changement"
 #: src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "Plus tard"
+
+#: src/components/ModelCredits.tsx
+msgid "Launch offer"
+msgstr ""
 
 #: src/pages/MessagingSettingsPanel.tsx
 msgid "Leave"

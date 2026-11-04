@@ -279,6 +279,14 @@ export default function Paywall() {
   const monthlyPrice = status.byokPriceCents
     ? formatUsdAmount(status.byokPriceCents, locale)
     : null;
+  const launch =
+    status.byokPromo && !yearly && monthlyPrice
+      ? {
+          promo: formatUsdAmount(status.byokPromo.priceCents, locale),
+          months: status.byokPromo.months,
+          price: monthlyPrice,
+        }
+      : null;
   const annualMonthlyPrice = annualCents
     ? formatUsdAmount(Math.round(annualCents / 12), locale)
     : null;
@@ -305,11 +313,13 @@ export default function Paywall() {
     },
   ];
   const cta =
-    plan === "credits" || offer === "subscribe"
-      ? t("Subscribe")
-      : offer === "trial"
-        ? t("Start free trial")
-        : t("Continue");
+    plan === "byok" && launch
+      ? t("{price} / month", { price: launch.promo })
+      : plan === "credits" || offer === "subscribe"
+        ? t("Subscribe")
+        : offer === "trial"
+          ? t("Start free trial")
+          : t("Continue");
   const terms =
     plan === "credits"
       ? t("{price} / month. Cancel anytime.", { price: creditPrice })
@@ -321,7 +331,7 @@ export default function Paywall() {
             })
           : t("{days} days free, then {price} / month. Cancel anytime.", {
               days: status.trialDays,
-              price: ownKeyPrice,
+              price: launch?.promo ?? ownKeyPrice,
             })
         : ownKeyPrice
           ? yearly
@@ -413,12 +423,23 @@ export default function Paywall() {
               ) : undefined
             }
             detail={t("Works with your ChatGPT or Claude plan.")}
+            note={
+              launch
+                ? t("{promo}/month for your first {months} months, then {price}/month", {
+                    promo: launch.promo,
+                    months: launch.months,
+                    price: launch.price,
+                  })
+                : undefined
+            }
             badge={
               subscribed === "byok"
                 ? t("Current plan")
-                : offer === "trial"
-                  ? t("{days} days free", { days: status.trialDays })
-                  : undefined
+                : launch
+                  ? t("Launch offer")
+                  : offer === "trial"
+                    ? t("{days} days free", { days: status.trialDays })
+                    : undefined
             }
           />
           {status.creditPurchasesEnabled === false ? null : (
@@ -473,7 +494,7 @@ export default function Paywall() {
               detail={
                 yearly
                   ? t("{price} / year begins", { price: ownKeyPrice })
-                  : t("{price} / month begins", { price: ownKeyPrice })
+                  : t("{price} / month begins", { price: launch?.promo ?? ownKeyPrice })
               }
             />
           </View>
@@ -523,6 +544,7 @@ function PlanCard({
   title,
   price,
   detail,
+  note,
   badge,
   accessory,
 }: {
@@ -531,6 +553,7 @@ function PlanCard({
   title: string;
   price: ReactNode;
   detail: string;
+  note?: string;
   badge?: string;
   accessory?: ReactNode;
 }) {
@@ -575,6 +598,9 @@ function PlanCard({
           ) : null}
         </View>
         <Text style={[styles.planDetail, { color: tokens.mutedForeground }]}>{detail}</Text>
+        {note ? (
+          <Text style={[styles.planDetail, { color: tokens.mutedForeground }]}>{note}</Text>
+        ) : null}
         {accessory ? <View style={styles.planAccessory}>{accessory}</View> : null}
       </View>
     </Pressable>

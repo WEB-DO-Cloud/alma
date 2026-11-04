@@ -1980,6 +1980,17 @@ export const BillingStatusSchema = z.object({
   byokInterval: ByokIntervalSchema.optional(),
   /** Yearly price of the own-key plan for new subscriptions, when offered. */
   byokAnnualPriceCents: z.number().int().positive().nullable().optional(),
+  /**
+   * Discounted monthly price for a new subscriber's first months. Absent from older servers,
+   * and null when no launch coupon covers the plan.
+   */
+  byokPromo: z
+    .object({
+      priceCents: z.number().int().positive(),
+      months: z.number().int().positive(),
+    })
+    .nullable()
+    .optional(),
   /** End of an unpaid own-key organization's free period. */
   byokFreeUntil: z.string().nullable().optional(),
   access: z.boolean(),

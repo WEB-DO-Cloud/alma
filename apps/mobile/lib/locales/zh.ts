@@ -1064,6 +1064,9 @@ export const ZH_MESSAGES: Record<string, string> = {
     "免费 {days} 天，之后每月 {price}。可随时取消。",
   "{days} days free": "免费 {days} 天",
   "Works with your ChatGPT or Claude plan.": "可使用你的 ChatGPT 或 Claude 套餐。",
+  "Launch offer": "上线优惠",
+  "{promo}/month for your first {months} months, then {price}/month":
+    "前 {months} 个月每月 {promo}，之后每月 {price}",
   "All {price} goes to model usage.": "{price} 全部用于模型使用。",
   "Full access, nothing to pay": "完整功能，无需付费",
   "Day {days}": "第 {days} 天",

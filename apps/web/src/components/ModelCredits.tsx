@@ -17,6 +17,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  Badge,
   Button,
   Card,
   CardContent,
@@ -64,6 +65,46 @@ function formatMonthlyUsd(cents: number, locale: string): string {
     { amount: cents, currency: "usd", interval: "month", intervalCount: 1 },
     locale,
   );
+}
+
+/** Monthly launch price, hidden once the yearly interval is selected. */
+function monthlyLaunchOffer(status: BillingStatus, interval: ByokInterval, locale: string) {
+  if (interval !== "month" || !status.byokPromo || !status.byokPriceCents) return null;
+  return {
+    promo: formatBillingAmount(status.byokPromo.priceCents, "usd", locale),
+    price: formatBillingAmount(status.byokPriceCents, "usd", locale),
+    months: status.byokPromo.months,
+  };
+}
+
+function LaunchOfferBadge() {
+  return (
+    <Badge variant="secondary">
+      <Trans>Launch offer</Trans>
+    </Badge>
+  );
+}
+
+function LaunchOfferCopy({
+  promo,
+  months,
+  price,
+}: {
+  promo: string;
+  months: number;
+  price: string;
+}) {
+  return (
+    <p className="text-sm text-muted-foreground">
+      <Trans>
+        {promo}/month for your first {months} months, then {price}/month
+      </Trans>
+    </p>
+  );
+}
+
+function SubscribeForMonth({ price }: { price: string }) {
+  return <Trans>Subscribe for {price} / month</Trans>;
 }
 
 /** Monthly or yearly own-key plan, with what the yearly plan saves. */
@@ -161,6 +202,7 @@ export function CreditChoice({
   const trialDays = status.trialDays;
   const [amount, setAmount] = useState<CreditAmount>(DEFAULT_MONTHLY_CREDIT_AMOUNT);
   const [interval, setByokInterval] = useState<ByokInterval>("month");
+  const launch = monthlyLaunchOffer(status, interval, i18n.locale);
   const credit = formatBillingAmount(amount, "usd", i18n.locale);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
@@ -248,6 +290,12 @@ export function CreditChoice({
                 )}
               </p>
             )}
+            {launch ? (
+              <div className="flex flex-col items-start gap-2">
+                <LaunchOfferBadge />
+                <LaunchOfferCopy {...launch} />
+              </div>
+            ) : null}
             <p className="text-sm text-muted-foreground">
               <Trans>Works with your ChatGPT or Claude plan.</Trans>
             </p>
@@ -274,6 +322,8 @@ export function CreditChoice({
             >
               {!status.byokPriceCents ? (
                 <Trans>Connect my own</Trans>
+              ) : launch ? (
+                <SubscribeForMonth price={launch.promo} />
               ) : status.trialAvailable ? (
                 <Trans>Start {trialDays}-day free trial</Trans>
               ) : (
@@ -367,6 +417,7 @@ export function ModelCreditsSettings({
   const price = status.byokPriceCents
     ? formatBillingAmount(status.byokPriceCents, "usd", i18n.locale)
     : null;
+  const launch = monthlyLaunchOffer(status, interval, i18n.locale);
   const annualPrice = status.byokAnnualPriceCents
     ? formatBillingAmount(status.byokAnnualPriceCents, "usd", i18n.locale)
     : null;
@@ -450,6 +501,12 @@ export function ModelCreditsSettings({
                 onChange={setByokInterval}
               />
             ) : null}
+            {launch ? (
+              <>
+                <LaunchOfferBadge />
+                <LaunchOfferCopy {...launch} />
+              </>
+            ) : null}
             {freeUntil && price ? (
               <Button
                 disabled={pending}
@@ -462,6 +519,8 @@ export function ModelCreditsSettings({
               >
                 {annualPrice && interval === "year" ? (
                   <Trans>Subscribe for {annualPrice} / year</Trans>
+                ) : launch ? (
+                  <SubscribeForMonth price={launch.promo} />
                 ) : (
                   <Trans>Subscribe for {price} / month</Trans>
                 )}

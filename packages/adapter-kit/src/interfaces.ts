@@ -478,6 +478,11 @@ export interface BillingProvider {
   setMonthlyCredits?(customerId: string, amountCents: number): Promise<void>;
   /** Flat monthly own-key plan: access without credits. */
   createByokCheckout?(input: BillingByokCheckoutRequest): Promise<{ url: string }>;
+  /**
+   * Launch coupon for a monthly plan priced at `amountCents`, or null when none is configured,
+   * the coupon is not a valid repeating amount off, or it does not cover that plan's product.
+   */
+  promoOffer?(amountCents: number): Promise<{ amountOffCents: number; months: number } | null>;
   /** Ends the customer's running trial now and bills the first period; a no-op without one. */
   endTrial?(customerId: string): Promise<void>;
   /**
