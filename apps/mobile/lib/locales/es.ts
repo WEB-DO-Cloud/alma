@@ -983,6 +983,9 @@ export const ES_MESSAGES: Record<string, string> = {
     "{days} días gratis y luego {price} / mes. Cancela cuando quieras.",
   "{days} days free": "{days} días gratis",
   "Works with your ChatGPT or Claude plan.": "Funciona con tu plan de ChatGPT o Claude.",
+  "Launch offer": "Oferta de lanzamiento",
+  "{promo}/month for your first {months} months, then {price}/month":
+    "{promo}/mes durante tus primeros {months} meses, luego {price}/mes",
   "All {price} goes to model usage.": "El total de {price} se destina al uso de modelos.",
   "Full access, nothing to pay": "Acceso completo, sin pagar nada",
   "Day {days}": "Día {days}",

@@ -7,6 +7,14 @@ const base = {
 };
 
 describe("loadEnv", () => {
+  it("reads an optional launch coupon and ignores a blank one", () => {
+    expect(loadEnv(base).stripePromoCouponId).toBeUndefined();
+    expect(
+      loadEnv({ ...base, STRIPE_PROMO_COUPON_ID: "  coupon_launch  " }).stripePromoCouponId,
+    ).toBe("coupon_launch");
+    expect(loadEnv({ ...base, STRIPE_PROMO_COUPON_ID: " " }).stripePromoCouponId).toBeUndefined();
+  });
+
   it("defaults the attachment count to four and accepts configured bounds", () => {
     expect(loadEnv(base).maxAttachmentsPerMessage).toBe(4);
     expect(loadEnv({ ...base, MAX_ATTACHMENTS_PER_MESSAGE: " " }).maxAttachmentsPerMessage).toBe(4);

@@ -22,16 +22,28 @@ export const STRIPE_API_VERSION = "2026-09-30.endive";
 const WEBHOOK_TOLERANCE_SECONDS = 300;
 const MAX_RETRIES = 2;
 const MAX_RETRY_DELAY_MS = 5_000;
+const PROMO_CACHE_MS = 10 * 60 * 1000;
 
 export interface StripeBillingConfig {
   secretKey: string;
   webhookSecret: string;
   priceId?: string;
+  /** Applied to new monthly checkouts. Annual checkout keeps promotion codes. */
+  promoCouponId?: string;
   fetch?: typeof fetch;
   apiBase?: string;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
 }
+
+const couponSchema = z.object({
+  valid: z.boolean(),
+  amount_off: z.number().int().nullable(),
+  currency: z.string().nullable(),
+  duration: z.string(),
+  duration_in_months: z.number().int().nullable(),
+  applies_to: z.object({ products: z.array(z.string()) }).nullish(),
+});
 
 const priceSchema = z.object({
   unit_amount: z.number().int(),
@@ -117,6 +129,10 @@ export class StripeBillingProvider implements BillingProvider {
   private readonly now: () => number;
   private readonly sleep: (ms: number) => Promise<void>;
   private readonly recurringPrices = new Map<string, string>();
+  private readonly promoOffers = new Map<
+    string,
+    { expiresAt: number; value: { amountOffCents: number; months: number } | null }
+  >();
 
   constructor(config: StripeBillingConfig) {
     this.config = config;
@@ -168,12 +184,13 @@ export class StripeBillingProvider implements BillingProvider {
     const live = await this.listSubscriptions(input.customerId);
     if (live.some((s) => holdsBillingSubscription(mapStripeSubscriptionStatus(s.status))))
       throw new BillingCheckoutCompletedError();
+    const monthly = this.config.promoCouponId ? await this.configuredPriceIsMonthly() : false;
     const body = encodeStripeForm({
       mode: "subscription",
       customer: input.customerId,
       line_items: [{ price: this.config.priceId, quantity: input.seats }],
       payment_method_collection: "always",
-      allow_promotion_codes: true,
+      ...this.promotionParams(monthly),
       subscription_data: {
         billing_mode: { type: "classic" },
         ...(input.trialDays === undefined ? {} : { trial_period_days: input.trialDays }),
@@ -280,7 +297,7 @@ export class StripeBillingProvider implements BillingProvider {
         mode: "subscription",
         allowed_payment_method_types: ["card"],
         adaptive_pricing: { enabled: false },
-        allow_promotion_codes: true,
+        ...this.promotionParams(interval === "month"),
         line_items: [
           {
             quantity: 1,
@@ -333,6 +350,105 @@ export class StripeBillingProvider implements BillingProvider {
       payment_behavior: "error_if_incomplete",
     });
     return true;
+  }
+
+  /**
+   * Repeating amount off for the monthly plan, cached for about ten minutes.
+   * Null when the coupon is missing, not a valid repeating USD amount off, or does not cover
+   * the plan's product. A coupon without `applies_to` covers every product.
+   */
+  async promoOffer(
+    amountCents: number,
+  ): Promise<{ amountOffCents: number; months: number } | null> {
+    const couponId = this.config.promoCouponId;
+    if (!couponId) return null;
+    const key = `${couponId}:${amountCents}`;
+    const cached = this.promoOffers.get(key);
+    if (cached && cached.expiresAt > this.now()) return cached.value;
+    try {
+      const value = await this.loadPromoOffer(couponId, amountCents);
+      this.rememberPromo(key, value);
+      return value;
+    } catch (error) {
+      if (error instanceof StripeRequestError && error.message.includes("No such coupon")) {
+        this.rememberPromo(key, null);
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  private rememberPromo(key: string, value: { amountOffCents: number; months: number } | null) {
+    this.promoOffers.set(key, { value, expiresAt: this.now() + PROMO_CACHE_MS });
+  }
+
+  private async loadPromoOffer(couponId: string, amountCents: number) {
+    const query = encodeStripeForm({ expand: ["applies_to"] });
+    const parsed = couponSchema.safeParse(
+      await this.request("GET", `/v1/coupons/${encodeURIComponent(couponId)}?${query}`),
+    );
+    if (!parsed.success || !parsed.data.valid) return null;
+    const coupon = parsed.data;
+    if (
+      coupon.currency !== "usd" ||
+      coupon.amount_off == null ||
+      coupon.amount_off <= 0 ||
+      coupon.duration !== "repeating" ||
+      coupon.duration_in_months == null ||
+      coupon.duration_in_months <= 0
+    )
+      return null;
+    const products = coupon.applies_to?.products ?? [];
+    if (products.length > 0) {
+      const productId = await this.monthlyPlanProductId(amountCents);
+      if (!productId || !products.includes(productId)) return null;
+    }
+    return { amountOffCents: coupon.amount_off, months: coupon.duration_in_months };
+  }
+
+  /** The product on the existing monthly own-key price, or null when that price does not exist yet. */
+  private async monthlyPlanProductId(amountCents: number): Promise<string | null> {
+    const query = encodeStripeForm({
+      active: true,
+      lookup_keys: [`rakazo_byok_monthly_${amountCents}`],
+      expand: ["data.product"],
+    });
+    const prices = z
+      .object({
+        data: z.array(
+          z.object({
+            unit_amount: z.number().int().nullable(),
+            currency: z.string(),
+            recurring: z
+              .object({ interval: z.string(), interval_count: z.number().int().nullish() })
+              .nullable(),
+            product: z.union([z.string(), z.object({ id: z.string(), active: z.boolean() })]),
+          }),
+        ),
+      })
+      .parse(await this.request("GET", `/v1/prices?${query}`));
+    const match = prices.data.find(
+      (price) =>
+        price.currency === "usd" &&
+        price.unit_amount === amountCents &&
+        price.recurring?.interval === "month" &&
+        (price.recurring.interval_count ?? 1) === 1 &&
+        (typeof price.product === "string" || price.product.active),
+    );
+    if (!match) return null;
+    return typeof match.product === "string" ? match.product : match.product.id;
+  }
+
+  /** Stripe forbids `discounts` and `allow_promotion_codes` on the same session. */
+  private promotionParams(monthly: boolean) {
+    const coupon = this.config.promoCouponId;
+    if (coupon && monthly) return { discounts: [{ coupon }] };
+    return { allow_promotion_codes: true as const };
+  }
+
+  private async configuredPriceIsMonthly() {
+    const price = await this.getPrice();
+    return price.interval === "month" && price.intervalCount === 1;
   }
 
   private byokPrice(amountCents: number, interval: "month" | "year") {
@@ -984,6 +1100,7 @@ export function stripeBillingConfigFromEnv(env: {
   stripeSecretKey?: string;
   stripeWebhookSecret?: string;
   stripePriceId?: string;
+  stripePromoCouponId?: string;
 }): StripeBillingConfig | undefined {
   const values = {
     STRIPE_SECRET_KEY: env.stripeSecretKey?.trim(),
@@ -996,10 +1113,12 @@ export function stripeBillingConfigFromEnv(env: {
     .map(([name]) => name);
   if (missing.length)
     throw new Error(`Stripe billing is partially configured; set ${missing.join(", ")}`);
+  const promoCouponId = env.stripePromoCouponId?.trim();
   return {
     secretKey: values.STRIPE_SECRET_KEY!,
     webhookSecret: values.STRIPE_WEBHOOK_SECRET!,
     ...(values.STRIPE_PRICE_ID ? { priceId: values.STRIPE_PRICE_ID } : {}),
+    ...(promoCouponId ? { promoCouponId } : {}),
   };
 }
 

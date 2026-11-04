@@ -31,6 +31,8 @@ key for that provider is saved. Switching back to BYOK restores that connection.
 to other providers continue to use their own keys and never debit Rakazo credits. Hosted calls reserve an upper cost estimate atomically before starting, then settle
 to reported or catalog-priced usage. Unknown usage retains its reservation for reconciliation.
 
+`STRIPE_PROMO_COUPON_ID` is optional. When it is set, a new monthly checkout applies that coupon and the pricing screen shows the offer to someone who can still start a trial. Yearly checkout still accepts a promotion code instead. Leave it unset to keep the previous checkout.
+
 `STRIPE_PRICE_ID` is optional and only needed to display the legacy seat price. Existing live seat
 subscriptions retain their access and billing portal. Upgrades charge the prorated difference
 immediately and add the amount collected to the credit balance; a failed payment leaves the plan

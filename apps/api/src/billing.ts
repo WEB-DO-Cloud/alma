@@ -107,6 +107,39 @@ function byokOfferCents(interval: ByokInterval) {
   return interval === "year" ? BYOK_ANNUAL_PRICE_CENTS : monthly;
 }
 
+/** Discounted monthly price for a new subscriber, or null when the coupon does not reduce it. */
+export function byokLaunchPromo(
+  monthlyCents: number,
+  offer: { amountOffCents: number; months: number } | null,
+): { priceCents: number; months: number } | null {
+  if (
+    !offer ||
+    !Number.isInteger(monthlyCents) ||
+    !Number.isInteger(offer.amountOffCents) ||
+    !Number.isInteger(offer.months) ||
+    offer.amountOffCents <= 0 ||
+    offer.months <= 0
+  )
+    return null;
+  const priceCents = monthlyCents - offer.amountOffCents;
+  if (priceCents <= 0) return null;
+  return { priceCents, months: offer.months };
+}
+
+async function byokPromoForSubscriber(
+  provider: BillingProvider,
+  trialAvailable: boolean,
+  monthlyCents: number | null,
+): Promise<BillingStatus["byokPromo"]> {
+  if (!trialAvailable || monthlyCents === null || !provider.promoOffer) return null;
+  try {
+    return byokLaunchPromo(monthlyCents, await provider.promoOffer(monthlyCents));
+  } catch (error) {
+    getLogger().error("billing promo lookup failed", error);
+    return null;
+  }
+}
+
 export function createBillingService(deps: {
   prisma: PrismaClient;
   provider: BillingProvider;
@@ -421,6 +454,13 @@ export function createBillingService(deps: {
             ? byokFreeUntil(credits)
             : null;
         const subscribed = subscribedByokPrice(account);
+        const trialAvailable =
+          resolveByokMonthlyPriceCents() !== null && byokTrialAvailable(account, credits);
+        const byokPromo = await byokPromoForSubscriber(
+          provider,
+          trialAvailable,
+          resolveByokMonthlyPriceCents(),
+        );
         return {
           access: hasModelAccess(credits, account?.status ?? null),
           funding:
@@ -436,10 +476,10 @@ export function createBillingService(deps: {
             resolveByokMonthlyPriceCents() && (subscribed?.cents ?? resolveByokMonthlyPriceCents()),
           byokInterval: subscribed?.interval ?? "month",
           byokAnnualPriceCents: byokOfferCents("year"),
+          byokPromo,
           byokFreeUntil: freeUntil?.toISOString() ?? null,
           canManage: isOwner,
-          trialAvailable:
-            resolveByokMonthlyPriceCents() !== null && byokTrialAvailable(account, credits),
+          trialAvailable,
           trialDays: TRIAL_DAYS,
           state: (account?.status ?? "none") as BillingStatus["state"],
           price: account?.creditAmountCents

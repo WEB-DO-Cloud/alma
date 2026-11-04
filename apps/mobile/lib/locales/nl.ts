@@ -1038,6 +1038,9 @@ export const NL_MESSAGES: Record<string, string> = {
     "{days} dagen gratis, daarna {price} per maand. Altijd opzegbaar.",
   "{days} days free": "{days} dagen gratis",
   "Works with your ChatGPT or Claude plan.": "Werkt met je ChatGPT- of Claude-abonnement.",
+  "Launch offer": "Introductieaanbieding",
+  "{promo}/month for your first {months} months, then {price}/month":
+    "{promo}/maand gedurende je eerste {months} maanden, daarna {price}/maand",
   "All {price} goes to model usage.": "De volledige {price} gaat naar modelgebruik.",
   "Full access, nothing to pay": "Volledige toegang, niets te betalen",
   "Day {days}": "Dag {days}",
