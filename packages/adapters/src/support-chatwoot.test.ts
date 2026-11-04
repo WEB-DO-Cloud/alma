@@ -1,5 +1,6 @@
 import { createHmac } from "node:crypto";
-import { supportBotLabel } from "@rakazo/contracts";
+import { supportAgentName, supportBotLabel } from "@rakazo/contracts";
+import { createLogger, createTestSink, getLogger, installLogger } from "@rakazo/logging";
 import { describe, expect, it, vi } from "vitest";
 import {
   acceptSupportReply,
@@ -134,6 +135,112 @@ describe("support chat webhook checks", () => {
       readInboundReply({ ...JSON.parse(body), private: true, message_type: "outgoing" })
         ?.privateNote,
     ).toBe(true);
+  });
+
+  it("accepts a template payload and still ignores activity and private notes", async () => {
+    const template = readInboundReply({
+      event: "message_created",
+      id: 9,
+      message_type: 3,
+      content: "We reply during business hours.",
+      conversation: { id: 42 },
+    });
+    expect(template).toMatchObject({
+      outgoing: true,
+      privateNote: false,
+      agentName: "",
+      content: "We reply during business hours.",
+      chatwootMessageId: "9",
+      conversationId: "42",
+    });
+    expect(
+      readInboundReply({
+        event: "message_created",
+        id: 10,
+        message_type: "template",
+        content: "Hello",
+        conversation: { id: 42 },
+      }),
+    ).toMatchObject({ outgoing: true, privateNote: false, agentName: "" });
+
+    const prisma = { supportLink: { findFirst: vi.fn(async () => null) } };
+    const deps = {
+      prisma,
+      artifacts: { put: vi.fn(), get: vi.fn(), remove: vi.fn(), describe: vi.fn() },
+      events: { notify: vi.fn() },
+      config: {
+        baseUrl: "https://app.chatwoot.com",
+        accountId: "1",
+        inboxId: "2",
+        inboxIdentifier: "inbox",
+        apiToken: "token",
+        urlSecret: "secret",
+        enabled: true,
+        allowlist: null,
+      },
+    } as never;
+    const sink = createTestSink();
+    const previous = getLogger();
+    installLogger(createLogger({ service: "test", level: "info", sinks: [sink] }));
+    try {
+      const activity = readInboundReply({
+        event: "message_created",
+        id: 11,
+        message_type: 2,
+        content: "Conversation was resolved by Ada Lovelace",
+        conversation: { id: 42 },
+        sender: { name: "Ada Lovelace" },
+      });
+      const namedActivity = readInboundReply({
+        event: "message_created",
+        id: 12,
+        message_type: "activity",
+        content: "assigned",
+        conversation: { id: 42 },
+      });
+      const note = readInboundReply({
+        event: "message_created",
+        id: 13,
+        message_type: "outgoing",
+        private: true,
+        content: "only agents can see this note",
+        conversation: { id: 42 },
+        sender: { name: "Ada Lovelace" },
+      });
+      expect(activity).toBeTruthy();
+      expect(namedActivity).toBeTruthy();
+      expect(note).toBeTruthy();
+      expect(await acceptSupportReply(deps, activity!)).toBe("ignored");
+      expect(await acceptSupportReply(deps, namedActivity!)).toBe("ignored");
+      expect(await acceptSupportReply(deps, note!)).toBe("ignored");
+      expect(await acceptSupportReply(deps, template!)).toBe("ignored");
+      expect(prisma.supportLink.findFirst).toHaveBeenCalledTimes(1);
+
+      const ignored = sink.events.filter(
+        (event) => event.message === "support webhook message ignored",
+      );
+      expect(ignored.map((event) => event.reason)).toEqual([
+        "activity",
+        "activity",
+        "private_note",
+        "unknown_conversation",
+      ]);
+      expect(ignored.every((event) => event.level === "info")).toBe(true);
+      const serialized = JSON.stringify(ignored);
+      expect(serialized).not.toContain("only agents can see this note");
+      expect(serialized).not.toContain("Ada");
+      expect(serialized).not.toContain("We reply");
+      expect(serialized).not.toContain("token");
+    } finally {
+      installLogger(previous);
+    }
+  });
+
+  it("names a support reply with no sender ALMA Support", () => {
+    expect(supportAgentName([{ source: "chatwoot" }])).toBe("ALMA Support");
+    expect(supportAgentName([{ source: "chatwoot", agentName: "Ada" }])).toBe("Ada");
+    expect(supportAgentName([{ source: "chatwoot", agentName: "  " }])).toBe("ALMA Support");
+    expect(supportAgentName([{ kind: "text", text: "hi" }])).toBeNull();
   });
 
   it("picks Soporte for Spanish and Support otherwise", () => {

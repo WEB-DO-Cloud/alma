@@ -729,6 +729,10 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr "ALMA 額度"
 
+#: src/pages/shell/message-view.tsx
+msgid "ALMA Support"
+msgstr "ALMA 支援"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "已連結"

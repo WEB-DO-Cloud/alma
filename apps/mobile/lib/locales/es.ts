@@ -1,5 +1,6 @@
 export const ES_MESSAGES: Record<string, string> = {
   Support: "Soporte",
+  "ALMA Support": "Soporte ALMA",
   "Write to the ALMA team. A person will reply here.":
     "Escribe al equipo de ALMA. Una persona te responderá aquí.",
   "Not delivered. Tap to retry.": "No enviado. Toca para reintentar.",

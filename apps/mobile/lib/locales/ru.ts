@@ -1,5 +1,6 @@
 export const RU_MESSAGES: Record<string, string> = {
   Support: "Поддержка",
+  "ALMA Support": "Поддержка ALMA",
   "Write to the ALMA team. A person will reply here.":
     "Напишите команде ALMA. Здесь ответит человек.",
   "Not delivered. Tap to retry.": "Не отправлено. Нажмите, чтобы повторить.",

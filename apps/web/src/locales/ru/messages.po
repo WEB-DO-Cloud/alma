@@ -728,6 +728,10 @@ msgstr "ALMA"
 msgid "ALMA credits"
 msgstr ""
 
+#: src/pages/shell/message-view.tsx
+msgid "ALMA Support"
+msgstr "Поддержка ALMA"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Already connected"
 msgstr "Уже подключено"

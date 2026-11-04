@@ -7,7 +7,7 @@ import type {
   MessageReaction,
   ThreadMessage,
 } from "@rakazo/contracts";
-import { supportAgentName, supportDeliveryFailed } from "@rakazo/contracts";
+import { SUPPORT_DESK_NAME, supportAgentName, supportDeliveryFailed } from "@rakazo/contracts";
 import type { ChildBotBlock, PeerExchange } from "@rakazo/core";
 import { isPeerReceiptBlocks, isToolActivityBlock } from "@rakazo/core";
 import { BotAvatar, Button, cn, resolvePersonaColorDef } from "@rakazo/ui-web";
@@ -168,7 +168,7 @@ export const MessageView = memo(function MessageView({
     <>
       {agentName ? (
         <div className="mb-1.5 text-[13px] font-semibold tracking-tight text-foreground" dir="auto">
-          {agentName} · ALMA
+          {agentName === SUPPORT_DESK_NAME ? t`ALMA Support` : `${agentName} · ALMA`}
         </div>
       ) : speakerName ? (
         <div

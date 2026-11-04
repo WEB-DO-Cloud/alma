@@ -1,5 +1,6 @@
 export const ZH_TW_MESSAGES: Record<string, string> = {
   Support: "支援",
+  "ALMA Support": "ALMA 支援",
   "Write to the ALMA team. A person will reply here.": "寫信給 ALMA 團隊。會有人在這裡回覆。",
   "Not delivered. Tap to retry.": "未傳送。點一下以重試。",
   "The Support chat can't be removed.": "支援聊天無法移除。",
