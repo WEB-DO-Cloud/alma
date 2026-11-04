@@ -289,3 +289,14 @@ it("opens one counted peer line without an inline reply toggle", () => {
   act(() => line?.click());
   expect(open).toHaveBeenCalledWith({ peerBotId: "peer", peerBotName: "Researcher" });
 });
+
+it("names an automated support reply ALMA Support and a person by their first name", () => {
+  renderView("bot", [
+    { kind: "text", text: "We reply during business hours.", source: "chatwoot" },
+  ]);
+  expect(container.textContent).toContain("ALMA Support");
+  expect(container.textContent).not.toContain("· ALMA");
+
+  renderView("bot", [{ kind: "text", text: "On it.", source: "chatwoot", agentName: "Ada" }]);
+  expect(container.textContent).toContain("Ada · ALMA");
+});

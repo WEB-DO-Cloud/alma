@@ -1,5 +1,6 @@
 export const JA_MESSAGES: Record<string, string> = {
   Support: "サポート",
+  "ALMA Support": "ALMA サポート",
   "Write to the ALMA team. A person will reply here.":
     "ALMAチームに書いてください。担当者がここで返信します。",
   "Not delivered. Tap to retry.": "送信できませんでした。タップして再試行します。",

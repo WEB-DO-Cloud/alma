@@ -1,5 +1,6 @@
 export const NL_MESSAGES: Record<string, string> = {
   Support: "Support",
+  "ALMA Support": "ALMA Support",
   "Write to the ALMA team. A person will reply here.":
     "Schrijf naar het ALMA-team. Een persoon antwoordt hier.",
   "Not delivered. Tap to retry.": "Niet verzonden. Tik om opnieuw te proberen.",

@@ -3,13 +3,19 @@ export function isSupportBot(bot: { kind?: string | null } | null | undefined): 
   return bot?.kind === "support";
 }
 
-/** First name shown on an agent reply, or null when the message did not come from support. */
+/**
+ * English source for an automated support reply (no person attached).
+ * Clients translate this exact string.
+ */
+export const SUPPORT_DESK_NAME = "ALMA Support";
+
+/** First name on an agent reply, the desk name when it has no sender, or null outside support. */
 export function supportAgentName(blocks: readonly object[]): string | null {
   for (const block of blocks) {
     if (!("source" in block) || block.source !== "chatwoot") continue;
     const name =
       "agentName" in block && typeof block.agentName === "string" ? block.agentName.trim() : "";
-    return name || "ALMA";
+    return name || SUPPORT_DESK_NAME;
   }
   return null;
 }

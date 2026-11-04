@@ -535,6 +535,8 @@ function statusOf(error: unknown): number | undefined {
   return error instanceof ChatwootRequestError ? error.status : undefined;
 }
 
+type SupportMessageType = "outgoing" | "activity" | "template" | "other";
+
 export interface InboundSupportReply {
   chatwootMessageId: string;
   conversationId: string;
@@ -544,6 +546,8 @@ export interface InboundSupportReply {
   echoId?: string;
   privateNote: boolean;
   outgoing: boolean;
+  /** Normalized Chatwoot message_type. Template replies count as outgoing. */
+  messageType?: SupportMessageType;
 }
 
 export function readInboundReply(payload: unknown): InboundSupportReply | null {
@@ -551,8 +555,8 @@ export function readInboundReply(payload: unknown): InboundSupportReply | null {
   const body = payload as Record<string, unknown>;
   const event = String(body.event ?? "");
   if (event !== "message_created") return null;
-  const messageType = body.message_type;
-  const outgoing = messageType === "outgoing" || messageType === 1;
+  const messageType = supportMessageKind(body.message_type);
+  const outgoing = messageType === "outgoing" || messageType === "template";
   const privateNote = body.private === true || body.private === "true";
   const conversation = asRecord(body.conversation);
   const sender = asRecord(body.sender);
@@ -566,7 +570,43 @@ export function readInboundReply(payload: unknown): InboundSupportReply | null {
     echoId: typeof body.echo_id === "string" ? body.echo_id : undefined,
     privateNote,
     outgoing,
+    messageType,
   };
+}
+
+type IgnoredSupportReason =
+  | "private_note"
+  | "activity"
+  | "not_outgoing"
+  | "missing_message_id"
+  | "missing_conversation"
+  | "echo"
+  | "unknown_conversation"
+  | "missing_thread"
+  | "empty";
+
+function supportMessageKind(messageType: unknown): SupportMessageType {
+  if (messageType === "outgoing" || messageType === 1) return "outgoing";
+  if (messageType === "activity" || messageType === 2) return "activity";
+  if (messageType === "template" || messageType === 3) return "template";
+  return "other";
+}
+
+function supportReplyDropReason(reply: InboundSupportReply): IgnoredSupportReason | null {
+  if (reply.privateNote) return "private_note";
+  if (reply.messageType === "activity") return "activity";
+  if (!reply.outgoing) return "not_outgoing";
+  if (!reply.chatwootMessageId) return "missing_message_id";
+  if (!reply.conversationId) return "missing_conversation";
+  if (reply.echoId) return "echo";
+  return null;
+}
+
+function logIgnoredSupportMessage(reason: IgnoredSupportReason, reply: InboundSupportReply): void {
+  getLogger().info("support webhook message ignored", {
+    reason,
+    ...(reply.messageType ? { messageType: reply.messageType } : {}),
+  });
 }
 
 export function payloadAccountId(payload: unknown): string | undefined {
@@ -640,16 +680,20 @@ export async function acceptSupportReply(
   },
   reply: InboundSupportReply,
 ): Promise<"stored" | "ignored" | "duplicate"> {
-  if (!reply.outgoing || reply.privateNote || !reply.chatwootMessageId || !reply.conversationId) {
+  const dropped = supportReplyDropReason(reply);
+  if (dropped) {
+    logIgnoredSupportMessage(dropped, reply);
     return "ignored";
   }
-  if (reply.echoId) return "ignored";
   const link = await runAsSystem("find the support chat for a Chatwoot reply", () =>
     deps.prisma.supportLink.findFirst({
       where: { chatwootConversationId: reply.conversationId },
     }),
   );
-  if (!link) return "ignored";
+  if (!link) {
+    logIgnoredSupportMessage("unknown_conversation", reply);
+    return "ignored";
+  }
   const existing = await runAsSystem("check a Chatwoot reply was already stored", () =>
     deps.prisma.supportInboundMessage.findUnique({
       where: { chatwootMessageId: reply.chatwootMessageId },
@@ -670,7 +714,10 @@ export async function acceptSupportReply(
       where: { botId: link.botId },
       select: { id: true },
     });
-    if (!thread) return null;
+    if (!thread) {
+      logIgnoredSupportMessage("missing_thread", reply);
+      return null;
+    }
     const blocks: MessageBlock[] = [];
     if (reply.content.trim()) {
       blocks.push({
@@ -722,7 +769,10 @@ export async function acceptSupportReply(
         });
       }
     }
-    if (blocks.length === 0) return null;
+    if (blocks.length === 0) {
+      logIgnoredSupportMessage("empty", reply);
+      return null;
+    }
     try {
       return await deps.prisma.$transaction(async (tx) => {
         const message = await createThreadMessageInTransaction(tx, {

@@ -4,6 +4,7 @@ import {
   canReactToThreadMessage,
   canReportAssistantMessage,
   MESSAGE_REACTIONS,
+  SUPPORT_DESK_NAME,
   supportAgentName,
   supportDeliveryFailed,
 } from "@rakazo/contracts";
@@ -376,6 +377,7 @@ export const MessageRow = memo(function MessageRow({
     hasLike,
     optimisticLike,
   ]);
+  const supportName = supportAgentName(message.blocks);
   const layout = messageRowLayout(message.blocks, { activityBotId, inGroup, columnWidth });
   return (
     <View
@@ -387,11 +389,11 @@ export const MessageRow = memo(function MessageRow({
         width: "100%",
       }}
     >
-      {supportAgentName(message.blocks) ? (
+      {supportName ? (
         <Text
           style={{ color: tokens.foreground, fontSize: 13, fontWeight: "600", marginBottom: 4 }}
         >
-          {supportAgentName(message.blocks)} · ALMA
+          {supportName === SUPPORT_DESK_NAME ? t("ALMA Support") : `${supportName} · ALMA`}
         </Text>
       ) : null}
       {message.role === "user" && supportDeliveryFailed(message.blocks) ? (
