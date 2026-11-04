@@ -3,6 +3,7 @@ import {
   findConnectedModelCredential,
   hasHostedModelCredits,
   hostCredentialSource,
+  managedChatModel,
   managedModelActive,
   mcpStdioAvailable,
   resolveManagedVoice,
@@ -25,6 +26,7 @@ function hostCredentials(active: boolean, provider: string) {
 export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
   const managedModel = managedModelActive();
   const managedVoice = resolveManagedVoice().enabled;
+  const operatorModel = managedModel ? managedChatModel() : undefined;
   const [user, setup, admin] = await Promise.all([
     deps.prisma.user.findUniqueOrThrow({
       where: { id: actor.userId },
@@ -55,9 +57,11 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     managedModel,
     managedVoice,
     defaultProvider: managedModel
-      ? null
+      ? (operatorModel?.provider ?? null)
       : canonicalPiProviderId(setup.model?.provider ?? deps.env.defaultProvider),
-    defaultModel: managedModel ? null : (setup.model?.modelId ?? deps.env.defaultModel),
+    defaultModel: managedModel
+      ? (operatorModel?.id ?? null)
+      : (setup.model?.modelId ?? deps.env.defaultModel),
     // Set only while the active default is the deployment's own, running on host credentials.
     ...hostCredentials(
       !managedModel &&

@@ -38,6 +38,26 @@ describe("resolveDeploymentModel", () => {
       configured: true,
       hostCredentials: false,
     });
+    expect(
+      resolveDeploymentModel({
+        ...both,
+        DEEPSEEK_API_KEY: "sk-deepseek-fixture",
+        PI_DEFAULT_PROVIDER: "deepseek",
+      }),
+    ).toEqual({
+      provider: "deepseek",
+      model: "deepseek-flash",
+      key: "sk-deepseek-fixture",
+      configured: true,
+      hostCredentials: false,
+    });
+    expect(
+      resolveDeploymentModel({
+        DEEPSEEK_API_KEY: "sk-deepseek-fixture",
+        PI_DEFAULT_PROVIDER: "deepseek",
+        PI_DEFAULT_MODEL: " deepseek-v4-pro ",
+      }).model,
+    ).toBe("deepseek-v4-pro");
     // A provider with no key configured yields no key — never another vendor's.
     expect(
       resolveDeploymentModel({ OPENROUTER_API_KEY: "or-key", PI_DEFAULT_PROVIDER: "anthropic" }),

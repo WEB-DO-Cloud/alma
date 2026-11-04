@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, expect, it } from "vitest";
 import {
+  managedChatModel,
   managedDraftIdentity,
   managedModelEnabled,
   resolveGrokScratchRoot,
@@ -41,6 +42,25 @@ it("defaults the runtime to grok-build and keeps secrets out of the draft identi
     modelVersion: "subscription-default",
   });
   expect(JSON.stringify(managedDraftIdentity(config))).not.toContain("xai-test-fixture");
+});
+
+it("uses the deployment model for the Pi runtime and leaves Grok unlabeled without an id", () => {
+  expect(
+    managedChatModel({
+      ALMA_MODEL_RUNTIME: "pi",
+      PI_DEFAULT_PROVIDER: "deepseek",
+      PI_DEFAULT_MODEL: "deepseek-flash",
+    }),
+  ).toEqual({ provider: "deepseek", id: "deepseek-flash" });
+  expect(managedChatModel({ ALMA_MODEL_RUNTIME: "pi" })).toEqual({
+    provider: "openrouter",
+    id: "openai/gpt-6-luna",
+  });
+  expect(managedChatModel({})).toBeUndefined();
+  expect(managedChatModel({ ALMA_MODEL_PROVIDER: "xai", ALMA_MODEL_ID: "grok-4" })).toEqual({
+    provider: "xai",
+    id: "grok-4",
+  });
 });
 
 it("puts grok scratch on a writable data directory when ALMA_GROK_SCRATCH is unset", () => {

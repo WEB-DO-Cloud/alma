@@ -2,6 +2,7 @@ import { accessSync, constants } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { resolveDeploymentModel } from "./deployment-model.js";
 
 const OFF = new Set(["0", "false", "no", "off"]);
 
@@ -87,6 +88,23 @@ export function managedDraftIdentity(config: ManagedModelConfig): {
 /** The model the executor should run when the member has no credential. */
 export function managedRuntimeModel(config: ManagedModelConfig): { provider: string; id: string } {
   return { provider: config.provider, id: config.modelId || "subscription-default" };
+}
+
+/**
+ * The model to show and, for the Pi runtime, to run. Pi uses the deployment
+ * model (`PI_DEFAULT_PROVIDER` / `PI_DEFAULT_MODEL`). Grok Build uses
+ * `ALMA_MODEL_ID` when the operator set one. No id means nothing to label.
+ */
+export function managedChatModel(
+  env: NodeJS.ProcessEnv = process.env,
+): { provider: string; id: string } | undefined {
+  const config = resolveManagedModel(env);
+  if (config.runtime === "pi") {
+    const deployment = resolveDeploymentModel(env);
+    return { provider: deployment.provider, id: deployment.model };
+  }
+  if (!config.modelId) return undefined;
+  return { provider: config.provider, id: config.modelId };
 }
 
 const ALMA_TABLE = "[model.alma]";

@@ -12,6 +12,9 @@ picks the provider and `PI_DEFAULT_MODEL` the model:
 | --- | --- | --- |
 | `openrouter` (default) | `OPENROUTER_API_KEY` | `openai/gpt-6-luna` |
 | `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5` |
+| `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-flash` |
+
+`deepseek-flash` is DeepSeek V4.1 Flash at `https://api.deepseek.com`. On this deployment, `ALMA_MODEL_RUNTIME=pi` with those two settings runs that model for every account. Leave `ALMA_MODEL_RUNTIME` unset to keep Grok Build. Speech-to-text stays on `XAI_API_KEY`.
 
 Pick a vision-capable model so screenshot computer tools stay available.
 

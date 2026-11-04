@@ -304,6 +304,27 @@ it("shows the profile and the Advanced tab's controls", async () => {
   ]);
 });
 
+it("shows the operator model label from the catalog", async () => {
+  vi.mocked(rpc.me).mockResolvedValueOnce({
+    managedModel: true,
+    defaultProvider: "deepseek",
+    defaultModel: "deepseek-flash",
+  } as Awaited<ReturnType<typeof rpc.me>>);
+  vi.mocked(rpc.models.list).mockResolvedValueOnce([
+    {
+      provider: "deepseek",
+      providerName: "DeepSeek",
+      id: "deepseek-flash",
+      label: "DeepSeek V4.1 Flash",
+      billing: "",
+    },
+  ]);
+  await render();
+  expect(container.querySelector('[id$="-model"]')?.textContent).toBe("DeepSeek V4.1 Flash");
+  expect(container.textContent).not.toContain("Grok");
+  expect(container.querySelector('[aria-label="Model connections"]')).toBeNull();
+});
+
 describe("BotSettings model choices", () => {
   it("submits DeepSeek API ids and does not offer a display label", async () => {
     vi.mocked(rpc.models.credentials).mockResolvedValueOnce([

@@ -184,7 +184,7 @@ export async function resolveModelKey(...args: Parameters<typeof resolveModelKey
   if (!material.apiKey?.trim() && !runtimeKey?.trim() && !keyless) {
     throw new UnavailableModelForAuthError(MISSING_MODEL_RUN_ERROR);
   }
-  // ALMA: the operator-managed runtime (Grok Build) is paid by the plan, never metered as credits.
+  // ALMA: the operator-managed runtime is paid by the plan, never metered as credits.
   const managedServes = managed?.provider === provider && managed.id === modelId;
   const callObserver =
     !credential && billingEnabled && !managedServes

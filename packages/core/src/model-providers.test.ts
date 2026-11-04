@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   botsWithOwnModel,
   canUseCompatibleModelAsDefault,
+  catalogModelLabel,
   chatModelChoices,
   clampCatalogThinkingLevel,
   compatibleModelRows,
@@ -16,6 +17,13 @@ import {
   savedCompatibleModelIds,
   toggleEnabledModelId,
 } from "./model-providers.js";
+
+it("labels a configured model from the catalog", () => {
+  const catalog = [{ provider: "deepseek", id: "deepseek-flash", label: "DeepSeek V4.1 Flash" }];
+  expect(catalogModelLabel(catalog, "deepseek", "deepseek-flash")).toBe("DeepSeek V4.1 Flash");
+  expect(catalogModelLabel(catalog, "deepseek", "custom-id")).toBe("custom-id");
+  expect(catalogModelLabel(catalog, "deepseek", null)).toBeNull();
+});
 
 it("counts only bots that pick both a provider and a model", () => {
   expect(

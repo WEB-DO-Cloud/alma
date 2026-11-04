@@ -19,6 +19,21 @@ export function withoutThinkingBlocks(context: TranscriptContext): TranscriptCon
   return messages === context.messages ? context : { ...context, messages };
 }
 
+/**
+ * DeepSeek thinking mode signs the block with this field name and requires the
+ * same text back on the next tool-loop request. It is not a prefix-bound
+ * signature, so a context rebuild must keep it. Reply text still ignores it.
+ */
+const ECHOED_REASONING_SIGNATURE = "reasoning_content";
+
+function isEchoedReasoning(part: { type: string }): boolean {
+  return (
+    part.type === "thinking" &&
+    "thinkingSignature" in part &&
+    part.thinkingSignature === ECHOED_REASONING_SIGNATURE
+  );
+}
+
 /** The messages with thinking blocks removed from assistant messages from `from` up to `to`. */
 export function withoutThinkingFrom<T extends TranscriptContext["messages"][number]>(
   messages: T[],
@@ -28,7 +43,9 @@ export function withoutThinkingFrom<T extends TranscriptContext["messages"][numb
   let changed = false;
   const result = messages.map((message, index) => {
     if (index < from || index >= to || message.role !== "assistant") return message;
-    const content = message.content.filter((part) => part.type !== "thinking");
+    const content = message.content.filter(
+      (part) => part.type !== "thinking" || isEchoedReasoning(part),
+    );
     if (content.length === message.content.length) return message;
     changed = true;
     return { ...message, content };

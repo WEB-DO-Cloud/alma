@@ -716,6 +716,47 @@ describe("model setup gate", () => {
     }
   });
 
+  it("names the configured DeepSeek model while the operator runtime is Pi", async () => {
+    const previous = {
+      managed: process.env.ALMA_MANAGED_MODEL,
+      runtime: process.env.AGENT_RUNTIME,
+      modelRuntime: process.env.ALMA_MODEL_RUNTIME,
+      provider: process.env.PI_DEFAULT_PROVIDER,
+      model: process.env.PI_DEFAULT_MODEL,
+      key: process.env.DEEPSEEK_API_KEY,
+    };
+    process.env.ALMA_MANAGED_MODEL = "1";
+    process.env.AGENT_RUNTIME = "pi";
+    process.env.ALMA_MODEL_RUNTIME = "pi";
+    process.env.PI_DEFAULT_PROVIDER = "deepseek";
+    process.env.PI_DEFAULT_MODEL = "deepseek-flash";
+    process.env.DEEPSEEK_API_KEY = "sk-deepseek-fixture";
+    try {
+      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
+      const me = await call(handler, actor, "me", null);
+      expect(me.status).toBe(200);
+      const body = (await me.json()) as { json?: Record<string, unknown> };
+      expect(body.json).toMatchObject({
+        managedModel: true,
+        needsModel: false,
+        defaultProvider: "deepseek",
+        defaultModel: "deepseek-flash",
+      });
+      expect(JSON.stringify(body)).not.toContain("sk-deepseek-fixture");
+    } finally {
+      const restore = (name: string, value: string | undefined) => {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      };
+      restore("ALMA_MANAGED_MODEL", previous.managed);
+      restore("AGENT_RUNTIME", previous.runtime);
+      restore("ALMA_MODEL_RUNTIME", previous.modelRuntime);
+      restore("PI_DEFAULT_PROVIDER", previous.provider);
+      restore("PI_DEFAULT_MODEL", previous.model);
+      restore("DEEPSEEK_API_KEY", previous.key);
+    }
+  });
+
   it("refuses to start a run when no model is configured", async () => {
     const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
 
