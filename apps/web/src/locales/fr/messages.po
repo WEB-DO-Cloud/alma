@@ -4190,6 +4190,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "Pas encore vérifié"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "Non envoyé. Touche pour réessayer."
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "Non importé"
@@ -5763,6 +5767,16 @@ msgstr ""
 msgid "Sunday"
 msgstr "dimanche"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "Assistance"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Les messages d'assistance sont gérés via Chatwoot, hors de la RD. N'inclus pas de détails confidentiels de dossiers."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6581,6 +6595,10 @@ msgstr "Fonctionne avec votre abonnement ChatGPT ou Claude."
 msgid "Workspace"
 msgstr ""
 
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Écris à l'équipe ALMA. Une personne te répondra ici."
+
 #: src/lib/billing.ts
 msgid "year"
 msgstr ""
@@ -6689,19 +6707,3 @@ msgstr "Votre fournisseur vocal n'a plus de crédit."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Votre fournisseur vocal a refusé la clé."
-
-
-msgid "Support"
-msgstr "Assistance"
-
-msgid "Write to the ALMA team. A person will reply here."
-msgstr "Écris à l'équipe ALMA. Une personne te répondra ici."
-
-msgid "Not delivered. Tap to retry."
-msgstr "Non envoyé. Touche pour réessayer."
-
-msgid "The Support chat can't be removed."
-msgstr "Le chat Assistance ne peut pas être supprimé."
-
-msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr "Les messages d'assistance sont gérés via Chatwoot, hors de la RD. N'inclus pas de détails confidentiels de dossiers."

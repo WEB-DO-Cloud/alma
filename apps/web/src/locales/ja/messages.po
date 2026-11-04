@@ -4190,6 +4190,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "未確認"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "送信できませんでした。タップして再試行します。"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "インポートされていません"
@@ -5763,6 +5767,16 @@ msgstr "サブスクリプションが必要です"
 msgid "Sunday"
 msgstr "日曜日"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "サポート"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "サポートのメッセージはChatwootで、ドミニカ共和国の外で扱われます。案件の機密情報は含めないでください。"
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6581,6 +6595,10 @@ msgstr "ChatGPT または Claude のプランで使えます。"
 msgid "Workspace"
 msgstr "ワークスペース"
 
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "ALMAチームに書いてください。担当者がここで返信します。"
+
 #: src/lib/billing.ts
 msgid "year"
 msgstr "年"
@@ -6689,19 +6707,3 @@ msgstr "音声プロバイダーのクレジットが不足しています。"
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "音声プロバイダーのキーが拒否されました。"
-
-
-msgid "Support"
-msgstr "サポート"
-
-msgid "Write to the ALMA team. A person will reply here."
-msgstr "ALMAチームに書いてください。担当者がここで返信します。"
-
-msgid "Not delivered. Tap to retry."
-msgstr "送信できませんでした。タップして再試行します。"
-
-msgid "The Support chat can't be removed."
-msgstr "サポートのチャットは削除できません。"
-
-msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr "サポートのメッセージはChatwootで、ドミニカ共和国の外で扱われます。案件の機密情報は含めないでください。"

@@ -4190,6 +4190,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "Henüz kontrol edilmedi"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "Gönderilmedi. Yeniden denemek için dokunun."
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "İçe aktarılmadı"
@@ -5763,6 +5767,16 @@ msgstr ""
 msgid "Sunday"
 msgstr "Pazar"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "Destek"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Destek mesajları Chatwoot ile, DR dışında işlenir. Dava gizliliği içeren ayrıntılar eklemeyin."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6581,6 +6595,10 @@ msgstr "ChatGPT veya Claude aboneliğinle çalışır."
 msgid "Workspace"
 msgstr ""
 
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "ALMA ekibine yazın. Bir kişi burada yanıtlar."
+
 #: src/lib/billing.ts
 msgid "year"
 msgstr ""
@@ -6689,19 +6707,3 @@ msgstr "Ses sağlayıcınızın kredisi bitti."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Ses sağlayıcınız anahtarı reddetti."
-
-
-msgid "Support"
-msgstr "Destek"
-
-msgid "Write to the ALMA team. A person will reply here."
-msgstr "ALMA ekibine yazın. Bir kişi burada yanıtlar."
-
-msgid "Not delivered. Tap to retry."
-msgstr "Gönderilmedi. Yeniden denemek için dokunun."
-
-msgid "The Support chat can't be removed."
-msgstr "Destek sohbeti kaldırılamaz."
-
-msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr "Destek mesajları Chatwoot ile, DR dışında işlenir. Dava gizliliği içeren ayrıntılar eklemeyin."

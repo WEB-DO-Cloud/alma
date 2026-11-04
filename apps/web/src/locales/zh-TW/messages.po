@@ -4191,6 +4191,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "尚未檢查"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "未傳送。點一下以重試。"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "未匯入"
@@ -5764,6 +5768,16 @@ msgstr "需要訂閱"
 msgid "Sunday"
 msgstr "週日"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "支援"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "支援訊息透過 Chatwoot 處理，位於多明尼加共和國之外。請勿包含案件的機密資訊。"
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6582,6 +6596,10 @@ msgstr "可使用你的 ChatGPT 或 Claude 方案。"
 msgid "Workspace"
 msgstr "工作空間"
 
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "寫信給 ALMA 團隊。會有人在這裡回覆。"
+
 #: src/lib/billing.ts
 msgid "year"
 msgstr "年"
@@ -6690,19 +6708,3 @@ msgstr "你的語音供應商額度已用完。"
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "你的語音供應商拒絕了該金鑰。"
-
-
-msgid "Support"
-msgstr "支援"
-
-msgid "Write to the ALMA team. A person will reply here."
-msgstr "寫信給 ALMA 團隊。會有人在這裡回覆。"
-
-msgid "Not delivered. Tap to retry."
-msgstr "未傳送。點一下以重試。"
-
-msgid "The Support chat can't be removed."
-msgstr "支援聊天無法移除。"
-
-msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr "支援訊息透過 Chatwoot 處理，位於多明尼加共和國之外。請勿包含案件的機密資訊。"

@@ -4190,6 +4190,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "अभी तक जाँच नहीं हुई"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "नहीं भेजा गया। फिर से कोशिश करने के लिए टैप करें।"
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "इंपोर्ट नहीं हुआ"
@@ -5763,6 +5767,16 @@ msgstr ""
 msgid "Sunday"
 msgstr "रविवार"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "सहायता"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "सहायता संदेश Chatwoot के ज़रिए, DR के बाहर संभाले जाते हैं। केस की गोपनीय जानकारी शामिल न करें।"
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6581,6 +6595,10 @@ msgstr "आपके ChatGPT या Claude प्लान के साथ क�
 msgid "Workspace"
 msgstr ""
 
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "ALMA टीम को लिखें। एक व्यक्ति यहाँ जवाब देगा।"
+
 #: src/lib/billing.ts
 msgid "year"
 msgstr ""
@@ -6689,19 +6707,3 @@ msgstr "आपके आवाज़ प्रोवाइडर का क्�
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "आपके आवाज़ प्रोवाइडर ने कुंजी अस्वीकार कर दी।"
-
-
-msgid "Support"
-msgstr "सहायता"
-
-msgid "Write to the ALMA team. A person will reply here."
-msgstr "ALMA टीम को लिखें। एक व्यक्ति यहाँ जवाब देगा।"
-
-msgid "Not delivered. Tap to retry."
-msgstr "नहीं भेजा गया। फिर से कोशिश करने के लिए टैप करें।"
-
-msgid "The Support chat can't be removed."
-msgstr "सहायता चैट हटाई नहीं जा सकती।"
-
-msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr "सहायता संदेश Chatwoot के ज़रिए, DR के बाहर संभाले जाते हैं। केस की गोपनीय जानकारी शामिल न करें।"
