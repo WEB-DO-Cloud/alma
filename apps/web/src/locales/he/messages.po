@@ -4190,6 +4190,10 @@ msgstr ""
 msgid "Not checked yet"
 msgstr "טרם נבדק"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "לא נשלח. הקישו כדי לנסות שוב."
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "לא יובא"
@@ -5763,6 +5767,16 @@ msgstr "נדרש מנוי"
 msgid "Sunday"
 msgstr "יום ראשון"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "תמיכה"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "הודעות התמיכה מטופלות דרך Chatwoot, מחוץ לרפובליקה הדומיניקנית. אל תכללו פרטים חסויים של תיקים."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6580,6 +6594,10 @@ msgstr "עובד עם המינוי שלך ל-ChatGPT או ל-Claude."
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Workspace"
 msgstr ""
+
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "כתבו לצוות ALMA. אדם יענה כאן."
 
 #: src/lib/billing.ts
 msgid "year"

@@ -35,6 +35,7 @@ const payloadSchemas = {
     ticketId: z.string().min(1),
     tokenDigest: z.string().min(1),
   }),
+  "support.forward": z.object({ messageId: z.string().min(1) }),
 } satisfies { [Name in BackgroundJobName]: z.ZodType<BackgroundJobPayloads[Name]> };
 
 export function parseBackgroundJob(name: string, payload: unknown): BackgroundJob {

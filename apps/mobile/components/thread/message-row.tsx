@@ -4,13 +4,15 @@ import {
   canReactToThreadMessage,
   canReportAssistantMessage,
   MESSAGE_REACTIONS,
+  supportAgentName,
+  supportDeliveryFailed,
 } from "@rakazo/contracts";
 import type { ChildBotBlock, PeerExchange } from "@rakazo/core";
 import { canMarkMessageUnread, isPeerReceiptBlocks, liveMessageComposing } from "@rakazo/core";
 import * as Clipboard from "expo-clipboard";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GestureResponderEvent, LayoutChangeEvent } from "react-native";
-import { Platform, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 import Animated, { useReducedMotion, ZoomIn } from "react-native-reanimated";
 import type { MobileBot, MobileMessage, MobileSnapshot } from "../../lib/api";
 import { blockText, copyableMobileMessageText, selectableMobileMessageText } from "../../lib/api";
@@ -385,6 +387,18 @@ export const MessageRow = memo(function MessageRow({
         width: "100%",
       }}
     >
+      {supportAgentName(message.blocks) ? (
+        <Text
+          style={{ color: tokens.foreground, fontSize: 13, fontWeight: "600", marginBottom: 4 }}
+        >
+          {supportAgentName(message.blocks)} · ALMA
+        </Text>
+      ) : null}
+      {message.role === "user" && supportDeliveryFailed(message.blocks) ? (
+        <Text style={{ color: tokens.destructive, fontSize: 12, marginBottom: 4 }}>
+          {t("Not delivered. Tap to retry.")}
+        </Text>
+      ) : null}
       {separator ? <TimeSeparator createdAt={message.createdAt} /> : null}
       {unreadDivider ? <UnreadDivider afterSeparator={separator} /> : null}
       <View

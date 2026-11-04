@@ -87,6 +87,7 @@ type ThreadComposerProps = {
   attachFrom: (source: string) => void;
   send: () => Promise<void>;
   stop: () => Promise<void>;
+  supportChat?: boolean;
   startVoiceCall: () => Promise<void>;
   onSlashAction: (action: SlashActionId) => void;
 };
@@ -110,6 +111,7 @@ export function ThreadComposer({
   attachFrom,
   send,
   stop,
+  supportChat,
   startVoiceCall,
   onSlashAction,
 }: ThreadComposerProps) {
@@ -235,6 +237,10 @@ export function ThreadComposer({
         })
       : [];
   function updateMentionQuery(value: string, start: number, end = start) {
+    if (supportChat) {
+      setMentionQuery(null);
+      return;
+    }
     // A mention selected by a backspace is waiting to be deleted, not re-picked.
     if (selectedMentionRef.current !== null) {
       setMentionQuery(null);
@@ -288,7 +294,7 @@ export function ThreadComposer({
     if (widenedCaret !== null) nativeSelection.current = { start: caret, end: caret };
     setSelection(widenedCaret === null ? undefined : nativeSelection.current);
     updateMentionQuery(value, caret);
-    const slashMatch = selectedSkill === null ? /^\/([^\n]*)$/.exec(value) : null;
+    const slashMatch = supportChat || selectedSkill !== null ? null : /^\/([^\n]*)$/.exec(value);
     setSlashQuery(slashMatch ? (slashMatch[1] ?? "") : null);
   }
 
@@ -712,7 +718,7 @@ export function ThreadComposer({
               </TextInput>
             </Pressable>
           </View>
-          {!canSend && botId && !onCall ? (
+          {!canSend && botId && !onCall && !supportChat ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t("Call")}
@@ -757,7 +763,7 @@ export function ThreadComposer({
             </Pressable>
           )}
         </GlassSurface>
-        {working ? (
+        {working && !supportChat ? (
           <Pressable
             accessibilityLabel={t("Stop")}
             disabled={sending}

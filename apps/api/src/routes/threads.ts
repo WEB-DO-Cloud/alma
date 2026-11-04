@@ -1,6 +1,11 @@
 import { ORPCError } from "@orpc/server";
 import { runContinueJob, runJobKey } from "@rakazo/adapter-kit";
-import { managedModelActive, settleCallRequest } from "@rakazo/adapters";
+import {
+  loadSupportChatwootConfig,
+  managedModelActive,
+  retrySupportDelivery,
+  settleCallRequest,
+} from "@rakazo/adapters";
 import type { Actor, ProductEvent } from "@rakazo/contracts";
 import {
   AttachmentValidationError,
@@ -25,6 +30,7 @@ import { reportAssistantMessage } from "../message-report.js";
 import type { RouterDeps } from "../router.js";
 import { createRoutineTestRun, routineTestRunNonce, routineTestTarget } from "../routines.js";
 import { withSerializableRetry } from "../serializable-retry.js";
+import { forwardSupportSend } from "../support-chatwoot-send.js";
 import { assertTeachingSendAllowed } from "../taught-skills.js";
 import {
   isBackgroundRun,
@@ -108,6 +114,15 @@ export function threadsRoutes(ctx: RouterContext) {
   ) => {
     const setup = await modelSetup(deps, actor);
     const target = await resolveThreadTarget(deps.prisma, actor, input);
+    if (target.kind === "bot") {
+      const support = await deps.prisma.bot.findFirst({
+        where: { id: target.botId, spaceId: actor.spaceId, userId: actor.userId },
+        select: { kind: true },
+      });
+      if (support?.kind === "support") {
+        return forwardSupportSend(deps, actor, target, input);
+      }
+    }
     // A bot with its own runnable model needs no main model.
     if (
       !managedModelActive() &&
@@ -303,7 +318,17 @@ export function threadsRoutes(ctx: RouterContext) {
       react: authed.threads.react.handler(async ({ context, input }) => {
         const target = await resolveThreadTarget(deps.prisma, context.actor, input);
         // Without a model or while teaching, the reaction is still saved; it just starts no turn.
+        const supportKind =
+          target.kind === "bot"
+            ? (
+                await deps.prisma.bot.findFirst({
+                  where: { id: target.botId },
+                  select: { kind: true },
+                })
+              )?.kind
+            : null;
         const mayStartTurn =
+          supportKind !== "support" &&
           (!(await modelSetup(deps, context.actor)).needsModel ||
             (await botsRunOwnModels(deps, context.actor, [
               await reactedBotId(target, input.messageId),
@@ -337,7 +362,29 @@ export function threadsRoutes(ctx: RouterContext) {
       }),
       stop: authed.threads.stop.handler(async ({ context, input }) => {
         const target = await resolveThreadTarget(deps.prisma, context.actor, input);
+        if (target.kind === "bot") {
+          const support = await deps.prisma.bot.findFirst({
+            where: {
+              id: target.botId,
+              spaceId: context.actor.spaceId,
+              userId: context.actor.userId,
+            },
+            select: { kind: true },
+          });
+          if (support?.kind === "support") return { ok: true as const };
+        }
         await stopThreadRuns(deps, context.actor, target);
+        return { ok: true as const };
+      }),
+      retrySupport: authed.threads.retrySupport.handler(async ({ context, input }) => {
+        const config = loadSupportChatwootConfig();
+        if (!config?.enabled) throw new ORPCError("NOT_FOUND");
+        const retried = await retrySupportDelivery(deps, {
+          spaceId: context.actor.spaceId,
+          userId: context.actor.userId,
+          messageId: input.messageId,
+        });
+        if (!retried) throw new ORPCError("NOT_FOUND");
         return { ok: true as const };
       }),
       clear: authed.threads.clear.handler(async ({ context, input }) => {
@@ -391,6 +438,23 @@ export function threadsRoutes(ctx: RouterContext) {
       }),
       followUp: authed.threads.followUp.handler(async ({ context, input }) => {
         const target = await resolveThreadTarget(deps.prisma, context.actor, input);
+        if (target.kind === "bot") {
+          const support = await deps.prisma.bot.findFirst({
+            where: {
+              id: target.botId,
+              spaceId: context.actor.spaceId,
+              userId: context.actor.userId,
+            },
+            select: { kind: true },
+          });
+          if (support?.kind === "support") {
+            await forwardSupportSend(deps, context.actor, target, {
+              text: input.text,
+              clientNonce: input.clientNonce,
+            });
+            return { ok: true as const };
+          }
+        }
         if (target.kind === "bot") {
           await assertTeachingSendAllowed(deps.prisma, context.actor.spaceId, target.botId);
           const sent = await deps.events.sendUserMessage({

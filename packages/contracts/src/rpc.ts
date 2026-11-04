@@ -579,6 +579,10 @@ export const appContract = {
       .input(threadTarget.safeExtend({ messageId: Id }))
       .output(z.object({ ok: z.literal(true) })),
     stop: oc.input(threadTarget).output(z.object({ ok: z.literal(true) })),
+    /** Sends a support message again after delivery to the support inbox failed. */
+    retrySupport: oc
+      .input(z.object({ botId: Id, messageId: Id }))
+      .output(z.object({ ok: z.literal(true) })),
     followUp: oc
       .input(
         threadTarget.safeExtend({

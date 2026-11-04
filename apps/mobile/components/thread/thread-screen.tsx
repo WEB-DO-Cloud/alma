@@ -14,7 +14,7 @@ import {
 import { useFocusEffect, useIsFocused, useLocalSearchParams, useRouter } from "expo-router";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { I18nManager, Platform, View } from "react-native";
+import { I18nManager, Platform, Text, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { readableGutters } from "../../lib/adaptive-layout";
@@ -245,7 +245,10 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   const titleBot = currentBot ?? inboxBot;
   // Without a name yet (a notification can leave it out), the title shows a placeholder.
   const titleName = currentBot?.name ?? name ?? inboxBot?.name;
-  const displayName = safeDisplayName(titleName, inGroup ? t("Group") : t("Bot"));
+  const supportChat = !inGroup && titleBot?.kind === "support";
+  const displayName = supportChat
+    ? t("Support")
+    : safeDisplayName(titleName, inGroup ? t("Group") : t("Bot"));
   const composerPrompt = displayName ? t("Message {name}", { name: displayName }) : t("Message…");
   const notificationThreadId = snap?.threadId ?? requestedThreadId ?? currentBot?.threadId;
   activeThreadId.current = notificationThreadId;
@@ -314,6 +317,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
     inGroup,
     readOnly,
     displayName,
+    supportChat,
     titleBot,
     titleName,
     groupMembers,
@@ -618,6 +622,25 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
               )
             }
           >
+            {supportChat && visibleMessages.length === 0 ? (
+              <View style={{ paddingHorizontal: 24, paddingBottom: 8 }}>
+                <Text style={{ color: tokens.mutedForeground, textAlign: "center", fontSize: 13 }}>
+                  {t("Write to the ALMA team. A person will reply here.")}
+                </Text>
+                <Text
+                  style={{
+                    color: tokens.mutedForeground,
+                    textAlign: "center",
+                    fontSize: 13,
+                    marginTop: 4,
+                  }}
+                >
+                  {t(
+                    "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.",
+                  )}
+                </Text>
+              </View>
+            ) : null}
             <ThreadComposer
               key={threadKey}
               ref={composer.composerRef}
@@ -640,6 +663,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
               attachFrom={attachments.attachFrom}
               send={composer.send}
               stop={composer.stop}
+              supportChat={supportChat}
               startVoiceCall={startVoiceCall}
               onSlashAction={composer.runSlashAction}
             />

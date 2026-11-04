@@ -6,6 +6,7 @@ import type {
   ThreadMessage,
   VoiceStatus,
 } from "@rakazo/contracts";
+import { isSupportBot } from "@rakazo/contracts";
 import {
   answerableAskMessageIds,
   channelMessageSender,
@@ -1068,7 +1069,14 @@ function SpaceShell() {
               onAnswer={composer.answerMessage}
               onReply={replyToMessage}
               onMarkUnread={markMessageUnread}
-              onReport={reportAssistantResponse}
+              onReport={isSupportBot(active) ? undefined : reportAssistantResponse}
+              onRetrySupport={(message) => {
+                if (!active) return;
+                void rpc.threads
+                  .retrySupport({ botId: active.id, messageId: message.id })
+                  .then(() => refreshThread(active.id))
+                  .catch(() => undefined);
+              }}
               onQuote={quoteMessage}
               onReact={composer.reactToMessage}
               onJumpToMessage={jumpToReplyMessage}
@@ -1089,6 +1097,14 @@ function SpaceShell() {
         {active || activeGroup ? (
           // Let messages continue behind the composer's rounded top corners.
           <div className="pointer-events-none relative z-30 -mt-7">
+            {isSupportBot(active) && (activeSnapshot?.messages.length ?? 0) === 0 ? (
+              <div className="pointer-events-auto px-6 pb-3 text-center text-[13px] text-muted-foreground">
+                <p>{t`Write to the ALMA team. A person will reply here.`}</p>
+                <p className="mt-1">
+                  {t`Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.`}
+                </p>
+              </div>
+            ) : null}
             {recordingSkill ? (
               <div className="pointer-events-auto bg-background px-6 pb-2 text-center text-[13px] text-destructive">
                 <Trans>Teaching in progress. Stop teaching before sending a new message.</Trans>
@@ -1098,7 +1114,14 @@ function SpaceShell() {
               key={inGroup ? `group:${groupId}` : `bot:${active?.id}`}
               draftKey={inGroup ? `group:${groupId}` : `bot:${active?.id}`}
               enterToSend={enterToSend}
-              activeName={inGroup ? (activeGroup?.name ?? activeSnapshot?.groupName) : active?.name}
+              supportChat={!inGroup && isSupportBot(active)}
+              activeName={
+                inGroup
+                  ? (activeGroup?.name ?? activeSnapshot?.groupName)
+                  : isSupportBot(active)
+                    ? t`Support`
+                    : active?.name
+              }
               running={composerRunning}
               disabled={Boolean(recordingSkill)}
               pendingAttachments={composer.activePendingAttachments}
@@ -1142,7 +1165,7 @@ function SpaceShell() {
               replyQuote={composer.replyQuote}
               replyTargetName={replyTargetName}
               onClearReply={composer.clearReply}
-              mentionTargets={composerMentionTargets}
+              mentionTargets={isSupportBot(active) ? [] : composerMentionTargets}
               agentSkills={agentSkills}
               onSlashOpen={refreshAgentSkills}
               onSlashAction={(action) => {

@@ -69,6 +69,7 @@ model User {
   signupSurvey                SignupSurvey?
   computerRuns                ComputerRun[]
   devices                     UserDevice[]
+  supportLink                 SupportLink?
 
   @@unique([email])
   @@map("user")
@@ -441,6 +442,7 @@ model Space {
   agentSkillSpaces            AgentSkillSpace[]
   mcpServerSpaces             McpServerSpace[]
   capabilityInstallSpaces     CapabilityInstallSpace[]
+  supportLinks                SupportLink[]
 
   @@unique([id, organizationId])
   @@index([organizationId, createdAt])
@@ -694,6 +696,8 @@ model SpaceVoicePreference {
 model Bot {
   screenGeneration Int @default(0)
   id                String            @id @default(cuid())
+  /// "standard" or "support". Support is the pinned human-support chat.
+  kind              String            @default("standard")
   spaceId           String
   space             Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   userId            String
@@ -760,6 +764,45 @@ model Bot {
   @@map("bots")
   messagingInstallations MessagingInstallation[]
   messagingInstallSessions MessagingInstallSession[]
+  supportLink SupportLink?
+}
+
+/// One human-support conversation per user. Chatwoot ids stay empty until the first message.
+model SupportLink {
+  userId                   String   @id
+  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId                  String
+  space                    Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  botId                    String   @unique
+  bot                      Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  chatwootContactId        String?
+  chatwootSourceId         String?
+  chatwootConversationId   String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([chatwootConversationId])
+  @@map("support_links")
+}
+
+/// Idempotency for agent replies. The Chatwoot message id is the key.
+model SupportInboundMessage {
+  chatwootMessageId String   @id
+  messageId         String   @unique
+  userId            String
+  spaceId           String
+  createdAt         DateTime @default(now())
+
+  @@index([userId, spaceId])
+  @@map("support_inbound_messages")
+}
+
+/// X-Chatwoot-Delivery is stable across retries of the same webhook call.
+model SupportWebhookDelivery {
+  deliveryId String   @id
+  createdAt  DateTime @default(now())
+
+  @@map("support_webhook_deliveries")
 }
 
 model BotSection {

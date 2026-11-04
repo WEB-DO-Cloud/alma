@@ -107,7 +107,7 @@ Hosted users can permanently delete their account and associated personal Space 
 
 export const PRIVACY_MARKDOWN = `# ALMA privacy
 
-Last updated: September 14, 2026
+Last updated: November 4, 2026
 
 ALMA processes account details, user-provided bot content, connection information, and technical records needed to operate and secure the service. Content comes from what you enter, upload, record, or authorize your bots to access. ALMA does not sell personal information or use ALMA content for third-party advertising.
 
@@ -118,6 +118,8 @@ Supported connections include OpenAI, Anthropic, Google, OpenRouter, Vercel AI G
 Permission records include the recipient, Space, disclosure version, and time. Choose Not now to decline, or withdraw permission in Account → AI data sharing for new mobile actions. Stop existing runs and disable routines separately. Withdrawal cannot recall data already sent. Web, desktop, and self-hosted server workflows do not use this mobile permission flow.
 
 Services we select must provide protection equal to or greater than the safeguards in our complete policy, including limited processing purposes, security, retention, and deletion protections. We review provider terms and safeguards before enabling a provider. Self-hosted operators are responsible for the services they select and their agreements. Provider terms govern processing and retention after receipt; provider policy links are available in AI data sharing and in the complete policy.
+
+Your legal work, documents and conversations with the ALMA assistant are processed and stored only in the Dominican Republic. If you write in the Support chat, that message, any files you attach, your name and your email are sent to Chatwoot (Chatwoot Inc.), our customer support provider, which stores them outside the Dominican Republic only to answer you. Please don't share confidential case information in the Support chat.
 
 Hosted users can delete their account and associated personal Space data from Account. In self-hosted deployments, the server operator controls information sent to that deployment. For privacy requests, email [hello@alma.com.do](mailto:hello@alma.com.do).
 
