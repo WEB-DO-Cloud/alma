@@ -8,8 +8,8 @@ import {
   mcpStdioRefusal,
   recordMcpServerHealth,
 } from "@rakazo/adapters";
-import type { Actor, McpServer, McpServerConfigInput } from "@rakazo/contracts";
-import { mcpOAuthEnvReferences } from "@rakazo/contracts";
+import type { Actor, McpServer, McpServerConfigInput, McpServerHealth } from "@rakazo/contracts";
+import { MCP_OAUTH_CLIENT_REQUIRED, mcpOAuthEnvReferences } from "@rakazo/contracts";
 import type { McpServer as McpServerRow, Prisma } from "@rakazo/db";
 import { itemSecretIn, spaceAvailability } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
@@ -74,10 +74,11 @@ export function mcpServerDto(
     hasSecret: row.secretId !== null,
     oauthStatus: oauth.status,
     oauthClientId: oauth.clientId,
+    oauthPreset: oauth.preset === true,
     enabled: row.enabled,
     verbatimResults: row.verbatimResults ?? false,
     revision: row.revision,
-    health: mcpServerHealthDto(row),
+    health: healthForClient(row, oauth),
     availability: spaceAvailability({ ...row, allSpaces: row.allSpaces ?? false }),
     allBots: row.allBots ?? false,
     createdAt: row.createdAt.toISOString(),
@@ -86,6 +87,25 @@ export function mcpServerDto(
 }
 
 export const MCP_OAUTH_PENDING_MESSAGE = "Connect this server's account to check it.";
+
+/** A preset already covers a server that only failed dynamic registration, so the
+ * row should offer sign-in instead of asking for a client id. */
+function healthForClient(
+  row: Parameters<typeof mcpServerHealthDto>[0],
+  oauth: McpOAuthSummary,
+): McpServerHealth {
+  const health = mcpServerHealthDto(row);
+  if (oauth.preset && health.code === MCP_OAUTH_CLIENT_REQUIRED) {
+    return {
+      status: "unknown",
+      message: MCP_OAUTH_PENDING_MESSAGE,
+      code: null,
+      toolCount: null,
+      checkedAt: health.checkedAt,
+    };
+  }
+  return health;
+}
 
 /** Private server endpoints require explicit operator configuration. */
 export function mayUsePrivateEndpoint(deps: Pick<RouterDeps, "env">): boolean {
@@ -230,7 +250,7 @@ export function createMcpServers(
     ].some((value) => mcpOAuthEnvReferences(value).fields.length > 0);
     return (
       needsGrant ||
-      (oauth.clientId !== null &&
+      ((oauth.clientId !== null || oauth.preset === true) &&
         !material.secret &&
         Object.keys(material.headers ?? {}).length === 0)
     );

@@ -70,4 +70,19 @@ describe("McpServerHealthLine", () => {
   it("says so when the server was never checked", () => {
     expect(render({ status: "unknown" })).toContain("Not checked yet");
   });
+
+  it("does not ask for a client id when a preset can sign the server in", () => {
+    const health: Partial<McpServerHealth> = {
+      status: "error",
+      code: "MCP_OAUTH_CLIENT_REQUIRED",
+      message: "Incompatible auth server: does not support dynamic client registration",
+    };
+    expect(render(health)).toContain("Needs an OAuth client ID");
+    const html = renderToStaticMarkup(
+      <McpServerHealthLine health={{ ...base, ...health }} presetClient />,
+    );
+    expect(visibleText(html)).toContain("Not checked yet");
+    expect(html).not.toContain("Needs an OAuth client ID");
+    expect(html).not.toContain("does not support dynamic client registration");
+  });
 });

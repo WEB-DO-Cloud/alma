@@ -523,7 +523,9 @@ export default function Integrations() {
   function serverStatus(server: McpServer) {
     return !server.enabled
       ? t("Disabled")
-      : server.health.code === MCP_OAUTH_CLIENT_REQUIRED && !server.oauthClientId
+      : server.health.code === MCP_OAUTH_CLIENT_REQUIRED &&
+          !server.oauthClientId &&
+          server.oauthPreset !== true
         ? t("Needs an OAuth client ID")
         : server.oauthStatus === "reconnect"
           ? t("OAuth expired")
@@ -575,7 +577,10 @@ export default function Integrations() {
           {server.name}
         </Text>
         <Text style={styles.secondary}>{serverStatus(server)}</Text>
-        {server.enabled && (server.oauthStatus === "reconnect" || server.id === oauthServerId) ? (
+        {server.enabled &&
+        (server.oauthStatus === "reconnect" ||
+          server.id === oauthServerId ||
+          (server.oauthPreset === true && server.oauthStatus !== "connected")) ? (
           <NativeActionButton
             label={t("Connect OAuth")}
             fill={false}

@@ -63,6 +63,7 @@ import {
   PipedreamConnector,
   PostgresRealtimeFanout,
   PrismaPushTokenStore,
+  parseMcpOAuthPresetClients,
   pipedreamConfigFromEnv,
   RunJobPublisher,
   RunStarter,
@@ -165,7 +166,13 @@ async function main() {
     prisma,
   });
   const allowPrivateEndpoint = process.env.MCP_ALLOW_PRIVATE_ENDPOINT === "true";
-  const mcpOAuth = new McpOAuthBroker(prisma, secrets, {}, allowPrivateEndpoint);
+  const mcpOAuth = new McpOAuthBroker(
+    prisma,
+    secrets,
+    {},
+    allowPrivateEndpoint,
+    parseMcpOAuthPresetClients(process.env.MCP_OAUTH_PRESET_CLIENTS),
+  );
   const mcpStdio = {
     stdioEnabled: process.env.MCP_STDIO_ENABLED === "true",
     allowedCommands: (process.env.MCP_STDIO_ALLOWED_COMMANDS ?? "")
