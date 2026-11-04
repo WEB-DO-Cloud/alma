@@ -6689,3 +6689,19 @@ msgstr "Je spraakaanbieder heeft geen tegoed meer."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Je spraakaanbieder heeft de sleutel geweigerd."
+
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Schrijf naar het ALMA-team. Een persoon antwoordt hier."
+
+msgid "Not delivered. Tap to retry."
+msgstr "Niet verzonden. Tik om opnieuw te proberen."
+
+msgid "The Support chat can't be removed."
+msgstr "De Support-chat kan niet worden verwijderd."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Supportberichten worden via Chatwoot afgehandeld, buiten de DR. Voeg geen vertrouwelijke dossiergegevens toe."

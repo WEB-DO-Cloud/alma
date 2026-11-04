@@ -6689,3 +6689,19 @@ msgstr "你的语音提供方额度已用完。"
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "你的语音提供方拒绝了该密钥。"
+
+
+msgid "Support"
+msgstr "支持"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "写信给 ALMA 团队。会有人在这里回复。"
+
+msgid "Not delivered. Tap to retry."
+msgstr "未发送。点按以重试。"
+
+msgid "The Support chat can't be removed."
+msgstr "支持聊天无法删除。"
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "支持消息通过 Chatwoot 处理，位于多米尼加共和国之外。请勿包含案件的机密信息。"

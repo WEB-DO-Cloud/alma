@@ -6689,3 +6689,19 @@ msgstr "음성 서비스 크레딧이 모두 소진되었습니다."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "음성 서비스에서 키를 거부했습니다."
+
+
+msgid "Support"
+msgstr "지원"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "ALMA 팀에 메시지를 보내세요. 담당자가 여기서 답합니다."
+
+msgid "Not delivered. Tap to retry."
+msgstr "전송되지 않았습니다. 탭하여 다시 시도하세요."
+
+msgid "The Support chat can't be removed."
+msgstr "지원 채팅은 삭제할 수 없습니다."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "지원 메시지는 Chatwoot를 통해 도미니카 공화국 밖에서 처리됩니다. 사건의 기밀 정보는 넣지 마세요."

@@ -6689,3 +6689,19 @@ msgstr "לספק הקול שלך נגמר הקרדיט."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "ספק הקול שלך דחה את המפתח."
+
+
+msgid "Support"
+msgstr "תמיכה"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "כתבו לצוות ALMA. אדם יענה כאן."
+
+msgid "Not delivered. Tap to retry."
+msgstr "לא נשלח. הקישו כדי לנסות שוב."
+
+msgid "The Support chat can't be removed."
+msgstr "לא ניתן להסיר את צ'אט התמיכה."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "הודעות התמיכה מטופלות דרך Chatwoot, מחוץ לרפובליקה הדומיניקנית. אל תכללו פרטים חסויים של תיקים."

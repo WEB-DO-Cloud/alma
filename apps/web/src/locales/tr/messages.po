@@ -6689,3 +6689,19 @@ msgstr "Ses sağlayıcınızın kredisi bitti."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Ses sağlayıcınız anahtarı reddetti."
+
+
+msgid "Support"
+msgstr "Destek"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "ALMA ekibine yazın. Bir kişi burada yanıtlar."
+
+msgid "Not delivered. Tap to retry."
+msgstr "Gönderilmedi. Yeniden denemek için dokunun."
+
+msgid "The Support chat can't be removed."
+msgstr "Destek sohbeti kaldırılamaz."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Destek mesajları Chatwoot ile, DR dışında işlenir. Dava gizliliği içeren ayrıntılar eklemeyin."

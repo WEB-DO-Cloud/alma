@@ -6689,3 +6689,19 @@ msgstr "Dein Stimmanbieter hat kein Guthaben mehr."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Der Schlüssel deines Stimmanbieters wurde abgelehnt."
+
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Schreib dem ALMA-Team. Eine Person antwortet hier."
+
+msgid "Not delivered. Tap to retry."
+msgstr "Nicht gesendet. Tippe, um es erneut zu versuchen."
+
+msgid "The Support chat can't be removed."
+msgstr "Der Support-Chat kann nicht entfernt werden."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Support-Nachrichten werden über Chatwoot außerhalb der Dominikanischen Republik bearbeitet. Füge keine vertraulichen Falldaten ein."

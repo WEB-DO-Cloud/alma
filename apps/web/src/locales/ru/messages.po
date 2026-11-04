@@ -6689,3 +6689,19 @@ msgstr "У вашего голосового провайдера закончи
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Ваш голосовой провайдер отклонил ключ."
+
+
+msgid "Support"
+msgstr "Поддержка"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Напишите команде ALMA. Здесь ответит человек."
+
+msgid "Not delivered. Tap to retry."
+msgstr "Не отправлено. Нажмите, чтобы повторить."
+
+msgid "The Support chat can't be removed."
+msgstr "Чат поддержки нельзя удалить."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Сообщения поддержки обрабатываются через Chatwoot за пределами Доминиканской Республики. Не указывайте конфиденциальные данные дел."

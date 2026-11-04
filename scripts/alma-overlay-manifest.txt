@@ -2138,6 +2138,7 @@ overlay apps/api/src/support-chatwoot-send.test.ts
 overlay apps/api/src/support-chatwoot-send.ts
 overlay apps/api/src/support-chatwoot-webhook.ts
 overlay apps/mobile/components/chat-header-title.tsx
+overlay apps/mobile/lib/chat-header-title.test.tsx
 overlay apps/mobile/components/inbox-rows.tsx
 overlay apps/mobile/components/thread-composer.tsx
 overlay apps/mobile/components/thread/thread-header.tsx
