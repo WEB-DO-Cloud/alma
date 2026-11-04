@@ -3,6 +3,8 @@ import { ORPCError } from "@orpc/server";
 import {
   aiRecipient,
   cloudAgentsEnabled,
+  managedChatModel,
+  managedModelActive,
   parseModelSecret,
   resolveMemberMainModel,
   selectConfiguredModel,
@@ -15,7 +17,7 @@ import type {
   AiRecipient,
   SettingsScope,
 } from "@rakazo/contracts";
-import { AI_DISCLOSURE_VERSION, AI_PRIVACY_URL } from "@rakazo/contracts";
+import { AI_DISCLOSURE_VERSION, AI_PRIVACY_URL, canonicalPiProviderId } from "@rakazo/contracts";
 import {
   findDefaultVoiceCredential,
   findModelCredential,
@@ -28,6 +30,21 @@ import {
 import type { RouterDeps } from "./router.js";
 import { resolveThreadTarget } from "./thread-target.js";
 import { voiceCredentialServer } from "./voice.js";
+
+/**
+ * The operator already chose this model for every account. Mobile asks before
+ * each unallowed recipient from this status, so marking it allowed stops the
+ * dialog on builds that are already installed. A missing grant does not block.
+ */
+function operatorAcceptedModel(provider: string, modelId: string | null | undefined): boolean {
+  if (!managedModelActive()) return false;
+  const managed = managedChatModel();
+  if (!managed || !modelId) return false;
+  return (
+    canonicalPiProviderId(provider) === canonicalPiProviderId(managed.provider) &&
+    modelId === managed.id
+  );
+}
 
 export async function aiConsentStatus(
   deps: RouterDeps,
@@ -210,14 +227,17 @@ export async function aiConsentStatus(
       ),
     );
     for (const model of models) {
-      add(
-        aiRecipient({
-          provider: model.provider!,
-          modelId: model.id!,
-          baseUrl: model.credential ? baseUrls.get(model.credential.secretId) : undefined,
-          use: "model",
-        }),
-      );
+      const recipient = aiRecipient({
+        provider: model.provider!,
+        modelId: model.id ?? undefined,
+        baseUrl: model.credential ? baseUrls.get(model.credential.secretId) : undefined,
+        use: "model",
+      });
+      if (!recipient) continue;
+      recipients.set(recipient.key, {
+        ...recipient,
+        allowed: operatorAcceptedModel(model.provider!, model.id) || allowed.has(recipient.key),
+      });
     }
   }
   for (const voice of voices) {

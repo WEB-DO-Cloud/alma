@@ -1,6 +1,6 @@
 import type { Actor } from "@rakazo/contracts";
 import { AI_DISCLOSURE_VERSION } from "@rakazo/contracts";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("./thread-target.js", () => ({
   resolveThreadTarget: async () => ({ kind: "bot", botId: "bot" }),
@@ -36,6 +36,10 @@ function setup() {
   } as unknown as RouterDeps;
   return { deps, upsert, actor: { userId: "user", spaceId: "space" } as Actor };
 }
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 describe("consent grants", () => {
   it("includes reachable helper models and cloud services for a targeted send", async () => {
     const { deps, actor } = setup();
@@ -146,6 +150,79 @@ describe("consent grants", () => {
     expect(status.recipients).toHaveLength(1);
     expect(status.recipients[0]?.name).toBe("OpenAI");
     expect(deps.prisma.userVoicePreference.findMany).not.toHaveBeenCalled();
+  });
+  it("treats the operator model as allowed without a stored grant", async () => {
+    vi.stubEnv("ALMA_MANAGED_MODEL", "1");
+    vi.stubEnv("AGENT_RUNTIME", "pi");
+    vi.stubEnv("ALMA_MODEL_RUNTIME", "pi");
+    vi.stubEnv("PI_DEFAULT_PROVIDER", "deepseek");
+    vi.stubEnv("PI_DEFAULT_MODEL", "deepseek-flash");
+    const { deps, actor } = setup();
+    deps.env.agentRuntime = "pi";
+    deps.env.deploymentModelConfigured = true;
+    deps.env.defaultProvider = "deepseek";
+    deps.env.defaultModel = "deepseek-flash";
+    vi.mocked(deps.prisma.userModelRoleChoice.findMany).mockResolvedValue([
+      {
+        role: "main",
+        position: 1,
+        provider: "anthropic",
+        modelId: "claude-backup",
+        thinkingLevel: null,
+      },
+    ] as never);
+    vi.mocked(deps.prisma.userModelCredential.findMany).mockResolvedValue([
+      {
+        id: "backup-credential",
+        userId: actor.userId,
+        provider: "anthropic",
+        label: "fixture",
+        secretId: "backup-secret",
+        createdAt: new Date(0),
+        updatedAt: new Date(0),
+      },
+    ] as never);
+
+    const status = await aiConsentStatus(deps, actor, { uses: ["model"] });
+
+    expect(status.recipients).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "DeepSeek",
+          detail: "deepseek-flash",
+          use: "model",
+          allowed: true,
+        }),
+        expect.objectContaining({
+          name: "Anthropic",
+          detail: "claude-backup",
+          use: "model",
+          allowed: false,
+        }),
+      ]),
+    );
+    expect(deps.prisma.aiDataConsent.findMany).toHaveBeenCalled();
+  });
+  it("still asks for the deployment model when the operator model is off", async () => {
+    vi.stubEnv("ALMA_MANAGED_MODEL", "0");
+    vi.stubEnv("AGENT_RUNTIME", "pi");
+    vi.stubEnv("PI_DEFAULT_PROVIDER", "deepseek");
+    vi.stubEnv("PI_DEFAULT_MODEL", "deepseek-flash");
+    const { deps, actor } = setup();
+    deps.env.agentRuntime = "pi";
+    deps.env.deploymentModelConfigured = true;
+    deps.env.defaultProvider = "deepseek";
+    deps.env.defaultModel = "deepseek-flash";
+
+    const status = await aiConsentStatus(deps, actor, { uses: ["model"] });
+
+    expect(status.recipients).toEqual([
+      expect.objectContaining({
+        name: "DeepSeek",
+        detail: "deepseek-flash",
+        allowed: false,
+      }),
+    ]);
   });
   it("returns an operator policy without requiring a hosted provider", async () => {
     const { deps, actor } = setup();
