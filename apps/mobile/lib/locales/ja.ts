@@ -1,4 +1,11 @@
 export const JA_MESSAGES: Record<string, string> = {
+  Support: "サポート",
+  "Write to the ALMA team. A person will reply here.":
+    "ALMAチームに書いてください。担当者がここで返信します。",
+  "Not delivered. Tap to retry.": "送信できませんでした。タップして再試行します。",
+  "The Support chat can't be removed.": "サポートのチャットは削除できません。",
+  "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.":
+    "サポートのメッセージはChatwootで、ドミニカ共和国の外で扱われます。案件の機密情報は含めないでください。",
   "Daily check-ins on unfinished work": "未完了の作業を毎日確認",
   "How other bots see it": "他のボットからの見え方",
   "Share to": "共有先",

@@ -1,4 +1,11 @@
 export const DE_MESSAGES: Record<string, string> = {
+  Support: "Support",
+  "Write to the ALMA team. A person will reply here.":
+    "Schreib dem ALMA-Team. Eine Person antwortet hier.",
+  "Not delivered. Tap to retry.": "Nicht gesendet. Tippe, um es erneut zu versuchen.",
+  "The Support chat can't be removed.": "Der Support-Chat kann nicht entfernt werden.",
+  "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.":
+    "Support-Nachrichten werden über Chatwoot außerhalb der Dominikanischen Republik bearbeitet. Füge keine vertraulichen Falldaten ein.",
   "Daily check-ins on unfinished work": "Tägliche Rückfragen zu offenen Aufgaben",
   "How other bots see it": "So sehen andere Bots ihn",
   "Share to": "Teilen mit",

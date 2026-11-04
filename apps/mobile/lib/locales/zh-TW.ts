@@ -1,4 +1,10 @@
 export const ZH_TW_MESSAGES: Record<string, string> = {
+  Support: "支援",
+  "Write to the ALMA team. A person will reply here.": "寫信給 ALMA 團隊。會有人在這裡回覆。",
+  "Not delivered. Tap to retry.": "未傳送。點一下以重試。",
+  "The Support chat can't be removed.": "支援聊天無法移除。",
+  "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.":
+    "支援訊息透過 Chatwoot 處理，位於多明尼加共和國之外。請勿包含案件的機密資訊。",
   "Daily check-ins on unfinished work": "每天追蹤未完成的工作",
   "How other bots see it": "其他機器人如何瞭解它",
   "Share to": "分享到",

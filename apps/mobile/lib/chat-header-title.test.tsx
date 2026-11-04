@@ -45,6 +45,9 @@ vi.mock("../components/group-seats", () => ({
       "data-size": size,
     }),
 }));
+vi.mock("../components/native-symbol", () => ({
+  NativeSymbol: ({ ios }: { ios: string }) => createElement("span", { "data-symbol": ios }),
+}));
 vi.mock("../components/chat-title-label", () => ({
   ChatTitleLabel: ({ label, placeholder }: { label: string; placeholder: boolean }) =>
     createElement("b", { "data-placeholder": String(placeholder) }, label),

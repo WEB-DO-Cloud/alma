@@ -2,6 +2,7 @@ import { destroyBot } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
 import type { createRepos } from "@rakazo/db";
 import type { RouterDeps } from "./router.js";
+import { SupportBotLockedError } from "./support-chatwoot-lock.js";
 
 export function createBotRemoval(deps: RouterDeps, repos: ReturnType<typeof createRepos>) {
   const removeBot = async (
@@ -10,6 +11,7 @@ export function createBotRemoval(deps: RouterDeps, repos: ReturnType<typeof crea
     options: Parameters<typeof destroyBot>[3],
   ) => {
     const bot = await repos.getBot(actor, botId, { includeArchived: true });
+    if (bot.kind === "support") throw new SupportBotLockedError();
     await destroyBot(
       {
         prisma: deps.prisma,

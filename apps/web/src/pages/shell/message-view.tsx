@@ -7,6 +7,7 @@ import type {
   MessageReaction,
   ThreadMessage,
 } from "@rakazo/contracts";
+import { supportAgentName, supportDeliveryFailed } from "@rakazo/contracts";
 import type { ChildBotBlock, PeerExchange } from "@rakazo/core";
 import { isPeerReceiptBlocks, isToolActivityBlock } from "@rakazo/core";
 import { BotAvatar, Button, cn, resolvePersonaColorDef } from "@rakazo/ui-web";
@@ -75,6 +76,7 @@ export const MessageView = memo(function MessageView({
   markedUnread = false,
   onReact,
   onReport,
+  onRetrySupport,
 }: {
   artifactTarget: ArtifactTarget;
   canAnswer: boolean;
@@ -115,8 +117,11 @@ export const MessageView = memo(function MessageView({
   markedUnread?: boolean;
   onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
   onReport?: (message: ThreadMessage) => Promise<void>;
+  onRetrySupport?: (message: ThreadMessage) => void;
 }) {
   const { t } = useLingui();
+  const agentName = supportAgentName(message.blocks);
+  const deliveryFailed = message.role === "user" && supportDeliveryFailed(message.blocks);
   const isNarration =
     message.role === "bot" &&
     message.blocks.length > 0 &&
@@ -161,7 +166,11 @@ export const MessageView = memo(function MessageView({
   );
   const messageContext = (
     <>
-      {speakerName ? (
+      {agentName ? (
+        <div className="mb-1.5 text-[13px] font-semibold tracking-tight text-foreground" dir="auto">
+          {agentName} · ALMA
+        </div>
+      ) : speakerName ? (
         <div
           className="mb-1.5 flex items-center gap-2 text-[13px] font-semibold tracking-tight"
           dir="auto"
@@ -175,6 +184,15 @@ export const MessageView = memo(function MessageView({
           />
           {speakerName}
         </div>
+      ) : null}
+      {deliveryFailed ? (
+        <button
+          type="button"
+          className="mb-1 text-[12px] text-destructive"
+          onClick={() => onRetrySupport?.(message)}
+        >
+          {t`Not delivered. Tap to retry.`}
+        </button>
       ) : null}
       <ReplyLine
         target={artifactTarget}
@@ -207,7 +225,7 @@ export const MessageView = memo(function MessageView({
       onMarkUnread={onMarkUnread}
       markedUnread={markedUnread}
       onReact={onReact}
-      onReport={onReport}
+      onReport={agentName ? undefined : onReport}
     />
   );
   if (isNarration) {

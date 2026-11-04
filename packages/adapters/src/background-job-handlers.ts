@@ -31,6 +31,7 @@ import { compactHistory } from "./history-compaction.js";
 import type { MemoryProviderResolver } from "./memory-provider-factory.js";
 import { deliverMessagingOutbound, mirrorMessagingOutbound } from "./messaging-delivery.js";
 import { pollPurchase } from "./purchase-poll.js";
+import { forwardSupportMessage } from "./support-chatwoot.js";
 import { expireTaughtSkillTeaching } from "./teaching-session.js";
 
 type Tenant = { spaceId: string; userId: string };
@@ -215,6 +216,18 @@ export function createBackgroundJobHandlers(deps: {
       );
     }),
     // A receipt belongs to a device's push token, not to a Space.
+    "support.forward": asOwner<{ messageId: string }, { messageId: string }>(
+      async ({ messageId }) => {
+        const message = await deps.prisma.message.findUnique({
+          where: { id: messageId },
+          select: { thread: { select: OWNER } },
+        });
+        return message?.thread ?? null;
+      },
+      async ({ messageId }) => {
+        await forwardSupportMessage({ prisma: deps.prisma, artifacts: deps.artifacts }, messageId);
+      },
+    ),
     "push.receipt": async (payload) => {
       await runAsSystem("check a push receipt", () => deps.notifications?.checkReceipt(payload));
     },

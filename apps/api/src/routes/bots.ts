@@ -8,6 +8,7 @@ import {
   forgetBotSecret,
   hasActiveComputerControl,
   listBotSecretMetadata,
+  loadSupportChatwootConfig,
   managedModelActive,
   normalizeSecretDestination,
   pageUrlOrigin,
@@ -15,6 +16,7 @@ import {
   SPACE_VAULT_NOT_IN_USE,
   stopCancelledGroupRuns,
   storeBotSecret,
+  supportBotActive,
   toComputerRef,
   validateBotModelChange,
 } from "@rakazo/adapters";
@@ -33,6 +35,7 @@ import {
   botProfileLabelsChanged,
   ComputerLimitError,
   commitBotUpdate,
+  ensureSupportBot,
   expireComputerExecutionLeases,
   InstructionConflictError,
   IsolationError,
@@ -49,6 +52,11 @@ import { deleteAgentSecret, listAgentSecrets, putAgentSecret } from "../agent-se
 import { changedBotSettings } from "../bot-setting-analytics.js";
 import { requireIdentityConfirmation } from "../identity-confirmation.js";
 import type { RouterDeps } from "../router.js";
+import {
+  rejectSupportBotLock,
+  SupportBotLockedError,
+  supportBotMutationLocked,
+} from "../support-chatwoot-lock.js";
 import { loadMessagePage } from "../thread-message-pages.js";
 import type { RouterContext } from "./context.js";
 import {
@@ -269,6 +277,14 @@ export function botsRoutes(ctx: RouterContext) {
         await enqueueBotIntroRun(deps, context.actor, bot).catch((error) => {
           getLogger().error("bot intro run enqueue", error);
         });
+        if (supportBotActive(loadSupportChatwootConfig(), context.actor.userId)) {
+          await ensureSupportBot(deps.prisma, {
+            userId: context.actor.userId,
+            spaceId: context.actor.spaceId,
+          }).catch((error) => {
+            getLogger().error("support bot ensure", error);
+          });
+        }
         return bot;
       }),
       importPreview: authed.bots.importPreview.handler(async ({ context, input }) =>
@@ -334,6 +350,9 @@ export function botsRoutes(ctx: RouterContext) {
       }),
       update: authed.bots.update.handler(async ({ context, input }) => {
         const existing = await repos.getBot(context.actor, input.botId);
+        if (supportBotMutationLocked(existing, { name: input.name, pinned: input.pinned })) {
+          rejectSupportBotLock();
+        }
         if (input.sectionId) {
           const section = await deps.prisma.botSection.findFirst({
             where: {
@@ -513,6 +532,7 @@ export function botsRoutes(ctx: RouterContext) {
       }),
       archive: authed.bots.archive.handler(async ({ context, input }) => {
         const bot = await repos.getBot(context.actor, input.botId, { includeArchived: true });
+        if (supportBotMutationLocked(bot, { archive: true })) rejectSupportBotLock();
         await archiveBot(
           {
             prisma: deps.prisma,
@@ -546,7 +566,12 @@ export function botsRoutes(ctx: RouterContext) {
         return { ok: true as const };
       }),
       remove: authed.bots.remove.handler(async ({ context, input }) => {
-        await removeBot(context.actor, input.botId, { deleteMemories: input.deleteMemories });
+        try {
+          await removeBot(context.actor, input.botId, { deleteMemories: input.deleteMemories });
+        } catch (error) {
+          if (error instanceof SupportBotLockedError) rejectSupportBotLock();
+          throw error;
+        }
         return { ok: true as const };
       }),
       rotateWebhookSecret: authed.bots.rotateWebhookSecret.handler(async ({ context, input }) => {

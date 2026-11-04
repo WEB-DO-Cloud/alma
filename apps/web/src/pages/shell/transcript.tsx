@@ -76,6 +76,7 @@ export const Transcript = memo(function Transcript({
   onReply,
   onMarkUnread,
   onReport,
+  onRetrySupport,
   markedUnreadMessageId,
   onQuote,
   onReact,
@@ -124,6 +125,7 @@ export const Transcript = memo(function Transcript({
   onReply: (message: ThreadMessage) => void;
   onMarkUnread: (message: ThreadMessage) => void;
   onReport?: (message: ThreadMessage) => Promise<void>;
+  onRetrySupport?: (message: ThreadMessage) => void;
   markedUnreadMessageId?: string;
   onQuote: (message: ThreadMessage, quote: string) => void;
   onReact: (message: ThreadMessage, reaction: MessageReaction) => Promise<void>;
@@ -590,6 +592,7 @@ export const Transcript = memo(function Transcript({
                       onReply={onReply}
                       onMarkUnread={onMarkUnread}
                       onReport={onReport}
+                      onRetrySupport={onRetrySupport}
                       onReact={onReact}
                     />
                   </div>

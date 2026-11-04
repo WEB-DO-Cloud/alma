@@ -4198,6 +4198,10 @@ msgstr "Not added: {0}"
 msgid "Not checked yet"
 msgstr "Not checked yet"
 
+#: src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "Not delivered. Tap to retry."
+
 #: src/pages/shell/agent-import.tsx
 msgid "Not imported"
 msgstr "Not imported"
@@ -5771,6 +5775,16 @@ msgstr "Subscription required"
 msgid "Sunday"
 msgstr "Sunday"
 
+#: src/pages/Shell.tsx
+#: src/pages/shell/chat-header.tsx
+#: src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "Support"
+
+#: src/pages/Shell.tsx
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/Onboarding.tsx
 msgid "Supports images"
@@ -6588,6 +6602,10 @@ msgstr "Works with your ChatGPT or Claude plan."
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Workspace"
 msgstr "Workspace"
+
+#: src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Write to the ALMA team. A person will reply here."
 
 #: src/lib/billing.ts
 msgid "year"

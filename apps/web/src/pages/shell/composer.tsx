@@ -87,6 +87,7 @@ export const Composer = memo(function Composer({
   agentSkills,
   onSlashOpen,
   onSlashAction,
+  supportChat,
   draftKey,
   enterToSend,
 }: {
@@ -130,6 +131,8 @@ export const Composer = memo(function Composer({
   agentSkills?: AgentSkillCatalogEntry[];
   onSlashOpen?: () => void;
   onSlashAction?: (action: SlashActionId) => void;
+  /** Human support chat: no skills, mentions, or Stop. Dictation and attachments stay. */
+  supportChat?: boolean;
   draftKey: string;
   enterToSend: boolean;
 }) {
@@ -327,10 +330,12 @@ export const Composer = memo(function Composer({
     if (edit.caret !== null) pendingCaret.current = { start: caret, end };
     commitComposition({ text: value, bindings: edit.bindings });
     setMentionQuery(
-      composerMentionQuery(value, caret, end, knownMentions, edit.bindings)?.query ?? null,
+      supportChat
+        ? null
+        : (composerMentionQuery(value, caret, end, knownMentions, edit.bindings)?.query ?? null),
     );
     // `/` only at the start of the draft so forced skills expand (`Use skill:` / `/Name` prefix).
-    const slashMatch = selectedSkill === null ? /^\/([^\n]*)$/.exec(value) : null;
+    const slashMatch = supportChat || selectedSkill !== null ? null : /^\/([^\n]*)$/.exec(value);
     const nextSlash = slashMatch ? (slashMatch[1] ?? "") : null;
     if (nextSlash !== null && slashQuery === null) onSlashOpen?.();
     setSlashQuery(nextSlash);
@@ -930,16 +935,18 @@ export const Composer = memo(function Composer({
               >
                 <ArrowUp size={16} strokeWidth={2.2} />
               </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label={t`Stop`}
-                disabled={sending}
-                onClick={() => void onStop()}
-                className="size-8 rounded-full border border-border bg-muted text-foreground/80 shadow-sm transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <Square size={11} strokeWidth={0} fill="currentColor" />
-              </Button>
+              {supportChat ? null : (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label={t`Stop`}
+                  disabled={sending}
+                  onClick={() => void onStop()}
+                  className="size-8 rounded-full border border-border bg-muted text-foreground/80 shadow-sm transition-colors hover:bg-accent hover:text-foreground"
+                >
+                  <Square size={11} strokeWidth={0} fill="currentColor" />
+                </Button>
+              )}
             </>
           ) : (
             <>

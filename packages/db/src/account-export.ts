@@ -167,6 +167,7 @@ async function* spaceRecords(
       crossSpaceCommunication: bot.crossSpaceCommunication,
       dailyCheckIns: bot.dailyCheckIns,
       fleetManagement: bot.fleetManagement,
+      kind: bot.kind === "support" ? "support" : "standard",
       createdAt: iso(bot.createdAt),
     };
 

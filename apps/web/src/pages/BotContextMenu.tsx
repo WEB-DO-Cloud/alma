@@ -22,7 +22,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-type ChatMenuTarget = Pick<Bot, "name" | "pinned" | "sectionId" | "unread">;
+type ChatMenuTarget = Pick<Bot, "name" | "pinned" | "sectionId" | "unread"> &
+  Partial<Pick<Bot, "kind">>;
 
 /** A roster row's context menu content; `onClose` serves the lazy-load error fallback. */
 export function BotContextMenu({
@@ -54,16 +55,19 @@ export function BotContextMenu({
   onDelete: () => void;
 }) {
   const { t } = useLingui();
+  const locked = bot.kind === "support";
 
   return (
     <ContextMenuContent
       aria-label={t`Actions for ${bot.name}`}
       className="max-h-[min(420px,calc(100vh-16px))] w-[264px] overflow-y-auto"
     >
-      <ContextMenuItem onClick={onTogglePinned}>
-        <Pin />
-        {bot.pinned ? t`Unpin` : t`Pin`}
-      </ContextMenuItem>
+      {locked ? null : (
+        <ContextMenuItem onClick={onTogglePinned}>
+          <Pin />
+          {bot.pinned ? t`Unpin` : t`Pin`}
+        </ContextMenuItem>
+      )}
       <ContextMenuSub>
         <ContextMenuSubTrigger>
           <Folder />
@@ -99,28 +103,32 @@ export function BotContextMenu({
         {bot.unread ? <BellDot /> : <Bell />}
         {bot.unread ? t`Mark as Read` : t`Mark as Unread`}
       </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem onClick={onEdit}>
-        <Pencil />
-        {t`Edit Profile`}
-      </ContextMenuItem>
-      <ContextMenuItem onClick={onDuplicate}>
-        <Copy />
-        {t`Duplicate`}
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem onClick={onClear}>
-        <Eraser />
-        {t`Clear conversation`}
-      </ContextMenuItem>
-      <ContextMenuItem onClick={onArchive}>
-        <Archive />
-        {t`Archive`}
-      </ContextMenuItem>
-      <ContextMenuItem variant="destructive" onClick={onDelete}>
-        <Trash2 />
-        {t`Delete`}
-      </ContextMenuItem>
+      {locked ? null : (
+        <>
+          <ContextMenuSeparator />
+          <ContextMenuItem onClick={onEdit}>
+            <Pencil />
+            {t`Edit Profile`}
+          </ContextMenuItem>
+          <ContextMenuItem onClick={onDuplicate}>
+            <Copy />
+            {t`Duplicate`}
+          </ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuItem onClick={onClear}>
+            <Eraser />
+            {t`Clear conversation`}
+          </ContextMenuItem>
+          <ContextMenuItem onClick={onArchive}>
+            <Archive />
+            {t`Archive`}
+          </ContextMenuItem>
+          <ContextMenuItem variant="destructive" onClick={onDelete}>
+            <Trash2 />
+            {t`Delete`}
+          </ContextMenuItem>
+        </>
+      )}
     </ContextMenuContent>
   );
 }
