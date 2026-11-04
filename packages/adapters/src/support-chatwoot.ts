@@ -535,6 +535,8 @@ function statusOf(error: unknown): number | undefined {
   return error instanceof ChatwootRequestError ? error.status : undefined;
 }
 
+type SupportMessageType = "outgoing" | "activity" | "template" | "other";
+
 export interface InboundSupportReply {
   chatwootMessageId: string;
   conversationId: string;
@@ -545,7 +547,7 @@ export interface InboundSupportReply {
   privateNote: boolean;
   outgoing: boolean;
   /** Normalized Chatwoot message_type. Template replies count as outgoing. */
-  kind?: "outgoing" | "activity" | "template" | "other";
+  messageType?: SupportMessageType;
 }
 
 export function readInboundReply(payload: unknown): InboundSupportReply | null {
@@ -553,8 +555,8 @@ export function readInboundReply(payload: unknown): InboundSupportReply | null {
   const body = payload as Record<string, unknown>;
   const event = String(body.event ?? "");
   if (event !== "message_created") return null;
-  const kind = supportMessageKind(body.message_type);
-  const outgoing = kind === "outgoing" || kind === "template";
+  const messageType = supportMessageKind(body.message_type);
+  const outgoing = messageType === "outgoing" || messageType === "template";
   const privateNote = body.private === true || body.private === "true";
   const conversation = asRecord(body.conversation);
   const sender = asRecord(body.sender);
@@ -568,7 +570,7 @@ export function readInboundReply(payload: unknown): InboundSupportReply | null {
     echoId: typeof body.echo_id === "string" ? body.echo_id : undefined,
     privateNote,
     outgoing,
-    kind,
+    messageType,
   };
 }
 
@@ -583,7 +585,7 @@ type IgnoredSupportReason =
   | "missing_thread"
   | "empty";
 
-function supportMessageKind(messageType: unknown): "outgoing" | "activity" | "template" | "other" {
+function supportMessageKind(messageType: unknown): SupportMessageType {
   if (messageType === "outgoing" || messageType === 1) return "outgoing";
   if (messageType === "activity" || messageType === 2) return "activity";
   if (messageType === "template" || messageType === 3) return "template";
@@ -592,7 +594,7 @@ function supportMessageKind(messageType: unknown): "outgoing" | "activity" | "te
 
 function supportReplyDropReason(reply: InboundSupportReply): IgnoredSupportReason | null {
   if (reply.privateNote) return "private_note";
-  if (reply.kind === "activity") return "activity";
+  if (reply.messageType === "activity") return "activity";
   if (!reply.outgoing) return "not_outgoing";
   if (!reply.chatwootMessageId) return "missing_message_id";
   if (!reply.conversationId) return "missing_conversation";
@@ -603,7 +605,7 @@ function supportReplyDropReason(reply: InboundSupportReply): IgnoredSupportReaso
 function logIgnoredSupportMessage(reason: IgnoredSupportReason, reply: InboundSupportReply): void {
   getLogger().info("support webhook message ignored", {
     reason,
-    ...(reply.kind ? { messageType: reply.kind } : {}),
+    ...(reply.messageType ? { messageType: reply.messageType } : {}),
   });
 }
 

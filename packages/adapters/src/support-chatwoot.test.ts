@@ -29,6 +29,26 @@ function signed(raw: string, timestamp: string) {
   return `sha256=${digest}`;
 }
 
+function replyHarness(findFirst = vi.fn()) {
+  const prisma = { supportLink: { findFirst } };
+  const deps = {
+    prisma,
+    artifacts: { put: vi.fn(), get: vi.fn(), remove: vi.fn(), describe: vi.fn() },
+    events: { notify: vi.fn() },
+    config: {
+      baseUrl: "https://app.chatwoot.com",
+      accountId: "1",
+      inboxId: "2",
+      inboxIdentifier: "inbox",
+      apiToken: "token",
+      urlSecret: "secret",
+      enabled: true,
+      allowlist: null,
+    },
+  } as never;
+  return { prisma, deps };
+}
+
 function check(overrides: Partial<Parameters<typeof verifySupportWebhook>[0]> = {}) {
   const timestamp = String(Math.floor(Date.now() / 1000));
   return verifySupportWebhook({
@@ -87,22 +107,7 @@ describe("support chat webhook checks", () => {
   });
 
   it("ignores private notes and echoes", async () => {
-    const prisma = { supportLink: { findFirst: vi.fn() } };
-    const deps = {
-      prisma,
-      artifacts: { put: vi.fn(), get: vi.fn(), remove: vi.fn(), describe: vi.fn() },
-      events: { notify: vi.fn() },
-      config: {
-        baseUrl: "https://app.chatwoot.com",
-        accountId: "1",
-        inboxId: "2",
-        inboxIdentifier: "inbox",
-        apiToken: "token",
-        urlSecret: "secret",
-        enabled: true,
-        allowlist: null,
-      },
-    } as never;
+    const { prisma, deps } = replyHarness();
     expect(
       await acceptSupportReply(deps, {
         chatwootMessageId: "1",
@@ -163,22 +168,7 @@ describe("support chat webhook checks", () => {
       }),
     ).toMatchObject({ outgoing: true, privateNote: false, agentName: "" });
 
-    const prisma = { supportLink: { findFirst: vi.fn(async () => null) } };
-    const deps = {
-      prisma,
-      artifacts: { put: vi.fn(), get: vi.fn(), remove: vi.fn(), describe: vi.fn() },
-      events: { notify: vi.fn() },
-      config: {
-        baseUrl: "https://app.chatwoot.com",
-        accountId: "1",
-        inboxId: "2",
-        inboxIdentifier: "inbox",
-        apiToken: "token",
-        urlSecret: "secret",
-        enabled: true,
-        allowlist: null,
-      },
-    } as never;
+    const { prisma, deps } = replyHarness(vi.fn(async () => null));
     const sink = createTestSink();
     const previous = getLogger();
     installLogger(createLogger({ service: "test", level: "info", sinks: [sink] }));
