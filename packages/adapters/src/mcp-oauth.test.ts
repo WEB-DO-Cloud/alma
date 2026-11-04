@@ -9,6 +9,7 @@ import {
   oauthMaterialSecrets,
   StoredMcpOAuthProvider,
 } from "./mcp-oauth.js";
+import { parseMcpOAuthPresetClients } from "./mcp-oauth-presets.js";
 import { McpSession } from "./mcp-transport.js";
 
 afterEach(() => {
@@ -1475,6 +1476,7 @@ describe("MCP OAuth", () => {
         metadataReads = Number.POSITIVE_INFINITY,
         resourceScopes,
         serverScopes,
+        origin = "https://mcp.example.test",
       }: {
         challenge?: boolean;
         metadataReads?: number;
@@ -1482,8 +1484,12 @@ describe("MCP OAuth", () => {
         resourceScopes?: string[];
         /** `scopes_supported` the authorization server publishes (RFC 8414). */
         serverScopes?: string[];
+        /** MCP server origin. The path stays `/mcp`. */
+        origin?: string;
       } = {},
     ) {
+      const mcpUrl = `${origin}/mcp`;
+      const metadataUrl = `${origin}/.well-known/oauth-protected-resource/mcp`;
       let metadataServed = 0;
       const requested: string[] = [];
       vi.stubGlobal(
@@ -1492,7 +1498,7 @@ describe("MCP OAuth", () => {
           const request = input instanceof Request ? input : new Request(input, init);
           const url = logicalHref(input, init);
           requested.push(`${request.method} ${url}`);
-          if (url === "https://mcp.example.test/mcp" && request.method === "POST" && !challenge) {
+          if (url === mcpUrl && request.method === "POST" && !challenge) {
             // Like Google's MCP servers: the handshake is open, only tool calls need a token.
             const body = (await request.json()) as { id?: number; method: string };
             if (body.method !== "initialize") return new Response(null, { status: 202 });
@@ -1506,20 +1512,19 @@ describe("MCP OAuth", () => {
               },
             });
           }
-          if (url === "https://mcp.example.test/mcp" && request.method === "POST") {
+          if (url === mcpUrl && request.method === "POST") {
             return new Response(null, {
               status: 401,
               headers: {
-                "WWW-Authenticate":
-                  'Bearer resource_metadata="https://mcp.example.test/.well-known/oauth-protected-resource/mcp"',
+                "WWW-Authenticate": `Bearer resource_metadata="${metadataUrl}"`,
               },
             });
           }
-          if (url === "https://mcp.example.test/.well-known/oauth-protected-resource/mcp") {
+          if (url === metadataUrl) {
             metadataServed += 1;
             if (metadataServed > metadataReads) return new Response("unavailable", { status: 503 });
             return Response.json({
-              resource: "https://mcp.example.test/mcp",
+              resource: mcpUrl,
               authorization_servers: ["https://auth.example.test"],
               ...(resourceScopes ? { scopes_supported: resourceScopes } : {}),
             });
@@ -1553,6 +1558,7 @@ describe("MCP OAuth", () => {
     function brokerWithMaterial(
       material: OAuthMaterial,
       server: { transport?: string; endpoint?: string | null } = {},
+      presets: ReturnType<typeof parseMcpOAuthPresetClients> = [],
     ) {
       const tables = {
         mcpServer: {
@@ -1585,7 +1591,7 @@ describe("MCP OAuth", () => {
         put: vi.fn(async () => ({ id: "session-secret", ciphertext: "session-encrypted" })),
       };
       return {
-        broker: new McpOAuthBroker(prisma as never, secrets as never, TEST_NETWORK),
+        broker: new McpOAuthBroker(prisma as never, secrets as never, TEST_NETWORK, false, presets),
         prisma,
         secrets,
       };
@@ -2417,6 +2423,121 @@ describe("MCP OAuth", () => {
     it("treats the client secret as a credential that must never be shown", () => {
       expect(oauthMaterialSecrets({ oauthClient })).toContain("registered-secret");
       expect(oauthMaterialSecrets({ oauthClient })).not.toContain("registered-client");
+    });
+
+    const PRESET_SECRET = "preset-client-secret";
+    const googlePresets = parseMcpOAuthPresetClients(
+      JSON.stringify({
+        "*.googleapis.com": {
+          clientId: "preset-client",
+          clientSecret: PRESET_SECRET,
+          extraAuthorizationParams: { access_type: "offline", prompt: "consent" },
+        },
+      }),
+    );
+    const googleEndpoint = "https://gmailmcp.googleapis.com/mcp";
+
+    async function beginPreset(
+      material: OAuthMaterial,
+      presets = googlePresets,
+      endpoint = googleEndpoint,
+    ) {
+      nonRegisteringAuthServer(() => undefined, {
+        challenge: false,
+        origin: new URL(endpoint).origin,
+      });
+      const started = brokerWithMaterial(material, { endpoint }, presets);
+      const result = await started.broker.begin({
+        serverId: "server-1",
+        spaceId: "workspace-1",
+        userId: "user-1",
+        redirectUri: "https://app.example.test/mcp/oauth/callback",
+      });
+      return { ...started, result };
+    }
+
+    it("signs in with the preset when the host matches and the user has no client", async () => {
+      const { result, secrets } = await beginPreset({});
+
+      expect(result.status).toBe("authorization_required");
+      const url = new URL(
+        result.status === "authorization_required" ? result.authorizationUrl : "",
+      );
+      expect(url.searchParams.get("client_id")).toBe("preset-client");
+      expect(url.searchParams.get("access_type")).toBe("offline");
+      expect(url.searchParams.get("prompt")).toBe("consent");
+      expect(url.searchParams.get("scope") ?? "").not.toContain("offline_access");
+      expect(url.searchParams.get("redirect_uri")).toBe(
+        "https://app.example.test/mcp/oauth/callback",
+      );
+      expect(JSON.stringify(result)).not.toContain(PRESET_SECRET);
+      const writes = secrets.put.mock.calls as unknown[][];
+      for (const call of writes) expect(String(call[0])).not.toContain(PRESET_SECRET);
+      const session = JSON.parse(String(writes.at(-1)?.[0])) as OAuthMaterial;
+      expect(session.oauthClient).toBeUndefined();
+      expect(session.presetAuthorizationServer).toBe("https://auth.example.test/");
+    });
+
+    it("keeps the user's OAuth client when a preset also matches", async () => {
+      const { result, secrets } = await beginPreset({ oauthClient });
+
+      const url = new URL(
+        result.status === "authorization_required" ? result.authorizationUrl : "",
+      );
+      expect(url.searchParams.get("client_id")).toBe("registered-client");
+      expect(url.searchParams.get("client_id")).not.toBe("preset-client");
+      const session = JSON.parse(
+        String((secrets.put.mock.calls as unknown[][]).at(-1)?.[0]),
+      ) as OAuthMaterial;
+      expect(session.oauthClient).toMatchObject(oauthClient);
+      expect(JSON.stringify(session)).not.toContain(PRESET_SECRET);
+    });
+
+    it("still asks for a client when no preset matches the host", async () => {
+      nonRegisteringAuthServer(() => undefined);
+      const { broker } = brokerWithMaterial({}, {}, googlePresets);
+
+      await expect(
+        broker.begin({
+          serverId: "server-1",
+          spaceId: "workspace-1",
+          userId: "user-1",
+          redirectUri: "https://app.example.test/mcp/oauth/callback",
+        }),
+      ).rejects.toBeInstanceOf(McpOAuthClientRequiredError);
+    });
+
+    it("adds Google's refresh-token parameters from the preset and not offline_access", async () => {
+      const presets = parseMcpOAuthPresetClients(
+        JSON.stringify({
+          "*.googleapis.com": { clientId: "preset-client", clientSecret: PRESET_SECRET },
+        }),
+      );
+      nonRegisteringAuthServer(() => undefined, {
+        challenge: false,
+        origin: "https://calendarmcp.googleapis.com",
+        serverScopes: ["openid", "https://www.googleapis.com/auth/calendar"],
+      });
+      const { broker } = brokerWithMaterial(
+        {},
+        { endpoint: "https://calendarmcp.googleapis.com/mcp" },
+        presets,
+      );
+
+      const started = await broker.begin({
+        serverId: "server-1",
+        spaceId: "workspace-1",
+        userId: "user-1",
+        redirectUri: "https://app.example.test/mcp/oauth/callback",
+      });
+
+      const url = new URL(
+        started.status === "authorization_required" ? started.authorizationUrl : "",
+      );
+      expect(url.searchParams.get("access_type")).toBe("offline");
+      expect(url.searchParams.get("prompt")).toBe("consent");
+      expect(url.searchParams.get("scope") ?? "").not.toContain("offline_access");
+      expect(url.toString()).not.toContain(PRESET_SECRET);
     });
   });
 

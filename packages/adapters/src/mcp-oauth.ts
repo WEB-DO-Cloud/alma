@@ -31,6 +31,8 @@ import type { Prisma, PrismaClient } from "@rakazo/db";
 import { availableInSpace, itemSecretIn, runAsSystem } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
 import { sanitizeConnectorError } from "./connector-safety.js";
+import type { McpOAuthPreset } from "./mcp-oauth-presets.js";
+import { matchMcpOAuthPreset, presetOAuthClient } from "./mcp-oauth-presets.js";
 import { MCP_DYNAMIC_REGISTRATION_UNSUPPORTED, needsMcpOAuthClient } from "./mcp-server-health.js";
 import { secureFetch, validateUrl, withEndpointOriginFallback } from "./mcp-transport.js";
 import type { RemoteTransportDependencies } from "./remote-mcp.js";
@@ -59,6 +61,8 @@ export type OAuthMaterial = {
    * configuration, not SDK state, so it outlives disconnects and replaces
    * dynamic client registration for servers that do not offer it. */
   oauthClient?: PreRegisteredClient;
+  /** Authorization server a deployment preset was first sent to. No credential. */
+  presetAuthorizationServer?: string;
   oauth?: OAuthState;
 };
 
@@ -284,6 +288,9 @@ type ProviderOptions = {
   refresh?: (heldRefreshToken: string) => Promise<TokenGrant>;
   /** The instance opt-in that lets OAuth URLs use plain HTTP on a private network. */
   allowPrivateEndpoint?: boolean;
+  /** A deployment preset used only when this server has no client of its own.
+   * It is not written onto the stored material. */
+  presetClient?: PreRegisteredClient;
 };
 
 /** Refresh before expiry to cover clock skew and request time. */
@@ -400,13 +407,15 @@ export class StoredMcpOAuthProvider implements OAuthClientProvider {
 
   /** The scope configured with the pre-registered client, if any. */
   get configuredScope(): string | undefined {
-    return this.material.oauthClient?.scope;
+    return (this.material.oauthClient ?? this.options.presetClient)?.scope;
   }
 
   state(): string {
     return this.options.state ?? this.runtimeState;
   }
   clientInformation(): OAuthClientInformationMixed | undefined {
+    if (!this.material.oauthClient && this.options.presetClient)
+      return this.presetClientInformation();
     const client = this.material.oauthClient;
     if (!client) return this.material.oauth?.clientInformation;
     // The SDK saves discovery before asking for the client, so this is the server
@@ -416,6 +425,30 @@ export class StoredMcpOAuthProvider implements OAuthClientProvider {
     if (!client.authorization_server && server)
       this.material.oauthClient = { ...client, authorization_server: new URL(server).href };
     return information;
+  }
+  /**
+   * A preset is not stored. The authorization server it was first sent to is, so a later
+   * discovery response cannot steer the shared secret somewhere else.
+   */
+  private presetClientInformation(): OAuthClientInformation {
+    const preset = this.options.presetClient;
+    if (!preset) throw new Error("MCP OAuth preset client is missing");
+    const server = this.material.oauth?.discoveryState?.authorizationServerUrl;
+    if (server) {
+      const href = new URL(server).href;
+      const bound = this.material.presetAuthorizationServer;
+      if (bound && bound !== href) throw new McpOAuthServerMismatchError();
+      if (!bound) this.material.presetAuthorizationServer = href;
+    }
+    return boundClient(
+      {
+        ...preset,
+        ...(this.material.presetAuthorizationServer
+          ? { authorization_server: this.material.presetAuthorizationServer }
+          : {}),
+      },
+      server,
+    );
   }
   /**
    * Take the binding another flow saved for this same client, so the code exchange checks
@@ -532,7 +565,7 @@ export class StoredMcpOAuthProvider implements OAuthClientProvider {
       }
       throw error;
     }
-    const extra = this.material.oauthClient?.authorization_params;
+    const extra = (this.material.oauthClient ?? this.options.presetClient)?.authorization_params;
     if (extra) {
       for (const [key, value] of Object.entries(parseMcpOAuthAuthorizationParams(extra)))
         if (!authorizationUrl.searchParams.has(key)) authorizationUrl.searchParams.set(key, value);
@@ -864,21 +897,42 @@ async function requestRefresh(
   refreshToken: string,
   fetchFn: typeof fetch,
   allowPrivateEndpoint: boolean,
+  preset?: PreRegisteredClient,
 ): Promise<OAuthTokens> {
   const discovery = material.oauth?.discoveryState;
   const clientInformation = material.oauthClient
     ? boundClient(material.oauthClient, discovery?.authorizationServerUrl)
-    : material.oauth?.clientInformation;
+    : preset
+      ? boundClient(
+          {
+            ...preset,
+            ...(material.presetAuthorizationServer
+              ? { authorization_server: material.presetAuthorizationServer }
+              : {}),
+          },
+          discovery?.authorizationServerUrl,
+        )
+      : material.oauth?.clientInformation;
   if (!discovery?.authorizationServerUrl || !clientInformation)
     throw new Error("MCP OAuth state cannot refresh");
-  return refreshAuthorization(discovery.authorizationServerUrl, {
-    metadata: discovery.authorizationServerMetadata,
-    clientInformation,
-    refreshToken,
-    resource: canonicalResource(discovery.resourceMetadata?.resource, allowPrivateEndpoint),
-    fetchFn: (input, init) =>
-      fetchFn(input, { ...init, signal: AbortSignal.timeout(REFRESH_REQUEST_TIMEOUT_MS) }),
-  });
+  try {
+    return await refreshAuthorization(discovery.authorizationServerUrl, {
+      metadata: discovery.authorizationServerMetadata,
+      clientInformation,
+      refreshToken,
+      resource: canonicalResource(discovery.resourceMetadata?.resource, allowPrivateEndpoint),
+      fetchFn: (input, init) =>
+        fetchFn(input, { ...init, signal: AbortSignal.timeout(REFRESH_REQUEST_TIMEOUT_MS) }),
+    });
+  } catch (error) {
+    if (error instanceof InvalidGrantError) throw error;
+    const sanitized = sanitizeConnectorError(
+      error,
+      oauthMaterialSecrets({ oauthClient: material.oauthClient ?? preset }),
+    );
+    if (error instanceof Error && error.message !== sanitized) error.message = sanitized;
+    throw error;
+  }
 }
 
 /** A first-use binding may be missing on one side; two different bindings are not the same client. */
@@ -918,6 +972,8 @@ function conflictsWithBinding(stored: PreRegisteredClient | undefined, flow: OAu
 export type McpOAuthSummary = {
   status: "none" | "connected" | "reconnect";
   clientId: string | null;
+  /** A deployment preset can sign this server in. The secret is not included. */
+  preset?: boolean;
 };
 
 function summarize(material: OAuthMaterial): McpOAuthSummary {
@@ -933,6 +989,7 @@ export class McpOAuthBroker {
     private readonly secrets: SecretStore,
     private readonly network: RemoteTransportDependencies = {},
     private readonly allowPrivateEndpoint = false,
+    private readonly presets: readonly McpOAuthPreset[] = [],
   ) {}
 
   async statusFor(server: ServerRef, context: ActorRef): Promise<McpOAuthSummary["status"]> {
@@ -941,14 +998,32 @@ export class McpOAuthBroker {
 
   async summaryFor(server: ServerRef, context: ActorRef): Promise<McpOAuthSummary> {
     const { material } = await this.loadMaterial(server, context);
-    return summarize(material);
+    return this.describeMaterial(material, server.endpoint);
   }
 
   async summaryForCiphertext(
     ciphertext: string | undefined,
     recordId: string | undefined,
+    endpoint: string | null = null,
   ): Promise<McpOAuthSummary> {
-    return summarize(ciphertext && recordId ? await this.read(ciphertext, recordId) : {});
+    return this.describeMaterial(
+      ciphertext && recordId ? await this.read(ciphertext, recordId) : {},
+      endpoint,
+    );
+  }
+
+  /** A preset covers this endpoint and the stored material has no client of its own. */
+  private describeMaterial(material: OAuthMaterial, endpoint: string | null): McpOAuthSummary {
+    const summary = summarize(material);
+    if (summary.clientId || !matchMcpOAuthPreset(this.presets, endpoint)) return summary;
+    return { ...summary, preset: true };
+  }
+
+  /** The preset client for this endpoint. A new object, never the shared config. */
+  private presetClientFor(endpoint: string | null): PreRegisteredClient | undefined {
+    const preset = matchMcpOAuthPreset(this.presets, endpoint);
+    if (!preset || !endpoint) return undefined;
+    return presetOAuthClient(preset, endpoint);
   }
 
   async providerFor(
@@ -1012,10 +1087,12 @@ export class McpOAuthBroker {
     // Never destroy working tokens here: if this attempt fails (network error,
     // cancelled popup), the server keeps its valid connection. The SDK itself
     // invalidates dead tokens when a refresh is rejected with invalid_grant.
+    const preset = loaded.material.oauthClient ? undefined : this.presetClientFor(server.endpoint);
+    const redaction = preset ? { ...loaded.material, oauthClient: preset } : loaded.material;
     const networkFetch = oauthFetch(
       target,
       this.network,
-      server.endpoint ? loaded.material : withoutRequestCredentials(loaded.material),
+      server.endpoint ? redaction : withoutRequestCredentials(redaction),
       this.allowPrivateEndpoint,
     );
     try {
@@ -1286,6 +1363,7 @@ export class McpOAuthBroker {
           : {}),
         allowPrivateEndpoint: this.allowPrivateEndpoint,
         ...options,
+        presetClient: loaded.material.oauthClient ? undefined : this.presetClientFor(endpoint),
       },
     );
   }
@@ -1306,7 +1384,13 @@ export class McpOAuthBroker {
     onPersisted?: ProviderOptions["onPersisted"],
   ): Promise<TokenGrant> {
     // Resolve the network before taking a connection for the lock.
-    const network = oauthFetch(target, this.network, {}, this.allowPrivateEndpoint);
+    const preset = this.presetClientFor(endpoint);
+    const network = oauthFetch(
+      target,
+      this.network,
+      preset ? { oauthClient: preset } : {},
+      this.allowPrivateEndpoint,
+    );
     let stored: { id: string; ciphertext: string } | undefined;
     let rotated: { material: OAuthMaterial; grant: TokenGrant; spent: string } | undefined;
     try {
@@ -1335,6 +1419,7 @@ export class McpOAuthBroker {
                     current,
                     network.fetch,
                     this.allowPrivateEndpoint,
+                    material.oauthClient ? undefined : preset,
                   ),
                 };
                 grant.obtainedAt = Date.now();
@@ -1408,6 +1493,8 @@ export class McpOAuthBroker {
       const nextMaterial = snapshot.secret
         ? await this.read(snapshot.secret.ciphertext, snapshot.secret.id)
         : {};
+      if (material.presetAuthorizationServer)
+        nextMaterial.presetAuthorizationServer = material.presetAuthorizationServer;
       const storedOAuth = nextMaterial.oauth;
       let kept: TokenGrant | undefined;
       if (material.oauth) {
@@ -1447,7 +1534,8 @@ export class McpOAuthBroker {
           Object.keys(nextMaterial.files ?? {}).length ||
           Object.keys(nextMaterial.headers ?? {}).length ||
           nextMaterial.oauthClient ||
-          nextMaterial.oauth,
+          nextMaterial.oauth ||
+          nextMaterial.presetAuthorizationServer,
       );
       const stored = hasMaterial ? await this.putMaterial(nextMaterial, context) : undefined;
       const committed = await persistPreparedSecret(

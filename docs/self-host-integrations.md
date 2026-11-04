@@ -52,10 +52,30 @@ metadata addresses stay blocked. Leave the flag unset on public installs.
 
 Remote MCP servers that use OAuth normally register Rakazo with their provider on the first
 **Connect OAuth**. Some providers only accept a client you create in their console. For those,
-enter the client ID (and secret, for a confidential client) under **Advanced** when adding the
-server, and add the **Redirect URI** shown there (`<your web origin>/mcp/oauth/callback`) to the
-client's allowed redirect URIs. The client is stored encrypted with the server's other
-credentials and survives **Disconnect**; switching to a different client drops the current grant.
+either set a deployment-wide preset (below) or enter the client ID (and secret, for a confidential
+client) under **Advanced** when adding the server, and add the **Redirect URI** shown there
+(`<your web origin>/mcp/oauth/callback`) to the client's allowed redirect URIs. The client is stored
+encrypted with the server's other credentials and survives **Disconnect**; switching to a different
+client drops the current grant.
+
+To sign in without pasting a client on each server, set `MCP_OAUTH_PRESET_CLIENTS` on the API and
+the worker. It is a JSON object mapping a hostname, or a pattern with one leading wildcard, to a
+client. A client saved on the server still wins. The secret stays on the server: it is not returned
+to web, desktop, or mobile, and it is not written into the server's stored credential. For Google's
+MCP servers the authorization request needs `access_type=offline` and `prompt=consent`, or Google
+will not issue a refresh token. Register `<your web origin>/mcp/oauth/callback` as the client's
+redirect URI. Leave the variable unset and each server behaves as before.
+
+```json
+{
+  "*.googleapis.com": {
+    "clientId": "your-client-id.apps.googleusercontent.com",
+    "clientSecret": "your-client-secret",
+    "extraAuthorizationParams": { "access_type": "offline", "prompt": "consent" }
+  }
+}
+```
+
 On first use the client is bound to the authorization server the MCP server pointed to, and Rakazo
 refuses to send it anywhere else afterwards. Replacing the client clears the binding.
 

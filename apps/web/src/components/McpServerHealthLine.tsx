@@ -10,13 +10,20 @@ import { CircleDashed, LoaderCircle, TriangleAlert } from "lucide-react";
  * status itself so the row stays compact.
  */
 export function McpServerHealthLine({
-  health,
+  health: reported,
   checking = false,
+  presetClient = false,
 }: {
   health: McpServerHealth;
   /** A Test connection run is in flight; shown until the server reports installing. */
   checking?: boolean;
+  /** A deployment preset can sign this server in, so it does not need a pasted client id. */
+  presetClient?: boolean;
 }) {
+  const health =
+    presetClient && reported.code === MCP_OAUTH_CLIENT_REQUIRED
+      ? { ...reported, status: "unknown" as const, code: null, message: null }
+      : reported;
   if (checking && health.status !== "installing") {
     return (
       <p

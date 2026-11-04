@@ -444,6 +444,41 @@ it("points a server that cannot register a client at the client ID fields", asyn
   }
 });
 
+it("offers Connect OAuth when a preset covers a server that cannot register a client", async () => {
+  const preset = {
+    id: "srv_gmail",
+    slug: "gmail",
+    name: "Gmail",
+    description: "",
+    transport: "streamable_http",
+    endpoint: "https://gmailmcp.googleapis.com/mcp/v1",
+    command: null,
+    hasArgs: false,
+    envKeys: [],
+    fileKeys: [],
+    headerKeys: [],
+    oauthStatus: "none",
+    oauthClientId: null,
+    oauthPreset: true,
+    hasSecret: false,
+    health: { status: "error", code: MCP_OAUTH_CLIENT_REQUIRED, message: "preset-client-secret" },
+    enabled: true,
+  } as unknown as McpServer;
+  mocks.list.mockReset().mockResolvedValue([preset]);
+  const host = document.createElement("div");
+  const root = createRoot(host);
+  const button = (label: string) =>
+    Array.from(host.querySelectorAll("button")).find((item) => item.textContent === label);
+  try {
+    await act(async () => root.render(overlay()));
+    await vi.waitFor(() => expect(button("Connect OAuth")).toBeDefined());
+    expect(host.textContent).not.toContain("Needs an OAuth client ID");
+    expect(host.textContent).not.toContain("preset-client-secret");
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
 it("never shows stored stdio arguments and sends none back when they were not edited", async () => {
   const server = {
     id: "srv_2",

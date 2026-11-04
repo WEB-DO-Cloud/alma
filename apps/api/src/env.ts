@@ -1,9 +1,14 @@
-import type { PhotonProjectCredentials, TelegramBotCredentials } from "@rakazo/adapters";
+import type {
+  McpOAuthPreset,
+  PhotonProjectCredentials,
+  TelegramBotCredentials,
+} from "@rakazo/adapters";
 import {
   boatApiKeyFromEnv,
   boatApiUrlFromEnv,
   deploymentMemoryPublic,
   mcpStdioOptionsFromEnv,
+  parseMcpOAuthPresetClients,
   photonProjectsFromEnv,
   resolveCloudAgentProvider,
   resolveDeploymentModel,
@@ -162,6 +167,8 @@ export interface AppEnv {
   mcpStdio: ReturnType<typeof mcpStdioOptionsFromEnv>;
   /** Deployment-owner escape for remote MCP on RFC1918 / Docker-network hosts. */
   mcpAllowPrivateEndpoint: boolean;
+  /** OAuth clients for MCP hosts that cannot register one. Secrets stay in this process. */
+  mcpOAuthPresets: McpOAuthPreset[];
   /** Server-wide memory. Null when unset. Never includes the provider key or URL. */
   deploymentMemory: { defaultScope: "isolated" | "shared" } | null;
   port: number;
@@ -341,6 +348,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
       .filter(Boolean),
     mcpStdio: mcpStdioOptionsFromEnv(source),
     mcpAllowPrivateEndpoint: source.MCP_ALLOW_PRIVATE_ENDPOINT === "true",
+    mcpOAuthPresets: parseMcpOAuthPresetClients(source.MCP_OAUTH_PRESET_CLIENTS),
     deploymentMemory: deploymentMemoryPublic(source),
     port: Number(source.API_PORT ?? 3100),
     gitSha: optional(source.GIT_SHA) ?? optional(source.RAKAZO_GIT_SHA),

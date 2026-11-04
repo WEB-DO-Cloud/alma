@@ -664,6 +664,32 @@ it("shows registered MCP servers with connector initials and sentence case statu
   expect(container.textContent).not.toContain("No apps match your search.");
 });
 
+it("offers Connect OAuth for a preset server and does not show the preset secret", async () => {
+  const fallback = state.rpc.getMockImplementation();
+  state.rpc.mockImplementation((proc: string) =>
+    proc === "mcp/servers/list"
+      ? Promise.resolve([
+          {
+            id: "gmail",
+            name: "Gmail",
+            enabled: true,
+            hasSecret: false,
+            oauthStatus: "none",
+            oauthClientId: null,
+            oauthPreset: true,
+            health: { status: "unknown" },
+          },
+        ])
+      : fallback?.(proc),
+  );
+  await render();
+  const row = container.querySelector('[data-testid="registered-mcp-server"]');
+  expect(row?.textContent).toContain("Gmail");
+  expect(row?.textContent).toContain("Connect OAuth");
+  expect(row?.textContent).not.toContain("Needs an OAuth client ID");
+  expect(container.textContent).not.toContain("preset-client-secret");
+});
+
 const plugin = {
   id: "cursor:calcom",
   name: "calcom",

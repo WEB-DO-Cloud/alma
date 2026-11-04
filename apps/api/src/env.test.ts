@@ -338,6 +338,42 @@ describe("loadEnv", () => {
     expect(loadEnv(base).emailApiKey).toBeUndefined();
   });
 
+  it("leaves MCP OAuth presets empty until the variable is set", () => {
+    expect(loadEnv(base).mcpOAuthPresets).toEqual([]);
+    const secret = "preset-client-secret";
+    expect(
+      loadEnv({
+        ...base,
+        MCP_OAUTH_PRESET_CLIENTS: JSON.stringify({
+          "*.googleapis.com": {
+            clientId: "google-client",
+            clientSecret: secret,
+            extraAuthorizationParams: { access_type: "offline", prompt: "consent" },
+          },
+        }),
+      }).mcpOAuthPresets,
+    ).toEqual([
+      {
+        pattern: "*.googleapis.com",
+        clientId: "google-client",
+        clientSecret: secret,
+        extraAuthorizationParams: { access_type: "offline", prompt: "consent" },
+      },
+    ]);
+    expect(() =>
+      loadEnv({
+        ...base,
+        MCP_OAUTH_PRESET_CLIENTS: `{"*.googleapis.com":{"clientSecret":"${secret}"}}`,
+      }),
+    ).toThrow(/needs a clientId/);
+    expect(() =>
+      loadEnv({
+        ...base,
+        MCP_OAUTH_PRESET_CLIENTS: `{"*.googleapis.com":{"clientSecret":"${secret}"}}`,
+      }),
+    ).not.toThrow(secret);
+  });
+
   it("defaults the remote MCP private-endpoint escape to off", () => {
     expect(loadEnv(base).mcpAllowPrivateEndpoint).toBe(false);
     expect(loadEnv({ ...base, MCP_ALLOW_PRIVATE_ENDPOINT: "true" }).mcpAllowPrivateEndpoint).toBe(

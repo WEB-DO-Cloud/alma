@@ -1154,6 +1154,8 @@ export const McpServerSchema = z.object({
   oauthStatus: z.enum(["none", "connected", "reconnect"]),
   /** The pre-registered OAuth client, when one is configured. Its secret is never returned. */
   oauthClientId: z.string().nullable(),
+  /** The deployment has a preset OAuth client for this server. The secret is never returned. */
+  oauthPreset: z.boolean().optional(),
   health: McpServerHealthSchema,
   enabled: z.boolean(),
   /** Keep this server's tool results whole instead of cutting them to fit context. */
