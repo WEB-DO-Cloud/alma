@@ -196,7 +196,12 @@ export const PinnedTiles = memo(function PinnedTiles({
     >
       {chats.map((chat) => {
         const id = chat.kind === "bot" ? chat.bot.id : chat.group.id;
-        const name = chat.kind === "bot" ? chat.bot.name : chat.group.name;
+        const name =
+          chat.kind === "bot"
+            ? chat.bot.kind === "support"
+              ? t("Support")
+              : chat.bot.name
+            : chat.group.name;
         const unread = chat.kind === "bot" ? chat.bot.unread : chat.group.unread;
         const actions = inboxRowActionList(chat.kind === "bot" ? chat.bot : chat.group);
         const runAction = (action: InboxRowAction) =>
@@ -283,8 +288,9 @@ export const BotRow = memo(function BotRow({
   const time = bot.updatedAt ? formatThreadTime(bot.updatedAt, new Date(day)) : "";
   const working = isRunWorking(bot.status);
   // Spelled out because an explicit label replaces the one built from the row's children.
+  const title = bot.kind === "support" ? t("Support") : bot.name;
   const label = [
-    bot.name,
+    title,
     working ? t("Working…") : null,
     bot.notifyOnFinish === false ? t("notifications silenced") : null,
     bot.unread ? t("unread") : null,
@@ -297,7 +303,7 @@ export const BotRow = memo(function BotRow({
   const row = (
     <ConversationRow
       chatId={bot.id}
-      title={bot.name}
+      title={title}
       preview={preview}
       time={time}
       unread={bot.unread}
@@ -307,7 +313,7 @@ export const BotRow = memo(function BotRow({
       }
       onPress={() => onPress(bot)}
       onLongPress={onLongPress ? () => onLongPress(bot) : undefined}
-      actions={onAction ? inboxRowActionList(bot) : undefined}
+      actions={onAction && bot.kind !== "support" ? inboxRowActionList(bot) : undefined}
       onAction={runAction}
       avatar={
         <AvatarRow id={bot.id}>
@@ -333,7 +339,7 @@ export const BotRow = memo(function BotRow({
       sectionId={bot.sectionId}
       sections={sections}
       preview={{
-        title: bot.name,
+        title,
         message: bot.preview,
         avatar: (
           <BotAvatar

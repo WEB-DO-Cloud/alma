@@ -6689,3 +6689,18 @@ msgstr "Tu proveedor de voz se quedó sin crédito."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Tu proveedor de voz rechazó la clave."
+
+msgid "Support"
+msgstr "Soporte"
+
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "Escribe al equipo de ALMA. Una persona te responderá aquí."
+
+msgid "Not delivered. Tap to retry."
+msgstr "No enviado. Toca para reintentar."
+
+msgid "The Support chat can't be removed."
+msgstr "El chat de Soporte no se puede eliminar."
+
+msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+msgstr "Los mensajes de Soporte se gestionan con Chatwoot, fuera de RD. No incluyas datos confidenciales de casos."

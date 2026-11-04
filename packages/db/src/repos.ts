@@ -94,6 +94,7 @@ function mapBot(
     color: string;
     avatarSet?: string;
     notifyOnFinish: boolean;
+    kind?: string | null;
     pinned: boolean;
     sectionId: string | null;
     archivedAt: Date | null;
@@ -137,6 +138,7 @@ function mapBot(
     color: bot.color,
     avatarSet: resolveBotAvatarSet(bot.avatarSet),
     notifyOnFinish: bot.notifyOnFinish,
+    kind: bot.kind === "support" ? "support" : "standard",
     pinned: bot.pinned,
     sectionId: bot.sectionId,
     archivedAt: bot.archivedAt?.toISOString() ?? null,
@@ -206,6 +208,7 @@ export function createRepos(
         color: true,
         avatarSet: true,
         notifyOnFinish: true,
+        kind: true,
         pinned: true,
         sectionId: true,
         updatedAt: true,
@@ -232,6 +235,7 @@ export function createRepos(
         color: bot.color,
         avatarSet: resolveBotAvatarSet(bot.avatarSet),
         notifyOnFinish: bot.notifyOnFinish,
+        kind: bot.kind === "support" ? "support" : "standard",
         pinned: bot.pinned,
         sectionId: bot.sectionId,
         unread: bot.thread.unread,
@@ -530,6 +534,11 @@ export function createRepos(
         notifyOnFinish: boolean;
         dailyCheckIns?: boolean;
         fleetManagement?: boolean;
+        kind?: "standard" | "support";
+        pinned?: boolean;
+        position?: number;
+        /** Support has no computer. Omit to attach one the way every other bot does. */
+        attachComputer?: boolean;
         color?: string;
         avatarSet?: BotAvatarSet;
         avatarFamily?: number;
@@ -607,14 +616,17 @@ export function createRepos(
             input.color,
             { family: input.avatarFamily, avatarSet, id: input.id },
           );
-          const teamComputer = kind
-            ? await ensureComputerRecord(tx, {
-                mode: "team",
-                spaceId: actor.spaceId,
-                userId: actor.userId,
-                kind,
-              })
-            : null;
+          const teamComputer =
+            input.attachComputer === false
+              ? null
+              : kind
+                ? await ensureComputerRecord(tx, {
+                    mode: "team",
+                    spaceId: actor.spaceId,
+                    userId: actor.userId,
+                    kind,
+                  })
+                : null;
           const created = await tx.bot.create({
             data: {
               id: avatar.id,
@@ -626,9 +638,11 @@ export function createRepos(
               notifyOnFinish: input.notifyOnFinish,
               dailyCheckIns: input.dailyCheckIns,
               fleetManagement: input.fleetManagement,
+              ...(input.kind ? { kind: input.kind } : {}),
+              ...(input.pinned !== undefined ? { pinned: input.pinned } : {}),
               color: avatar.color,
               avatarSet,
-              position: (positions._max.position ?? -1) + 1,
+              position: input.position ?? (positions._max.position ?? -1) + 1,
               parentBotId: input.parentBotId ?? null,
               computerId: teamComputer?.id ?? null,
               spawnKey,
@@ -652,7 +666,7 @@ export function createRepos(
               markUnread: false,
             });
           }
-          if (input.computerMode === "dedicated" && kind) {
+          if (input.attachComputer !== false && input.computerMode === "dedicated" && kind) {
             const dedicated = await ensureComputerRecord(tx, {
               mode: "dedicated",
               spaceId: actor.spaceId,
@@ -741,15 +755,23 @@ export function createRepos(
             userId: actor.userId,
             archivedAt: null,
           },
-          select: { id: true },
+          select: { id: true, kind: true },
         });
         const existing = new Set(bots.map((bot) => bot.id));
         if (existing.size !== botIds.length || botIds.some((id) => !existing.has(id))) {
           throw new IsolationError();
         }
+        const supportIds = new Set(
+          bots.filter((bot) => bot.kind === "support").map((bot) => bot.id),
+        );
         // ponytail: rosters are small; switch to one SQL CASE update only if this becomes hot.
         await Promise.all(
-          botIds.map((id, position) => tx.bot.update({ where: { id }, data: { position } })),
+          botIds.map((id, position) =>
+            tx.bot.update({
+              where: { id },
+              data: { position: supportIds.has(id) ? -1 : position },
+            }),
+          ),
         );
       });
     },

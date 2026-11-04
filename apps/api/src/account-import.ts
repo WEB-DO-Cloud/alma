@@ -28,6 +28,7 @@ import { organicAvatarFamily } from "@rakazo/core";
 import {
   createRepos,
   createSpaceForMember,
+  ensureSupportBot,
   InvalidSpaceNameError,
   Prisma,
   parseComputerMode,
@@ -736,6 +737,26 @@ class AccountImporter implements ArchiveSink {
   private async importBot(record: RecordOf<"bot">) {
     const space = this.current!;
     if (space.ids.has(record.id)) throw unreadable();
+    if (record.kind === "support") {
+      const link = await ensureSupportBot(this.deps.prisma, {
+        userId: space.actor.userId,
+        spaceId: space.actor.spaceId,
+      });
+      if (!link) throw new Error("Imported support chat has no space");
+      const thread = await this.deps.prisma.thread.findUnique({
+        where: { botId: link.botId },
+        select: { id: true },
+      });
+      if (!thread) throw new Error("Imported support chat is missing its thread");
+      space.ids.set(record.id, link.botId);
+      space.bots.set(record.id, {
+        id: link.botId,
+        threadId: thread.id,
+        homeKey: "",
+        directory: "",
+      });
+      return;
+    }
     const bot = await this.repos.createBot(space.actor, {
       name: record.name,
       description: record.description,
@@ -857,6 +878,7 @@ class AccountImporter implements ArchiveSink {
   private async stageHomeFile(sourceBotId: string, relativePath: string, bytes: Uint8Array) {
     const space = this.current!;
     const bot = space.bots.get(sourceBotId)!;
+    if (!bot.homeKey) return;
     let staging = space.homes.get(bot.homeKey);
     if (!staging) {
       staging = path.join(space.tempDir, `home-${space.homes.size}`);

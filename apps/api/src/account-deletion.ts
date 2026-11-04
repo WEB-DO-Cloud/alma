@@ -1,5 +1,6 @@
 import type { AdapterContext } from "@rakazo/adapter-kit";
 import {
+  deleteSupportContact,
   destroyBot,
   removeAgentHome,
   removeDeletedBotsFromLegacyTeamHome,
@@ -19,6 +20,7 @@ import type { SpaceDeletionDeps } from "./space-deletion.js";
  * failure keeps the handle and deleting again resumes from what is left.
  */
 export async function deleteAccountContent(deps: SpaceDeletionDeps, userId: string): Promise<void> {
+  await deleteSupportContact(deps.prisma, userId);
   const context = (spaceId: string, botId?: string): AdapterContext => ({
     operationId: `account-delete:${userId}`,
     traceId: `account-delete:${userId}`,

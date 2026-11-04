@@ -185,6 +185,7 @@ import { createRouter } from "./router.js";
 import { mountScreenTarget } from "./screen-proxy.js";
 import { createAuthResponseAudit } from "./security-audit.js";
 import { createSpeechSummarizer } from "./speech-summary.js";
+import { mountSupportWebhook } from "./support-chatwoot-webhook.js";
 import { isDeferredReservationLost, TeamChatBridge } from "./team-chat-bridge.js";
 import { ModelTeamChatEngagementJudge } from "./team-chat-judge.js";
 import {
@@ -1401,6 +1402,8 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       }
     })();
   }
+
+  mountSupportWebhook(app, { prisma, events, artifacts, notifications });
 
   app.route(
     "/",

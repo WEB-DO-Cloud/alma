@@ -105,7 +105,13 @@ export const BotSettingsValuesSchema = z.object({
 export type BotSettingsValues = z.infer<typeof BotSettingsValuesSchema>;
 
 export const MessageBlock = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("text"), text: z.string() }),
+  z.object({
+    kind: z.literal("text"),
+    text: z.string(),
+    source: z.literal("chatwoot").optional(),
+    agentName: z.string().max(80).optional(),
+    supportDelivery: z.enum(["pending", "sent", "failed"]).optional(),
+  }),
   z.object({
     kind: z.literal("card"),
     lines: z.array(z.object({ k: z.string(), v: z.string() })),
@@ -300,6 +306,9 @@ export const MessageBlock = z.discriminatedUnion("kind", [
     artifactId: Id,
     mimeType: z.string(),
     name: z.string(),
+    source: z.literal("chatwoot").optional(),
+    agentName: z.string().max(80).optional(),
+    supportDelivery: z.enum(["pending", "sent", "failed"]).optional(),
   }),
   z.object({
     kind: z.literal("file"),
@@ -307,6 +316,9 @@ export const MessageBlock = z.discriminatedUnion("kind", [
     mimeType: z.string(),
     name: z.string(),
     size: z.number().int().nonnegative(),
+    source: z.literal("chatwoot").optional(),
+    agentName: z.string().max(80).optional(),
+    supportDelivery: z.enum(["pending", "sent", "failed"]).optional(),
   }),
   z.object({
     kind: z.literal("handoff"),
@@ -459,9 +471,14 @@ export const ThreadMessageSchema = z.object({
 });
 export type ThreadMessage = z.infer<typeof ThreadMessageSchema>;
 
-export function canReportAssistantMessage(message: Pick<ThreadMessage, "id" | "role">): boolean {
+export function canReportAssistantMessage(
+  message: Pick<ThreadMessage, "id" | "role"> & {
+    blocks?: readonly object[];
+  },
+): boolean {
   return (
     message.role === "bot" &&
+    !message.blocks?.some((block) => "source" in block && block.source === "chatwoot") &&
     !message.id.startsWith("progress:") &&
     !message.id.startsWith("subagent:")
   );

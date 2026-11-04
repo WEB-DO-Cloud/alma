@@ -108,6 +108,8 @@ export const BotSchema = z.object({
   color: z.string(),
   avatarSet: BotAvatarSetSchema.optional(),
   notifyOnFinish: z.boolean(),
+  /** Present for the pinned human-support chat. Older rows and clients omit it. */
+  kind: z.enum(["standard", "support"]).optional(),
   pinned: z.boolean(),
   sectionId: Id.nullable(),
   archivedAt: z.string().nullable(),
@@ -254,6 +256,7 @@ export const SpaceBotSchema = BotSchema.pick({
   color: true,
   avatarSet: true,
   notifyOnFinish: true,
+  kind: true,
   pinned: true,
   sectionId: true,
   unread: true,

@@ -48,7 +48,7 @@ Commands like `/` skills, `@` mentions, voice-mode AI calls, and Stop do nothing
 ## 6. Agent replies (inbound)
 
 - The new route is `POST /api/support/chatwoot/webhook`, in a new file `apps/api/src/support-chatwoot-webhook.ts`.
-- **Verifying the call**: Chatwoot sends a secret in the URL path or header, set as `CHATWOOT_WEBHOOK_SECRET`, plus a check that `account.id` and `inbox.id` match our config. If the Chatwoot plan supports a signed-webhook header, we verify the HMAC signature over the raw body with a constant-time compare. Anything that fails gets a 401 and is logged without the body.
+- **Verifying the call**: The URL path carries `ALMA_CHATWOOT_WEBHOOK_SECRET`. `account.id` and `inbox.id` must match the config. Chatwoot cloud also sends `X-Chatwoot-Signature` (`sha256=` + hex HMAC-SHA256 of `CHATWOOT_INBOX_WEBHOOK_SECRET` over `{X-Chatwoot-Timestamp}.{raw body}`), `X-Chatwoot-Timestamp`, and `X-Chatwoot-Delivery`. Verify the signature with a constant-time compare, reject timestamps older than 5 minutes, and dedupe on the delivery id. If the signature headers are absent, the URL secret plus the account and inbox check is enough. Anything that fails gets a 401 and is logged without the body. A disabled or incomplete config returns 404.
 - **Events handled**: `message_created`, only when `message_type = outgoing` and `private = false`. Private notes are never shown to users. Messages echoed back from our own `echo_id` are ignored. `conversation_status_changed` is only logged for now.
 - **What we do with a reply**: look up the `SupportLink` by conversation id, then idempotently insert a `Message` (keyed on the Chatwoot message id). Then call `events.notify(threadId, seq)`, which updates web, desktop, and mobile live through the existing stream (`packages/db/src/events.ts`). Then mark the thread unread and send an Expo push through the existing notification path (`packages/adapters/src/run-notifications.ts` and `expo-push.ts`). The push title is the translated `support.botName` and the body is the first 120 characters.
 - **Attachments from the agent**: we download them from Chatwoot's `data_url` server-side and store them as ALMA artifacts. Clients never load chatwoot.com URLs directly.
@@ -83,10 +83,13 @@ Server-side push text uses the user's saved locale.
 
 ## 10. Config (env, never in repo)
 
-`CHATWOOT_BASE_URL` (https://app.chatwoot.com), `CHATWOOT_ACCOUNT_ID` (178581), `CHATWOOT_INBOX_ID`, `CHATWOOT_API_TOKEN`, `CHATWOOT_HMAC_KEY`, `CHATWOOT_WEBHOOK_SECRET`, `SUPPORT_BOT_ENABLED` (default `false`).
+`CHATWOOT_BASE_URL` (https://app.chatwoot.com), `CHATWOOT_ACCOUNT_ID` (178581), `CHATWOOT_INBOX_ID`, `CHATWOOT_INBOX_IDENTIFIER`, `CHATWOOT_API_TOKEN`, `CHATWOOT_INBOX_WEBHOOK_SECRET` (signature key for `X-Chatwoot-Signature`), `CHATWOOT_HMAC_KEY` (optional inbox identity HMAC for contact `identifier_hash`), `ALMA_CHATWOOT_WEBHOOK_SECRET` (URL path token), `SUPPORT_BOT_ENABLED` (default `false`).
+
+Optional allowlist from the rollout: `SUPPORT_BOT_USERS`, a comma-separated list of ALMA user ids. When it is unset, every user gets the bot once the switch is on. When it is set, only those users do.
 
 - The values live only in Mia's `.env` for the alma user and in the secret store. They are never committed, logged, or pasted in chat.
 - If `SUPPORT_BOT_ENABLED` is false or the config is incomplete, the bot is not created and the routes return 404. This keeps upstream behaviour unchanged.
+- Chatwoot cloud signs API-inbox webhooks. `X-Chatwoot-Signature` is `sha256=` plus hex HMAC-SHA256 of the inbox webhook secret over `{X-Chatwoot-Timestamp}.{raw body}`. Reject timestamps older than 5 minutes (and more than 5 minutes ahead). Dedupe on `X-Chatwoot-Delivery`. The URL secret plus the account and inbox id check stays as the backup when no signature header is present.
 
 ## 11. Data location
 

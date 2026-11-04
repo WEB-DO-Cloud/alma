@@ -13,6 +13,7 @@ import { CHAT_TITLE_AVATAR_SIZE, ChatTitleAvatar } from "./chat-title-avatar";
 import { ChatTitleLabel } from "./chat-title-label";
 import { GlassSurface } from "./glass-surface";
 import { GroupSeats } from "./group-seats";
+import { NativeSymbol } from "./native-symbol";
 import { createThreadHeaderStyles } from "./thread-header-styles";
 
 /** What an open chat shows in its title, once it has loaded its own data. */
@@ -93,8 +94,11 @@ export function ChatHeaderTitle({
   };
   // A group seats its members from the inbox's copy until the chat has loaded its own.
   const members = inGroup ? (title.members ?? inboxGroup?.members) : undefined;
-  const label = safeDisplayName(title.name, inGroup ? t("Group") : t("Bot")) || t("Thread");
-  const opens = title.opens;
+  const support = !inGroup && title.bot?.kind === "support";
+  const label = support
+    ? t("Support")
+    : safeDisplayName(title.name, inGroup ? t("Group") : t("Bot")) || t("Thread");
+  const opens = support ? null : title.opens;
   return (
     <Pressable
       accessibilityRole="button"
@@ -105,7 +109,9 @@ export function ChatHeaderTitle({
       }}
     >
       <GlassSurface style={styles.titleCapsule} fallbackStyle={styles.titleCapsuleFill}>
-        {!inGroup && params.botId ? (
+        {support ? (
+          <NativeSymbol ios="headphones" android="headset" size={18} />
+        ) : !inGroup && params.botId ? (
           <ChatTitleAvatar bot={title.bot} status={title.status} composing={title.composing} />
         ) : null}
         {inGroup ? <GroupSeats members={members ?? []} size={CHAT_TITLE_AVATAR_SIZE} /> : null}

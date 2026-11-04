@@ -1,7 +1,8 @@
 import { useLingui } from "@lingui/react/macro";
 import type { Bot, Group, ThreadSnapshot } from "@rakazo/contracts";
+import { isSupportBot } from "@rakazo/contracts";
 import { BotAvatar, Button, GroupAvatar } from "@rakazo/ui-web";
-import { Menu, Phone } from "lucide-react";
+import { Headset, Menu, Phone } from "lucide-react";
 import { IconTooltip } from "../../components/IconTooltip";
 
 /** The floating header over the transcript: navigation, the chat's name and call. */
@@ -32,6 +33,12 @@ export function ChatHeader({
   onCall: (bot: Bot) => void;
 }) {
   const { t } = useLingui();
+  const support = !inGroup && isSupportBot(active);
+  const title = inGroup
+    ? (activeGroup?.name ?? activeSnapshot?.groupName ?? t`Group`)
+    : support
+      ? t`Support`
+      : (active?.name ?? t`Select a bot`);
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 grid grid-cols-[1fr_minmax(0,auto)_1fr] items-center gap-2 px-3 py-[13px] md:px-[22px] [&_button]:pointer-events-auto">
       <div className="flex items-center">
@@ -48,12 +55,14 @@ export function ChatHeader({
       <Button
         variant="floating"
         data-testid="bot-settings-trigger"
-        aria-expanded={panelOpen}
-        onClick={onTogglePanel}
+        aria-expanded={support ? undefined : panelOpen}
+        onClick={support ? undefined : onTogglePanel}
         className="app-no-drag h-auto min-w-0 gap-2 py-1 ps-1 pe-3.5"
       >
         {inGroup ? (
           <GroupAvatar members={activeSnapshot?.members ?? activeGroup?.members ?? []} size={26} />
+        ) : support ? (
+          <Headset strokeWidth={1.7} className="size-[18px]" aria-hidden="true" />
         ) : active ? (
           <BotAvatar
             avatarSet={active.avatarSet}
@@ -65,14 +74,12 @@ export function ChatHeader({
         ) : null}
         <span className="min-w-0">
           <span className="block truncate text-[15px] font-medium text-foreground" dir="auto">
-            {inGroup
-              ? (activeGroup?.name ?? activeSnapshot?.groupName ?? t`Group`)
-              : (active?.name ?? t`Select a bot`)}
+            {title}
           </span>
         </span>
       </Button>
       <div className="flex items-center justify-self-end gap-2">
-        {phoneCallsEnabled && !inGroup && active ? (
+        {phoneCallsEnabled && !inGroup && active && !support ? (
           <IconTooltip label={inCall ? t`Open call` : t`Call`}>
             <Button
               variant="floating"

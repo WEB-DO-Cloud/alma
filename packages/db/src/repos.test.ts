@@ -485,6 +485,7 @@ describe("createRepos.listSpaceBotsForSpaces", () => {
         name: "Support",
         title: "",
         color: "#123456",
+        kind: "standard",
         avatarSet: "organic",
         notifyOnFinish: false,
         pinned: true,

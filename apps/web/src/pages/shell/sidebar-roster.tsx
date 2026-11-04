@@ -450,7 +450,9 @@ export function SidebarRoster({
                                 item.chat.unread ? "font-semibold" : "font-medium"
                               }`}
                             >
-                              {item.chat.name}
+                              {item.kind === "bot" && item.chat.kind === "support"
+                                ? t`Support`
+                                : item.chat.name}
                             </span>
                             {item.chat.unread ? (
                               <span className="sr-only">

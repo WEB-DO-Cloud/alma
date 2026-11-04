@@ -30,6 +30,7 @@ export function useThreadHeader({
   inGroup,
   readOnly,
   displayName,
+  supportChat,
   titleBot,
   titleName,
   groupMembers,
@@ -43,6 +44,7 @@ export function useThreadHeader({
   inGroup: boolean;
   readOnly: boolean;
   displayName?: string;
+  supportChat?: boolean;
   /** The chat's bot, or the inbox's copy of it until the chat's roster arrives. */
   titleBot?: ChatTitle["bot"];
   titleName?: string;
@@ -98,14 +100,14 @@ export function useThreadHeader({
       ...threadHeaderRight({
         inGroup,
         readOnly,
-        hasBot: Boolean(botId),
+        hasBot: supportChat ? false : Boolean(botId),
         t,
         color: tokens.foreground,
         rowStyle: styles.headerActions,
         onGroupSettings: () =>
           router.push({ pathname: "/group-settings", params: { groupId: groupId ?? "" } }),
         onBotActions: showBotActions,
-        menuActions: botActions,
+        menuActions: supportChat ? [] : botActions,
         computerLabel: t("Open computer"),
       }),
       ...(readOnly
@@ -120,6 +122,7 @@ export function useThreadHeader({
     currentBotStatus,
     composingBots,
     displayName,
+    supportChat,
     groupId,
     inGroup,
     navigation,
@@ -165,62 +168,64 @@ export function useThreadHeader({
     });
   }
 
-  const botActions = [
-    ...(!readOnly && botId ? [{ text: t("Open computer"), onPress: openBotComputer }] : []),
-    {
-      text: t("Profile"),
-      onPress: () =>
-        router.push({
-          pathname: "/bot-profile",
-          params: { botId: botId ?? "", name: displayName ?? t("Bot") },
-        }),
-    },
-    {
-      text: t("Chat settings"),
-      onPress: () =>
-        router.push({
-          pathname: "/bot-settings",
-          params: { botId: botId ?? "" },
-        }),
-    },
-    {
-      text: t("Clear conversation"),
-      destructive: true,
-      onPress: () =>
-        Alert.alert(
-          t("Clear conversation?"),
-          t(
-            "This removes every message and stops current work. The bot, computer, memory, and routines are kept.",
-          ),
-          [
-            { text: t("Cancel"), style: "cancel" },
-            { text: t("Clear"), style: "destructive", onPress: clearConversation },
-          ],
-        ),
-    },
-    {
-      text: t("Archive"),
-      onPress: () =>
-        void rpc("bots/archive", { botId: botId ?? "" })
-          .then(() => {
-            removeFromSearchInbox(botId);
-            notifyArchivedChatsChanged();
-            leaveBot();
-          })
-          .catch((error) =>
-            Alert.alert(t("Could not archive bot"), errorText(error, t("Try again."))),
-          ),
-    },
-    {
-      text: t("Delete…"),
-      destructive: true,
-      onPress: () =>
-        confirmDeleteBot({ id: botId ?? "", name: displayName || t("Bot") }, () => {
-          notifyArchivedChatsChanged();
-          leaveBot();
-        }),
-    },
-  ];
+  const botActions = supportChat
+    ? []
+    : [
+        ...(!readOnly && botId ? [{ text: t("Open computer"), onPress: openBotComputer }] : []),
+        {
+          text: t("Profile"),
+          onPress: () =>
+            router.push({
+              pathname: "/bot-profile",
+              params: { botId: botId ?? "", name: displayName ?? t("Bot") },
+            }),
+        },
+        {
+          text: t("Chat settings"),
+          onPress: () =>
+            router.push({
+              pathname: "/bot-settings",
+              params: { botId: botId ?? "" },
+            }),
+        },
+        {
+          text: t("Clear conversation"),
+          destructive: true,
+          onPress: () =>
+            Alert.alert(
+              t("Clear conversation?"),
+              t(
+                "This removes every message and stops current work. The bot, computer, memory, and routines are kept.",
+              ),
+              [
+                { text: t("Cancel"), style: "cancel" },
+                { text: t("Clear"), style: "destructive", onPress: clearConversation },
+              ],
+            ),
+        },
+        {
+          text: t("Archive"),
+          onPress: () =>
+            void rpc("bots/archive", { botId: botId ?? "" })
+              .then(() => {
+                removeFromSearchInbox(botId);
+                notifyArchivedChatsChanged();
+                leaveBot();
+              })
+              .catch((error) =>
+                Alert.alert(t("Could not archive bot"), errorText(error, t("Try again."))),
+              ),
+        },
+        {
+          text: t("Delete…"),
+          destructive: true,
+          onPress: () =>
+            confirmDeleteBot({ id: botId ?? "", name: displayName || t("Bot") }, () => {
+              notifyArchivedChatsChanged();
+              leaveBot();
+            }),
+        },
+      ];
 
   function showBotActions() {
     if (!botId) return;
