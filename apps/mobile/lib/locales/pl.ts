@@ -1,4 +1,6 @@
 export const PL_MESSAGES: Record<string, string> = {
+  "Record": "Nagraj",
+  "Recording": "Nagrywanie",
   "After that, the plan renews at {price}/month until you cancel.":
     "Potem plan odnawia się za {price}/mies., dopóki go nie anulujesz.",
   "Billed in US dollars.": "Rozliczane w dolarach amerykańskich.",
