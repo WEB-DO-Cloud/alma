@@ -4784,7 +4784,7 @@ msgstr "Nowy kontakt"
 
 #: src/pages/QueuePage.tsx
 msgid "New draft"
-msgstr ""
+msgstr "Nowy szkic"
 
 #: src/pages/GroupPanel.tsx
 msgid "New group"
@@ -5046,7 +5046,7 @@ msgstr "Brak wspomnień"
 
 #: src/pages/QueuePage.tsx
 msgid "Nothing waiting"
-msgstr ""
+msgstr "Nic nie czeka"
 
 #: src/pages/shell/bot-settings-sections.tsx
 msgid "Notifications"
@@ -5552,7 +5552,7 @@ msgstr "Pull request"
 #: src/components/SidebarFooter.tsx
 #: src/pages/QueuePage.tsx
 msgid "Queue"
-msgstr ""
+msgstr "Kolejka"
 
 #: src/pages/ActivityList.tsx
 msgid "Queued"
@@ -5617,7 +5617,7 @@ msgstr "Ostatnie płatności"
 
 #: src/pages/QueuePage.tsx
 msgid "Recipient"
-msgstr ""
+msgstr "Odbiorca"
 
 #: src/pages/plugins/plugin-browse.tsx
 msgid "Recommended"
