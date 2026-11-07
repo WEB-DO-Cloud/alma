@@ -6530,11 +6530,11 @@ msgstr "Udostępnij \"{title}\""
 
 #: src/pages/ReferralPage.tsx
 msgid "Share ALMA"
-msgstr ""
+msgstr "Udostępnij ALMA"
 
 #: src/pages/ReferralPage.tsx
 msgid "Share text"
-msgstr ""
+msgstr "Tekst do udostępnienia"
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share, anyone with the link can view"
