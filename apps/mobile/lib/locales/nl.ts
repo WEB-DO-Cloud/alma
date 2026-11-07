@@ -1279,6 +1279,19 @@ export const NL_MESSAGES: Record<string, string> = {
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
   "Report response": "Antwoord melden",
   "No chat apps are connected on this server": "Er zijn geen chat-apps verbonden met deze server",
+  "What do you want ALMA for first?": "Waar wil je ALMA eerst voor gebruiken?",
+  "What kind of work?": "Wat voor werk?",
+  "Personal use": "Persoonlijk gebruik",
+  "{days} days left · {left} messages": "Nog {days} dagen · {left} berichten",
+  "The trial ended.": "De proefperiode is afgelopen.",
+  "The trial has reached its limit.": "De proefperiode heeft de limiet bereikt.",
+  "Billed in US dollars.": "Gefactureerd in Amerikaanse dollars.",
+  "{price}/month, billed in US dollars.": "{price}/maand, gefactureerd in Amerikaanse dollars.",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "Daarna verlengt het plan voor {price}/maand tot je opzegt.",
+  "The plan renews monthly until you cancel.": "Het plan verlengt maandelijks tot je opzegt.",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "Zeg op in het facturatieportaal. Toegang loopt door tot het einde van de al betaalde periode.",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

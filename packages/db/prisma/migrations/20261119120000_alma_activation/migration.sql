@@ -71,8 +71,7 @@ CREATE POLICY alma_trials_tenant ON "alma_trials"
       AND s."organizationId" = "alma_trials"."organizationId"
   ));
 CREATE POLICY alma_trials_system ON "alma_trials"
-  USING ((SELECT app_rls_bypass()))
-  WITH CHECK ((SELECT app_rls_bypass()));
+  USING ((SELECT app_rls_bypass()));
 
 CREATE POLICY alma_profiles_tenant ON "alma_profiles"
   USING (EXISTS (
@@ -86,8 +85,7 @@ CREATE POLICY alma_profiles_tenant ON "alma_profiles"
       AND s."organizationId" = "alma_profiles"."organizationId"
   ));
 CREATE POLICY alma_profiles_system ON "alma_profiles"
-  USING ((SELECT app_rls_bypass()))
-  WITH CHECK ((SELECT app_rls_bypass()));
+  USING ((SELECT app_rls_bypass()));
 
 CREATE POLICY activation_events_tenant ON "activation_events"
   USING (EXISTS (
@@ -101,5 +99,4 @@ CREATE POLICY activation_events_tenant ON "activation_events"
       AND s."organizationId" = "activation_events"."organizationId"
   ));
 CREATE POLICY activation_events_system ON "activation_events"
-  USING ((SELECT app_rls_bypass()))
-  WITH CHECK ((SELECT app_rls_bypass()));
+  USING ((SELECT app_rls_bypass()));

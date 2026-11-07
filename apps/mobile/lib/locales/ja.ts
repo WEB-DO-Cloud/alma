@@ -1314,6 +1314,19 @@ export const JA_MESSAGES: Record<string, string> = {
   "Report response": "回答を報告",
   "No chat apps are connected on this server":
     "このサーバーには接続されたチャットアプリがありません",
+  "What do you want ALMA for first?": "ALMAをまず何に使いますか？",
+  "What kind of work?": "どんな仕事ですか？",
+  "Personal use": "個人利用",
+  "{days} days left · {left} messages": "残り{days}日 · 残り{left}件",
+  "The trial ended.": "試用期間が終了しました。",
+  "The trial has reached its limit.": "試用の上限に達しました。",
+  "Billed in US dollars.": "米ドルで請求されます。",
+  "{price}/month, billed in US dollars.": "月額{price}、米ドルで請求。",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "その後、解約するまでプランは月額{price}で更新されます。",
+  "The plan renews monthly until you cancel.": "プランは解約するまで毎月更新されます。",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "請求ポータルで解約できます。アクセスは支払い済みの期間の終わりまで続きます。",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "{peer}とのメッセージ{count}件" };

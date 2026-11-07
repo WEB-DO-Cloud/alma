@@ -37,6 +37,7 @@ import {
   recordActivationEvent,
   releaseCheckoutLease,
   replaceBillingCustomer,
+  runAsSystem,
   syncBillingSnapshot,
   trialCountdown,
 } from "@rakazo/db";
@@ -373,7 +374,12 @@ export function createBillingService(deps: {
     const [account, credits, almaTrial] = await Promise.all([
       billingAccountFor(actor, organizationId),
       creditAccount(prisma, organizationId),
-      prisma.almaTrial.findUnique({ where: { organizationId }, select: { organizationId: true } }),
+      runAsSystem("read the no-card trial", () =>
+        prisma.almaTrial.findUnique({
+          where: { organizationId },
+          select: { organizationId: true },
+        }),
+      ),
     ]);
     try {
       return await openCheckout(actor, account, true, (customerId) =>
@@ -496,14 +502,18 @@ export function createBillingService(deps: {
           await ensureAlmaTrial(prisma, { organizationId, userId: actor.userId });
         }
         const almaRow = flags.trialEnabled
-          ? await prisma.almaTrial.findUnique({ where: { organizationId } })
+          ? await runAsSystem("read the no-card trial", () =>
+              prisma.almaTrial.findUnique({ where: { organizationId } }),
+            )
           : null;
         const profile =
           flags.trialEnabled || flags.onboardingV2
-            ? await prisma.almaProfile.findUnique({
-                where: { organizationId },
-                select: { sector: true, use: true },
-              })
+            ? await runAsSystem("read the activation profile", () =>
+                prisma.almaProfile.findUnique({
+                  where: { organizationId },
+                  select: { sector: true, use: true },
+                }),
+              )
             : null;
         if (almaRow) {
           await noteTrialClock(prisma, {
@@ -616,10 +626,12 @@ export function createBillingService(deps: {
         customerId: await newCustomer(actor, organizationId),
       });
       const seats = await organizationSeatCount(prisma, organizationId);
-      const almaTrial = await prisma.almaTrial.findUnique({
-        where: { organizationId },
-        select: { organizationId: true },
-      });
+      const almaTrial = await runAsSystem("read the no-card trial", () =>
+        prisma.almaTrial.findUnique({
+          where: { organizationId },
+          select: { organizationId: true },
+        }),
+      );
       const trial = account.subscribedAt || almaTrial ? {} : { trialDays: TRIAL_DAYS };
       try {
         return await withLiveCustomer(actor, account, (customerId) =>
