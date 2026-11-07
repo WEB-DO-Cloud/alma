@@ -1453,7 +1453,7 @@ msgstr "Połączenia"
 
 #: src/components/QuickActions.tsx
 msgid "Camera"
-msgstr ""
+msgstr "Aparat"
 
 #: src/components/pages/SharePopover.tsx
 msgid "Can view without signing in"
@@ -7768,7 +7768,7 @@ msgstr "Głos"
 
 #: src/components/QuickActions.tsx
 msgid "Voice note"
-msgstr ""
+msgstr "Notatka głosowa"
 
 #: src/lib/tts.ts
 msgid "Voice request timed out."
