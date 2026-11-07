@@ -181,6 +181,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
   const activityRequestId = useRef(0);
   const inboxRequestId = useRef(0);
   const inboxLoaded = useRef(false);
+  const billingEnabled = useRef(false);
   const creatingBotRef = useRef(false);
   const spaceActionRef = useRef<{ busy: boolean; recoveryId: string | null }>({
     busy: false,
@@ -250,6 +251,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
         apiBase !== currentApiBase()
       )
         return;
+      billingEnabled.current = Boolean(nextMe.billingEnabled);
       if (nextMe.billingEnabled) {
         void rpc("billing/status")
           .then((billing) => {
@@ -335,6 +337,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
   }, [loadBots]);
 
   const refreshTrialBanner = useCallback(() => {
+    if (!billingEnabled.current) return;
     void rpc("billing/status")
       .then((billing) => {
         setTrialBanner(
@@ -349,10 +352,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
       .catch(() => undefined);
   }, []);
 
-  useEffect(() => {
-    if (!me?.billingEnabled) return;
-    return subscribeDelivered(() => refreshTrialBanner());
-  }, [me?.billingEnabled, refreshTrialBanner]);
+  useEffect(() => subscribeDelivered(() => refreshTrialBanner()), [refreshTrialBanner]);
 
   useEffect(() => {
     void loadSessionToken().then((token) => {
