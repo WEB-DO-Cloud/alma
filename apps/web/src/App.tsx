@@ -74,6 +74,7 @@ const QueuePage = lazyComponent(() =>
 const QuietHoursPage = lazyComponent(() =>
   import("./pages/QuietHoursPage").then((module) => module.QuietHoursPage),
 );
+const UndoPage = lazyComponent(() => import("./pages/UndoPage").then((module) => module.UndoPage));
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -306,6 +307,7 @@ function SessionApp() {
                   <Route path="/onboarding/:step?" element={<OnboardingPage />} />
                   <Route path="/app/queue" element={<QueuePage />} />
                   <Route path="/app/notify" element={<QuietHoursPage />} />
+                  <Route path="/app/undo" element={<UndoPage />} />
                   <Route path="/app/artifacts" element={<ArtifactsPage />} />
                   <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />
                   {ticketBoardEnabled ? <Route path="/app/board" element={<BoardPage />} /> : null}

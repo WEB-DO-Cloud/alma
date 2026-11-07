@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { externalSendHold } from "./phase2a.js";
+import { externalSendHold, nextDraftState } from "./phase2a.js";
 import {
   ALREADY_SENT,
+  dispatchAllowed,
   draftFromToolArgs,
   NOT_SENT,
   readSendUndoConfig,
+  readUndoDispatchConfig,
+  runDraftDispatch,
+  undoCountdown,
   undoSeconds,
 } from "./send-undo.js";
 
@@ -84,6 +88,106 @@ describe("held drafts", () => {
       recipient: "ada@example.test",
       body: "Hello",
     });
+  });
+
+  it("does not send inside the window, after cancel, or after an edit", async () => {
+    const now = new Date("2026-11-07T12:00:30.000Z");
+    const approved = {
+      id: "d1",
+      status: "approved",
+      dispatchAfter: "2026-11-07T12:00:30.000Z",
+      bodyHash: "abc",
+      approvedBodyHash: "abc",
+    };
+    const calls: string[] = [];
+    const send = async (draft: { id: string }) => {
+      calls.push(draft.id);
+      return "sent" as const;
+    };
+    expect(
+      await runDraftDispatch({
+        enabled: false,
+        now,
+        list: async () => [approved],
+        claim: async () => true,
+        send,
+        finish: async () => undefined,
+      }),
+    ).toBe(0);
+    expect(calls).toEqual([]);
+    expect(
+      await runDraftDispatch({
+        enabled: true,
+        now,
+        list: async () => [{ ...approved, dispatchAfter: "2026-11-07T12:01:00.000Z" }],
+        claim: async () => true,
+        send,
+        finish: async () => undefined,
+      }),
+    ).toBe(0);
+    expect(
+      await runDraftDispatch({
+        enabled: true,
+        now,
+        list: async () => [{ ...approved, status: "cancelled" }],
+        claim: async () => true,
+        send,
+        finish: async () => undefined,
+      }),
+    ).toBe(0);
+    const edited = nextDraftState({
+      status: "approved",
+      command: "edit",
+      actorRole: "owner",
+      actorUserId: "owner",
+      creatorRole: "owner",
+      creatorUserId: "owner",
+      now,
+      delaySeconds: 30,
+    });
+    expect(edited.status).toBe("draft");
+    expect(edited.clearApproval).toBe(true);
+    expect(dispatchAllowed({ ...approved, status: "draft", approvedBodyHash: null }, now)).toBe(
+      false,
+    );
+    expect(
+      await runDraftDispatch({
+        enabled: true,
+        now,
+        list: async () => [approved],
+        claim: async () => false,
+        send,
+        finish: async () => undefined,
+      }),
+    ).toBe(0);
+    expect(calls).toEqual([]);
+    expect(
+      await runDraftDispatch({
+        enabled: true,
+        now,
+        list: async () => [approved],
+        claim: async () => true,
+        send,
+        finish: async () => undefined,
+      }),
+    ).toBe(1);
+    expect(calls).toEqual(["d1"]);
+    expect(undoCountdown("2026-11-07T12:00:40.000Z", now)).toBe(10);
+    expect(undoCountdown("2026-11-07T12:00:30.000Z", now)).toBe(0);
+  });
+
+  it("refuses dispatch without the undo flag", () => {
+    expect(readUndoDispatchConfig({}).enabled).toBe(false);
+    expect(() => readUndoDispatchConfig({ ALMA_UNDO_DISPATCH: "true" })).toThrow(
+      "undo dispatch requires send undo",
+    );
+    expect(
+      readUndoDispatchConfig({
+        ALMA_UNDO_DISPATCH: "true",
+        ALMA_SEND_UNDO: "true",
+        ALMA_PHASE2A: "true",
+      }).enabled,
+    ).toBe(true);
   });
 
   it("does not use recall in the status strings", () => {

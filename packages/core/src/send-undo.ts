@@ -45,3 +45,63 @@ export function draftFromToolArgs(name: string, args: Record<string, unknown>): 
 /** Shown while a draft this slice created is still approved. */
 export const NOT_SENT = "Not sent";
 export const ALREADY_SENT = "Already sent.";
+
+/** Sending after the window. Off unless exactly `true`, and only with send undo (which needs Phase 2A). */
+export function readUndoDispatchConfig(source: NodeJS.ProcessEnv = process.env): {
+  enabled: boolean;
+} {
+  const enabled = source.ALMA_UNDO_DISPATCH === "true";
+  if (enabled && !readSendUndoConfig(source).enabled) {
+    throw new Error("undo dispatch requires send undo");
+  }
+  return { enabled };
+}
+
+export type DueDraft = {
+  id: string;
+  status: string;
+  dispatchAfter: string | null;
+  bodyHash: string;
+  approvedBodyHash: string | null;
+};
+
+/** True only for an approved draft whose hash still matches and whose window has elapsed. */
+export function dispatchAllowed(draft: DueDraft, now: Date): boolean {
+  if (draft.status !== "approved") return false;
+  if (!draft.dispatchAfter || draft.approvedBodyHash !== draft.bodyHash) return false;
+  return new Date(draft.dispatchAfter).getTime() <= now.getTime();
+}
+
+export function undoCountdown(dispatchAfter: string | null, now: Date): number | null {
+  if (!dispatchAfter) return null;
+  const remaining = new Date(dispatchAfter).getTime() - now.getTime();
+  if (Number.isNaN(remaining)) return null;
+  if (remaining <= 0) return 0;
+  return Math.ceil(remaining / 1000);
+}
+
+/** Claims then sends. A failed claim (cancel or edit) never calls send. */
+export async function runDraftDispatch(input: {
+  enabled: boolean;
+  now: Date;
+  list: () => Promise<DueDraft[]>;
+  claim: (draft: DueDraft) => Promise<boolean>;
+  send: (draft: DueDraft) => Promise<"sent" | "failed" | "unknown">;
+  finish: (id: string, result: "sent" | "failed" | "unknown") => Promise<void>;
+}): Promise<number> {
+  if (!input.enabled) return 0;
+  let sent = 0;
+  for (const draft of await input.list()) {
+    if (!dispatchAllowed(draft, input.now)) continue;
+    if (!(await input.claim(draft))) continue;
+    let result: "sent" | "failed" | "unknown" = "unknown";
+    try {
+      result = await input.send(draft);
+    } catch {
+      result = "unknown";
+    }
+    await input.finish(draft.id, result);
+    if (result === "sent") sent += 1;
+  }
+  return sent;
+}

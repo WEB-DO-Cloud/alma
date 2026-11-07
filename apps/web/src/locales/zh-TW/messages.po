@@ -164,6 +164,10 @@ msgstr "{botCount, plural, one {要刪除 {name} 及其 # 個機器人嗎？} ot
 msgid "{botName}’s computer"
 msgstr "{botName} 的電腦"
 
+#: src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr ""
+
 #: src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
 msgstr "{commandVariable} 是保留名稱，不能用作命令變數。請選擇其他名稱。"
@@ -5032,6 +5036,10 @@ msgstr "不在外掛程式目錄中"
 msgid "Not now"
 msgstr "暫不"
 
+#: src/components/SendUndoBar.tsx
+msgid "Not sent"
+msgstr ""
+
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/import-status.ts
 msgid "Not supported in ALMA"
@@ -7445,8 +7453,15 @@ msgid "Unassigned"
 msgstr "未分配"
 
 #: src/components/AskCard.tsx
+#: src/components/SendUndoBar.tsx
+#: src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "復原"
+
+#: src/pages/QueuePage.tsx
+#: src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr ""
 
 #: src/pages/plugins/connector-detail.tsx
 msgid "Uninstall"

@@ -163,6 +163,10 @@ msgstr "{botCount, plural, other {{name} と # 個のボットを削除します
 msgid "{botName}’s computer"
 msgstr "{botName}のコンピューター"
 
+#: src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr ""
+
 #: src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
 msgstr "{commandVariable}は予約済みのため、コマンド変数として使用できません。別の名前を選んでください。"
@@ -5031,6 +5035,10 @@ msgstr "プラグインカタログにありません"
 msgid "Not now"
 msgstr "今はしない"
 
+#: src/components/SendUndoBar.tsx
+msgid "Not sent"
+msgstr ""
+
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/import-status.ts
 msgid "Not supported in ALMA"
@@ -7444,8 +7452,15 @@ msgid "Unassigned"
 msgstr "未割り当て"
 
 #: src/components/AskCard.tsx
+#: src/components/SendUndoBar.tsx
+#: src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "元に戻す"
+
+#: src/pages/QueuePage.tsx
+#: src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr ""
 
 #: src/pages/plugins/connector-detail.tsx
 msgid "Uninstall"

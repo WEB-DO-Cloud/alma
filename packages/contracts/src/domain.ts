@@ -1503,6 +1503,8 @@ export const MeSchema = z.object({
   notifyPolicyEnabled: z.boolean().optional(),
   /** Cancel window before an external send. Absent means off. */
   sendUndoEnabled: z.boolean().optional(),
+  /** Sends an approved draft when the undo window ends. Absent means off. */
+  undoDispatchEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

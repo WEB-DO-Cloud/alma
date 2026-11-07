@@ -7,6 +7,7 @@ import { ApprovalQueue } from "../../lib/approval-queue";
 /** Drafts waiting for an exact-text approval. Shown only when Phase 2A is on. */
 export default function QueueScreen() {
   const [actorUserId, setActorUserId] = useState("");
+  const [sendUndo, setSendUndo] = useState(false);
   const [contexts, setContexts] = useState<WorkContext[]>([]);
   const [contextId, setContextId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<OutboundDraft[]>([]);
@@ -14,6 +15,7 @@ export default function QueueScreen() {
   const load = useCallback(async (nextContextId?: string) => {
     const [me, next] = await Promise.all([rpc("me"), rpc("phase2a/contexts/list")]);
     setActorUserId(me.userId);
+    setSendUndo(me.sendUndoEnabled === true);
     setContexts(next);
     const id = nextContextId ?? next[0]?.id ?? null;
     setContextId(id);
@@ -47,6 +49,7 @@ export default function QueueScreen() {
           if (!contextId) return;
           void rpc("phase2a/drafts/approve", { id }).then(() => load(contextId));
         }}
+        sendUndo={sendUndo}
         onCancel={(id) => {
           if (!contextId) return;
           void rpc("phase2a/drafts/cancel", { id }).then(() => load(contextId));
