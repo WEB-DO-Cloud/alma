@@ -42,6 +42,7 @@ export * from "./model-credits.js";
 export * from "./model-roles.js";
 export * from "./organizations.js";
 export * from "./page-shares.js";
+export * from "./phase2a-store.js";
 export * from "./prisma-errors.js";
 export * from "./provider-transactions.js";
 export * from "./repos.js";

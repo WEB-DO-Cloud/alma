@@ -52,6 +52,7 @@ import { onboardingRoutes } from "./routes/onboarding.js";
 import { organizationsRoutes } from "./routes/organizations.js";
 import { pagesRoutes } from "./routes/pages.js";
 import { paymentWalletRoutes } from "./routes/payment-wallet.js";
+import { phase2aRoutes } from "./routes/phase2a.js";
 import { routinesRoutes } from "./routes/routines.js";
 import { spacesRoutes } from "./routes/spaces.js";
 import { spendingLimitRoutes } from "./routes/spending-limit.js";
@@ -178,6 +179,7 @@ export function createRouter(deps: RouterDeps) {
     ...contentRoutes(ctx),
     ...pagesRoutes(ctx),
     ...paymentWalletRoutes(ctx),
+    ...phase2aRoutes(ctx),
     ...spendingLimitRoutes(ctx),
   });
 }

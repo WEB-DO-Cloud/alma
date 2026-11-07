@@ -8,7 +8,12 @@ import type {
 } from "@rakazo/adapter-kit";
 import { messagingDeliverJob, runContinueJob } from "@rakazo/adapter-kit";
 import type { MessageBlock } from "@rakazo/contracts";
-import { botMessageHopExhausted, nextBotMessageHop, pageLinksAsTitles } from "@rakazo/core";
+import {
+  botMessageHopExhausted,
+  nextBotMessageHop,
+  pageLinksAsTitles,
+  readPhase2aConfig,
+} from "@rakazo/core";
 import type { Prisma, PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
   accountDeactivated,
@@ -96,7 +101,8 @@ export async function mirrorMessagingOutbound(
   deps: MessagingDeliveryDeps,
   runId: string,
 ): Promise<void> {
-  await mirrorRun(deps, runId);
+  // Phase 2A holds linked-chat copies. Still stamp the run so delivery is not retried.
+  if (!readPhase2aConfig().enabled) await mirrorRun(deps, runId);
   await deps.prisma.run.updateMany({
     where: { id: runId, trigger: "messaging" },
     data: { messagingMirroredAt: new Date() },

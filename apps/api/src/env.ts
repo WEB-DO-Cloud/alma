@@ -25,6 +25,7 @@ import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
 import {
   attachmentCountFromEnv,
   phoneCallSettings,
+  readPhase2aConfig,
   resolveAuthSecret,
   resolveContentEncryption,
   resolveEncryptionKey,
@@ -143,6 +144,8 @@ export interface AppEnv {
   almaTrialDays: number;
   almaTrialMessageCap: number;
   almaOnboardingV2: boolean;
+  phase2aEnabled: boolean;
+  phase2aDispatchDelaySeconds: number;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -439,11 +442,14 @@ function inboundEmailFromEnv(source: NodeJS.ProcessEnv): AppEnv["inboundEmail"] 
 
 function almaFlags(source: NodeJS.ProcessEnv) {
   const flags = readAlmaFlags(source);
+  const phase2a = readPhase2aConfig(source);
   return {
     almaTrialEnabled: flags.trialEnabled,
     almaTrialDays: flags.trialDays,
     almaTrialMessageCap: flags.trialMessageCap,
     almaOnboardingV2: flags.onboardingV2,
+    phase2aEnabled: phase2a.enabled,
+    phase2aDispatchDelaySeconds: phase2a.dispatchDelaySeconds,
   };
 }
 

@@ -13,6 +13,8 @@ describe("loadEnv", () => {
       almaTrialDays: 14,
       almaTrialMessageCap: 50,
       almaOnboardingV2: false,
+      phase2aEnabled: false,
+      phase2aDispatchDelaySeconds: 30,
     });
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
@@ -23,6 +25,14 @@ describe("loadEnv", () => {
     expect(() => loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_TRIAL_DAYS: "99" })).toThrow(
       "ALMA_TRIAL_DAYS",
     );
+    expect(loadEnv({ ...base, ALMA_PHASE2A: "yes" }).phase2aEnabled).toBe(false);
+    expect(loadEnv({ ...base, ALMA_PHASE2A: "true" })).toMatchObject({
+      phase2aEnabled: true,
+      phase2aDispatchDelaySeconds: 30,
+    });
+    expect(() =>
+      loadEnv({ ...base, ALMA_PHASE2A: "true", ALMA_PHASE2A_DISPATCH_DELAY_SECONDS: "301" }),
+    ).toThrow("ALMA_PHASE2A_DISPATCH_DELAY_SECONDS");
   });
 
   it("reads an optional launch coupon and ignores a blank one", () => {
