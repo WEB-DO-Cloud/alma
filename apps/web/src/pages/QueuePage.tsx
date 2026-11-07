@@ -59,7 +59,7 @@ export function QueuePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-col gap-6 p-6">
-      <h1 className="text-lg font-medium">
+      <h1 className="text-heading3 font-medium text-foreground">
         <Trans>Queue</Trans>
       </h1>
       <div className="flex flex-wrap gap-2">
@@ -124,7 +124,7 @@ export function QueuePage() {
             });
           }}
         >
-          <h2 className="text-sm font-medium">
+          <h2 className="text-body font-medium text-foreground">
             <Trans>New draft</Trans>
           </h2>
           <input
