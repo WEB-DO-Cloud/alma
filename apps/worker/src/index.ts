@@ -6,6 +6,7 @@ import {
   readPhase2aConfig,
   readSendUndoConfig,
   readUndoDispatchConfig,
+  readVoiceNotesConfig,
 } from "@rakazo/core";
 import { loadRootEnv } from "@rakazo/core/node/load-root-env";
 import { stopOnShutdownSignals } from "@rakazo/core/node/shutdown-signals";
@@ -99,6 +100,7 @@ async function main() {
   readNotifyPolicyConfig();
   readSendUndoConfig();
   readUndoDispatchConfig();
+  readVoiceNotesConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");

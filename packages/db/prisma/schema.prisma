@@ -103,6 +103,7 @@ model User {
   notificationPolicy          UserNotificationPolicy?
   notificationBatches         NotificationBatch[]
   sendUndoSetting             SendUndoSetting?
+  voiceTranscripts            VoiceTranscript[]
 
   @@unique([email])
   @@map("user")
@@ -2966,6 +2967,26 @@ model NotificationBatch {
 
   @@index([userId, sentAt])
   @@map("notification_batches")
+}
+
+/// Editable transcript of one audio artifact. Empty while ALMA_VOICE_NOTES is off.
+model VoiceTranscript {
+  id             String   @id @default(cuid())
+  organizationId String
+  spaceId        String
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artifactId     String
+  text           String   @db.Text
+  noteTitle      String?
+  noteBody       String?  @db.Text
+  status         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, artifactId])
+  @@index([spaceId, userId])
+  @@map("voice_transcripts")
 }
 
 /// Seconds before an approved external draft could be claimed. No sender is attached.
