@@ -93,7 +93,11 @@ export function useComposerActions({
   flushPendingBrowserNotifications: () => void;
 }) {
   const { t } = useLingui();
-  const { showPlans } = useBilling();
+  const { showPlans, refresh, status: billingStatus } = useBilling();
+  const refreshTrial = useRef(refresh);
+  const trialVisible = useRef(false);
+  refreshTrial.current = refresh;
+  trialVisible.current = Boolean(billingStatus?.access && billingStatus.almaTrial);
   const [pendingAttachments, setPendingAttachments] = useState<PendingAttachment[]>([]);
   usePendingAttachmentPreviewCleanup(pendingAttachments);
   const [replyTarget, setReplyTarget] = useState<ThreadMessage | null>(null);
@@ -447,6 +451,7 @@ export function useComposerActions({
             ),
           );
         }
+        if (!supportSend && trialVisible.current) void refreshTrial.current();
         uploadedSendArtifacts.current.delete(clientNonce);
         dropDelayedSetup();
         clearReply();
@@ -468,6 +473,7 @@ export function useComposerActions({
         return true;
       } catch (error) {
         if (isTrialLimitError(error)) {
+          void refreshTrial.current();
           showPlans();
           setSendFailure({
             message: t`The trial has reached its limit.`,

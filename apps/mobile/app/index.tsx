@@ -89,6 +89,7 @@ import {
   subscribeSessionGeneration,
 } from "../lib/session";
 import { useSplitView } from "../lib/split-view";
+import { subscribeDelivered } from "../lib/thread-feedback";
 import { useArchivedCount } from "../lib/use-archived-count";
 import { useCollapsedSections } from "../lib/use-collapsed-sections";
 import { useHomeHeader } from "../lib/use-home-header";
@@ -180,6 +181,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
   const activityRequestId = useRef(0);
   const inboxRequestId = useRef(0);
   const inboxLoaded = useRef(false);
+  const billingEnabled = useRef(false);
   const creatingBotRef = useRef(false);
   const spaceActionRef = useRef<{ busy: boolean; recoveryId: string | null }>({
     busy: false,
@@ -249,6 +251,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
         apiBase !== currentApiBase()
       )
         return;
+      billingEnabled.current = Boolean(nextMe.billingEnabled);
       if (nextMe.billingEnabled) {
         void rpc("billing/status")
           .then((billing) => {
@@ -332,6 +335,24 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
       setRefreshing(false);
     }
   }, [loadBots]);
+
+  const refreshTrialBanner = useCallback(() => {
+    if (!billingEnabled.current) return;
+    void rpc("billing/status")
+      .then((billing) => {
+        setTrialBanner(
+          billing.access && billing.almaTrial
+            ? {
+                daysLeft: billing.almaTrial.daysLeft,
+                messagesLeft: billing.almaTrial.messagesLeft,
+              }
+            : null,
+        );
+      })
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => subscribeDelivered(() => refreshTrialBanner()), [refreshTrialBanner]);
 
   useEffect(() => {
     void loadSessionToken().then((token) => {

@@ -7,6 +7,19 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { createSpaceRpc } from "../../lib/rpc";
 import { useComposerActions } from "./use-composer-actions";
 
+const billing = vi.hoisted(() => ({
+  showPlans: vi.fn(),
+  refresh: vi.fn(),
+  status: null as { access?: boolean; almaTrial?: { messagesLeft: number } | null } | null,
+}));
+vi.mock("../../components/SubscriptionGate", () => ({
+  useBilling: () => ({
+    status: billing.status,
+    showPlans: billing.showPlans,
+    refresh: billing.refresh,
+  }),
+}));
+
 vi.mock("@lingui/react/macro", () => ({
   useLingui: () => ({
     t: (parts: TemplateStringsArray, ...values: unknown[]) =>
@@ -70,6 +83,9 @@ async function flush() {
 
 beforeEach(() => {
   (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+  billing.status = null;
+  billing.refresh.mockClear();
+  billing.showPlans.mockClear();
   me = null;
   navigate = vi.fn();
   rpc = {
@@ -206,6 +222,16 @@ it("opens a mentioned group without running anything", async () => {
   expect(navigate).toHaveBeenCalledWith("/app/g/group-2");
   expect(rpc.threads.sendWithRoutines).not.toHaveBeenCalled();
   expect(rpc.threads.send).not.toHaveBeenCalled();
+});
+
+it("reloads the trial countdown after a chat message is accepted", async () => {
+  billing.status = { access: true, almaTrial: { messagesLeft: 50 } };
+  act(() => root.render(<Harness />));
+  rpc.threads.send.mockResolvedValue({ runId: "run-1", taskId: "task-1" });
+
+  expect(await send("hello", [])).toBe(true);
+
+  expect(billing.refresh).toHaveBeenCalledTimes(1);
 });
 
 it("asks the chat to follow on submit, before the send lands", async () => {

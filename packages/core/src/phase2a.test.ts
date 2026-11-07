@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALMA_PERSONAL_SECTOR, ALMA_WORK_SECTORS } from "@rakazo/contracts";
 import { describe, expect, it } from "vitest";
+import { draftBodyHash } from "./node/phase2a-hash.js";
 import {
   assertCanApprove,
   assertContextParent,
@@ -10,7 +11,6 @@ import {
   assertRevoke,
   claimDraft,
   deliveryLabel,
-  draftBodyHash,
   externalSendHold,
   nextDraftState,
   Phase2aError,

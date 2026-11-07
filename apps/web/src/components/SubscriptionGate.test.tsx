@@ -50,6 +50,8 @@ async function renderGate(billing: boolean) {
 
 afterEach(() => {
   vi.clearAllMocks();
+  api.status.mockReset();
+  api.me.mockReset();
   vi.unstubAllGlobals();
 });
 
@@ -66,6 +68,59 @@ it("skips the billing request for users billing does not apply to", async () => 
   const { container, root } = await renderGate(true);
   expect(container.textContent).toBe("app");
   expect(api.status).not.toHaveBeenCalled();
+  act(() => root.unmount());
+});
+
+it("updates the trial countdown when the open chat asks billing to refresh", async () => {
+  api.me.mockResolvedValue({ billingEnabled: true });
+  api.status
+    .mockResolvedValueOnce({ access: true, almaTrial: { messagesLeft: 50, daysLeft: 14 } })
+    .mockResolvedValueOnce({ access: true, almaTrial: { messagesLeft: 49, daysLeft: 14 } });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () =>
+      Response.json({
+        billing: true,
+        passwordAuth: true,
+        sso: null,
+        passwordReset: false,
+        resetUrl: null,
+      }),
+    ),
+  );
+  vi.resetModules();
+  const { SubscriptionGate, useBilling } = await import("./SubscriptionGate");
+  const { MemoryRouter } = await import("react-router-dom");
+  function Count() {
+    const billing = useBilling();
+    return (
+      <button type="button" onClick={() => void billing.refresh()}>
+        {billing.status?.almaTrial?.messagesLeft}
+      </button>
+    );
+  }
+  const container = document.createElement("div");
+  const root = createRoot(container);
+  await act(async () => {
+    root.render(
+      <MemoryRouter>
+        <SubscriptionGate fallback={<div>loading</div>}>
+          <Count />
+        </SubscriptionGate>
+      </MemoryRouter>,
+    );
+  });
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  expect(container.textContent).toBe("50");
+
+  await act(async () => {
+    container.querySelector("button")?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+  expect(container.textContent).toBe("49");
+  expect(api.status).toHaveBeenCalledTimes(2);
   act(() => root.unmount());
 });
 
