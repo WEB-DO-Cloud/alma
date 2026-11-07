@@ -3328,7 +3328,7 @@ msgstr "Włącz {0}"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "End"
-msgstr ""
+msgstr "Koniec"
 
 #: src/components/ComputerProviderSettings.tsx
 msgid "End user ID"
@@ -3931,7 +3931,7 @@ msgstr "Do weryfikacji"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
-msgstr ""
+msgstr "W aplikacji"
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -5560,7 +5560,7 @@ msgstr "Pull request"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "Push"
-msgstr ""
+msgstr "Powiadomienie"
 
 #: src/components/SidebarFooter.tsx
 #: src/pages/QueuePage.tsx
@@ -5573,7 +5573,7 @@ msgstr "W kolejce"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "Quiet hours"
-msgstr ""
+msgstr "Godziny ciszy"
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
