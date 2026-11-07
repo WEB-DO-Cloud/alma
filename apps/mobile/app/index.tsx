@@ -170,6 +170,9 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
   const [organizeTarget, setOrganizeTarget] = useState<OrganizeTarget | null>(null);
   const organizeRequestId = useRef(0);
   const [activityMode, setActivityMode] = useState(false);
+  const [trialBanner, setTrialBanner] = useState<{ daysLeft: number; messagesLeft: number } | null>(
+    null,
+  );
   const [activity, setActivity] = useState<{ active: RunActivityRow[]; recent: RunActivityRow[] }>({
     active: [],
     recent: [],
@@ -258,6 +261,16 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
               !isPaywallShown()
             )
               router.push("/paywall");
+            if (requestId === inboxRequestId.current) {
+              setTrialBanner(
+                billing.access && billing.almaTrial
+                  ? {
+                      daysLeft: billing.almaTrial.daysLeft,
+                      messagesLeft: billing.almaTrial.messagesLeft,
+                    }
+                  : null,
+              );
+            }
           })
           .catch(() => undefined);
       }
@@ -266,6 +279,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
       setGroups((current) => retainInboxValue(current, navigation.current.groups));
       setSpaces((current) => retainInboxValue(current, navigation.spaces));
       setMe((current) => retainInboxValue(current, nextMe));
+      if (nextMe.needsSectorChoice) router.push("/sector");
       // Emails follow the app's language, so the account keeps the one this app runs in. Once
       // per account and launch: polls must not undo a language picked on another device since.
       // A server that predates it leaves `locale` out.
@@ -840,6 +854,20 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
                 }
                 ListHeaderComponent={
                   <>
+                    {trialBanner ? (
+                      <Pressable
+                        accessibilityRole="button"
+                        onPress={() => router.push("/paywall")}
+                        style={styles.recoveryAction}
+                      >
+                        <Text style={styles.spaceTitle}>
+                          {t("{days} days left · {left} messages", {
+                            days: trialBanner.daysLeft,
+                            left: trialBanner.messagesLeft,
+                          })}
+                        </Text>
+                      </Pressable>
+                    ) : null}
                     {inlineError ? <Text style={styles.error}>{inlineError}</Text> : null}
                     {spaceRecoveryId ? (
                       <Pressable

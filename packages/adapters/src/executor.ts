@@ -42,6 +42,7 @@ import {
   parseComputerMode,
   RunHistoryWriteError,
   readRunTimingFields,
+  recordTaskCompleted,
   recordUsage,
   settleReleasedTakeoverCards,
   spaceHasModelAccess,
@@ -1849,6 +1850,9 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
           if (await consumeRunEvents(ctx, runtimeEvents)) return;
           if (await interruptedByShutdown()) return;
           await completeRun(ctx);
+          await recordTaskCompleted(deps.prisma, runId).catch((error) => {
+            getLogger().warn("activation task completed", { runId, error });
+          });
         } catch (caughtError) {
           if (await interruptedByShutdown()) return;
           await failRun(ctx, caughtError, {

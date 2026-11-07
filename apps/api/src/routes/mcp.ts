@@ -27,6 +27,7 @@ import {
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
 import { requireAdmin } from "../admins.js";
+import { almaOnboarding } from "../alma-onboarding.js";
 import {
   assertNameFreeWhereAvailable,
   lockOwner,
@@ -1021,6 +1022,21 @@ export function mcpRoutes(ctx: RouterContext) {
         );
         return { ok: true as const };
       }),
+      sector: authed.onboarding.sector.handler(async ({ context, input }) =>
+        almaOnboarding(deps).sector(context.actor, input),
+      ),
+      checklist: authed.onboarding.checklist.handler(async ({ context }) =>
+        almaOnboarding(deps).checklist(context.actor),
+      ),
+      checklistDismiss: authed.onboarding.checklistDismiss.handler(async ({ context }) =>
+        almaOnboarding(deps).checklistDismiss(context.actor),
+      ),
+      checklistReopen: authed.onboarding.checklistReopen.handler(async ({ context }) =>
+        almaOnboarding(deps).checklistReopen(context.actor),
+      ),
+      event: authed.onboarding.event.handler(async ({ context }) =>
+        almaOnboarding(deps).event(context.actor),
+      ),
       start: authed.onboarding.start.handler(async ({ context, input }) => {
         await startOnboarding(onboardingDeps, context.actor, input.botId);
         return { ok: true as const };

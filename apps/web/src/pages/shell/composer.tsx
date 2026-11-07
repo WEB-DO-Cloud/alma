@@ -36,6 +36,7 @@ import {
   readComposerDraftBindings,
   settleComposerDraftSubmission,
   subscribeComposerDraftAccepted,
+  subscribeComposerFill,
   writeComposerDraft,
 } from "../../lib/composer-draft";
 import { isFileDrag, isFilePaste } from "../../lib/pending-attachments";
@@ -162,6 +163,9 @@ export const Composer = memo(function Composer({
     editSelections.current = [];
     if (persist) writeComposerDraft(draftKey, next.text, undefined, next.bindings);
   }
+  const commitRef = useRef(commitComposition);
+  commitRef.current = commitComposition;
+  useEffect(() => subscribeComposerFill((text) => commitRef.current({ text, bindings: [] })), []);
   function appendDictation(text: string) {
     if (!mountedRef.current || draftKeyRef.current !== draftKey) return;
     const current = compositionRef.current.text;

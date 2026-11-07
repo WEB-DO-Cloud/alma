@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { BillingSubscriptionSnapshot } from "@rakazo/adapter-kit";
 import { resolveByokMonthlyPriceCents } from "@rakazo/contracts";
+import { readAlmaFlags } from "./alma-flags.js";
 import type { BillingAccount, PrismaClient } from "./client.js";
 import { Prisma } from "./client.js";
 
@@ -14,16 +15,30 @@ export function hasBillingAccess(status: string | null): boolean {
  * Whether a model-credit organization can run bots. Any live subscription grants it, as does a
  * credit balance outside own-key mode. Otherwise only a free own-key plan or free period does.
  */
+/** A no-card trial grant. Null when the organization has no trial row or the flag is off. */
+export type AlmaTrialAccess = {
+  endsAt: Date;
+  messagesUsed: number;
+  messageCap: number;
+} | null;
+
+export function almaTrialActive(trial: AlmaTrialAccess, now = new Date()): boolean {
+  return trial !== null && trial.endsAt > now && trial.messagesUsed < trial.messageCap;
+}
+
 export function hasModelAccess(
   credits: { mode: string | null; balanceMicros: bigint; byokFreeUntil: Date | null },
   subscriptionStatus: string | null,
   now = new Date(),
+  trial: AlmaTrialAccess = null,
 ): boolean {
   if (hasBillingAccess(subscriptionStatus)) return true;
-  if (credits.mode === "byok")
-    return resolveByokMonthlyPriceCents() === null || byokFreeUntil(credits, now) !== null;
-  if (credits.balanceMicros > 0n) return true;
-  return resolveByokMonthlyPriceCents() === null && credits.mode === "credits";
+  if (credits.mode === "byok") {
+    if (resolveByokMonthlyPriceCents() === null || byokFreeUntil(credits, now) !== null)
+      return true;
+  } else if (credits.balanceMicros > 0n) return true;
+  else if (resolveByokMonthlyPriceCents() === null && credits.mode === "credits") return true;
+  return almaTrialActive(trial, now);
 }
 
 /** The free period's end while it is still running. */
@@ -46,6 +61,31 @@ export function extendByokFreePeriod(
 }
 
 export async function spaceHasModelAccess(prisma: PrismaClient, spaceId: string) {
+  const space = await prisma.space.findUnique({
+    where: { id: spaceId },
+    select: {
+      organization: {
+        select: {
+          modelCredits: { select: { mode: true, balanceMicros: true, byokFreeUntil: true } },
+          billing: { select: { status: true } },
+          almaTrial: { select: { endsAt: true, messagesUsed: true, messageCap: true } },
+        },
+      },
+    },
+  });
+  if (!space) return false;
+  const { modelCredits, billing, almaTrial } = space.organization;
+  const flags = readAlmaFlags();
+  return hasModelAccess(
+    modelCredits ?? { mode: null, balanceMicros: 0n, byokFreeUntil: null },
+    billing?.status ?? null,
+    new Date(),
+    flags.trialEnabled ? (almaTrial ?? null) : null,
+  );
+}
+
+/** Access from a subscription, complimentary period, or credits. The no-card trial does not count. */
+export async function spaceHasNonTrialModelAccess(prisma: PrismaClient, spaceId: string) {
   const space = await prisma.space.findUnique({
     where: { id: spaceId },
     select: {

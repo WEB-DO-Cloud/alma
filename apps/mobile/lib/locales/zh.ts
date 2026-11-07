@@ -1292,6 +1292,19 @@ export const ZH_MESSAGES: Record<string, string> = {
   "That URL did not look like an ALMA server": "That URL did not look like an ALMA server",
   "Report response": "举报回复",
   "No chat apps are connected on this server": "此服务器未连接任何聊天应用",
+  "What do you want ALMA for first?": "你想先用 ALMA 做什么？",
+  "What kind of work?": "哪种工作？",
+  "Personal use": "个人使用",
+  "{days} days left · {left} messages": "剩余 {days} 天 · {left} 条消息",
+  "The trial ended.": "试用已结束。",
+  "The trial has reached its limit.": "试用已达到上限。",
+  "Billed in US dollars.": "以美元计费。",
+  "{price}/month, billed in US dollars.": "每月 {price}，以美元计费。",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "之后，方案按每月 {price} 续订，直到你取消。",
+  "The plan renews monthly until you cancel.": "方案每月续订，直到你取消。",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "在账单门户中取消。访问权限持续到已付费周期结束。",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

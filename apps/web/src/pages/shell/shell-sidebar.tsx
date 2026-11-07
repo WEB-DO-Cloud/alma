@@ -19,6 +19,7 @@ import { useBilling } from "../../components/SubscriptionGate";
 import { formatBillingDate } from "../../lib/billing";
 import type { BotsSidebarDensity } from "../../lib/bots-sidebar-density-pref";
 import type { Panel } from "../../lib/right-panel-state";
+import { rpc } from "../../lib/rpc";
 import { useSignOut } from "../../lib/sign-out";
 import { ActivityList } from "../ActivityList";
 import { SpaceSearchResults } from "../SpaceSearch";
@@ -63,6 +64,7 @@ export function ShellSidebar({
   openSettings,
   openIntegrations,
   openSkills,
+  onboardingV2 = false,
 }: {
   isMobile: boolean;
   mobileOpen: boolean;
@@ -88,6 +90,7 @@ export function ShellSidebar({
   openSettings: (section: SettingsSection) => void;
   openIntegrations: () => void;
   openSkills: () => void;
+  onboardingV2?: boolean;
 }) {
   const { t } = useLingui();
   const {
@@ -269,6 +272,7 @@ export function ShellSidebar({
           openSettings={openSettings}
           openIntegrations={openIntegrations}
           openSkills={openSkills}
+          onboardingV2={onboardingV2}
         />
       </Sidebar>
     </>
@@ -286,6 +290,7 @@ function ShellSidebarFooter({
   openSettings,
   openIntegrations,
   openSkills,
+  onboardingV2 = false,
 }: {
   mini: boolean;
   logos: Array<{ name: string; logo?: string | null }>;
@@ -297,6 +302,7 @@ function ShellSidebarFooter({
   openSettings: (section: SettingsSection) => void;
   openIntegrations: () => void;
   openSkills: () => void;
+  onboardingV2?: boolean;
 }) {
   const { t, i18n } = useLingui();
   const { status: billing, showPlans } = useBilling();
@@ -375,6 +381,25 @@ function ShellSidebarFooter({
           setMenuOpen(false);
           openSettings("general");
         }}
+        onWork={
+          onboardingV2
+            ? () => {
+                setMenuOpen(false);
+                closeMobileSidebar();
+                navigate("/onboarding/sector");
+              }
+            : undefined
+        }
+        onSetup={
+          onboardingV2
+            ? () => {
+                setMenuOpen(false);
+                void rpc.onboarding.checklistReopen().then(() => {
+                  window.dispatchEvent(new Event("alma-checklist"));
+                });
+              }
+            : undefined
+        }
         onUsage={() => {
           setMenuOpen(false);
           openSettings("usage");

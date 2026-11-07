@@ -1905,6 +1905,12 @@ export const MeSchema = z.object({
   billingEnabled: z.boolean(),
   /** True until a user of a billing deployment answers or skips the signup survey. Absent from older servers. */
   needsSignupSurvey: z.boolean().optional(),
+  /** Phase 1 onboarding. Absent from older servers. */
+  onboardingV2: z.boolean().optional(),
+  needsSectorChoice: z.boolean().optional(),
+  almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
+  almaSector: z.string().nullable().optional(),
+  almaProfileSource: z.enum(["choice", "existing"]).nullable().optional(),
   /** The wallet bots can spend from, when this deployment offers one. Absent from older servers. */
   paymentWalletProvider: z.object({ id: z.string(), name: z.string() }).nullable().optional(),
 });
@@ -2023,6 +2029,22 @@ export const BillingStatusSchema = z.object({
   currentPeriodEndsAt: z.string().nullable(),
   cancelAtPeriodEnd: z.boolean(),
   hasCustomer: z.boolean(),
+  /**
+   * No-card trial countdown. Absent from older servers, and null when this organization
+   * has no trial or the trial flag is off.
+   */
+  almaTrial: z
+    .object({
+      endsAt: z.string(),
+      messagesUsed: z.number().int().nonnegative(),
+      messageCap: z.number().int().positive(),
+      daysLeft: z.number().int().nonnegative(),
+      messagesLeft: z.number().int().nonnegative(),
+    })
+    .nullable()
+    .optional(),
+  /** Renewal and currency sentences on the plan page. Absent from older servers. */
+  planClarity: z.boolean().optional(),
   /** Computer hours left this calendar month; absent when computers have no limit. */
   computerHoursLeft: z.number().nonnegative().nullable().optional(),
   /** Present once the organization has subscribed: its invite link and free months earned. */

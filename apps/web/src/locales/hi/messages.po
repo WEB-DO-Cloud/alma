@@ -101,6 +101,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "{0} कनेक्शन"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr ""
+
 #. placeholder {0}: bot.name
 #: src/pages/ExternalConversationSettings.tsx
 msgid "{0} default"
@@ -140,6 +145,11 @@ msgstr "{0} KB"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr ""
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -270,6 +280,10 @@ msgstr "{name} विकल्प"
 #: src/lib/browser-notifications.ts
 msgid "{name} stopped"
 msgstr "{name} रोक दिया गया"
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
@@ -427,6 +441,14 @@ msgstr "@{0}"
 #: src/components/ModelCredits.tsx
 msgid "/ month"
 msgstr "/ महीना"
+
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr ""
 
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
@@ -655,6 +677,10 @@ msgstr "उन्नत"
 
 #: src/pages/RoutineEditor.tsx
 msgid "Advanced..."
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
 msgstr ""
 
 #: src/components/AccountDataSettings.tsx
@@ -920,6 +946,10 @@ msgstr "पूछें"
 msgid "Asleep"
 msgstr "स्लीप में"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr ""
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1040,6 +1070,10 @@ msgstr ""
 msgid "Bearer token"
 msgstr "बियरर टोकन"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr ""
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr ""
@@ -1138,6 +1172,14 @@ msgstr ""
 msgid "Built-in"
 msgstr "अंतर्निहित"
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr ""
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr "कॉल करें"
@@ -1196,6 +1238,10 @@ msgstr "तस्वीरें नहीं पढ़ सकता"
 #: src/pages/SpaceSettingOverrides.tsx
 msgid "Cancel"
 msgstr "रद्द करें"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2162,6 +2208,7 @@ msgstr ""
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -2699,6 +2746,7 @@ msgid "Don’t have an account?"
 msgstr "खाता नहीं है?"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -2768,6 +2816,7 @@ msgstr "नाम संपादित करें"
 msgid "Edit Profile"
 msgstr "प्रोफ़ाइल संपादित करें"
 
+#: src/components/activation.tsx
 #: src/pages/AdminAccessPage.tsx
 #: src/pages/Auth.tsx
 msgid "Email"
@@ -2972,6 +3021,10 @@ msgstr "विफल।"
 msgid "Failure handling"
 msgstr "विफलता प्रबंधन"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr ""
+
 #: src/pages/RoutineEditor.tsx
 msgid "Fields that mark a change"
 msgstr "बदलाव दर्शाने वाले फ़ील्ड"
@@ -3040,6 +3093,14 @@ msgstr "पूरा हुआ।"
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "MCP कनेक्शन पूरा हो रहा है…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr ""
 
 #: src/pages/Auth.tsx
 msgid "Forgot password?"
@@ -3186,6 +3247,7 @@ msgstr "नमस्ते, उत्तर पढ़कर सुनाते �
 msgid "Hidden"
 msgstr "छिपा हुआ"
 
+#: src/components/activation.tsx
 #: src/components/VaultSettings.tsx
 msgid "Hide"
 msgstr "छिपाएँ"
@@ -4103,6 +4165,10 @@ msgstr ""
 msgid "No bots match"
 msgstr ""
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr ""
+
 #: src/components/AskCard.tsx
 msgid "No longer active"
 msgstr "अब सक्रिय नहीं"
@@ -4234,6 +4300,10 @@ msgstr "ALMA इसका उपयोग नहीं करता"
 #: src/components/McpServerHealthLine.tsx
 msgid "Not working"
 msgstr "काम नहीं कर रहा"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -4509,6 +4579,10 @@ msgstr "व्यक्तित्व"
 
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
 msgstr ""
 
 #: src/components/call/VoiceChatCard.tsx
@@ -5409,6 +5483,11 @@ msgstr "सेटिंग्स: सामान्य"
 msgid "Settings: Usage"
 msgstr "सेटिंग्स: उपयोग"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr ""
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "सेटअप पूरा हुआ"
@@ -5552,6 +5631,7 @@ msgstr "स्किल्स"
 msgid "Skills join the library all your bots share."
 msgstr "स्किल्स उस लाइब्रेरी में जुड़ती हैं जिसे आपके सभी बॉट साझा करते हैं।"
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "छोड़ें"
@@ -5901,6 +5981,10 @@ msgstr "मॉडल प्रदाता ने एक त्रुटि ल�
 msgid "The model returned an unusable response. Try again."
 msgstr "मॉडल ने ऐसा जवाब दिया जिसका उपयोग नहीं हो सकता। फिर से कोशिश करें।"
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr ""
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "प्रोवाइडर अनुरोधों की दर सीमित कर रहा है।"
@@ -5920,6 +6004,15 @@ msgstr "स्क्रीन लिंक की समय सीमा सम�
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "The selected memory provider is not available in this build."
 msgstr "चयनित मेमोरी प्रोवाइडर इस बिल्ड में उपलब्ध नहीं है।"
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr ""
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr ""
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Their own model is cleared. You can pick one again in each bot."
@@ -6309,6 +6402,7 @@ msgstr ""
 msgid "Updating…"
 msgstr "अपडेट हो रहा है…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 msgid "Upgrade"
 msgstr "अपग्रेड करें"
@@ -6532,8 +6626,16 @@ msgstr ""
 msgid "What do you most want ALMA to help with?"
 msgstr ""
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
 msgstr ""
 
 #: src/components/teach/TeachComputerOverlay.tsx
@@ -6585,6 +6687,7 @@ msgid "Won't do"
 msgstr ""
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr ""
 
@@ -6719,3 +6822,7 @@ msgstr "आपके आवाज़ प्रोवाइडर का क्�
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "आपके आवाज़ प्रोवाइडर ने कुंजी अस्वीकार कर दी।"
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr ""

@@ -1,4 +1,7 @@
 export * from "./account-export.js";
+export * from "./alma-activation.js";
+export * from "./alma-flags.js";
+export * from "./alma-trial.js";
 export * from "./approval-settings.js";
 export * from "./artifact-versions.js";
 export * from "./audit-events.js";

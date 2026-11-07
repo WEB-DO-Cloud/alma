@@ -30,6 +30,7 @@ import {
   resolveSupervisorToken,
   uploadSizeFromEnv,
 } from "@rakazo/core";
+import { readAlmaFlags } from "@rakazo/db";
 import { monitoringPseudonymSecret } from "@rakazo/logging";
 
 export { resolveCloudAgentProvider, resolveSandboxProvider } from "@rakazo/adapters";
@@ -129,6 +130,10 @@ export interface AppEnv {
   stripePriceId: string | undefined;
   /** Repeating amount-off coupon for new monthly checkouts. Unset keeps promotion codes. */
   stripePromoCouponId: string | undefined;
+  almaTrialEnabled: boolean;
+  almaTrialDays: number;
+  almaTrialMessageCap: number;
+  almaOnboardingV2: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -313,6 +318,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     stripeWebhookSecret: optional(source.STRIPE_WEBHOOK_SECRET),
     stripePriceId: optional(source.STRIPE_PRICE_ID),
     stripePromoCouponId: optional(source.STRIPE_PROMO_COUPON_ID),
+    ...almaFlags(source),
     emailEmulator: source.EMAIL_EMULATOR === "true" && source.NODE_ENV !== "production",
     slackClientId: optional(source.SLACK_CLIENT_ID),
     slackClientSecret: optional(source.SLACK_CLIENT_SECRET),
@@ -399,6 +405,16 @@ function voiceSummaryMinCharsFromEnv(value: string | undefined): number | undefi
     throw new Error("VOICE_SUMMARY_MIN_CHARS must be a positive whole number of characters");
   }
   return Number(raw);
+}
+
+function almaFlags(source: NodeJS.ProcessEnv) {
+  const flags = readAlmaFlags(source);
+  return {
+    almaTrialEnabled: flags.trialEnabled,
+    almaTrialDays: flags.trialDays,
+    almaTrialMessageCap: flags.trialMessageCap,
+    almaOnboardingV2: flags.onboardingV2,
+  };
 }
 
 function optional(value: string | undefined): string | undefined {

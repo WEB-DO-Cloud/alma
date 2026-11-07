@@ -90,6 +90,11 @@ export default function Paywall() {
     return () => setPaywallShown(false);
   }, []);
 
+  useEffect(() => {
+    if (!status?.planClarity) return;
+    void rpc("onboarding/event", { name: "plan_viewed" }).catch(() => undefined);
+  }, [status?.planClarity]);
+
   // Android's back button would otherwise leave the paywall for an app that cannot run.
   useEffect(() => {
     if (dismissible) return;
@@ -424,13 +429,35 @@ export default function Paywall() {
             }
             detail={t("Works with your ChatGPT or Claude plan.")}
             note={
-              launch
-                ? t("{promo}/month for your first {months} months, then {price}/month", {
-                    promo: launch.promo,
-                    months: launch.months,
-                    price: launch.price,
-                  })
-                : undefined
+              status.planClarity && monthlyPrice
+                ? [
+                    launch
+                      ? t("{promo}/month for your first {months} months, then {price}/month", {
+                          promo: launch.promo,
+                          months: launch.months,
+                          price: launch.price,
+                        })
+                      : t("{price}/month, billed in US dollars.", { price: monthlyPrice }),
+                    launch
+                      ? t("After that, the plan renews at {price}/month until you cancel.", {
+                          price: launch.price,
+                        })
+                      : t("The plan renews monthly until you cancel."),
+                    t("Billed in US dollars."),
+                    t(
+                      "Cancel in the billing portal. Access lasts through the period already paid.",
+                    ),
+                    status.almaTrial && !status.access ? t("The trial ended.") : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")
+                : launch
+                  ? t("{promo}/month for your first {months} months, then {price}/month", {
+                      promo: launch.promo,
+                      months: launch.months,
+                      price: launch.price,
+                    })
+                  : undefined
             }
             badge={
               subscribed === "byok"

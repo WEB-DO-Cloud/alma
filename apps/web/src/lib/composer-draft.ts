@@ -170,6 +170,18 @@ export function readComposerDraft(
   }
 }
 
+const fillListeners = new Set<(text: string) => void>();
+
+/** Puts text into the open composer. Used by starter tasks and the feedback draft. */
+export function requestComposerFill(text: string): void {
+  for (const listener of fillListeners) listener(text);
+}
+
+export function subscribeComposerFill(listener: (text: string) => void): () => void {
+  fillListeners.add(listener);
+  return () => fillListeners.delete(listener);
+}
+
 export function writeComposerDraft(
   threadKey: string,
   draft: string,
