@@ -563,6 +563,15 @@ test("a no-card trial shows the countdown and the plan states the renewal", asyn
   await page.reload();
   await expect(page.getByTestId("trial-banner")).toBeVisible();
   await captureScreenshot(page, testInfo, "trial-countdown");
+  await page.getByTestId("user-menu-trigger").click();
+  const menu = page.locator('[data-slot="popover-content"]');
+  const work = menu.getByRole("button", { name: "Your work", exact: true });
+  const setup = menu.getByRole("button", { name: "Setup", exact: true });
+  await expect(work.locator("svg")).toBeVisible();
+  await expect(setup.locator("svg")).toBeVisible();
+  await captureScreenshot(page, testInfo, "account-menu-work-setup");
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
   await page.getByRole("button", { name: "Upgrade" }).click();
   await expect(page.getByTestId("plan-clarity")).toContainText("US dollars");
   await captureScreenshot(page, testInfo, "plan-renewal");
