@@ -165,7 +165,7 @@ msgstr "Komputer bota {botName}"
 
 #: src/pages/UndoPage.tsx
 msgid "{choice} seconds"
-msgstr ""
+msgstr "{choice} sekund"
 
 #: src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
@@ -5037,7 +5037,7 @@ msgstr "Nie teraz"
 
 #: src/components/SendUndoBar.tsx
 msgid "Not sent"
-msgstr ""
+msgstr "Nie wysłano"
 
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/import-status.ts
@@ -7460,7 +7460,7 @@ msgstr "Cofnij"
 #: src/pages/QueuePage.tsx
 #: src/pages/UndoPage.tsx
 msgid "Undo send"
-msgstr ""
+msgstr "Cofnij wysyłkę"
 
 #: src/pages/plugins/connector-detail.tsx
 msgid "Uninstall"
