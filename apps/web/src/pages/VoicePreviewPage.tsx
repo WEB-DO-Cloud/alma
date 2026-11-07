@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/react/macro";
 import { Button } from "@rakazo/ui-web";
 import { useState } from "react";
+import { speaker } from "../lib/tts";
 
 /** The record and speak controls. Dev preview of the composer states. */
 export function VoicePreviewPage() {
@@ -14,7 +15,15 @@ export function VoicePreviewPage() {
       </div>
       <div className="w-fit rounded-2xl bg-muted px-[18px] py-3">
         <p>Hello</p>
-        <Button type="button" variant="text" size="xs" className="mt-2 font-normal">
+        <Button
+          type="button"
+          variant="text"
+          size="xs"
+          className="mt-2 font-normal"
+          onClick={() => {
+            void speaker.speak("Hello", { botId: "preview", messageId: "hello" });
+          }}
+        >
           <Trans>Speak</Trans>
         </Button>
       </div>
