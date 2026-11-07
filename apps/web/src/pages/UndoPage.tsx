@@ -7,14 +7,20 @@ import { rpc } from "../lib/rpc";
 
 const CHOICES = [0, 10, 30, 60] as const;
 
+const preview =
+  import.meta.env.DEV &&
+  (window.location.pathname.startsWith("/preview/") ||
+    new URLSearchParams(window.location.search).get("preview") === "1");
+
 /** The undo window. Hidden unless the flag is on. Default is 30 seconds. */
 export function UndoPage() {
   const { t } = useLingui();
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(preview);
   const [seconds, setSeconds] = useState<UndoSeconds>(30);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (preview) return;
     void rpc
       .me()
       .then(async (me) => {
@@ -40,6 +46,10 @@ export function UndoPage() {
             variant={choice === seconds ? "default" : "outline"}
             aria-label={t`${choice} seconds`}
             onClick={() => {
+              if (preview) {
+                setSeconds(choice);
+                return;
+              }
               void rpc.sendUndo
                 .update({ seconds: choice })
                 .then(() => setSeconds(choice))

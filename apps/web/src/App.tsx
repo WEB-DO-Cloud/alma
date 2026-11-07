@@ -226,6 +226,7 @@ function SessionApp() {
               {import.meta.env.DEV ? (
                 <Route path="/preview/notify" element={<QuietHoursPage />} />
               ) : null}
+              {import.meta.env.DEV ? <Route path="/preview/undo" element={<UndoPage />} /> : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}
                 element={
