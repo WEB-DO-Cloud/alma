@@ -43,6 +43,7 @@ import {
 } from "@rakazo/db";
 import { enrichLogContext, getLogger } from "@rakazo/logging";
 import { formatAgentEnvironmentInstruction } from "./agent-environment.js";
+import { assistantFacingTools, assistantTurnText } from "./alma-assistant-copy.js";
 import { createApprovedEffectReplayQueue } from "./approval-effect.js";
 import { PARTIAL_REPLY_NOTE } from "./automated-messages.js";
 import { backgroundHelpersAllowed } from "./background-helpers.js";
@@ -1801,6 +1802,19 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
           return true;
         };
 
+        const turnBotInstructions = [
+          runIdentityInstruction(bot, run.trigger),
+          botEmail
+            ? botEmailInstruction(botEmail, {
+                // Only the tools this bot has: its owner may turn any of them off.
+                read: emailInbox && !disabledBuiltinTools.has("read_email"),
+                send: emailInbox && Boolean(deps.email) && !disabledBuiltinTools.has("send_email"),
+                delete: emailInbox && !disabledBuiltinTools.has("delete_email"),
+              })
+            : "",
+        ]
+          .filter(Boolean)
+          .join("\n");
         try {
           if (checkpointLoadError) throw checkpointLoadError;
           const runtimeEvents = deps.runtime.run(
@@ -1830,71 +1844,60 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
               // Keep an explicit executor override, but let the runtime select
               // cache-aware context for connections declaring a cache window.
               contextStrategy: deps.contextStrategy,
-              instructions: userTurnInstructions({
-                botInstructions: [
-                  runIdentityInstruction(bot, run.trigger),
-                  botEmail
-                    ? botEmailInstruction(botEmail, {
-                        // Only the tools this bot has: its owner may turn any of them off.
-                        read: emailInbox && !disabledBuiltinTools.has("read_email"),
-                        send:
-                          emailInbox &&
-                          Boolean(deps.email) &&
-                          !disabledBuiltinTools.has("send_email"),
-                        delete: emailInbox && !disabledBuiltinTools.has("delete_email"),
-                      })
-                    : "",
-                ]
-                  .filter(Boolean)
-                  .join("\n"),
-                groupContext: groupReplyOptional
-                  ? [groupContext, GROUP_UNADDRESSED_REPLY_GUIDANCE].filter(Boolean).join("\n")
-                  : groupContext,
-                messagingContext,
-                redactedMemoryContext: memoryContext
-                  ? redactSecrets(memoryContext, runSecrets)
-                  : undefined,
-                redactedScratchpadContext: scratchpadContext
-                  ? redactSecrets(scratchpadContext, runSecrets)
-                  : undefined,
-                redactedTicketContext: ticketContext
-                  ? redactSecrets(ticketContext, runSecrets)
-                  : undefined,
-                hasHistoricalContext: historicalContext.length > 0,
-                // A background helper is not offered the history tools, so it gets no guidance on them.
-                historyRetrievalEnabled:
-                  contextStrategy !== "current" &&
-                  tools.some((tool) => tool.name === "search_history"),
-                computerInstruction,
-                pageBrowserAllowed,
-                taskCatalogInstruction,
-                workspaceInstruction,
-                agentEnvironmentInstruction,
-                botDirectory,
-                pluginLine,
-                agentSkillsLine,
-                taughtSkillsLine,
-                replyGuidance: runReplyGuidance(run.trigger, replyMode),
-                // These runs get a narrow tool set, so guidance names only the tools they have.
-                disabledBuiltinTools:
-                  isStrategicInitiativeRun(run) || run.trigger === BACKGROUND_HELPER_TRIGGER
-                    ? new Set(
-                        builtinAgentTools
-                          .map((tool) => tool.name)
-                          .filter((name) => !strategicBuiltins.some((tool) => tool.name === name)),
-                      )
-                    : disabledBuiltinTools,
-                offeredFleetTools: offeredFleetTools(strategicBuiltins),
-                followUpsOffered: followUpsOffered(strategicBuiltins, ownerStartedRun),
-                backgroundHelpersAllowed: backgroundHelpersAllowed({
-                  threadBotId: thread.botId,
-                  botId: bot.id,
-                  trigger: run.trigger,
+              instructions: assistantTurnText(
+                userTurnInstructions({
+                  botInstructions: turnBotInstructions,
+                  groupContext: groupReplyOptional
+                    ? [groupContext, GROUP_UNADDRESSED_REPLY_GUIDANCE].filter(Boolean).join("\n")
+                    : groupContext,
+                  messagingContext,
+                  redactedMemoryContext: memoryContext
+                    ? redactSecrets(memoryContext, runSecrets)
+                    : undefined,
+                  redactedScratchpadContext: scratchpadContext
+                    ? redactSecrets(scratchpadContext, runSecrets)
+                    : undefined,
+                  redactedTicketContext: ticketContext
+                    ? redactSecrets(ticketContext, runSecrets)
+                    : undefined,
+                  hasHistoricalContext: historicalContext.length > 0,
+                  // A background helper is not offered the history tools, so it gets no guidance on them.
+                  historyRetrievalEnabled:
+                    contextStrategy !== "current" &&
+                    tools.some((tool) => tool.name === "search_history"),
+                  computerInstruction,
+                  pageBrowserAllowed,
+                  taskCatalogInstruction,
+                  workspaceInstruction,
+                  agentEnvironmentInstruction,
+                  botDirectory,
+                  pluginLine,
+                  agentSkillsLine,
+                  taughtSkillsLine,
+                  replyGuidance: runReplyGuidance(run.trigger, replyMode),
+                  // These runs get a narrow tool set, so guidance names only the tools they have.
+                  disabledBuiltinTools:
+                    isStrategicInitiativeRun(run) || run.trigger === BACKGROUND_HELPER_TRIGGER
+                      ? new Set(
+                          builtinAgentTools
+                            .map((tool) => tool.name)
+                            .filter(
+                              (name) => !strategicBuiltins.some((tool) => tool.name === name),
+                            ),
+                        )
+                      : disabledBuiltinTools,
+                  offeredFleetTools: offeredFleetTools(strategicBuiltins),
+                  followUpsOffered: followUpsOffered(strategicBuiltins, ownerStartedRun),
+                  backgroundHelpersAllowed: backgroundHelpersAllowed({
+                    threadBotId: thread.botId,
+                    botId: bot.id,
+                    trigger: run.trigger,
+                  }),
+                  userComputer,
                 }),
-                userComputer,
-              })
-                .filter((instruction): instruction is string => Boolean(instruction))
-                .join("\n\n"),
+                turnBotInstructions,
+                { mail: tools.some((tool) => tool.name === "connect_app") },
+              ),
               history: runtimeHistory,
               currentTurnImages,
               currentRunRequiresImageInput,
@@ -1905,7 +1908,7 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
                     (block) => block.kind === "image" && block.imageHandling === "confirm",
                   ),
               ),
-              tools,
+              tools: assistantFacingTools(tools),
               // The live array: secrets learned later in the run redact too.
               secrets: runSecrets,
               model: mainRunModel,

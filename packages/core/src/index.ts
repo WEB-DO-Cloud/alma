@@ -55,6 +55,7 @@ export * from "./logo-avatar-activity-store.js";
 export * from "./logo-avatar-art.js";
 export * from "./logo-avatar-motion.js";
 export * from "./logo-avatar-traits.js";
+export * from "./mail-connector-aliases.js";
 export * from "./markdown-plain.js";
 export * from "./mcp.js";
 export * from "./mcp-app.js";

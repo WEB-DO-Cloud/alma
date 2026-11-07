@@ -1,4 +1,5 @@
 import type { ConnectionCatalogItem } from "@rakazo/contracts";
+import { catalogItemMatchesQuery } from "./mail-connector-aliases.js";
 
 export const FEATURED_CONNECTOR_IDS = [
   "gmail",
@@ -101,7 +102,8 @@ export function filterConnectionCatalogItems(
     (item) =>
       item.name.toLowerCase().includes(needle) ||
       item.slug.toLowerCase().includes(needle) ||
-      item.connectorId.toLowerCase().includes(needle),
+      item.connectorId.toLowerCase().includes(needle) ||
+      catalogItemMatchesQuery(item, needle),
   );
 }
 

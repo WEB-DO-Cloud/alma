@@ -1,4 +1,5 @@
 import type { ConnectorCatalogItem } from "@rakazo/adapter-kit";
+import { catalogItemMatchesQuery } from "@rakazo/core";
 
 export function filterCatalog<T extends Pick<ConnectorCatalogItem, "name" | "slug">>(
   items: T[],
@@ -7,7 +8,10 @@ export function filterCatalog<T extends Pick<ConnectorCatalogItem, "name" | "slu
   const needle = query.trim().toLowerCase();
   if (!needle) return items;
   return items.filter(
-    (item) => item.name.toLowerCase().includes(needle) || item.slug.toLowerCase().includes(needle),
+    (item) =>
+      item.name.toLowerCase().includes(needle) ||
+      item.slug.toLowerCase().includes(needle) ||
+      catalogItemMatchesQuery(item, needle),
   );
 }
 
