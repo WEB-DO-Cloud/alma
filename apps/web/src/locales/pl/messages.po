@@ -270,7 +270,7 @@ msgstr "{names} zachowuje własny model"
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
-msgstr ""
+msgstr "{promo}/mies. przez pierwsze {months} mies., potem {price}/mies."
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts
@@ -900,7 +900,7 @@ msgstr "Środki ALMA"
 
 #: src/pages/shell/message-view.tsx
 msgid "ALMA Support"
-msgstr ""
+msgstr "Wsparcie ALMA"
 
 #: src/pages/shell/agent-import-plan.tsx
 msgid "Already connected"
@@ -2538,7 +2538,7 @@ msgstr "Nie udało się wyświetlić wykresu"
 
 #: src/pages/Shell.tsx
 msgid "Could not report this response"
-msgstr ""
+msgstr "Nie udało się zgłosić tej odpowiedzi"
 
 #: src/pages/Auth.tsx
 msgid "Could not reset password"
@@ -4077,7 +4077,7 @@ msgstr "Później"
 
 #: src/components/ModelCredits.tsx
 msgid "Launch offer"
-msgstr ""
+msgstr "Oferta na start"
 
 #: src/components/SpaceMembersSettings.tsx
 #: src/pages/MessagingSettingsPanel.tsx
@@ -4377,7 +4377,7 @@ msgstr "Pamięć dla {title}"
 
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "Memory is managed by ALMA"
-msgstr ""
+msgstr "Pamięcią zarządza ALMA"
 
 #: src/pages/shell/bot-settings-sections.tsx
 msgid "Memory scope"
@@ -4930,7 +4930,7 @@ msgstr "Nie połączono"
 
 #: src/pages/shell/message-view.tsx
 msgid "Not delivered. Tap to retry."
-msgstr ""
+msgstr "Nie dostarczono. Dotknij, aby spróbować ponownie."
 
 #: src/pages/shell/agent-import-plan.tsx
 msgid "Not imported"
@@ -5817,11 +5817,11 @@ msgstr "Odpowiedź do {0}"
 
 #: src/pages/shell/message-hover-actions.tsx
 msgid "Report response"
-msgstr ""
+msgstr "Zgłoś odpowiedź"
 
 #: src/pages/Shell.tsx
 msgid "Report sent"
-msgstr ""
+msgstr "Zgłoszenie wysłane"
 
 #: src/lib/user-error.ts
 msgid "Request a new code"
@@ -6763,11 +6763,11 @@ msgstr "niedziela"
 #: src/pages/shell/chat-header.tsx
 #: src/pages/shell/sidebar-roster.tsx
 msgid "Support"
-msgstr ""
+msgstr "Wsparcie"
 
 #: src/pages/Shell.tsx
 msgid "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
-msgstr ""
+msgstr "Wiadomości do wsparcia obsługuje Chatwoot, poza DR. Nie podawaj poufnych szczegółów sprawy."
 
 #: src/pages/model-settings/compatible-model-fields.tsx
 #: src/pages/onboarding/model-step.tsx
@@ -7580,7 +7580,7 @@ msgstr "Portfel"
 
 #: src/pages/Shell.tsx
 msgid "We'll review this response."
-msgstr ""
+msgstr "Sprawdzimy tę odpowiedź."
 
 #: src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
@@ -7746,7 +7746,7 @@ msgstr "Obszar roboczy"
 
 #: src/pages/Shell.tsx
 msgid "Write to the ALMA team. A person will reply here."
-msgstr ""
+msgstr "Napisz do zespołu ALMA. Odpowie tu osoba."
 
 #: src/lib/billing.ts
 msgid "year"

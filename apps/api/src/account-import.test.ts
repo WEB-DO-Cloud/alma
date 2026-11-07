@@ -314,7 +314,7 @@ describe("account import archive", () => {
       ]),
     );
     await expect(readArchive(chunked(bytes), limits, new RecordingSink())).rejects.toThrow(
-      "not a readable Rakazo export",
+      "not a readable ALMA export",
     );
   });
 
@@ -337,7 +337,7 @@ describe("account import archive", () => {
         readArchive(chunked(new TextEncoder().encode("hello")), limits, new RecordingSink(), {
           spoolDir: dir,
         }),
-      ).rejects.toThrow("not a readable Rakazo export");
+      ).rejects.toThrow("not a readable ALMA export");
       expect(await readdir(dir)).toEqual([]);
     } finally {
       await rm(dir, { recursive: true, force: true });

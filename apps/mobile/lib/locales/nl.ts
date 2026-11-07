@@ -1,4 +1,5 @@
 export const NL_MESSAGES: Record<string, string> = {
+  Support: "Ondersteuning",
   "No matches": "Geen resultaten",
   "Always ask": "Altijd vragen",
   "Search tools": "Tools zoeken",

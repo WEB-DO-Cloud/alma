@@ -326,10 +326,14 @@ export type McpServerConnection =
 
 /** The one state every client shows for a saved server. */
 export function mcpServerConnection(
-  server: Pick<McpServer, "enabled" | "health" | "oauthClientId" | "oauthStatus">,
+  server: Pick<McpServer, "enabled" | "health" | "oauthClientId" | "oauthPreset" | "oauthStatus">,
 ): McpServerConnection {
   if (!server.enabled) return "disabled";
-  if (server.health.code === MCP_OAUTH_CLIENT_REQUIRED && !server.oauthClientId)
+  if (
+    server.health.code === MCP_OAUTH_CLIENT_REQUIRED &&
+    !server.oauthClientId &&
+    !server.oauthPreset
+  )
     return "needs_client";
   if (server.oauthStatus === "reconnect") return "needs_sign_in";
   if (server.health.status === "error") return "not_working";

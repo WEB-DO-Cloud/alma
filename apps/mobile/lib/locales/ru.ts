@@ -1,4 +1,5 @@
 export const RU_MESSAGES: Record<string, string> = {
+  Support: "Поддержка",
   "No matches": "Нет совпадений",
   "Always ask": "Всегда спрашивать",
   "Search tools": "Поиск инструментов",

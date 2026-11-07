@@ -192,7 +192,4 @@ export const TR_MESSAGES: Record<string, string> = {
   "Chat Details": "Sohbet Ayrıntıları",
   Help: "Yardım",
   "Keyboard Shortcuts": "Klavye Kısayolları",
-  "Search…": "Ara…",
-  "This install does not run a server on this computer.":
-    "Bu kurulum bu bilgisayarda sunucu çalıştırmaz.",
 };

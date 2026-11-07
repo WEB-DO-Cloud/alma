@@ -2,6 +2,7 @@ import { phoneCallSettings, resolveEncryptionKey, uploadSizeFromEnv } from "@rak
 import { describe, expect, it } from "vitest";
 import { resolveDeploymentModel } from "./deployment-model.js";
 import { mcpStdioOptionsFromEnv } from "./mcp-connector.js";
+import { parseMcpOAuthPresetClients } from "./mcp-oauth-presets.js";
 import { runRuntimeEnvFromProcess } from "./run-runtime.js";
 
 // What the worker read inline before it shared the runtime builder with the API.
@@ -21,6 +22,7 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
       .filter(Boolean),
     mcpStdio: mcpStdioOptionsFromEnv(source),
     mcpAllowPrivateEndpoint: source.MCP_ALLOW_PRIVATE_ENDPOINT === "true",
+    mcpOAuthPresets: parseMcpOAuthPresetClients(source.MCP_OAUTH_PRESET_CLIENTS),
     pipedreamClientId: source.PIPEDREAM_CLIENT_ID,
     pipedreamClientSecret: source.PIPEDREAM_CLIENT_SECRET,
     pipedreamProjectId: source.PIPEDREAM_PROJECT_ID,

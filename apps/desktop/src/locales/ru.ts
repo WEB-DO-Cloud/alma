@@ -199,7 +199,4 @@ export const RU_MESSAGES: Record<string, string> = {
   "Chat Details": "Сведения о чате",
   Help: "Справка",
   "Keyboard Shortcuts": "Сочетания клавиш",
-  "Search…": "Найти…",
-  "This install does not run a server on this computer.":
-    "Эта установка не запускает сервер на этом компьютере.",
 };

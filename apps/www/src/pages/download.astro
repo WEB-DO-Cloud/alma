@@ -2,23 +2,15 @@
 import { ANDROID_APP_STORE_URL } from "@rakazo/contracts/client-build";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import {
-  availableDesktopPlatforms,
-  desktopDownloadHref,
-  fetchDesktopDownloads,
-  githubStarsLabel,
-} from "../github";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { APP_URL, IOS_APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
-
-const [starsLabel, downloads] = await Promise.all([githubStarsLabel(), fetchDesktopDownloads()]);
+import { APP_URL, DESKTOP_DOWNLOADS, IOS_APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
 
 const DESKTOP_NAMES = { mac: "macOS", windows: "Windows", linux: "Linux" } as const;
 const platforms = [
-  ...availableDesktopPlatforms(downloads).map((platform) => ({
+  ...(Object.keys(DESKTOP_NAMES) as (keyof typeof DESKTOP_NAMES)[]).map((platform) => ({
     name: DESKTOP_NAMES[platform],
     action: "Download",
-    href: desktopDownloadHref(platform),
+    href: DESKTOP_DOWNLOADS[platform],
     attr: platform,
   })),
   { name: "iPhone", action: "App Store", href: IOS_APP_URL, attr: "ios" },
@@ -29,7 +21,7 @@ const platforms = [
 
 <BaseLayout title="Download · ALMA" description="Get ALMA for macOS, Windows, Linux, iPhone, Android, and the web.">
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="privacy-copy">
       <h1>Download ALMA</h1>
       <ul class="platform-list">

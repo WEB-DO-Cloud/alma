@@ -101,7 +101,7 @@ function LaunchOfferCopy({
   price: string;
 }) {
   return (
-    <p className="text-sm text-muted-foreground">
+    <p className="text-body-sm text-muted-foreground">
       <Trans>
         {promo}/month for your first {months} months, then {price}/month
       </Trans>

@@ -49,7 +49,9 @@ const INSTALL_POLL_MS = 2500;
 
 /** A server whose authorization server cannot register a client until the user enters one. */
 function needsOAuthClient(server: McpServer): boolean {
-  return server.health.code === MCP_OAUTH_CLIENT_REQUIRED && !server.oauthClientId;
+  return (
+    server.health.code === MCP_OAUTH_CLIENT_REQUIRED && !server.oauthClientId && !server.oauthPreset
+  );
 }
 
 function sameAccess(a: AgentAccess, b: AgentAccess): boolean {
@@ -367,7 +369,11 @@ export function McpServersOverlay({
           <p className="truncate text-label text-muted-foreground">
             {server.endpoint ?? server.command ?? server.slug}
           </p>
-          <McpServerHealthLine health={server.health} checking={testing} />
+          <McpServerHealthLine
+            health={server.health}
+            checking={testing}
+            presetClient={server.oauthPreset === true}
+          />
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {server.installId ? null : (

@@ -1,4 +1,5 @@
 export const DE_MESSAGES: Record<string, string> = {
+  Support: "Support",
   "No matches": "Keine Treffer",
   "Always ask": "Immer fragen",
   "Search tools": "Tools durchsuchen",

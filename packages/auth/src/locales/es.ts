@@ -3,7 +3,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "Hi there,": "Hola:",
   "Verify your ALMA email": "Verifica tu correo para ALMA",
   "Verify email": "Verificar correo",
-  "Then return to ALMA to sign in.": "Luego vuelve an ALMA para iniciar sesión.",
+  "Then return to ALMA to sign in.": "Luego vuelve a ALMA para iniciar sesión.",
   "This link expires in one hour. If you did not register, ignore this email.":
     "Este enlace vence en una hora. Si no te registraste, ignora este correo.",
   "Your ALMA sign-in code": "Tu código para iniciar sesión en ALMA",
@@ -23,7 +23,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "Your ALMA confirmation code": "Tu código de confirmación de ALMA",
   "Enter this code in ALMA to confirm it's you:":
     "Introduce este código en ALMA para confirmar que eres tú:",
-  "Welcome to ALMA": "Te damos la bienvenida an ALMA",
+  "Welcome to ALMA": "Te damos la bienvenida a ALMA",
   "Thanks for signing up for ALMA.": "Gracias por registrarte en ALMA.",
   "ALMA also has apps for": "ALMA también tiene apps para",
   "Questions or ideas?": "¿Tienes preguntas o ideas?",
@@ -37,7 +37,7 @@ export const ES_MESSAGES: Record<string, string> = {
   Unsubscribe: "Cancelar suscripción",
   "Invite a friend": "Invita a un amigo",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
-    "Invita a un amigo an ALMA: recibe {weeks} semanas gratis y tú ganas un mes gratis cuando empiece una suscripción válida con una tarjeta nueva.",
+    "Invita a un amigo a ALMA: recibe {weeks} semanas gratis y tú ganas un mes gratis cuando empiece una suscripción válida con una tarjeta nueva.",
   "Open ALMA": "Abre ALMA",
   "and choose Invite friends for your link.": "y elige Invitar amigos para obtener tu enlace.",
   "Have any questions? Just reply to this email.":
@@ -63,7 +63,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "If you did not submit a plugin, ignore this email.":
     "Si no enviaste ningún plugin, ignora este correo.",
   "{name} is in the ALMA marketplace": "{name} ya está en el marketplace de ALMA",
-  "Your ALMA plugin submission: {name}": "Tu envío de plugin an ALMA: {name}",
+  "Your ALMA plugin submission: {name}": "Tu envío de plugin a ALMA: {name}",
   "{name} is now listed in the ALMA plugin marketplace.":
     "{name} ya aparece en el marketplace de plugins de ALMA.",
   "We couldn't list {name} in the ALMA plugin marketplace.":

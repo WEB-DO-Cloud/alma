@@ -200,7 +200,10 @@ export const MessageView = memo(function MessageView({
   const messageContext = (
     <>
       {agentName ? (
-        <div className="mb-1.5 text-[13px] font-semibold tracking-tight text-foreground" dir="auto">
+        <div
+          className="mb-1.5 text-body-sm font-semibold tracking-tight text-foreground"
+          dir="auto"
+        >
           {agentName === SUPPORT_DESK_NAME ? t`ALMA Support` : `${agentName} · ALMA`}
         </div>
       ) : speakerName ? (
@@ -228,7 +231,7 @@ export const MessageView = memo(function MessageView({
       {deliveryFailed ? (
         <button
           type="button"
-          className="mb-1 text-[12px] text-destructive"
+          className="mb-1 text-label text-destructive"
           onClick={() => onRetrySupport?.(message)}
         >
           {t`Not delivered. Tap to retry.`}

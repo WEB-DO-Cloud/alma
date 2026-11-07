@@ -1,4 +1,5 @@
 export const ZH_MESSAGES: Record<string, string> = {
+  Support: "支持",
   "No matches": "没有匹配项",
   "Always ask": "始终询问",
   "Search tools": "搜索工具",

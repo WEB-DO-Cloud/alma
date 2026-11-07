@@ -966,6 +966,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         ios: "Pobierz na iOS",
         android: "Pobierz na Androida",
       },
+      downloadNote: "Jeśli pobieranie się nie zacznie, aplikacja na komputer nie jest jeszcze opublikowana.",
+      windowsUnsigned: "Windows może powiedzieć, że nie rozpoznaje tego instalatora. Nie jest jeszcze podpisany.",
       viewOnGithub: "Zobacz na GitHubie",
       setupWithAgent: "Skonfiguruj ze swoim agentem",
       copiedForAgent: "Skopiowano dla agenta",

@@ -196,7 +196,4 @@ export const FR_MESSAGES: Record<string, string> = {
   "Chat Details": "Détails de la discussion",
   Help: "Aide",
   "Keyboard Shortcuts": "Raccourcis clavier",
-  "Search…": "Rechercher…",
-  "This install does not run a server on this computer.":
-    "Cette installation n’exécute pas de serveur sur cet ordinateur.",
 };

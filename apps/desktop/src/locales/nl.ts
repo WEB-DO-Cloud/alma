@@ -200,7 +200,4 @@ export const NL_MESSAGES: Record<string, string> = {
   "Chat Details": "Chatdetails",
   Help: "Help",
   "Keyboard Shortcuts": "Sneltoetsen",
-  "Search…": "Zoek…",
-  "This install does not run a server on this computer.":
-    "Deze installatie draait geen server op deze computer.",
 };

@@ -1,4 +1,17 @@
 export const PL_MESSAGES: Record<string, string> = {
+  "ALMA Support": "Wsparcie ALMA",
+  "Connect OAuth": "Połącz przez OAuth",
+  "Create your ALMA account": "Utwórz konto ALMA",
+  "Launch offer": "Oferta na start",
+  "No chat apps are connected on this server": "Na tym serwerze nie ma połączonych aplikacji czatu",
+  "Not delivered. Tap to retry.": "Nie dostarczono. Dotknij, aby spróbować ponownie.",
+  "Report response": "Zgłoś odpowiedź",
+  "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.":
+    "Wiadomości do wsparcia obsługuje Chatwoot, poza DR. Nie podawaj poufnych szczegółów sprawy.",
+  "Write to the ALMA team. A person will reply here.": "Napisz do zespołu ALMA. Odpowie tu osoba.",
+  "{promo}/month for your first {months} months, then {price}/month":
+    "{promo}/mies. przez pierwsze {months} mies., potem {price}/mies.",
+  Support: "Wsparcie",
   "No matches": "Brak wyników",
   "Always ask": "Zawsze pytaj",
   "Search tools": "Szukaj narzędzi",

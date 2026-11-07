@@ -338,12 +338,12 @@ it("says what a page is for only where its name does not", async () => {
   } finally {
     await general.cleanup();
   }
-  const voice = await render({ section: "voice" });
+  const memory = await render({ section: "memory" });
   try {
-    expect(voice.container.querySelector("h2 + p")?.textContent).toBe(
-      "Calls, dictation, and replies read aloud.",
+    expect(memory.container.querySelector("h2 + p")?.textContent).toBe(
+      "What your bots remember between chats.",
     );
   } finally {
-    await voice.cleanup();
+    await memory.cleanup();
   }
 });

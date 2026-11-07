@@ -90,8 +90,6 @@ export const ES_MESSAGES: Record<string, string> = {
   "Choose which server this app should use.": "Elige qué servidor debe usar esta app.",
   Instance: "Instancia",
   "This computer": "Esta computadora",
-  "This install does not run a server on this computer.":
-    "Esta instalación no ejecuta un servidor en esta computadora.",
   "Existing instance": "Instancia existente",
   "Technical details": "Detalles técnicos",
   "Setup progress": "Progreso de la configuración",

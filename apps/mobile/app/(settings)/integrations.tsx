@@ -595,9 +595,17 @@ export default function Integrations() {
         {server.enabled &&
         state !== "connected" &&
         state !== "needs_client" &&
-        (server.oauthStatus === "reconnect" || server.id === oauthServerId) ? (
+        (server.oauthStatus === "reconnect" ||
+          server.id === oauthServerId ||
+          server.oauthPreset) ? (
           <NativeActionButton
-            label={server.oauthStatus === "reconnect" ? t("Reconnect") : t("Connect")}
+            label={
+              server.oauthStatus === "reconnect"
+                ? t("Reconnect")
+                : server.oauthPreset
+                  ? t("Connect OAuth")
+                  : t("Connect")
+            }
             fill={false}
             busy={pending === `oauth:${server.id}`}
             onPress={() => void authorizeMcp(server.id)}

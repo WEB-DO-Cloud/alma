@@ -1,4 +1,5 @@
 export const ES_MESSAGES: Record<string, string> = {
+  Support: "Soporte",
   "No matches": "Sin resultados",
   "Always ask": "Preguntar siempre",
   "Search tools": "Buscar herramientas",
@@ -1175,7 +1176,7 @@ export const ES_MESSAGES: Record<string, string> = {
   "What do you most want ALMA to help with?": "¿Con qué quieres que ALMA te ayude más?",
   "How big is your team?": "¿De qué tamaño es tu equipo?",
   "How did you hear about us?": "¿Cómo nos conociste?",
-  "Welcome to ALMA": "Te damos la bienvenida an ALMA",
+  "Welcome to ALMA": "Te damos la bienvenida a ALMA",
   Loading: "Cargando",
   Show: "Mostrar",
   Submitted: "Enviado",

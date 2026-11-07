@@ -3,12 +3,9 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import PlanCard from "../components/PlanCard.astro";
 import PricingComparison from "../components/PricingComparison.astro";
-import { githubStarsLabel } from "../github";
 import Button from "../components/Button.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { CREDITS_PLAN, PRICING_PLANS } from "../pricing";
-
-const starsLabel = await githubStarsLabel();
 ---
 
 <BaseLayout
@@ -17,7 +14,7 @@ const starsLabel = await githubStarsLabel();
   description="Self-host ALMA for free, or let us host it with your own model or ALMA credits."
 >
   <div class="container">
-    <Header starsLabel={starsLabel} />
+    <Header />
     <main id="main" class="pricing">
       <h1 class="section-heading">Pricing</h1>
       <div class="pricing__plans">

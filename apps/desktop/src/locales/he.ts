@@ -191,6 +191,4 @@ export const HE_MESSAGES: Record<string, string> = {
   "Chat Details": "פרטי הצ׳אט",
   Help: "עזרה",
   "Keyboard Shortcuts": "קיצורי מקלדת",
-  "Search…": "חיפוש…",
-  "This install does not run a server on this computer.": "התקנה זו אינה מפעילה שרת במחשב זה.",
 };

@@ -200,7 +200,4 @@ export const JA_MESSAGES: Record<string, string> = {
   "Chat Details": "チャットの詳細",
   Help: "ヘルプ",
   "Keyboard Shortcuts": "キーボードショートカット",
-  "Search…": "検索…",
-  "This install does not run a server on this computer.":
-    "このインストールでは、このコンピューターでサーバーを実行しません。",
 };

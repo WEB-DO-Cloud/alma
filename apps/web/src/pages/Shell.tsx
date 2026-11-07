@@ -1101,7 +1101,7 @@ function SpaceShell() {
           // Let messages continue behind the composer's rounded top corners.
           <div className="pointer-events-none relative z-30 -mt-7">
             {isSupportBot(active) && (activeSnapshot?.messages.length ?? 0) === 0 ? (
-              <div className="pointer-events-auto px-6 pb-3 text-center text-[13px] text-muted-foreground">
+              <div className="pointer-events-auto px-6 pb-3 text-center text-body-sm text-muted-foreground">
                 <p>{t`Write to the ALMA team. A person will reply here.`}</p>
                 <p className="mt-1">
                   {t`Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.`}

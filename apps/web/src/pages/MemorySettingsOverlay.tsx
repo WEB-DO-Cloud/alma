@@ -189,7 +189,7 @@ export function MemorySettingsOverlay({
             </p>
           ) : config?.managedByServer ? (
             <section className="rounded-xl border border-border px-4 py-4">
-              <p className="text-[14px] text-foreground">
+              <p className="text-body text-foreground">
                 <Trans>Memory is managed by ALMA</Trans>
               </p>
               <div className="mt-4">

@@ -193,7 +193,4 @@ export const KO_MESSAGES: Record<string, string> = {
   "Chat Details": "채팅 세부정보",
   Help: "도움말",
   "Keyboard Shortcuts": "키보드 단축키",
-  "Search…": "검색…",
-  "This install does not run a server on this computer.":
-    "이 설치는 이 컴퓨터에서 서버를 실행하지 않습니다.",
 };

@@ -179,6 +179,4 @@ export const ZH_CN_MESSAGES: Record<string, string> = {
   "Chat Details": "聊天详情",
   Help: "帮助",
   "Keyboard Shortcuts": "键盘快捷键",
-  "Search…": "搜索…",
-  "This install does not run a server on this computer.": "此安装不会在这台电脑上运行服务器。",
 };

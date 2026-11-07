@@ -80,6 +80,7 @@ vi.mock("@rakazo/ui-web", async () => {
       "TabsTrigger",
       "Toggle",
     ].map((name) => [name, container]),
+    ["Disclosure", ({ summary }: { summary: ReactNode }) => createElement("span", null, summary)],
     [
       "Button",
       ({

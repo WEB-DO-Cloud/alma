@@ -2,7 +2,7 @@ import type { SandboxProvider } from "@rakazo/adapter-kit";
 import type * as Adapters from "@rakazo/adapters";
 import { BillingEmulator, sandboxAllowance } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
-import { BYOK_TIERS } from "@rakazo/contracts";
+import { BYOK_TIERS, sandboxAllowanceHours } from "@rakazo/contracts";
 import type { PrismaClient } from "@rakazo/db";
 import {
   asSystem,
@@ -220,12 +220,22 @@ dbTests("own-key plan", () => {
     await service.sync(customer);
     await expect(service.status(actor)).resolves.toMatchObject({
       byokTier: "standard",
-      byokTiers: [
-        { tier: "standard", monthlyPriceCents: 1500, computerSize: "standard", computerHours: 25 },
-        { tier: "pro", monthlyPriceCents: 4900, computerSize: "large", computerHours: 100 },
-        { tier: "max", monthlyPriceCents: 9900, computerSize: "xlarge", computerHours: 200 },
-      ],
+      byokTiers: (["standard", "pro", "max"] as const).flatMap((tier) => {
+        const monthlyPriceCents = BYOK_TIERS[tier].monthlyPriceCents;
+        if (monthlyPriceCents === null) return [];
+        return [
+          {
+            tier,
+            monthlyPriceCents,
+            computerSize: BYOK_TIERS[tier].computerSize,
+            computerHours: sandboxAllowanceHours(BYOK_TIERS[tier].computerAllowanceCents),
+          },
+        ];
+      }),
     });
+    // ALMA offers the standard plan only. Moving between pro and max is upstream behavior.
+    if (BYOK_TIERS.pro.annualPriceCents === null || BYOK_TIERS.max.annualPriceCents === null)
+      return;
     await service.checkout(actor, undefined, "year", "pro");
     expect(provider.byokCheckouts.get(customer)).toMatchObject({
       amountCents: BYOK_TIERS.pro.annualPriceCents,
@@ -261,34 +271,37 @@ dbTests("own-key plan", () => {
     await expect(service.changeTier(actor, "pro")).rejects.toMatchObject({ code: "CONFLICT" });
   });
 
-  it("moves to a smaller tier only once this month's computer use fits it", async () => {
-    const customer = (await billingAccountForOrganization(prisma, organizationId))!.customerId;
-    for (const subscription of provider.subscriptions) subscription.status = "canceled";
-    await service.sync(customer);
-    await service.checkout(actor, undefined, "month", "max");
-    provider.completeByokCheckout(customer);
-    provider.subscriptions.at(-1)!.status = "active";
-    const metered = createBillingService({
-      prisma,
-      provider,
-      sandbox: {} as SandboxProvider,
-      webOrigin: "https://example.test",
-    });
-    // $25 of computer time, more than Pro's $20 a month.
-    vi.mocked(sandboxAllowance).mockResolvedValue({
-      limitMicros: 40_000_000,
-      usedMicros: 25_000_000,
-    });
-    await expect(metered.changeTier(actor, "pro")).rejects.toMatchObject({ code: "CONFLICT" });
-    await expect(metered.changeTier(actor, "standard")).rejects.toMatchObject({
-      code: "CONFLICT",
-    });
-    vi.mocked(sandboxAllowance).mockResolvedValue({
-      limitMicros: 40_000_000,
-      usedMicros: 15_000_000,
-    });
-    await metered.changeTier(actor, "pro");
-    await expect(metered.status(actor)).resolves.toMatchObject({ byokTier: "pro" });
-    vi.mocked(sandboxAllowance).mockResolvedValue(null);
-  });
+  it.skipIf(BYOK_TIERS.max.monthlyPriceCents === null)(
+    "moves to a smaller tier only once this month's computer use fits it",
+    async () => {
+      const customer = (await billingAccountForOrganization(prisma, organizationId))!.customerId;
+      for (const subscription of provider.subscriptions) subscription.status = "canceled";
+      await service.sync(customer);
+      await service.checkout(actor, undefined, "month", "max");
+      provider.completeByokCheckout(customer);
+      provider.subscriptions.at(-1)!.status = "active";
+      const metered = createBillingService({
+        prisma,
+        provider,
+        sandbox: {} as SandboxProvider,
+        webOrigin: "https://example.test",
+      });
+      // $25 of computer time, more than Pro's $20 a month.
+      vi.mocked(sandboxAllowance).mockResolvedValue({
+        limitMicros: 40_000_000,
+        usedMicros: 25_000_000,
+      });
+      await expect(metered.changeTier(actor, "pro")).rejects.toMatchObject({ code: "CONFLICT" });
+      await expect(metered.changeTier(actor, "standard")).rejects.toMatchObject({
+        code: "CONFLICT",
+      });
+      vi.mocked(sandboxAllowance).mockResolvedValue({
+        limitMicros: 40_000_000,
+        usedMicros: 15_000_000,
+      });
+      await metered.changeTier(actor, "pro");
+      await expect(metered.status(actor)).resolves.toMatchObject({ byokTier: "pro" });
+      vi.mocked(sandboxAllowance).mockResolvedValue(null);
+    },
+  );
 });

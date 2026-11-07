@@ -190,6 +190,4 @@ export const HI_MESSAGES: Record<string, string> = {
   "Chat Details": "चैट विवरण",
   Help: "सहायता",
   "Keyboard Shortcuts": "कीबोर्ड शॉर्टकट",
-  "Search…": "खोजें…",
-  "This install does not run a server on this computer.": "यह इंस्टॉलेशन इस कंप्यूटर पर सर्वर नहीं चलाता।",
 };
