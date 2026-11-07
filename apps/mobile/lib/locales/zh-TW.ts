@@ -1302,10 +1302,10 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "The plan renews monthly until you cancel.": "方案每月續訂，直到你取消。",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "在帳單入口取消。存取權持續到已付費週期結束。",
-  "Queue": "佇列",
+  Queue: "佇列",
   "Nothing waiting": "沒有待處理的內容",
   "New draft": "新草稿",
-  "Recipient": "收件人",
+  Recipient: "收件人",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "與{peer}的 {count} 則訊息" };
