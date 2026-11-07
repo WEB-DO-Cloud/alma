@@ -11,11 +11,13 @@ import {
 } from "@rakazo/ui-web";
 import {
   BookOpen,
+  Briefcase,
   Check,
   Download,
   FolderOpen,
   Gauge,
   Link2,
+  ListChecks,
   LogOut,
   Plug,
   ScrollText,
@@ -203,6 +205,7 @@ export function SidebarFooter({
                 className="h-9 w-full justify-start gap-2.5 font-normal"
                 onClick={onWork}
               >
+                <Briefcase className="text-muted-foreground" strokeWidth={1.75} />
                 <Trans>Your work</Trans>
               </Button>
             ) : null}
@@ -212,6 +215,7 @@ export function SidebarFooter({
                 className="h-9 w-full justify-start gap-2.5 font-normal"
                 onClick={onSetup}
               >
+                <ListChecks className="text-muted-foreground" strokeWidth={1.75} />
                 <Trans>Setup</Trans>
               </Button>
             ) : null}
