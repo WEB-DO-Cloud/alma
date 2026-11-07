@@ -1,8 +1,23 @@
 import { Trans } from "@lingui/react/macro";
-import { HOURS_METHOD, renderReportPdf } from "@rakazo/core";
+import { buildMonthlyReport, HOURS_METHOD, renderReportPdf } from "@rakazo/core";
 import { Button } from "@rakazo/ui-web";
 import { useEffect, useState } from "react";
 import { rpc } from "../lib/rpc";
+
+const preview =
+  import.meta.env.DEV &&
+  (window.location.pathname.startsWith("/preview/") ||
+    new URLSearchParams(window.location.search).get("preview") === "1");
+
+const sample = buildMonthlyReport({
+  tasksFinished: 4,
+  practiceTasks: 0,
+  draftsWritten: 6,
+  draftsApproved: 3,
+  emailsMarkedSent: 2,
+  reminders: 1,
+  clients: [{ label: "North", draftsWritten: 2, draftsApproved: 1, emailsMarkedSent: 1 }],
+});
 
 type Report = Awaited<ReturnType<typeof rpc.monthlyReport.get>>;
 
@@ -26,13 +41,14 @@ function Lines({ report }: { report: Report }) {
 
 /** This month for the signed-in user, their clients, and an admin total. */
 export function ReportPage() {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(preview);
   const [admin, setAdmin] = useState(false);
-  const [mine, setMine] = useState<Report | null>(null);
+  const [mine, setMine] = useState<Report | null>(preview ? sample : null);
   const [all, setAll] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (preview) return;
     void rpc
       .me()
       .then(async (me) => {
