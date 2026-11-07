@@ -3938,7 +3938,7 @@ msgid "In the app"
 msgstr "W aplikacji"
 #: src/pages/DigestPage.tsx
 msgid "In the app and push"
-msgstr ""
+msgstr "W aplikacji i jako powiadomienie"
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -4625,7 +4625,7 @@ msgstr "poniedziałek"
 
 #: src/pages/DigestPage.tsx
 msgid "Monday summary"
-msgstr ""
+msgstr "Podsumowanie w poniedziałek"
 
 #: src/lib/billing.ts
 msgid "month"
@@ -4666,7 +4666,7 @@ msgstr "Poranne podsumowanie"
 
 #: src/pages/DigestPage.tsx
 msgid "Morning summary"
-msgstr ""
+msgstr "Poranne podsumowanie"
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5102,7 +5102,7 @@ msgstr "Połączenie OAuth nie powiodło się"
 
 #: src/pages/DigestPage.tsx
 msgid "Off"
-msgstr ""
+msgstr "Wyłączone"
 
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
@@ -5110,7 +5110,7 @@ msgstr "Offline"
 
 #: src/pages/DigestPage.tsx
 msgid "On"
-msgstr ""
+msgstr "Włączone"
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "On a schedule"
@@ -7315,7 +7315,7 @@ msgstr "czwartek"
 
 #: src/pages/DigestPage.tsx
 msgid "Time"
-msgstr ""
+msgstr "Godzina"
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

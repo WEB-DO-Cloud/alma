@@ -4625,7 +4625,7 @@ msgstr "lunes"
 
 #: src/pages/DigestPage.tsx
 msgid "Monday summary"
-msgstr ""
+msgstr "Resumen del lunes"
 
 #: src/lib/billing.ts
 msgid "month"
@@ -4666,7 +4666,7 @@ msgstr "Morning briefing"
 
 #: src/pages/DigestPage.tsx
 msgid "Morning summary"
-msgstr ""
+msgstr "Resumen de la mañana"
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5102,7 +5102,7 @@ msgstr "Falló la conexión OAuth"
 
 #: src/pages/DigestPage.tsx
 msgid "Off"
-msgstr ""
+msgstr "Desactivado"
 
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
@@ -5110,7 +5110,7 @@ msgstr "Sin conexión"
 
 #: src/pages/DigestPage.tsx
 msgid "On"
-msgstr ""
+msgstr "Activado"
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "On a schedule"
@@ -7315,7 +7315,7 @@ msgstr "jueves"
 
 #: src/pages/DigestPage.tsx
 msgid "Time"
-msgstr ""
+msgstr "Hora"
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"
