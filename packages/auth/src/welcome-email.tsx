@@ -1,12 +1,12 @@
 /** @jsxRuntime automatic */
 import type { TransactionalEmail } from "@rakazo/adapter-kit";
-import { MOBILE_APP_STORES } from "@rakazo/contracts";
+import { ANDROID_APP_STORE_URL, IOS_APP_STORE_URL } from "@rakazo/contracts";
 import { Link, Text } from "react-email";
 import { emailText, greeting, linkStyle, message } from "./email.js";
 
 const APPS: Readonly<Record<string, string>> = {
-  iPhone: MOBILE_APP_STORES.ios,
-  Android: MOBILE_APP_STORES.android,
+  iPhone: IOS_APP_STORE_URL,
+  Android: ANDROID_APP_STORE_URL,
 };
 
 export function welcomeEmail(

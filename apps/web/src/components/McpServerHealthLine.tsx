@@ -30,7 +30,7 @@ export function McpServerHealthLine({
         role="status"
         data-testid="mcp-health"
         data-status="checking"
-        className="flex items-center gap-1.5 text-xs text-muted-foreground"
+        className="flex items-center gap-1.5 text-label text-muted-foreground"
       >
         <LoaderCircle aria-hidden="true" className="size-3.5 animate-spin" />
         <span>
@@ -46,7 +46,7 @@ export function McpServerHealthLine({
         role="status"
         data-testid="mcp-health"
         data-status="installing"
-        className="flex items-center gap-1.5 text-xs text-muted-foreground"
+        className="flex items-center gap-1.5 text-label text-muted-foreground"
       >
         <LoaderCircle aria-hidden="true" className="size-3.5 animate-spin" />
         <span>
@@ -60,7 +60,7 @@ export function McpServerHealthLine({
 
   if (health.status === "error") {
     const summary = (
-      <span role="status" className="flex items-center gap-1.5 text-xs text-destructive">
+      <span role="status" className="flex items-center gap-1.5 text-label text-destructive">
         <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0" />
         {health.code === MCP_OAUTH_CLIENT_REQUIRED ? (
           <Trans>Needs an OAuth client ID</Trans>
@@ -75,7 +75,7 @@ export function McpServerHealthLine({
           <Disclosure data-testid="mcp-health-details" summary={summary}>
             <pre
               dir="ltr"
-              className="rk-scroll mt-1.5 max-h-40 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-muted p-2 text-start font-mono text-[11px] leading-snug text-foreground wrap-anywhere"
+              className="rk-scroll mt-1.5 max-h-40 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-muted p-2 text-start font-mono text-caption leading-snug text-foreground wrap-anywhere"
             >
               {health.message}
             </pre>
@@ -92,7 +92,7 @@ export function McpServerHealthLine({
       role="status"
       data-testid="mcp-health"
       data-status="unknown"
-      className="flex items-center gap-1.5 text-xs text-muted-foreground"
+      className="flex items-center gap-1.5 text-label text-muted-foreground"
     >
       <CircleDashed aria-hidden="true" className="size-3.5 shrink-0" />
       <span>

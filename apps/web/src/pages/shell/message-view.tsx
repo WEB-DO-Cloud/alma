@@ -9,7 +9,7 @@ import type {
 } from "@rakazo/contracts";
 import { SUPPORT_DESK_NAME, supportAgentName, supportDeliveryFailed } from "@rakazo/contracts";
 import type { ChildBotBlock, PeerExchange } from "@rakazo/core";
-import { isPeerReceiptBlocks, isToolActivityBlock } from "@rakazo/core";
+import { isPeerReceiptBlocks, isToolActivityBlock, otherAuthor } from "@rakazo/core";
 import { BotAvatar, Button, cn, resolvePersonaColorDef } from "@rakazo/ui-web";
 import { UserRound } from "lucide-react";
 import { memo, useCallback, useMemo } from "react";
@@ -17,6 +17,8 @@ import { ArtifactFileCard } from "../../components/ArtifactFileCard";
 import { AskCard } from "../../components/AskCard";
 import { CollaborationMarker } from "../../components/ai/CollaborationMarker";
 import { CloudAgentCard } from "../../components/CloudAgentCard";
+import { McpAppCard } from "../../components/McpAppCard";
+import { PageBlockCard } from "../../components/pages/PageBlockCard";
 import { SubagentCard } from "../../components/SubagentCard";
 import {
   LIVE_TOOL_STEP_WINDOW,
@@ -28,6 +30,9 @@ import {
 import { SkillDraftCard } from "../../components/teach/SkillDraftCard";
 import type { ArtifactTarget } from "../../lib/artifact-open";
 import { messageProviderLabel } from "../../lib/messaging";
+import type { PageBlock } from "../../lib/page-cards";
+import { useOpenPage } from "../../lib/pages";
+import type { createSpaceRpc } from "../../lib/rpc";
 import {
   isToolOnlyNarration,
   renderableMessageBlocks,
@@ -52,7 +57,10 @@ export const MessageView = memo(function MessageView({
   canAnswer,
   canDismiss,
   message,
+  meId,
   mentions,
+  pages,
+  isPageSuperseded,
   onAnswer,
   onOpenBot,
   onOpenPeerMessages,
@@ -67,9 +75,11 @@ export const MessageView = memo(function MessageView({
   onAddRoutine,
   voiceReady,
   speaking,
+  callHoldsSpeaker,
   onSpeak,
   onOpenComputer,
   onOpenImportSetup,
+  rpc,
   showToolActivity,
   onReply,
   onMarkUnread,
@@ -82,8 +92,14 @@ export const MessageView = memo(function MessageView({
   canAnswer: boolean;
   canDismiss: boolean;
   message: ThreadMessage;
+  /** The signed-in person; anyone else's message is named and set apart. */
+  meId?: string;
   /** Bots this reply announces, named inline in its text. */
   mentions?: readonly ChildBotBlock[];
+  /** Pages saved just before this reply, drawn under its text. */
+  pages?: readonly PageBlock[];
+  /** Whether a later card in the chat shows the same page. */
+  isPageSuperseded?: (messageId: string, block: PageBlock) => boolean;
   onAnswer: (
     message: ThreadMessage,
     text: string,
@@ -107,10 +123,13 @@ export const MessageView = memo(function MessageView({
   onAddRoutine: (name: string, prompt: string) => void;
   voiceReady: boolean;
   speaking: boolean;
+  /** An active call owns the speaker, so new reads wait until it ends. */
+  callHoldsSpeaker: boolean;
   onSpeak: (message: ThreadMessage) => void;
   onOpenComputer: (botId?: string) => void;
   /** Opens where an imported item's setup is finished. */
   onOpenImportSetup?: (target: ImportSetupTarget) => void;
+  rpc: ReturnType<typeof createSpaceRpc>;
   showToolActivity: boolean;
   onReply: (message: ThreadMessage) => void;
   onMarkUnread: (message: ThreadMessage) => void;
@@ -142,6 +161,18 @@ export const MessageView = memo(function MessageView({
         : message.blocks,
     [message.blocks, mentions],
   );
+  const openPage = useOpenPage();
+  const pageCards = pages?.length ? (
+    <div className="mt-3 flex flex-col gap-3">
+      {pages.map((page) => (
+        <PageBlockCard
+          key={`${page.pageId}:${page.version}`}
+          block={page}
+          updated={isPageSuperseded?.(message.id, page) ?? false}
+        />
+      ))}
+    </div>
+  ) : null;
   const visibleNarrationBlocks = renderableMessageBlocks(blocks, showToolActivity);
   const renderMention = useCallback(
     (id: string) => {
@@ -159,6 +190,8 @@ export const MessageView = memo(function MessageView({
   );
   const speak = () => onSpeak(message);
   const replyBotId = message.replyPreview?.botId ?? replyParent?.botId;
+  const author = message.role === "user" ? otherAuthor(message.author, meId) : undefined;
+  const replyAuthor = otherAuthor(message.replyPreview?.author ?? replyParent?.author, meId);
   const speakerBot = message.botId ? peerBot?.(message.botId) : undefined;
   const speakerColorDef = useMemo(
     () => resolvePersonaColorDef(message.botId ?? "bot", speakerBot?.color),
@@ -167,14 +200,17 @@ export const MessageView = memo(function MessageView({
   const messageContext = (
     <>
       {agentName ? (
-        <div className="mb-1.5 text-[13px] font-semibold tracking-tight text-foreground" dir="auto">
+        <div
+          className="mb-1.5 text-body-sm font-semibold tracking-tight text-foreground"
+          dir="auto"
+        >
           {agentName === SUPPORT_DESK_NAME ? t`ALMA Support` : `${agentName} · ALMA`}
         </div>
       ) : speakerName ? (
         <div
-          className="mb-1.5 flex items-center gap-2 text-[13px] font-semibold tracking-tight"
+          className="mb-1.5 flex items-center gap-2 text-body-sm font-semibold tracking-tight"
           dir="auto"
-          style={{ color: speakerColorDef.light }}
+          style={{ color: speakerColorDef.hex }}
         >
           <BotAvatar
             color={speakerBot?.color ?? FALLBACK_BOT_COLOR}
@@ -184,11 +220,18 @@ export const MessageView = memo(function MessageView({
           />
           {speakerName}
         </div>
+      ) : author ? (
+        <div
+          className="mb-1.5 text-end text-body-sm font-semibold tracking-tight text-muted-foreground"
+          dir="auto"
+        >
+          {author.name}
+        </div>
       ) : null}
       {deliveryFailed ? (
         <button
           type="button"
-          className="mb-1 text-[12px] text-destructive"
+          className="mb-1 text-label text-destructive"
           onClick={() => onRetrySupport?.(message)}
         >
           {t`Not delivered. Tap to retry.`}
@@ -200,7 +243,7 @@ export const MessageView = memo(function MessageView({
         fallbackText={replyParent ? previewMessageText(replyParent) : undefined}
         author={
           (message.replyPreview?.role ?? replyParent?.role) === "user"
-            ? t`You`
+            ? (replyAuthor?.name ?? t`You`)
             : ((replyBotId ? peerBot(replyBotId)?.name : undefined) ??
               memberName?.(replyBotId) ??
               t`Bot`)
@@ -248,7 +291,7 @@ export const MessageView = memo(function MessageView({
           <div className="flex w-fit max-w-full justify-start [@media(hover:none)]:w-full">
             <div
               data-testid="message-bot-bubble"
-              className="max-w-full space-y-2.5 rounded-[20px] bg-muted px-[18px] py-3 text-body1 text-foreground"
+              className="max-w-full space-y-2.5 rounded-2xl bg-muted px-[18px] py-3 text-body-lg text-foreground"
               dir="auto"
             >
               {visibleNarrationBlocks.map((block, i) => {
@@ -277,6 +320,7 @@ export const MessageView = memo(function MessageView({
                       <ChatMarkdown
                         streaming={block.kind === "progress"}
                         renderMention={renderMention}
+                        onOpenPage={openPage}
                       >
                         {block.text}
                       </ChatMarkdown>
@@ -290,6 +334,8 @@ export const MessageView = memo(function MessageView({
                   variant="text"
                   size="xs"
                   aria-label={speaking ? t`Stop speaking` : t`Speak this reply`}
+                  // Stopping the speech in progress stays available; a call blocks new reads.
+                  disabled={callHoldsSpeaker && !speaking}
                   onClick={speak}
                   className="font-normal"
                 >
@@ -300,6 +346,7 @@ export const MessageView = memo(function MessageView({
           </div>
           {hoverActions}
         </div>
+        {pageCards}
       </>
     );
   }
@@ -331,7 +378,7 @@ export const MessageView = memo(function MessageView({
             return (
               <div
                 key={i}
-                className="flex items-center justify-center gap-2 py-1 text-[13.5px] text-muted-foreground"
+                className="flex items-center justify-center gap-2 py-1 text-body text-muted-foreground"
               >
                 <span>
                   ↪ {to} ← {from}
@@ -374,7 +421,7 @@ export const MessageView = memo(function MessageView({
             return (
               <div
                 key={i}
-                className="flex items-center justify-center gap-2 py-1 text-[13.5px] text-muted-foreground"
+                className="flex items-center justify-center gap-2 py-1 text-body text-muted-foreground"
               >
                 <span className="shrink-0">
                   {messageProviderLabel(block.provider, block.transport)}
@@ -389,7 +436,7 @@ export const MessageView = memo(function MessageView({
             return (
               <div
                 key={i}
-                className="flex items-center justify-center gap-2 py-1 text-[13.5px] text-muted-foreground"
+                className="flex items-center justify-center gap-2 py-1 text-body text-muted-foreground"
               >
                 <span className="text-warning">◷</span>
                 <span>{block.text}</span>
@@ -404,10 +451,10 @@ export const MessageView = memo(function MessageView({
               >
                 <div
                   data-testid="message-bot-bubble"
-                  className="max-w-full rounded-[20px] bg-muted px-[18px] py-3 text-body1 text-foreground"
+                  className="max-w-full rounded-2xl bg-muted px-[18px] py-3 text-body-lg text-foreground"
                   dir="auto"
                 >
-                  <ChatMarkdown streaming renderMention={renderMention}>
+                  <ChatMarkdown streaming renderMention={renderMention} onOpenPage={openPage}>
                     {block.text}
                   </ChatMarkdown>
                 </div>
@@ -415,11 +462,17 @@ export const MessageView = memo(function MessageView({
             );
           }
           if (block.kind === "subagent") {
-            return <SubagentCard key={i} block={block} />;
+            const { botId } = message;
+            // A saved running card is a background helper's; a live one belongs to this turn.
+            const onStop =
+              botId && !message.id.startsWith("subagent:")
+                ? () => rpc.threads.stopHelper({ botId, messageId: message.id })
+                : undefined;
+            return <SubagentCard key={i} block={block} onStop={onStop} />;
           }
           if (block.kind === "child_bot") {
             return (
-              <div key={i} className="flex items-center gap-1.5 text-[15.5px]">
+              <div key={i} className="flex items-center gap-1.5 text-body-lg">
                 <BotMention
                   block={block}
                   color={peerBot(block.botId)?.color}
@@ -453,10 +506,26 @@ export const MessageView = memo(function MessageView({
               </div>
             );
           }
+          if (block.kind === "page") {
+            return (
+              <PageBlockCard
+                key={i}
+                block={block}
+                updated={isPageSuperseded?.(message.id, block) ?? false}
+              />
+            );
+          }
           if (block.kind === "chart") {
             return (
               <div key={i} className="flex justify-start">
                 <ChartBlockView name={block.name} spec={block.spec} data={block.data} />
+              </div>
+            );
+          }
+          if (block.kind === "app") {
+            return (
+              <div key={i} className="flex justify-start">
+                <McpAppCard block={block} target={artifactTarget} />
               </div>
             );
           }
@@ -511,9 +580,9 @@ export const MessageView = memo(function MessageView({
             );
           }
           if (block.kind === "text" && message.role === "user") {
-            // User bubbles stay literal text on web and mobile. Only explicit URLs
-            // and email addresses are links, so a sent address is tappable without
-            // formatting bold or headings.
+            // User bubbles stay literal text on web and mobile. Only explicit URLs,
+            // email addresses and page links are links, so a sent address is tappable
+            // without formatting bold or headings.
             return (
               <div
                 key={i}
@@ -522,10 +591,15 @@ export const MessageView = memo(function MessageView({
                 <div
                   data-testid="message-user-bubble"
                   data-quote-message-id={quoteMessageId}
-                  className="max-w-full whitespace-pre-wrap wrap-anywhere rounded-[20px] bg-chat-user px-[18px] py-3 text-body1 text-chat-user-foreground"
+                  className={cn(
+                    "max-w-full whitespace-pre-wrap wrap-anywhere rounded-2xl px-[18px] py-3 text-body-lg",
+                    author
+                      ? "bg-muted text-foreground/90"
+                      : "bg-chat-user text-chat-user-foreground",
+                  )}
                   dir="auto"
                 >
-                  <LinkifiedText>{block.text}</LinkifiedText>
+                  <LinkifiedText onOpenPage={openPage}>{block.text}</LinkifiedText>
                 </div>
                 {i === hoverAnchorIndex ? hoverActions : null}
               </div>
@@ -539,17 +613,21 @@ export const MessageView = memo(function MessageView({
               >
                 <div
                   data-testid="message-bot-bubble"
-                  className="max-w-full rounded-[20px] bg-muted px-[18px] py-3 text-body1 text-foreground"
+                  className="max-w-full rounded-2xl bg-muted px-[18px] py-3 text-body-lg text-foreground"
                   dir="auto"
                 >
                   <div data-quote-message-id={quoteMessageId}>
-                    <ChatMarkdown renderMention={renderMention}>{block.text}</ChatMarkdown>
+                    <ChatMarkdown renderMention={renderMention} onOpenPage={openPage}>
+                      {block.text}
+                    </ChatMarkdown>
                   </div>
                   {voiceReady ? (
                     <Button
                       variant="text"
                       size="xs"
                       aria-label={speaking ? t`Stop speaking` : t`Speak this reply`}
+                      // Stopping the speech in progress stays available; a call blocks new reads.
+                      disabled={callHoldsSpeaker && !speaking}
                       onClick={speak}
                       className="mt-2 font-normal"
                     >
@@ -564,9 +642,9 @@ export const MessageView = memo(function MessageView({
           if (block.kind === "card") {
             return (
               <div key={i} className="flex justify-start">
-                <div className="flex flex-col gap-2 rounded-[20px] bg-muted px-5 py-4">
+                <div className="flex flex-col gap-2 rounded-2xl bg-muted px-5 py-4">
                   {block.lines.map((line) => (
-                    <div key={line.k} className="flex items-baseline gap-2.5 text-[15px]">
+                    <div key={line.k} className="flex items-baseline gap-2.5 text-body-lg">
                       <span className="text-success">✓</span>
                       <span className="font-semibold text-foreground">{line.k}</span>
                       <span className="text-muted-foreground">→</span>
@@ -588,6 +666,7 @@ export const MessageView = memo(function MessageView({
                     onAnswer(message, text, fields, undefined, remember)
                   }
                   onDismiss={() => onAnswer(message, "", undefined, true)}
+                  rpc={rpc}
                 />
                 {i === hoverAnchorIndex ? hoverActions : null}
               </div>
@@ -609,16 +688,16 @@ export const MessageView = memo(function MessageView({
                 className="w-[340px] max-w-full rounded-[18px] border border-border bg-muted px-[18px] py-4"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[15px] font-medium text-foreground">
+                  <span className="text-body-lg font-medium text-foreground">
                     <Trans>Computer</Trans>
                   </span>
                   <span
                     className={
                       block.state === "Needs you"
-                        ? "rounded-full bg-warning/15 px-[11px] py-1 text-[13px] text-warning"
+                        ? "rounded-full bg-warning/15 px-[11px] py-1 text-body-sm text-warning"
                         : block.state === "Skipped"
-                          ? "rounded-full bg-foreground/10 px-[11px] py-1 text-[13px] text-muted-foreground"
-                          : "rounded-full bg-success/15 px-[11px] py-1 text-[13px] text-success"
+                          ? "rounded-full bg-foreground/10 px-[11px] py-1 text-body-sm text-muted-foreground"
+                          : "rounded-full bg-success/15 px-[11px] py-1 text-body-sm text-success"
                     }
                   >
                     {block.state === "Needs you"
@@ -630,7 +709,7 @@ export const MessageView = memo(function MessageView({
                           : block.state}
                   </span>
                 </div>
-                <div className="my-2.5 text-[14.5px] leading-[1.5] text-foreground/75">
+                <div className="my-2.5 text-body-lg leading-[1.5] text-foreground/75">
                   <ChatMarkdown>{block.text}</ChatMarkdown>
                 </div>
                 <Button
@@ -648,6 +727,7 @@ export const MessageView = memo(function MessageView({
         })}
         {hoverAnchorIndex === -1 ? hoverActions : null}
       </div>
+      {pageCards}
     </>
   );
 });
@@ -669,7 +749,7 @@ function BotMention({
     <span
       dir="auto"
       className="font-medium"
-      style={live ? { color: resolvePersonaColorDef(block.botId, color).light } : undefined}
+      style={live ? { color: resolvePersonaColorDef(block.botId, color).hex } : undefined}
     >
       {block.name}
     </span>

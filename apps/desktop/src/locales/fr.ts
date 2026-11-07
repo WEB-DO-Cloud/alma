@@ -187,9 +187,13 @@ export const FR_MESSAGES: Record<string, string> = {
   "Previous Bot": "Bot précédent",
   "Command Menu…": "Menu des commandes…",
   "Toggle Sidebar": "Afficher/masquer la barre latérale",
-  "Search…": "Rechercher…",
+  "Find…": "Rechercher…",
+  "Search Bots…": "Rechercher des bots…",
   "The window closed before the app loaded.":
     "La fenêtre s’est fermée avant le chargement de l’app.",
-  "This install does not run a server on this computer.":
-    "Cette installation n’exécute pas de serveur sur cet ordinateur.",
+  "New Group Chat": "Nouvelle discussion de groupe",
+  "Connect Apps…": "Connecter des apps…",
+  "Chat Details": "Détails de la discussion",
+  Help: "Aide",
+  "Keyboard Shortcuts": "Raccourcis clavier",
 };

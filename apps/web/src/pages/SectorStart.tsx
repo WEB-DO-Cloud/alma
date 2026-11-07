@@ -37,6 +37,7 @@ export function SectorStartPage() {
       <div className="mx-auto w-full max-w-[560px]">
         {step === "use" ? (
           <>
+            {/* off-scale: the first-run question is the page's only title */}
             <h1 className="text-[32px] font-medium text-foreground">
               <Trans>What do you want ALMA for first?</Trans>
             </h1>
@@ -69,6 +70,7 @@ export function SectorStartPage() {
           </>
         ) : (
           <>
+            {/* off-scale: the first-run question is the page's only title */}
             <h1 className="text-[32px] font-medium text-foreground">
               <Trans>What kind of work?</Trans>
             </h1>
@@ -103,7 +105,7 @@ export function SectorStartPage() {
           </>
         )}
         {error ? (
-          <p role="alert" className="mt-4 text-sm text-destructive">
+          <p role="alert" className="mt-4 text-body-sm text-destructive">
             <Trans>Could not save</Trans>
           </p>
         ) : null}

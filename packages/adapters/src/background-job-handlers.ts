@@ -5,6 +5,7 @@ import type {
   BackgroundJobExecution,
   BackgroundJobHandlers,
   JobPublisher,
+  MediaGenerationProvider,
   MessagingSurface,
   PaymentWalletProvider,
   SandboxProvider,
@@ -28,8 +29,13 @@ import { performComputerUpdate } from "./computer-update.js";
 import type { createRunExecutor } from "./executor.js";
 import type { ExpoPushProvider } from "./expo-push.js";
 import { compactHistory } from "./history-compaction.js";
+import { pollMediaVideo } from "./media-video-poll.js";
 import type { MemoryProviderResolver } from "./memory-provider-factory.js";
-import { deliverMessagingOutbound, mirrorMessagingOutbound } from "./messaging-delivery.js";
+import {
+  deliverMessagingOutbound,
+  mirrorMessagingOutbound,
+  mirrorMessagingProgress,
+} from "./messaging-delivery.js";
 import { pollPurchase } from "./purchase-poll.js";
 import { forwardSupportMessage } from "./support-chatwoot.js";
 import { expireTaughtSkillTeaching } from "./teaching-session.js";
@@ -75,6 +81,8 @@ export function createBackgroundJobHandlers(deps: {
   cloudAgent?: CloudAgentConnection | null;
   paymentWallet?: PaymentWalletProvider | null;
   notifications?: ExpoPushProvider;
+  mediaGeneration?: MediaGenerationProvider;
+  maxUploadSizeBytes?: number;
 }): BackgroundJobHandlers {
   const messagingDeps = deps.messaging
     ? {
@@ -116,6 +124,13 @@ export function createBackgroundJobHandlers(deps: {
     deps.prisma.cloudAgent.findUnique({ where: { id: agentId }, select: OWNER });
   const purchase = ({ purchaseId }: { purchaseId: string }) =>
     deps.prisma.purchase.findUnique({ where: { id: purchaseId }, select: OWNER });
+  const mediaJob = async ({ jobId }: { jobId: string }) =>
+    (
+      await deps.prisma.externalEffect.findUnique({
+        where: { id: jobId },
+        select: { run: { select: OWNER } },
+      })
+    )?.run ?? null;
   const updatedComputer = async ({ updateId }: { updateId: string }) =>
     (
       await deps.prisma.computerUpdate.findUnique({
@@ -156,6 +171,11 @@ export function createBackgroundJobHandlers(deps: {
       if (runId && messagingDeps) {
         await asOwner(run, () => mirrorMessagingOutbound(messagingDeps, runId))({ runId });
       }
+      await drainMessaging();
+    },
+    "messaging.progress": async ({ runId }) => {
+      if (!messagingDeps) return;
+      await asOwner(run, () => mirrorMessagingProgress(messagingDeps, runId))({ runId });
       await drainMessaging();
     },
     "routine.wakeup": asOwner(routine, async (payload) => {
@@ -215,6 +235,9 @@ export function createBackgroundJobHandlers(deps: {
         payload,
       );
     }),
+    "media.poll": asOwner(mediaJob, async (payload) => {
+      await pollMediaVideo(deps, payload);
+    }),
     // A receipt belongs to a device's push token, not to a Space.
     "support.forward": asOwner<{ messageId: string }, { messageId: string }>(
       async ({ messageId }) => {
@@ -246,6 +269,7 @@ export function createBackgroundJobHandlers(deps: {
           ...(deps.executor.resolveModel ? { resolveModel: deps.executor.resolveModel } : {}),
         },
         payload.threadId,
+        payload.userId,
       );
     }),
   };
