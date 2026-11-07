@@ -174,10 +174,11 @@ function SessionApp() {
     markAfterPaint("rk:renderer:session-painted");
   }, [session.isPending]);
 
-  if (showSessionUnavailable(gate, nextHolding)) {
+  const localPreview = import.meta.env.DEV && window.location.pathname.startsWith("/preview/");
+  if (!localPreview && showSessionUnavailable(gate, nextHolding)) {
     return <SessionUnavailable refetch={session.refetch} />;
   }
-  if (gate === "loading" && !nextHoldingAnonymous) {
+  if (!localPreview && gate === "loading" && !nextHoldingAnonymous) {
     return <PageLoading data-rakazo-app-state="session-pending" />;
   }
 
