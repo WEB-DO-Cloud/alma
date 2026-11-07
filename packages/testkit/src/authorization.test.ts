@@ -588,6 +588,8 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["sendUndo/update", { seconds: 30 }],
       ["digest/get"],
       ["digest/update", { enabled: false, weekly: true, minuteOfDay: 450 }],
+      ["monthlyReport/get", {}],
+      ["monthlyReport/admin", {}],
       ["phase2a/contexts/list"],
       ["phase2a/contexts/create", { kind: "personal", label: "Home" }],
       ["phase2a/contexts/grant", { contextId: "missing", userId: "missing", role: "reader" }],

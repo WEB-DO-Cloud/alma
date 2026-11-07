@@ -1706,6 +1706,36 @@ export const appContract = {
       )
       .output(z.object({ ok: z.literal(true) })),
   },
+  monthlyReport: {
+    get: oc
+      .input(z.object({ month: z.string().optional() }))
+      .output(
+        z.object({
+          lines: z.array(z.object({ key: z.string(), label: z.string(), value: z.string() })),
+          practice: z.string().nullable(),
+          clients: z.array(
+            z.object({
+              label: z.string(),
+              lines: z.array(z.object({ key: z.string(), label: z.string(), value: z.string() })),
+            }),
+          ),
+        }),
+      ),
+    admin: oc
+      .input(z.object({ month: z.string().optional() }))
+      .output(
+        z.object({
+          lines: z.array(z.object({ key: z.string(), label: z.string(), value: z.string() })),
+          practice: z.string().nullable(),
+          clients: z.array(
+            z.object({
+              label: z.string(),
+              lines: z.array(z.object({ key: z.string(), label: z.string(), value: z.string() })),
+            }),
+          ),
+        }),
+      ),
+  },
   phase2a: {
     contexts: {
       list: oc.output(z.array(WorkContextSchema)),

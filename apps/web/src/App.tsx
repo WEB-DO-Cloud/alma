@@ -81,6 +81,9 @@ const VoicePreviewPage = lazyComponent(() =>
 const DigestPage = lazyComponent(() =>
   import("./pages/DigestPage").then((module) => module.DigestPage),
 );
+const ReportPage = lazyComponent(() =>
+  import("./pages/ReportPage").then((module) => module.ReportPage),
+);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -322,6 +325,7 @@ function SessionApp() {
                   <Route path="/app/notify" element={<QuietHoursPage />} />
                   <Route path="/app/undo" element={<UndoPage />} />
                   <Route path="/app/digest" element={<DigestPage />} />
+                  <Route path="/app/report" element={<ReportPage />} />
                   <Route path="/app/artifacts" element={<ArtifactsPage />} />
                   <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />
                   {ticketBoardEnabled ? <Route path="/app/board" element={<BoardPage />} /> : null}

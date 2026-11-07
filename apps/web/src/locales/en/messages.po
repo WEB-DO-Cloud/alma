@@ -871,6 +871,10 @@ msgstr "All {credit} goes to model usage."
 msgid "All bots"
 msgstr "All bots"
 
+#: src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr "All customers"
+
 #: src/pages/Artifacts.tsx
 msgid "All files"
 msgstr "All files"
@@ -3252,6 +3256,7 @@ msgid "Download CSV"
 msgstr "Download CSV"
 
 #: src/components/pages/DownloadPdfButton.tsx
+#: src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr "Download PDF"
 
@@ -5514,6 +5519,10 @@ msgstr "POST to"
 msgid "PR reviewer"
 msgstr "PR reviewer"
 
+#: src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr "Practice"
+
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "Preferences"
@@ -7239,6 +7248,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "This model's context window is too small. Choose another model."
 
 #: src/pages/Artifacts.tsx
+#: src/pages/ReportPage.tsx
 msgid "This month"
 msgstr "This month"
 
