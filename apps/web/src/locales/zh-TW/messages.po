@@ -1089,6 +1089,7 @@ msgstr "核准"
 
 #: src/pages/MessagingSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "核准"
@@ -1471,6 +1472,7 @@ msgstr "無法讀取影像"
 #: src/pages/onboarding/model-step.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/create-bot-dialog.tsx
 #: src/pages/shell/dialogs.tsx
 msgid "Cancel"
@@ -4462,6 +4464,7 @@ msgstr "提及 OpenClaw 功能"
 msgid "Mentions: {mentions}"
 msgstr "提及：{mentions}"
 
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/chat-shared.ts
 #: src/pages/shell/composer.tsx
 #: src/pages/SpaceSearch.tsx
@@ -4680,6 +4683,7 @@ msgstr ""
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/plugins/source-form.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/bot-panel.tsx
@@ -4777,6 +4781,10 @@ msgstr ""
 
 #: src/components/VaultSettings.tsx
 msgid "New contact"
+msgstr ""
+
+#: src/pages/QueuePage.tsx
+msgid "New draft"
 msgstr ""
 
 #: src/pages/GroupPanel.tsx
@@ -5036,6 +5044,10 @@ msgstr ""
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
 msgstr "尚無記憶"
+
+#: src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr ""
 
 #: src/pages/shell/bot-settings-sections.tsx
 msgid "Notifications"
@@ -5377,6 +5389,7 @@ msgid "Persona"
 msgstr "人設"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr "個人"
 
@@ -5537,6 +5550,11 @@ msgstr "供應商"
 msgid "Pull request"
 msgstr "Pull request"
 
+#: src/components/SidebarFooter.tsx
+#: src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr ""
+
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "排隊中"
@@ -5596,6 +5614,10 @@ msgstr "最近"
 
 #: src/components/SpendingLimitSettings.tsx
 msgid "Recent payments"
+msgstr ""
+
+#: src/pages/QueuePage.tsx
+msgid "Recipient"
 msgstr ""
 
 #: src/pages/plugins/plugin-browse.tsx
@@ -6131,6 +6153,7 @@ msgstr "週六"
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -6804,6 +6827,7 @@ msgstr "子代理程式"
 
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/onboarding/model-step.tsx
+#: src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "提交"
 
@@ -7818,6 +7842,7 @@ msgid "Won't do"
 msgstr "不處理"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "工作"

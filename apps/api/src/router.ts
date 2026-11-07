@@ -150,6 +150,7 @@ export interface RouterDeps {
     desktopHostChoiceEnabled?: boolean;
     computerSettingsEnabled?: boolean;
     mcpStdioEnabled?: boolean;
+    phase2aEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }

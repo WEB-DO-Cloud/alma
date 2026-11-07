@@ -1563,6 +1563,10 @@ export const DE_MESSAGES: Record<string, string> = {
     "Der Plan verlängert sich monatlich, bis du kündigst.",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "Kündige im Abrechnungsportal. Der Zugang gilt bis zum Ende des bereits bezahlten Zeitraums.",
+  Queue: "Warteschlange",
+  "Nothing waiting": "Nichts wartet",
+  "New draft": "Neuer Entwurf",
+  Recipient: "Empfänger",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

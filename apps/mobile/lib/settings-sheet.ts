@@ -24,6 +24,7 @@ const settingsScreens = new Set([
   "models",
   "organization",
   "plugin",
+  "queue",
   "signup-survey",
   "skill",
   "skills",

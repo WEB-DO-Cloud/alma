@@ -992,6 +992,7 @@ function SpaceShell() {
         openIntegrations={() => setOverlay({ kind: "integrations" })}
         openSkills={() => setOverlay({ kind: "skills" })}
         openSpaceChat={openSpaceChat}
+        phase2aEnabled={Boolean(bootstrapMe?.phase2aEnabled)}
         onboardingV2={Boolean(bootstrapMe?.onboardingV2)}
       />
 

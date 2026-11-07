@@ -71,6 +71,7 @@ export function ShellSidebar({
   openSkills,
   openSpaceChat,
   onboardingV2 = false,
+  phase2aEnabled = false,
 }: {
   isMobile: boolean;
   mobileOpen: boolean;
@@ -101,6 +102,7 @@ export function ShellSidebar({
   openSkills: () => void;
   openSpaceChat: (spaceId: string, path: string) => void;
   onboardingV2?: boolean;
+  phase2aEnabled?: boolean;
 }) {
   const { t } = useLingui();
   const {
@@ -295,6 +297,7 @@ export function ShellSidebar({
           openSkills={openSkills}
           openSpaceChat={openSpaceChat}
           onboardingV2={onboardingV2}
+          phase2aEnabled={phase2aEnabled}
         />
       </Sidebar>
     </>
@@ -314,6 +317,7 @@ function ShellSidebarFooter({
   openSkills,
   openSpaceChat,
   onboardingV2 = false,
+  phase2aEnabled = false,
 }: {
   mini: boolean;
   logos: Array<{ name: string; logo?: string | null }>;
@@ -327,6 +331,7 @@ function ShellSidebarFooter({
   openSkills: () => void;
   openSpaceChat: (spaceId: string, path: string) => void;
   onboardingV2?: boolean;
+  phase2aEnabled?: boolean;
 }) {
   const { t, i18n } = useLingui();
   const userId = useQueryUserId();
@@ -403,6 +408,15 @@ function ShellSidebarFooter({
           closeMobileSidebar();
           navigate("/app/artifacts");
         }}
+        onQueue={
+          phase2aEnabled
+            ? () => {
+                setMenuOpen(false);
+                closeMobileSidebar();
+                navigate("/app/queue");
+              }
+            : undefined
+        }
         onSettings={() => {
           setMenuOpen(false);
           openSettings("general");

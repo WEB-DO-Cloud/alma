@@ -281,7 +281,7 @@ export function externalSendHold(input: {
   viaConnector: boolean;
   connectorKind: string;
   tools: ReadonlyArray<{ name: string; readOnly?: boolean }>;
-}): { code: "phase2a_refused" | "phase2a_external_hold" } | null {
+}): { code: "phase2a_refused" } | null {
   if (!input.enabled) return null;
   for (const tool of input.tools) {
     if (
@@ -297,7 +297,6 @@ export function externalSendHold(input: {
     input.viaConnector &&
     input.tools.some((tool) => connectorToolRequiresApproval(tool.name, tool.readOnly));
   if (mutating && PAYMENT_CONNECTORS.has(input.connectorKind)) return { code: "phase2a_refused" };
-  if (mutating) return { code: "phase2a_external_hold" };
   return null;
 }
 
@@ -306,4 +305,29 @@ export function splitTiming(input: { modelMs: number; approvalWaitMs: number }):
   approvalWaitMs: number;
 } {
   return { modelMs: input.modelMs, approvalWaitMs: input.approvalWaitMs };
+}
+
+const QUEUE_WRITERS = new Set<ContextRole>(["owner", "professional", "assistant"]);
+
+/** Which queue controls a person may use. Readers can look, not change a draft. */
+export function queueDraftActions(input: {
+  role: ContextRole;
+  status: DraftStatus;
+  creatorRole: ContextRole;
+  creatorUserId: string;
+  actorUserId: string;
+}): { compose: boolean; submit: boolean; approve: boolean; save: boolean; cancel: boolean } {
+  const write = QUEUE_WRITERS.has(input.role);
+  const approver = APPROVERS.has(input.role);
+  const ownAssistantDraft =
+    input.creatorRole === "assistant" && input.actorUserId === input.creatorUserId;
+  const open =
+    input.status === "draft" || input.status === "pending" || input.status === "approved";
+  return {
+    compose: write,
+    submit: write && input.status === "draft",
+    approve: approver && !ownAssistantDraft && input.status === "pending",
+    save: write && open,
+    cancel: write && (input.status === "pending" || input.status === "approved"),
+  };
 }
