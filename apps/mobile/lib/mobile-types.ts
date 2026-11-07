@@ -72,6 +72,7 @@ export type MobileMe = Pick<
   | "digestEnabled"
   | "monthlyReportEnabled"
   | "referralPromptEnabled"
+  | "mobileActionsEnabled"
 >;
 export type MobileModel = ModelCatalogEntry;
 /** Shared DTO includes headerNames only; header values remain in the server secret. */

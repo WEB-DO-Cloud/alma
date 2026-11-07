@@ -1513,6 +1513,8 @@ export const MeSchema = z.object({
   monthlyReportEnabled: z.boolean().optional(),
   /** Post-win share prompt. Absent means off. */
   referralPromptEnabled: z.boolean().optional(),
+  /** Phone quick actions. Absent means off. */
+  mobileActionsEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

@@ -22,6 +22,7 @@ describe("loadEnv", () => {
       digestEnabled: false,
       monthlyReportEnabled: false,
       referralPromptEnabled: false,
+      mobileActionsEnabled: false,
     });
     expect(loadEnv({ ...base, ALMA_REFERRAL_REWARDS: "true" }).referralPromptEnabled).toBe(false);
     expect(

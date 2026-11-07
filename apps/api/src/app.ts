@@ -782,6 +782,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       digestEnabled: env.digestEnabled,
       monthlyReportEnabled: env.monthlyReportEnabled,
       referralPromptEnabled: env.referralPromptEnabled,
+      mobileActionsEnabled: env.mobileActionsEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });
