@@ -319,6 +319,7 @@ x-app-environment: &app-environment
   ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
   # Lock-screen notification policy. Off unless set to the exact string true.
   ALMA_NOTIFY_POLICY:
+  ALMA_SEND_UNDO:
 
 services:
   postgres:
@@ -475,6 +476,7 @@ services:
       ALMA_PHASE2A:
       ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
       ALMA_NOTIFY_POLICY:
+      ALMA_SEND_UNDO:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:

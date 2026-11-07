@@ -21,6 +21,7 @@ import {
   outboundSiteGate,
   planActionGate,
   readPhase2aConfig,
+  readSendUndoConfig,
   redactSecrets,
   repeatsDeniedAction,
   resolveActionApprovalForTools,
@@ -32,7 +33,7 @@ import {
 import { normalizedHttpUrl, urlSite } from "@rakazo/core/egress";
 import { approvalEffectKey, toolEffectIdempotencyKey } from "@rakazo/core/node/approval-effect-key";
 import type { AuditEventInput } from "@rakazo/db";
-import { recordAuditEvent, runSecretKind } from "@rakazo/db";
+import { holdExternalSend, recordAuditEvent, runSecretKind } from "@rakazo/db";
 import type { FleetCardSummary } from "./approval-ask.js";
 import { buildApprovalAskBlock, MAX_FETCH_URL_LENGTH } from "./approval-ask.js";
 import {
@@ -214,12 +215,23 @@ export async function gateToolCall(
       enabled: true,
       viaConnector,
       connectorKind,
+      undo: readSendUndoConfig().enabled,
       tools: approvalToolNames.map((toolName) => ({
         name: toolName,
         readOnly: declaredReadOnlyFor(toolName),
       })),
     });
-    if (hold) return { result: { error: hold.code } };
+    if (hold) {
+      if (hold.code === "phase2a_external_hold") {
+        await holdExternalSend(deps.prisma, {
+          userId: run.userId,
+          spaceId: run.spaceId,
+          toolName: approvalName,
+          args,
+        }).catch(() => undefined);
+      }
+      return { result: { error: hold.code } };
+    }
   }
   // paid_request with only a purchase id sends the request its approval already named.
   const sendsToSite =

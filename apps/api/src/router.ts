@@ -153,6 +153,7 @@ export interface RouterDeps {
     mcpStdioEnabled?: boolean;
     phase2aEnabled?: boolean;
     notifyPolicyEnabled?: boolean;
+    sendUndoEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }

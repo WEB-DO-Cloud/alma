@@ -1501,6 +1501,8 @@ export const MeSchema = z.object({
   phase2aEnabled: z.boolean().optional(),
   /** Lock-screen notification policy. Absent from older servers, false when the switch is off. */
   notifyPolicyEnabled: z.boolean().optional(),
+  /** Cancel window before an external send. Absent means off. */
+  sendUndoEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

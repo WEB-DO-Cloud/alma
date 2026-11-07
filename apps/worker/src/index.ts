@@ -1,7 +1,7 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import type { JobPublisher, JobWorkerHost } from "@rakazo/adapter-kit";
 import { unwrapEnvFromKeyManager } from "@rakazo/adapters";
-import { readNotifyPolicyConfig, readPhase2aConfig } from "@rakazo/core";
+import { readNotifyPolicyConfig, readPhase2aConfig, readSendUndoConfig } from "@rakazo/core";
 import { loadRootEnv } from "@rakazo/core/node/load-root-env";
 import { stopOnShutdownSignals } from "@rakazo/core/node/shutdown-signals";
 import { startWorkerHealth, watchEventLoopStalls } from "./health.js";
@@ -90,6 +90,7 @@ async function main() {
   readAlmaFlags();
   readPhase2aConfig();
   readNotifyPolicyConfig();
+  readSendUndoConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");

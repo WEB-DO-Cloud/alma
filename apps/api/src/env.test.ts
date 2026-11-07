@@ -16,6 +16,7 @@ describe("loadEnv", () => {
       phase2aEnabled: false,
       phase2aDispatchDelaySeconds: 30,
       notifyPolicyEnabled: false,
+      sendUndoEnabled: false,
     });
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),

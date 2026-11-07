@@ -1,5 +1,5 @@
 import { ORPCError } from "@orpc/server";
-import { Phase2aError, readPhase2aConfig } from "@rakazo/core";
+import { Phase2aError, readPhase2aConfig, readSendUndoConfig } from "@rakazo/core";
 import type { Phase2aActor } from "@rakazo/db";
 import {
   approveOutboundDraft,
@@ -16,6 +16,7 @@ import {
   resolveWorkRecord,
   revokeWorkRole,
   submitOutboundDraft,
+  undoSecondsFor,
 } from "@rakazo/db";
 import type { RouterContext } from "./context.js";
 
@@ -212,10 +213,13 @@ export function phase2aRoutes(ctx: RouterContext) {
         approve: authed.phase2a.drafts.approve.handler(async ({ context, input }) => {
           const config = phase2aConfig();
           try {
+            const delaySeconds = readSendUndoConfig().enabled
+              ? await undoSecondsFor(deps.prisma, context.actor.userId)
+              : config.dispatchDelaySeconds;
             return await approveOutboundDraft(
               deps.prisma,
               await actorFor(ctx, context.actor.userId, context.actor.spaceId),
-              { id: input.id, delaySeconds: config.dispatchDelaySeconds },
+              { id: input.id, delaySeconds },
             );
           } catch (error) {
             rethrow(error);

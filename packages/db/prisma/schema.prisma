@@ -102,6 +102,7 @@ model User {
   workApprovalEvents          WorkApprovalEvent[]
   notificationPolicy          UserNotificationPolicy?
   notificationBatches         NotificationBatch[]
+  sendUndoSetting             SendUndoSetting?
 
   @@unique([email])
   @@map("user")
@@ -2965,4 +2966,14 @@ model NotificationBatch {
 
   @@index([userId, sentAt])
   @@map("notification_batches")
+}
+
+/// Seconds before an approved external draft could be claimed. No sender is attached.
+model SendUndoSetting {
+  userId    String   @id
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seconds   Int
+  updatedAt DateTime @updatedAt
+
+  @@map("send_undo_settings")
 }
