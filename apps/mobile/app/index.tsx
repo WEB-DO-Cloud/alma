@@ -89,6 +89,7 @@ import {
   subscribeSessionGeneration,
 } from "../lib/session";
 import { useSplitView } from "../lib/split-view";
+import { subscribeDelivered } from "../lib/thread-feedback";
 import { useArchivedCount } from "../lib/use-archived-count";
 import { useCollapsedSections } from "../lib/use-collapsed-sections";
 import { useHomeHeader } from "../lib/use-home-header";
@@ -332,6 +333,26 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
       setRefreshing(false);
     }
   }, [loadBots]);
+
+  const refreshTrialBanner = useCallback(() => {
+    void rpc("billing/status")
+      .then((billing) => {
+        setTrialBanner(
+          billing.access && billing.almaTrial
+            ? {
+                daysLeft: billing.almaTrial.daysLeft,
+                messagesLeft: billing.almaTrial.messagesLeft,
+              }
+            : null,
+        );
+      })
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    if (!me?.billingEnabled) return;
+    return subscribeDelivered(() => refreshTrialBanner());
+  }, [me?.billingEnabled, refreshTrialBanner]);
 
   useEffect(() => {
     void loadSessionToken().then((token) => {
