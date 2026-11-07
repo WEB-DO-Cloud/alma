@@ -1,6 +1,6 @@
 export const DE_MESSAGES: Record<string, string> = {
-  "Record": "Aufnehmen",
-  "Recording": "Aufnahme",
+  Record: "Aufnehmen",
+  Recording: "Aufnahme",
   Support: "Support",
   "No matches": "Keine Treffer",
   "Always ask": "Immer fragen",
