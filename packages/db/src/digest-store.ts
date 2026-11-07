@@ -14,7 +14,6 @@ export type DigestPush = {
   issueId: string;
   draftCount: number;
   reminderCount: number;
-  email: boolean;
 };
 
 /** Inserts at most one issue per kind and local date. The loser of the unique key pushes nothing. */
@@ -88,7 +87,6 @@ export async function scanDigests(prisma: PrismaClient, now = new Date()): Promi
             issueId: issue.id,
             draftCount: built.draftCount,
             reminderCount: built.reminderCount,
-            email: subscription.email,
           });
         } catch (error) {
           const code = (error as { code?: string }).code;
@@ -97,5 +95,35 @@ export async function scanDigests(prisma: PrismaClient, now = new Date()): Promi
       }
     }
     return pushes;
+  });
+}
+
+export async function digestSettings(prisma: PrismaClient, userId: string) {
+  const row = await prisma.digestSubscription.findUnique({ where: { userId } });
+  return {
+    enabled: row?.enabled ?? false,
+    weekly: row?.weekly ?? true,
+    minuteOfDay: row?.minuteOfDay ?? 450,
+  };
+}
+
+export async function saveDigestSettings(
+  prisma: PrismaClient,
+  userId: string,
+  input: { enabled: boolean; weekly: boolean; minuteOfDay: number },
+) {
+  await prisma.digestSubscription.upsert({
+    where: { userId },
+    create: { userId, ...input, email: false },
+    update: { ...input, email: false },
+  });
+}
+
+export async function latestDigestIssues(prisma: PrismaClient, userId: string) {
+  return prisma.digestIssue.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: 2,
+    select: { kind: true, localDate: true, draftCount: true, reminderCount: true },
   });
 }

@@ -3935,6 +3935,8 @@ msgstr ""
 
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
 msgstr ""
 
 #: src/components/integrations/plugin-marketplace.tsx
@@ -4620,6 +4622,10 @@ msgstr "Model listesi tamam. {modelCount, plural, one {# model} other {# model}}
 msgid "Monday"
 msgstr "Pazartesi"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr ""
@@ -4656,6 +4662,10 @@ msgstr ""
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,8 +5099,16 @@ msgstr "OAuth istemci gizli anahtarı (isteğe bağlı)"
 msgid "OAuth connection failed"
 msgstr "OAuth bağlantısı başarısız"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
+msgstr ""
+
+#: src/pages/DigestPage.tsx
+msgid "On"
 msgstr ""
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
@@ -6178,6 +6196,7 @@ msgstr "Cumartesi"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7311,10 @@ msgstr ""
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "Perşembe"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

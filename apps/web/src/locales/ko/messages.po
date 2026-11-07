@@ -3935,6 +3935,8 @@ msgstr ""
 
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
 msgstr ""
 
 #: src/components/integrations/plugin-marketplace.tsx
@@ -4620,6 +4622,10 @@ msgstr "모델 목록이 정상입니다. {modelCount, plural, one {모델 #개}
 msgid "Monday"
 msgstr "월요일"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr ""
@@ -4656,6 +4662,10 @@ msgstr "컴퓨터 작업 더보기"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,8 +5099,16 @@ msgstr "OAuth 클라이언트 시크릿(선택 사항)"
 msgid "OAuth connection failed"
 msgstr "OAuth 연결 실패"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
+msgstr ""
+
+#: src/pages/DigestPage.tsx
+msgid "On"
 msgstr ""
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
@@ -6178,6 +6196,7 @@ msgstr "토요일"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7311,10 @@ msgstr ""
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "목요일"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

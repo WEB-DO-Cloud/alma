@@ -3936,6 +3936,9 @@ msgstr "In review"
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
 msgstr "In the app"
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr "In the app and push"
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -4620,6 +4623,10 @@ msgstr "Models list OK. {modelCount, plural, one {# model} other {# models}} ava
 msgid "Monday"
 msgstr "Monday"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr "Monday summary"
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr "month"
@@ -4656,6 +4663,10 @@ msgstr "More computer actions"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr "Morning summary"
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,9 +5100,17 @@ msgstr "OAuth client secret (optional)"
 msgid "OAuth connection failed"
 msgstr "OAuth connection failed"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr "Off"
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
 msgstr "Offline"
+
+#: src/pages/DigestPage.tsx
+msgid "On"
+msgstr "On"
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "On a schedule"
@@ -6178,6 +6197,7 @@ msgstr "Saturday"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7312,10 @@ msgstr "This week"
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "Thursday"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr "Time"
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

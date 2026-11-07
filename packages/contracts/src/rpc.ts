@@ -1679,6 +1679,33 @@ export const appContract = {
       )
       .output(z.object({ ok: z.literal(true) })),
   },
+  digest: {
+    get: oc.output(
+      z.object({
+        enabled: z.boolean(),
+        weekly: z.boolean(),
+        minuteOfDay: z.number().int(),
+        channel: z.literal("app_and_push"),
+        issues: z.array(
+          z.object({
+            kind: z.enum(["daily", "weekly"]),
+            localDate: z.string(),
+            draftCount: z.number().int(),
+            reminderCount: z.number().int(),
+          }),
+        ),
+      }),
+    ),
+    update: oc
+      .input(
+        z.object({
+          enabled: z.boolean(),
+          weekly: z.boolean(),
+          minuteOfDay: z.number().int().min(0).max(1439),
+        }),
+      )
+      .output(z.object({ ok: z.literal(true) })),
+  },
   phase2a: {
     contexts: {
       list: oc.output(z.array(WorkContextSchema)),

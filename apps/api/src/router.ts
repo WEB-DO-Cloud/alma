@@ -53,6 +53,7 @@ import { onboardingRoutes } from "./routes/onboarding.js";
 import { organizationsRoutes } from "./routes/organizations.js";
 import { pagesRoutes } from "./routes/pages.js";
 import { paymentWalletRoutes } from "./routes/payment-wallet.js";
+import { digestRoutes } from "./routes/digest.js";
 import { phase2aRoutes } from "./routes/phase2a.js";
 import { routinesRoutes } from "./routes/routines.js";
 import { sendUndoRoutes } from "./routes/send-undo.js";
@@ -188,6 +189,7 @@ export function createRouter(deps: RouterDeps) {
     ...pagesRoutes(ctx),
     ...paymentWalletRoutes(ctx),
     ...notifyPolicyRoutes(ctx),
+    ...digestRoutes(ctx),
     ...phase2aRoutes(ctx),
     ...sendUndoRoutes(ctx),
     ...spendingLimitRoutes(ctx),

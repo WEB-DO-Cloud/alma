@@ -3935,6 +3935,8 @@ msgstr "レビュー中"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
 msgstr ""
 
 #: src/components/integrations/plugin-marketplace.tsx
@@ -4620,6 +4622,10 @@ msgstr "モデル一覧は正常です。{modelCount, plural, one {#個のモデ
 msgid "Monday"
 msgstr "月曜日"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr "月"
@@ -4656,6 +4662,10 @@ msgstr "コンピューターのその他の操作"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,8 +5099,16 @@ msgstr "OAuthクライアントシークレット（任意）"
 msgid "OAuth connection failed"
 msgstr "OAuth接続に失敗しました"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
+msgstr ""
+
+#: src/pages/DigestPage.tsx
+msgid "On"
 msgstr ""
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
@@ -6178,6 +6196,7 @@ msgstr "土曜日"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7311,10 @@ msgstr "今週"
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "木曜日"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"
