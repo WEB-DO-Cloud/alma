@@ -71,6 +71,9 @@ const ArtifactsPage = lazyComponent(() =>
 const QueuePage = lazyComponent(() =>
   import("./pages/QueuePage").then((module) => module.QueuePage),
 );
+const QuietHoursPage = lazyComponent(() =>
+  import("./pages/QuietHoursPage").then((module) => module.QuietHoursPage),
+);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -218,6 +221,9 @@ function SessionApp() {
               />
               <Route path="/reset-password" element={<PasswordResetPage />} />
               <Route path="/p/:slugToken" element={<SharedPagePage />} />
+              {import.meta.env.DEV ? (
+                <Route path="/preview/notify" element={<QuietHoursPage />} />
+              ) : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}
                 element={
@@ -298,6 +304,7 @@ function SessionApp() {
                   <Route path="/onboarding/sector" element={<SectorStartPage />} />
                   <Route path="/onboarding/:step?" element={<OnboardingPage />} />
                   <Route path="/app/queue" element={<QueuePage />} />
+                  <Route path="/app/notify" element={<QuietHoursPage />} />
                   <Route path="/app/artifacts" element={<ArtifactsPage />} />
                   <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />
                   {ticketBoardEnabled ? <Route path="/app/board" element={<BoardPage />} /> : null}

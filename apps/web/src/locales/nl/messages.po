@@ -1368,6 +1368,7 @@ msgid "Bot's model"
 msgstr "Model van de bot"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QuietHoursPage.tsx
 msgid "Both"
 msgstr ""
 
@@ -3325,6 +3326,10 @@ msgstr "E-mailverificatie vereist"
 msgid "Enable {0}"
 msgstr "{0} inschakelen"
 
+#: src/pages/QuietHoursPage.tsx
+msgid "End"
+msgstr ""
+
 #: src/components/ComputerProviderSettings.tsx
 msgid "End user ID"
 msgstr ""
@@ -3923,6 +3928,10 @@ msgstr "Bezig"
 #: src/lib/ticket-status.ts
 msgid "In review"
 msgstr "In beoordeling"
+
+#: src/pages/QuietHoursPage.tsx
+msgid "In the app"
+msgstr ""
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -5549,6 +5558,10 @@ msgstr "Aanbieders"
 msgid "Pull request"
 msgstr "Pull request"
 
+#: src/pages/QuietHoursPage.tsx
+msgid "Push"
+msgstr ""
+
 #: src/components/SidebarFooter.tsx
 #: src/pages/QueuePage.tsx
 msgid "Queue"
@@ -5557,6 +5570,10 @@ msgstr ""
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "In wachtrij"
+
+#: src/pages/QuietHoursPage.tsx
+msgid "Quiet hours"
+msgstr ""
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -6153,6 +6170,7 @@ msgstr "zaterdag"
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/QueuePage.tsx
+#: src/pages/QuietHoursPage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -6718,6 +6736,7 @@ msgstr ""
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO is tijdelijk niet beschikbaar. Probeer het opnieuw."
 
+#: src/pages/QuietHoursPage.tsx
 #: src/pages/shell/computer-overlay.tsx
 msgid "Start"
 msgstr ""
