@@ -2,7 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import type { BillingStatus, Me } from "@rakazo/contracts";
 import { Dialog, DialogContent } from "@rakazo/ui-web";
 import type { ReactNode } from "react";
-import { createContext, Suspense, useContext, useEffect, useState } from "react";
+import { createContext, Suspense, useCallback, useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { fetchAuthCapabilities } from "../lib/auth-capabilities";
 import { peekInitialBootstrap } from "../lib/bootstrap";
@@ -21,9 +21,14 @@ type GateState =
   | { kind: "open"; status?: BillingStatus }
   | { kind: "paywall"; status: BillingStatus };
 
-const BillingContext = createContext<{ status: BillingStatus | null; showPlans: () => void }>({
+const BillingContext = createContext<{
+  status: BillingStatus | null;
+  showPlans: () => void;
+  refresh: () => void;
+}>({
   status: null,
   showPlans: () => undefined,
+  refresh: () => undefined,
 });
 
 /** The latest billing status (`null` when the deployment does not bill) and the plan choice. */
@@ -96,6 +101,12 @@ export function SubscriptionGate({
     };
   }, []);
 
+  const refresh = useCallback(() => {
+    rpc.billing
+      .status()
+      .then((status) => setState(gateFor(status)))
+      .catch(() => undefined);
+  }, []);
   const billed = state.kind !== "loading" && state.status !== undefined;
   useEffect(() => {
     if (!billed) return;
@@ -133,7 +144,11 @@ export function SubscriptionGate({
   }
   return (
     <BillingContext.Provider
-      value={{ status: state.status ?? null, showPlans: () => setPlansOpen(true) }}
+      value={{
+        status: state.status ?? null,
+        showPlans: () => setPlansOpen(true),
+        refresh,
+      }}
     >
       {children}
       {state.status ? (
