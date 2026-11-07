@@ -103,5 +103,15 @@ describe("featured connectors", () => {
     expect(filterConnectionCatalogItems(catalog, "pipedream").map(({ name }) => name)).toEqual([
       "Notion",
     ]);
+    expect(
+      filterConnectionCatalogItems([...catalog, item("outlook", "Outlook")], "correo").map(
+        ({ name }) => name,
+      ),
+    ).toEqual(["Gmail", "Outlook"]);
+    expect(
+      filterConnectionCatalogItems([...catalog, item("outlook", "Outlook")], "microsoft 365").map(
+        ({ name }) => name,
+      ),
+    ).toEqual(["Outlook"]);
   });
 });

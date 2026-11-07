@@ -1,5 +1,7 @@
 import type { ConnectionCatalogItem, MessageBlock } from "@rakazo/contracts";
 import { featuredConnectorProvidersMatch } from "./featured-connectors.js";
+import type { MailConnectorTarget } from "./mail-connector-aliases.js";
+import { itemMatchesMailTarget, mailTargetsForQuery } from "./mail-connector-aliases.js";
 
 export type AppConnectBlock = Extract<MessageBlock, { kind: "app_connect" }>;
 
@@ -21,6 +23,31 @@ export function matchAppCatalog(catalog: ConnectionCatalogItem[], app: string) {
   );
 }
 
+/** Every catalog app a phrase names. A mail alias can name Gmail and Outlook together. */
+export function matchAppCatalogEntries(catalog: ConnectionCatalogItem[], app: string) {
+  const targets = mailTargetsForQuery(app);
+  if (targets) {
+    const found: ConnectionCatalogItem[] = [];
+    for (const target of targets) found.push(...pickMailTarget(catalog, target));
+    if (found.length > 0) return found;
+  }
+  const one =
+    matchAppCatalog(
+      catalog.filter((entry) => entry.connected),
+      app,
+    ) ?? matchAppCatalog(catalog, app);
+  return one ? [one] : [];
+}
+
+function pickMailTarget(
+  catalog: ConnectionCatalogItem[],
+  target: MailConnectorTarget,
+): ConnectionCatalogItem[] {
+  const hits = catalog.filter((entry) => itemMatchesMailTarget(entry, target));
+  const chosen = hits.find((entry) => entry.connected) ?? hits[0];
+  return chosen ? [chosen] : [];
+}
+
 /** Like `matchAppCatalog`, but an entry some provider reports connected wins. */
 export function matchConnectedAppCatalog(catalog: ConnectionCatalogItem[], app: string) {
   return (
@@ -33,10 +60,12 @@ export function matchConnectedAppCatalog(catalog: ConnectionCatalogItem[], app: 
 
 export function appConnectCard(entry: ConnectionCatalogItem): AppConnectBlock {
   const description =
-    Object.entries(APP_DESCRIPTIONS).find(
-      ([slug]) =>
-        entry.slug.toLowerCase() === slug || featuredConnectorProvidersMatch(entry.slug, slug),
-    )?.[1] ?? "";
+    itemMatchesMailTarget(entry, "gmail") || itemMatchesMailTarget(entry, "outlook")
+      ? "Search, read, draft, and send email."
+      : (Object.entries(APP_DESCRIPTIONS).find(
+          ([slug]) =>
+            entry.slug.toLowerCase() === slug || featuredConnectorProvidersMatch(entry.slug, slug),
+        )?.[1] ?? "");
   return {
     kind: "app_connect",
     connectorId: entry.connectorId,

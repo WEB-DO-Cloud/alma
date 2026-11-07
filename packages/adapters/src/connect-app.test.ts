@@ -133,6 +133,37 @@ it("falls back to the catalog when search does not recognize a featured alias", 
   });
 });
 
+it("posts Gmail and Outlook cards for a mail phrase", async () => {
+  const outlook = { ...entry, slug: "outlook", name: "Outlook" };
+  const f = fixture([entry, outlook, { ...entry, slug: "slack", name: "Slack" }]);
+  const result = await f.call("correo");
+  expect(result).toMatchObject({ status: "pending" });
+  expect(stored[0]?.blocks).toEqual([
+    expect.objectContaining({ provider: "gmail", name: "Gmail", status: "pending" }),
+    expect.objectContaining({ provider: "outlook", name: "Outlook", status: "pending" }),
+  ]);
+});
+
+it("offers catalog apps when the requested one is absent", async () => {
+  const f = fixture([{ ...entry, slug: "slack", name: "Slack" }]);
+  const result = await f.call("proton");
+  expect(result).toMatchObject({
+    error: expect.stringContaining("Slack"),
+  });
+  expect(String((result as { error?: string }).error)).toContain(
+    "Do not tell the user to open settings",
+  );
+  expect(String((result as { error?: string }).error)).not.toMatch(/\bRakazo\b/);
+  expect(stored).toHaveLength(0);
+});
+
+it("says there is no card when the server has no app catalog", async () => {
+  const f = fixture([]);
+  const result = await f.call("Gmail");
+  expect(String((result as { error?: string }).error)).toContain("no app catalog");
+  expect(stored).toHaveLength(0);
+});
+
 it("treats an app connected through a later provider as connected", async () => {
   const f = fixture();
   const providers = [

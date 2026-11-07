@@ -630,7 +630,12 @@ overlay packages/adapters/src/automated-messages.ts
 overlay packages/adapters/src/background-job-handlers.ts
 overlay packages/adapters/src/builtin-skills.test.ts
 overlay packages/adapters/src/builtin-skills.ts
+overlay packages/adapters/src/alma-assistant-copy.test.ts
+overlay packages/adapters/src/alma-assistant-copy.ts
 overlay packages/adapters/src/chat-sdk-surface.ts
+overlay packages/adapters/src/connect-app.test.ts
+overlay packages/adapters/src/connect-app.ts
+overlay packages/adapters/src/connector-catalog.ts
 overlay packages/adapters/src/composio-connector.test.ts
 overlay packages/adapters/src/composio-fake.ts
 overlay packages/adapters/src/create-managed-runtime.test.ts
@@ -763,6 +768,12 @@ overlay packages/core/src/agent-import/hermes.ts
 overlay packages/core/src/agent-import/openclaw.ts
 overlay packages/core/src/agent-import/shared.ts
 overlay packages/core/src/alma-unavailable.ts
+overlay packages/core/src/app-connect.test.ts
+overlay packages/core/src/app-connect.ts
+overlay packages/core/src/featured-connectors.test.ts
+overlay packages/core/src/featured-connectors.ts
+overlay packages/core/src/mail-connector-aliases.test.ts
+overlay packages/core/src/mail-connector-aliases.ts
 overlay packages/core/src/compose-update.test.ts
 overlay packages/core/src/compose-update.ts
 overlay packages/core/src/index.ts

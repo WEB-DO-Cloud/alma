@@ -5,6 +5,7 @@ import {
   appConnectedInput,
   connectedAppBlocks,
   matchAppCatalog,
+  matchAppCatalogEntries,
 } from "./app-connect.js";
 
 const entry: ConnectionCatalogItem = {
@@ -20,6 +21,22 @@ describe("inline app cards", () => {
     for (const query of ["GOOGLECALENDAR", "Google Calendar", "gcal"])
       expect(matchAppCatalog([entry], query)).toBe(entry);
     expect(matchAppCatalog([entry], "unknown")).toBeUndefined();
+  });
+  it("resolves mail aliases to Gmail and Outlook cards", () => {
+    const gmail = { ...entry, slug: "GMAIL", name: "Gmail" };
+    const outlook = { ...entry, slug: "OUTLOOK", name: "Outlook" };
+    const catalog = [gmail, outlook, { ...entry, slug: "GOOGLECALENDAR", name: "Google Calendar" }];
+    expect(matchAppCatalogEntries(catalog, "correo").map((item) => item.slug)).toEqual([
+      "GMAIL",
+      "OUTLOOK",
+    ]);
+    expect(matchAppCatalogEntries(catalog, "Google Workspace").map((item) => item.name)).toEqual([
+      "Gmail",
+    ]);
+    expect(matchAppCatalogEntries(catalog, "hotmail").map((item) => item.name)).toEqual([
+      "Outlook",
+    ]);
+    expect(appConnectCard(outlook).description).toBe("Search, read, draft, and send email.");
   });
   it("builds trusted card fields and preserves unrelated blocks", () => {
     const card = appConnectCard(entry);
