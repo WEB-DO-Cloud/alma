@@ -781,6 +781,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       voiceNotesEnabled: env.voiceNotesEnabled,
       digestEnabled: env.digestEnabled,
       monthlyReportEnabled: env.monthlyReportEnabled,
+      referralPromptEnabled: env.referralPromptEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });

@@ -1511,6 +1511,8 @@ export const MeSchema = z.object({
   digestEnabled: z.boolean().optional(),
   /** Monthly counts page. Absent means off. */
   monthlyReportEnabled: z.boolean().optional(),
+  /** Post-win share prompt. Absent means off. */
+  referralPromptEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

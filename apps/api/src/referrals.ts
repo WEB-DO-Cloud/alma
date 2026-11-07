@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 import type { BillingProvider } from "@rakazo/adapter-kit";
 import type { BillingStatus } from "@rakazo/contracts";
 import { resolveByokMonthlyPriceCents } from "@rakazo/contracts";
+import { readReferralPromptConfig } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   billingAccountForOrganization,
@@ -102,7 +103,7 @@ export function createReferrals(deps: {
 
     /** Only before the organization's first subscription, so nobody claims after paying. */
     async claim(organizationId: string, code: string, userId: string) {
-      if (!enabled) return;
+      if (!enabled && !readReferralPromptConfig().enabled) return;
       const [referrer, account] = await Promise.all([
         prisma.referralCode.findUnique({ where: { code } }),
         billingAccountForOrganization(prisma, organizationId),

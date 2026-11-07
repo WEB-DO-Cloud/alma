@@ -161,6 +161,7 @@ export interface RouterDeps {
     voiceNotesEnabled?: boolean;
     digestEnabled?: boolean;
     monthlyReportEnabled?: boolean;
+    referralPromptEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }
