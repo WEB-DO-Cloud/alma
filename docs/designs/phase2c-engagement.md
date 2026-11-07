@@ -50,7 +50,7 @@ These alternatives were rejected:
 *   Calling a mailbox or a calendar to fill the morning summary. This product has no first-party mail store and no first-party calendar store. Sections without a row are omitted.
 *   Attaching the email or messaging sender at the end of the undo window. Phase 2A approves text and does not call a provider. This slice keeps that rule. Turning the undo flag on stops the immediate send. It does not start a new send.
 *   A home-screen shortcut, a biometric module, or a notification action that edits `app.json`, an entitlement, or a version number. Those wait for a store build the owner approves. This slice ships the pure routing and the on-screen controls.
-*   A second referral reward (coupon or balance credit) or a change to the reward path that already ships. The new prompt does not grant anything. `ALMA_REFERRAL_REWARDS=true` is rejected at startup.
+*   Granting a reward before the new user's first payment, or granting it while `ALMA_REFERRAL_REWARDS` is off.
 
 ## Problem
 
@@ -262,7 +262,7 @@ The in-app screen `/app/digest` lists the latest issue's counts and those links.
 
 Push, when an issue is inserted: title `ALMA`, body `digest.pushDaily` or `digest.pushWeekly`. `data` is `{ kind: "digest", issueId }` only.
 
-Email, only when `email` is true and `configuredEmailProvider` in `packages/adapters/src/email-provider.ts` returns a provider: one message to the account email with the same counts and links. No provider means skip email and keep the in-app issue. The skip is not an error and not a prompt. This does not add an email provider.
+The summary is delivered in the app and as one push. It is not emailed and it is not sent on WhatsApp.
 
 Quiet hours are not read here. The notify-policy flag, when on, treats `data.kind === "digest"` as routine. Until that flag is on, the digest push is sent at the scheduled minute with the fixed body above.
 
@@ -407,7 +407,7 @@ When the prompt flag is on:
 *   A prompt is allowed when `referralPromptAllowed` is true. Inputs: the latest result was `success`, the user owns an organization, prompts recorded for that user in the last 7 days by the clock are fewer than 3, and the win is verified. A verified win is `task_completed` for that user, or an `outbound_drafts` row that user approved, in the last 24 hours. A result of `error`, a failed run, or a missing win returns false and records nothing.
 *   The client shows `referral.share` and the sentence only when the RPC returns allowed. The share action is the device share sheet or copy. There is no server send.
 
-`ALMA_REFERRAL_REWARDS` never enables a grant. Startup throws if it is `true`.
+`ALMA_REFERRAL_REWARDS` grants the free month in the owner decision only when it is exactly `true`. It does not throw.
 
 ### Data
 
@@ -422,7 +422,7 @@ Add nullable `activatedAt` and `paidAt` on `referrals`. Existing rows stay null.
 *   Flag off: `createReferrals` tests that already pass still pass, and the new claim path is not used.
 *   Prompt flag on and reward `enabled` false: claim inserts a row and does not call `grantBalanceCredit` or `extendByokFreePeriod`.
 *   A fourth prompt in seven days is refused. An error result records nothing.
-*   `ALMA_REFERRAL_REWARDS=true` throws.
+*   `ALMA_REFERRAL_REWARDS=true` does not throw. The grant runs only after the first successful payment and the anti-abuse checks.
 *   The default sentence matches the copy table. The server has no send function for it.
 
 ## Pull requests
