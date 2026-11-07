@@ -1333,6 +1333,10 @@ export const RU_MESSAGES: Record<string, string> = {
     "План продлевается каждый месяц, пока вы его не отмените.",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "Отмените в портале оплаты. Доступ действует до конца уже оплаченного периода.",
+  "Queue": "Очередь",
+  "Nothing waiting": "Ничего не ждёт",
+  "New draft": "Новый черновик",
+  "Recipient": "Получатель",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

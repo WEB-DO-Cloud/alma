@@ -65,6 +65,7 @@ export function ShellSidebar({
   openIntegrations,
   openSkills,
   onboardingV2 = false,
+  phase2aEnabled = false,
 }: {
   isMobile: boolean;
   mobileOpen: boolean;
@@ -91,6 +92,7 @@ export function ShellSidebar({
   openIntegrations: () => void;
   openSkills: () => void;
   onboardingV2?: boolean;
+  phase2aEnabled?: boolean;
 }) {
   const { t } = useLingui();
   const {
@@ -273,6 +275,7 @@ export function ShellSidebar({
           openIntegrations={openIntegrations}
           openSkills={openSkills}
           onboardingV2={onboardingV2}
+          phase2aEnabled={phase2aEnabled}
         />
       </Sidebar>
     </>
@@ -291,6 +294,7 @@ function ShellSidebarFooter({
   openIntegrations,
   openSkills,
   onboardingV2 = false,
+  phase2aEnabled = false,
 }: {
   mini: boolean;
   logos: Array<{ name: string; logo?: string | null }>;
@@ -303,6 +307,7 @@ function ShellSidebarFooter({
   openIntegrations: () => void;
   openSkills: () => void;
   onboardingV2?: boolean;
+  phase2aEnabled?: boolean;
 }) {
   const { t, i18n } = useLingui();
   const { status: billing, showPlans } = useBilling();
@@ -377,6 +382,15 @@ function ShellSidebarFooter({
           closeMobileSidebar();
           navigate("/app/artifacts");
         }}
+        onQueue={
+          phase2aEnabled
+            ? () => {
+                setMenuOpen(false);
+                closeMobileSidebar();
+                navigate("/app/queue");
+              }
+            : undefined
+        }
         onSettings={() => {
           setMenuOpen(false);
           openSettings("general");

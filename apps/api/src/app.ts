@@ -825,6 +825,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       deploymentMemory: env.deploymentMemory,
       desktopHostChoiceEnabled: Boolean(env.desktopStackToken),
       mcpStdioEnabled: env.mcpStdioEnabled,
+      phase2aEnabled: env.phase2aEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });

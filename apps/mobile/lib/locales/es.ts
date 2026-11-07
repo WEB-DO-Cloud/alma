@@ -1258,6 +1258,10 @@ export const ES_MESSAGES: Record<string, string> = {
   "No files yet.": "Todavía no hay archivos.",
   "Calendar and email connect in Settings. They are not connected.":
     "El calendario y el correo se conectan en Ajustes. No están conectados.",
+  "Queue": "Cola",
+  "Nothing waiting": "Nada en espera",
+  "New draft": "Nuevo borrador",
+  "Recipient": "Destinatario",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

@@ -87,6 +87,7 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     billingEnabled: Boolean(deps.billing),
     // Only billing deployments ask; self-hosted installs never see the survey.
     needsSignupSurvey: Boolean(deps.billing) && !user.signupSurvey,
+    phase2aEnabled: deps.env.phase2aEnabled === true,
     ...(await almaMeFields(deps, actor)),
     paymentWalletProvider: deps.paymentWallet
       ? { id: deps.paymentWallet.describe().id, name: deps.paymentWallet.displayName }

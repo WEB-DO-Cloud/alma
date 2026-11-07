@@ -72,7 +72,12 @@ export const OutboundDraftSchema = z.object({
   status: z.enum(OUTBOUND_STATUSES),
   label: DeliveryLabelSchema,
   dispatchAfter: z.string().nullable(),
+  createdByUserId: Id,
+  creatorRole: WorkContextRoleSchema,
 });
+
+export type WorkContext = z.infer<typeof WorkContextSchema>;
+export type OutboundDraft = z.infer<typeof OutboundDraftSchema>;
 
 export const WorkContextCreateSchema = z.object({
   kind: WorkContextKindSchema,

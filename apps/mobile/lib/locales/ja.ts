@@ -1327,6 +1327,10 @@ export const JA_MESSAGES: Record<string, string> = {
   "The plan renews monthly until you cancel.": "プランは解約するまで毎月更新されます。",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "請求ポータルで解約できます。アクセスは支払い済みの期間の終わりまで続きます。",
+  "Queue": "承認待ち",
+  "Nothing waiting": "待っているものはありません",
+  "New draft": "新しい下書き",
+  "Recipient": "宛先",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "{peer}とのメッセージ{count}件" };

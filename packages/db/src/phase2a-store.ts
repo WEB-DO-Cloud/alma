@@ -299,6 +299,8 @@ function presentDraft(row: {
   attachmentIds: string[];
   status: string;
   dispatchAfter: Date | null;
+  createdByUserId: string;
+  creatorRole: string;
 }) {
   const status = row.status as DraftStatus;
   return {
@@ -311,6 +313,8 @@ function presentDraft(row: {
     status,
     label: deliveryLabel(status, row.dispatchAfter),
     dispatchAfter: row.dispatchAfter?.toISOString() ?? null,
+    createdByUserId: row.createdByUserId,
+    creatorRole: row.creatorRole as "owner" | "professional" | "assistant" | "reader",
   };
 }
 

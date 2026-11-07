@@ -1292,6 +1292,10 @@ export const NL_MESSAGES: Record<string, string> = {
   "The plan renews monthly until you cancel.": "Het plan verlengt maandelijks tot je opzegt.",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "Zeg op in het facturatieportaal. Toegang loopt door tot het einde van de al betaalde periode.",
+  "Queue": "Wachtrij",
+  "Nothing waiting": "Niets in afwachting",
+  "New draft": "Nieuw concept",
+  "Recipient": "Ontvanger",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

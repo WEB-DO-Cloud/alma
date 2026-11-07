@@ -15,6 +15,7 @@ import {
   nextDraftState,
   Phase2aError,
   readPhase2aConfig,
+  queueDraftActions,
   recordDispatchResult,
   resolveRecordTitles,
   splitTiming,
@@ -240,15 +241,15 @@ describe("external send hold", () => {
     ).toBeNull();
   });
 
-  it("holds mutating connector calls and refuses clinical, filing, payment, and price tools", () => {
+  it("lets ordinary connector writes through and refuses clinical, filing, payment, and price tools", () => {
     expect(
       externalSendHold({
         enabled: true,
         viaConnector: true,
         connectorKind: "gmail",
         tools: [{ name: "gmail_send_email", readOnly: false }],
-      })?.code,
-    ).toBe("phase2a_external_hold");
+      }),
+    ).toBeNull();
     expect(
       externalSendHold({
         enabled: true,
@@ -291,6 +292,38 @@ describe("external send hold", () => {
         tools: [{ name: "stripe_create_payment", readOnly: false }],
       })?.code,
     ).toBe("phase2a_refused");
+  });
+});
+
+describe("queue actions", () => {
+  it("lets an owner approve and hides approval of an assistant's own draft", () => {
+    expect(
+      queueDraftActions({
+        role: "owner",
+        status: "pending",
+        creatorRole: "assistant",
+        creatorUserId: "junior",
+        actorUserId: "owner",
+      }).approve,
+    ).toBe(true);
+    expect(
+      queueDraftActions({
+        role: "assistant",
+        status: "pending",
+        creatorRole: "assistant",
+        creatorUserId: "junior",
+        actorUserId: "junior",
+      }),
+    ).toMatchObject({ approve: false, submit: false, cancel: true });
+    expect(
+      queueDraftActions({
+        role: "reader",
+        status: "draft",
+        creatorRole: "owner",
+        creatorUserId: "owner",
+        actorUserId: "reader",
+      }).compose,
+    ).toBe(false);
   });
 });
 

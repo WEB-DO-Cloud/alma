@@ -1175,6 +1175,7 @@ export type MobileMe = Pick<
   | "billingEnabled"
   | "paymentWalletProvider"
   | "ticketBoardEnabled"
+  | "phase2aEnabled"
 >;
 
 export type MobileModel = ModelCatalogEntry;

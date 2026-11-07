@@ -892,6 +892,7 @@ msgstr "Подтверждения"
 
 #: src/pages/MessagingSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "Утвердить"
@@ -1233,6 +1234,7 @@ msgstr "Не может читать изображения"
 #: src/pages/Onboarding.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/create-bot-dialog.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/SpaceSettingOverrides.tsx
@@ -3823,6 +3825,7 @@ msgstr "Упоминает функции OpenClaw"
 msgid "Mentions: {mentions}"
 msgstr "Упоминает: {mentions}"
 
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/chat-shared.ts
 #: src/pages/shell/composer.tsx
 #: src/pages/SpaceSearch.tsx
@@ -4022,6 +4025,7 @@ msgstr "микрофон выключен"
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/PluginsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/bot-panel.tsx
@@ -4087,6 +4091,10 @@ msgstr "Новые"
 #: src/pages/shell/create-bot-dialog.tsx
 msgid "New bot"
 msgstr "Новый бот"
+
+#: src/pages/QueuePage.tsx
+msgid "New draft"
+msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "New group"
@@ -4308,6 +4316,10 @@ msgstr ""
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
 msgstr "Пока ничего не запомнено"
+
+#: src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr ""
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Notifications"
@@ -4578,6 +4590,7 @@ msgid "Persona"
 msgstr "Личность"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr ""
 
@@ -4719,6 +4732,11 @@ msgstr "Поставщики"
 msgid "Pull request"
 msgstr "Запрос на слияние"
 
+#: src/components/SidebarFooter.tsx
+#: src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr ""
+
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "В очереди"
@@ -4767,6 +4785,10 @@ msgstr ""
 #: src/pages/ActivityList.tsx
 msgid "Recent"
 msgstr "Недавние"
+
+#: src/pages/QueuePage.tsx
+msgid "Recipient"
+msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Recommended"
@@ -5241,6 +5263,7 @@ msgstr "суббота"
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -5823,6 +5846,7 @@ msgstr "субагент"
 
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
+#: src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "Отправить"
 
@@ -6687,6 +6711,7 @@ msgid "Won't do"
 msgstr ""
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr ""

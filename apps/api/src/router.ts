@@ -138,6 +138,7 @@ export interface RouterDeps {
     deploymentMemory?: { defaultScope: "isolated" | "shared" } | null;
     desktopHostChoiceEnabled?: boolean;
     mcpStdioEnabled?: boolean;
+    phase2aEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }

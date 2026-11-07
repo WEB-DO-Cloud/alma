@@ -892,6 +892,7 @@ msgstr "Onaylar"
 
 #: src/pages/MessagingSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "Onayla"
@@ -1233,6 +1234,7 @@ msgstr "Görselleri okuyamaz"
 #: src/pages/Onboarding.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/create-bot-dialog.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/SpaceSettingOverrides.tsx
@@ -3823,6 +3825,7 @@ msgstr "OpenClaw özelliklerinden bahsediyor"
 msgid "Mentions: {mentions}"
 msgstr "Bahsedilenler: {mentions}"
 
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/chat-shared.ts
 #: src/pages/shell/composer.tsx
 #: src/pages/SpaceSearch.tsx
@@ -4022,6 +4025,7 @@ msgstr ""
 #: src/pages/McpServersOverlay.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/PluginsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/bot-panel.tsx
@@ -4087,6 +4091,10 @@ msgstr ""
 #: src/pages/shell/create-bot-dialog.tsx
 msgid "New bot"
 msgstr "Yeni bot"
+
+#: src/pages/QueuePage.tsx
+msgid "New draft"
+msgstr ""
 
 #: src/pages/GroupPanel.tsx
 msgid "New group"
@@ -4308,6 +4316,10 @@ msgstr ""
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
 msgstr "Henüz hatırlanan bir şey yok"
+
+#: src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr ""
 
 #: src/pages/shell/bot-panel.tsx
 msgid "Notifications"
@@ -4578,6 +4590,7 @@ msgid "Persona"
 msgstr "Kişilik"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr ""
 
@@ -4719,6 +4732,11 @@ msgstr "Sağlayıcılar"
 msgid "Pull request"
 msgstr "Çekme isteği"
 
+#: src/components/SidebarFooter.tsx
+#: src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr ""
+
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "Kuyrukta"
@@ -4767,6 +4785,10 @@ msgstr ""
 #: src/pages/ActivityList.tsx
 msgid "Recent"
 msgstr "Son"
+
+#: src/pages/QueuePage.tsx
+msgid "Recipient"
+msgstr ""
 
 #: src/pages/PluginsOverlay.tsx
 msgid "Recommended"
@@ -5241,6 +5263,7 @@ msgstr "Cumartesi"
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -5823,6 +5846,7 @@ msgstr "alt ajan"
 
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/Onboarding.tsx
+#: src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "Gönder"
 
@@ -6687,6 +6711,7 @@ msgid "Won't do"
 msgstr ""
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr ""
