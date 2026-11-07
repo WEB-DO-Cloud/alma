@@ -831,7 +831,6 @@ async function request(
     options.signal?.removeEventListener("abort", cancel);
   }
 }
-
 /**
  * A failed response as an error the shared retry policy can read: its status, oRPC code, and any
  * Retry-After. A 426 also asks the user to update, from whichever request noticed it.
