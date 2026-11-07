@@ -6,6 +6,12 @@ APP_IDENTIFIER = "do.alma.app"
 # The Record Message Live Activity is drawn by this widget extension, signed with its own profile.
 WIDGET_IDENTIFIER = "#{APP_IDENTIFIER}.widgets"
 WIDGET_TARGET = "RakazoWidgets"
+# expo-sharing names its target expo-sharing-extension and uses that string as the bundle suffix.
+SHARE_EXTENSION_IDENTIFIER = "#{APP_IDENTIFIER}.expo-sharing-extension"
+SHARE_EXTENSION_TARGET = "expo-sharing-extension"
+# Suffix from plugins/with-agent-notifications.js (bundle id + ".notifications").
+NOTIFICATION_EXTENSION_IDENTIFIER = "#{APP_IDENTIFIER}.notifications"
+NOTIFICATION_EXTENSION_TARGET = "AgentNotifications"
 PACKAGE_NAME = "do.alma.app"
 MOBILE_ROOT = File.expand_path("..", __dir__)
 REPO_ROOT = File.expand_path("../../..", __dir__)
@@ -40,15 +46,27 @@ def require_match_password!
   UI.user_error!("MATCH_PASSWORD must be set outside the repo (a Bitrise secret). It is never stored in git.")
 end
 
+def ios_signed_targets
+  [
+    [APP_IDENTIFIER, ios_scheme],
+    [WIDGET_IDENTIFIER, WIDGET_TARGET],
+    [SHARE_EXTENSION_IDENTIFIER, SHARE_EXTENSION_TARGET],
+    [NOTIFICATION_EXTENSION_IDENTIFIER, NOTIFICATION_EXTENSION_TARGET],
+  ]
+end
+
 def sync_certificates(type)
   require_match_password!
   # CI only reads the match repo, except the one-time run that creates the certificate and
-  # profile (ALMA_MATCH_CREATE=true, set as a build parameter, never as a standing secret).
+  # profiles (ALMA_MATCH_CREATE=true, set as a build parameter, never as a standing secret).
+  # That run also renews profiles so the existing app profile picks up the new entitlements.
+  creating = ENV["ALMA_MATCH_CREATE"] == "true"
   setup_ci if ci?
   options = {
     type: type,
-    readonly: ci? && ENV["ALMA_MATCH_CREATE"] != "true",
-    app_identifier: [APP_IDENTIFIER, WIDGET_IDENTIFIER],
+    readonly: ci? && !creating,
+    force: creating,
+    app_identifier: ios_signed_targets.map(&:first),
   }
   options[:api_key] = app_store_api_key! if ci? || api_key_env?
   match(options)
@@ -86,30 +104,23 @@ end
 def use_match_signing!
   team = ENV["APPLE_TEAM_ID"].to_s
   UI.user_error!("Set APPLE_TEAM_ID.") if team.empty?
-  profile = ENV["sigh_#{APP_IDENTIFIER}_appstore_profile-name"].to_s
-  UI.user_error!("match did not export an App Store profile name for #{APP_IDENTIFIER}.") if profile.empty?
   project = Dir[File.join(MOBILE_ROOT, "ios/*.xcodeproj")].fetch(0)
-  update_code_signing_settings(
-    path: project,
-    use_automatic_signing: false,
-    team_id: team,
-    targets: [ios_scheme],
-    bundle_identifier: APP_IDENTIFIER,
-    code_sign_identity: "Apple Distribution",
-    profile_name: profile
-  )
-  widget_profile = ENV["sigh_#{WIDGET_IDENTIFIER}_appstore_profile-name"].to_s
-  UI.user_error!("match did not export an App Store profile name for #{WIDGET_IDENTIFIER}.") if widget_profile.empty?
-  update_code_signing_settings(
-    path: project,
-    use_automatic_signing: false,
-    team_id: team,
-    targets: [WIDGET_TARGET],
-    bundle_identifier: WIDGET_IDENTIFIER,
-    code_sign_identity: "Apple Distribution",
-    profile_name: widget_profile
-  )
-  { APP_IDENTIFIER => profile, WIDGET_IDENTIFIER => widget_profile }
+  profiles = {}
+  ios_signed_targets.each do |identifier, target|
+    profile = ENV["sigh_#{identifier}_appstore_profile-name"].to_s
+    UI.user_error!("match did not export an App Store profile name for #{identifier}.") if profile.empty?
+    update_code_signing_settings(
+      path: project,
+      use_automatic_signing: false,
+      team_id: team,
+      targets: [target],
+      bundle_identifier: identifier,
+      code_sign_identity: "Apple Distribution",
+      profile_name: profile
+    )
+    profiles[identifier] = profile
+  end
+  profiles
 end
 
 def ios_workspace

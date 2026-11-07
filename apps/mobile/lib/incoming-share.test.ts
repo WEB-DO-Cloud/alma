@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const state = vi.hoisted(() => ({
@@ -53,7 +54,7 @@ vi.mock("expo-file-system", () => {
         const container = state.container;
         if (!container) return {};
         return {
-          "group.com.rakazo.app": {
+          "group.do.alma.app": {
             uri: container.uri,
             list: () => container.files.map((name) => new File(`${container.uri}${name}`)),
           },
@@ -63,6 +64,7 @@ vi.mock("expo-file-system", () => {
   };
 });
 const {
+  IOS_SHARE_APP_GROUP,
   isIncomingShareCurrent,
   receiveIncomingShare,
   takeIncomingShare,
@@ -191,6 +193,24 @@ describe("incoming share on iOS", () => {
   beforeEach(() => {
     state.os = "ios";
     state.container = { uri: GROUP, files: [] };
+  });
+  it("uses the ALMA app group the share extension is configured with", () => {
+    const app = JSON.parse(readFileSync(new URL("../app.json", import.meta.url), "utf8")).expo;
+    const sharing = app.plugins.find(
+      (plugin: unknown) => Array.isArray(plugin) && plugin[0] === "expo-sharing",
+    );
+    const extension = app.extra.eas.build.experimental.ios.appExtensions.find(
+      (entry: { targetName: string }) => entry.targetName === "expo-sharing-extension",
+    );
+    expect(IOS_SHARE_APP_GROUP).toBe("group.do.alma.app");
+    expect(sharing[1].ios.appGroupId).toBe(IOS_SHARE_APP_GROUP);
+    expect(app.ios.entitlements["com.apple.security.application-groups"]).toEqual([
+      IOS_SHARE_APP_GROUP,
+    ]);
+    expect(extension.bundleIdentifier).toBe(`${app.ios.bundleIdentifier}.expo-sharing-extension`);
+    expect(extension.entitlements["com.apple.security.application-groups"]).toEqual([
+      IOS_SHARE_APP_GROUP,
+    ]);
   });
   it("receives files the extension copied and hands them off once", () => {
     receiveIos(["a.png", "b.pdf"]);

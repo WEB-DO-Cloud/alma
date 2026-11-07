@@ -4,7 +4,7 @@
     "slug": "alma",
     "owner": "damiencals-team",
     "scheme": ["alma", "rakazo"],
-    "version": "1.0.13",
+    "version": "1.0.15",
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
@@ -79,7 +79,7 @@
         {
           "ios": {
             "enabled": true,
-            "appGroupId": "group.com.rakazo.app",
+            "appGroupId": "group.do.alma.app",
             "activationRule": {
               "supportsText": true,
               "supportsWebUrlWithMaxCount": 1,
@@ -125,7 +125,7 @@
     },
     "ios": {
       "bundleIdentifier": "do.alma.app",
-      "buildNumber": "67",
+      "buildNumber": "68",
       "supportsTablet": true,
       "icon": "./assets/icon.png",
       "config": {
@@ -145,7 +145,8 @@
       },
       "entitlements": {
         "com.apple.developer.usernotifications.time-sensitive": true,
-        "com.apple.developer.usernotifications.communication": true
+        "com.apple.developer.usernotifications.communication": true,
+        "com.apple.security.application-groups": ["group.do.alma.app"]
       }
     },
     "android": {
@@ -178,7 +179,7 @@
                   "targetName": "expo-sharing-extension",
                   "bundleIdentifier": "do.alma.app.expo-sharing-extension",
                   "entitlements": {
-                    "com.apple.security.application-groups": ["group.com.rakazo.app"]
+                    "com.apple.security.application-groups": ["group.do.alma.app"]
                   }
                 },
                 {

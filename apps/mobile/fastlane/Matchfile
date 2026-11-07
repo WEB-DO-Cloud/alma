@@ -7,7 +7,12 @@ repository = ENV.fetch("MATCH_GIT_URL", default_git_url)
 git_url(repository)
 storage_mode("git")
 type("appstore")
-app_identifier(["do.alma.app"])
+app_identifier([
+  "do.alma.app",
+  "do.alma.app.widgets",
+  "do.alma.app.expo-sharing-extension",
+  "do.alma.app.notifications"
+])
 
 apple_id = ENV["APPLE_ID"]
 username(apple_id) if apple_id && !apple_id.empty?
