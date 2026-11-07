@@ -5664,11 +5664,11 @@ msgstr "Ponowne łączenie"
 
 #: src/pages/VoicePreviewPage.tsx
 msgid "Record"
-msgstr ""
+msgstr "Nagraj"
 
 #: src/pages/VoicePreviewPage.tsx
 msgid "Recording"
-msgstr ""
+msgstr "Nagrywanie"
 
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
