@@ -290,6 +290,7 @@ overlay apps/mobile/scripts/fix-android-namespace.mjs
 overlay apps/mobile/scripts/generate-mark.mjs
 overlay apps/web/e2e/agent-import.spec.ts
 overlay apps/web/e2e/alma-batch-shots.spec.ts
+overlay apps/web/e2e/android-keyboard-composer.spec.ts
 overlay apps/web/e2e/auth-lifecycle.spec.ts
 overlay apps/web/e2e/avatar-studio.spec.ts
 overlay apps/web/e2e/billing-paywall.spec.ts
@@ -588,6 +589,7 @@ overlay docs/self-host-sandbox-providers.md
 overlay docs/self-host-secrets.md
 overlay docs/self-host-upgrading.md
 overlay docs/self-host.md
+overlay docs/upstream-issues/android-keyboard-composer.md
 overlay infra/compose/.env.images.example
 overlay infra/compose/Dockerfile
 overlay infra/compose/backup-prod.sh
