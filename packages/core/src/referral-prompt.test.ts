@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  blockedReferralReward,
   DEFAULT_SHARE_TEXT,
   readReferralPromptConfig,
   readReferralRewardsConfig,
   referralPromptAllowed,
+  referralRewardDecision,
+  samePrivateEmailDomain,
 } from "./referral-prompt.js";
 
 const open = {
@@ -22,13 +23,26 @@ describe("referral prompt", () => {
     expect(readReferralPromptConfig({ ALMA_REFERRAL_PROMPT: "true" }).enabled).toBe(true);
   });
 
-  it("rejects the rewards flag and never grants", () => {
+  it("keeps rewards off unless the value is exactly true", () => {
     expect(readReferralRewardsConfig({}).enabled).toBe(false);
     expect(readReferralRewardsConfig({ ALMA_REFERRAL_REWARDS: "yes" }).enabled).toBe(false);
-    expect(() => readReferralRewardsConfig({ ALMA_REFERRAL_REWARDS: "true" })).toThrow(
-      "referral rewards are not approved",
-    );
-    expect(blockedReferralReward()).toEqual({ granted: false });
+    expect(readReferralRewardsConfig({ ALMA_REFERRAL_REWARDS: "true" }).enabled).toBe(true);
+  });
+
+  it("declines self, shared card, shared private domain, and a full cap", () => {
+    const clean = {
+      selfReferral: false,
+      sameCard: false,
+      samePrivateDomain: false,
+      rewardsInWindow: 0,
+    };
+    expect(referralRewardDecision(clean)).toBe("grant");
+    expect(referralRewardDecision({ ...clean, selfReferral: true })).toBe("decline");
+    expect(referralRewardDecision({ ...clean, sameCard: true })).toBe("decline");
+    expect(referralRewardDecision({ ...clean, samePrivateDomain: true })).toBe("decline");
+    expect(referralRewardDecision({ ...clean, rewardsInWindow: 5 })).toBe("decline");
+    expect(samePrivateEmailDomain(["a@firm.test"], ["b@firm.test"])).toBe(true);
+    expect(samePrivateEmailDomain(["a@gmail.com"], ["b@gmail.com"])).toBe(false);
   });
 
   it("allows three successes and refuses an error or a fourth prompt", () => {

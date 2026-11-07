@@ -2,7 +2,12 @@ import { randomInt } from "node:crypto";
 import type { BillingProvider } from "@rakazo/adapter-kit";
 import type { BillingStatus } from "@rakazo/contracts";
 import { resolveByokMonthlyPriceCents } from "@rakazo/contracts";
-import { readReferralPromptConfig } from "@rakazo/core";
+import {
+  readReferralPromptConfig,
+  readReferralRewardsConfig,
+  referralRewardDecision,
+  samePrivateEmailDomain,
+} from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   billingAccountForOrganization,
@@ -81,6 +86,74 @@ export function createReferrals(deps: {
     });
   }
 
+  async function ownerEmails(organizationId: string): Promise<string[]> {
+    const members = await prisma.member.findMany({
+      where: { organizationId, role: { contains: "owner" } },
+      select: { user: { select: { email: true } } },
+    });
+    return members.map((member) => member.user.email);
+  }
+
+  /** One free month for the new organization and one for the referrer, once. */
+  async function grantDualFreeMonth(organizationId: string, cardFingerprint: string | undefined) {
+    if (!cardFingerprint) return;
+    try {
+      const referral = await prisma.referral.findUnique({
+        where: { organizationId },
+        select: { rewardedAt: true, referrerOrganizationId: true },
+      });
+      if (!referral || referral.rewardedAt) return;
+      const referrerBilling = await prisma.organization.findUnique({
+        where: { id: referral.referrerOrganizationId },
+        select: { billing: { select: { customerId: true } } },
+      });
+      const referrerCard = referrerBilling?.billing
+        ? (await provider.getCustomerSubscription(referrerBilling.billing.customerId))
+            ?.cardFingerprint
+        : undefined;
+      const [newOwners, referrerOwners, rewardsInWindow] = await Promise.all([
+        ownerEmails(organizationId),
+        ownerEmails(referral.referrerOrganizationId),
+        prisma.referral.count({
+          where: {
+            referrerOrganizationId: referral.referrerOrganizationId,
+            rewardedAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+          },
+        }),
+      ]);
+      const decision = referralRewardDecision({
+        selfReferral: referral.referrerOrganizationId === organizationId,
+        sameCard: referrerCard === cardFingerprint,
+        samePrivateDomain: samePrivateEmailDomain(newOwners, referrerOwners),
+        rewardsInWindow,
+      });
+      if (decision === "decline") {
+        await prisma.referral.updateMany({
+          where: { organizationId, rewardedAt: null },
+          data: { outcome: "declined", cardFingerprint },
+        });
+        return;
+      }
+      await prisma.$transaction(async (tx) => {
+        const marked = await tx.referral.updateMany({
+          where: { organizationId, rewardedAt: null },
+          data: { rewardedAt: new Date(), outcome: "free_period", cardFingerprint },
+        });
+        if (marked.count !== 1) return;
+        for (const id of [organizationId, referral.referrerOrganizationId]) {
+          await tx.modelCreditAccount.upsert({
+            where: { organizationId: id },
+            create: { organizationId: id },
+            update: {},
+          });
+          await extendByokFreePeriod(tx, id, FREE_MONTH_DAYS);
+        }
+      });
+    } catch (error) {
+      getLogger().error("referral reward failed", error);
+    }
+  }
+
   return {
     enabled,
     async status(organizationId: string, isOwner: boolean): Promise<BillingStatus["referral"]> {
@@ -103,7 +176,9 @@ export function createReferrals(deps: {
 
     /** Only before the organization's first subscription, so nobody claims after paying. */
     async claim(organizationId: string, code: string, userId: string) {
-      if (!enabled && !readReferralPromptConfig().enabled) return;
+      if (!enabled && !readReferralPromptConfig().enabled && !readReferralRewardsConfig().enabled) {
+        return;
+      }
       const [referrer, account] = await Promise.all([
         prisma.referralCode.findUnique({ where: { code } }),
         billingAccountForOrganization(prisma, organizationId),
@@ -127,6 +202,10 @@ export function createReferrals(deps: {
      * reward exactly as decided. A failure never blocks the sync.
      */
     async settle(organizationId: string, cardFingerprint: string | undefined) {
+      if (readReferralRewardsConfig().enabled) {
+        await grantDualFreeMonth(organizationId, cardFingerprint);
+        return;
+      }
       if (!enabled || !cardFingerprint) return;
       try {
         const referral = await prisma.referral.findUnique({
