@@ -18,10 +18,15 @@ function minutes(value: string): number | null {
   return hour * 60 + minute;
 }
 
+const preview =
+  import.meta.env.DEV &&
+  (window.location.pathname.startsWith("/preview/") ||
+    new URLSearchParams(window.location.search).get("preview") === "1");
+
 /** Morning count. In the app and as a push. No mail. */
 export function DigestPage() {
   const { t } = useLingui();
-  const [enabledFlag, setEnabledFlag] = useState(false);
+  const [enabledFlag, setEnabledFlag] = useState(preview);
   const [on, setOn] = useState(false);
   const [weekly, setWeekly] = useState(true);
   const [time, setTime] = useState("07:30");
@@ -36,6 +41,7 @@ export function DigestPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (preview) return;
     void rpc
       .me()
       .then(async (me) => {

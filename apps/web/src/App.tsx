@@ -236,6 +236,9 @@ function SessionApp() {
               {import.meta.env.DEV ? (
                 <Route path="/preview/voice" element={<VoicePreviewPage />} />
               ) : null}
+              {import.meta.env.DEV ? (
+                <Route path="/preview/digest" element={<DigestPage />} />
+              ) : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}
                 element={
