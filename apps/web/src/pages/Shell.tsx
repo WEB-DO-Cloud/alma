@@ -1034,7 +1034,7 @@ function SpaceShell() {
             activeGroup={activeGroup}
             activeSnapshot={activeSnapshot}
             phoneCallsEnabled={Boolean(bootstrapMe?.phoneCallsEnabled)}
-            voiceReady={Boolean(voiceStatus?.ready)}
+            voiceReady={Boolean(voiceStatus?.ready) || bootstrapMe?.voiceNotesEnabled === true}
             inCall={Boolean(active) && call?.botId === active?.id}
             panelOpen={chatPanelOpen}
             onOpenNavigation={() => setMobileSidebarOpen(true)}
@@ -1117,7 +1117,7 @@ function SpaceShell() {
               onRefresh={refreshActiveThread}
               onBotChanged={refreshBots}
               onAddRoutine={addSkillRoutine}
-              voiceReady={Boolean(voiceStatus?.ready)}
+              voiceReady={Boolean(voiceStatus?.ready) || bootstrapMe?.voiceNotesEnabled === true}
               speakingMessageId={speakingMessageId}
               callHoldsSpeaker={callHoldsSpeaker}
               onSpeak={speakMessage}
@@ -1225,7 +1225,8 @@ function SpaceShell() {
               dictationEnabled={
                 bootstrapMe?.phoneCallsEnabled === true ||
                 voiceStatus?.transcribe === true ||
-                bootstrapMe?.managedVoice === true
+                bootstrapMe?.managedVoice === true ||
+                bootstrapMe?.voiceNotesEnabled === true
               }
               dictationTranscribe={voiceStatus ? Boolean(voiceStatus.transcribe) : undefined}
               artifactTarget={transcriptArtifactTarget}

@@ -5662,6 +5662,14 @@ msgstr "OAuth'u yeniden bağla"
 msgid "Reconnecting"
 msgstr "Yeniden bağlanıyor"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr ""
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "Alanlar"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "Seslendir"
 

@@ -5662,6 +5662,14 @@ msgstr "OAuth opnieuw verbinden"
 msgid "Reconnecting"
 msgstr "Bezig met opnieuw verbinden"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "De opname is mogelijk gestart, maar het scherm kon niet worden vernieuwd"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "Spaces"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "Spreken"
 

@@ -5662,6 +5662,14 @@ msgstr "Połącz ponownie przez OAuth"
 msgid "Reconnecting"
 msgstr "Ponowne łączenie"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "Nagrywanie mogło się rozpocząć, ale nie udało się odświeżyć widoku"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "Przestrzenie"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "Mów"
 

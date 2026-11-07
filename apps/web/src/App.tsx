@@ -75,6 +75,9 @@ const QuietHoursPage = lazyComponent(() =>
   import("./pages/QuietHoursPage").then((module) => module.QuietHoursPage),
 );
 const UndoPage = lazyComponent(() => import("./pages/UndoPage").then((module) => module.UndoPage));
+const VoicePreviewPage = lazyComponent(() =>
+  import("./pages/VoicePreviewPage").then((module) => module.VoicePreviewPage),
+);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -227,6 +230,9 @@ function SessionApp() {
                 <Route path="/preview/notify" element={<QuietHoursPage />} />
               ) : null}
               {import.meta.env.DEV ? <Route path="/preview/undo" element={<UndoPage />} /> : null}
+              {import.meta.env.DEV ? (
+                <Route path="/preview/voice" element={<VoicePreviewPage />} />
+              ) : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}
                 element={
