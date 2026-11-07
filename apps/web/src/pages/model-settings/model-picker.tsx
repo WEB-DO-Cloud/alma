@@ -98,7 +98,7 @@ export function ModelPicker({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-describedby={selected?.images === false ? imagesHintId : undefined}
-          className="flex h-10 w-full items-center justify-between rounded-lg border border-input bg-transparent px-3 text-start text-[15px] text-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+          className="flex h-10 w-full items-center justify-between rounded-lg border border-input bg-transparent px-3 text-start text-body-lg text-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
           onKeyDown={(event) => {
             if (event.key === "ArrowUp" || event.key === "ArrowDown") {
               event.preventDefault();
@@ -170,7 +170,7 @@ export function ModelPicker({
                       }}
                     >
                       <span className="min-w-0 truncate">{option.label}</span>
-                      <span className="ml-auto flex shrink-0 items-center gap-2 text-[13px] leading-[1.5] text-muted-foreground">
+                      <span className="ml-auto flex shrink-0 items-center gap-2 text-body-sm leading-[1.5] text-muted-foreground">
                         {option.images === false ? <TextOnlyMark /> : null}
                         {option.billing.toLowerCase().includes("free") ? t`Free` : null}
                       </span>

@@ -32,6 +32,7 @@ vi.mock("@rakazo/ui-web", () => ({
     "children"
   >) => <div {...props}>{children}</div>,
   DialogTitle: ({ children }: { children?: ReactNode }) => <h2>{children}</h2>,
+  DialogDescription: ({ children }: { children?: ReactNode }) => <p>{children}</p>,
 }));
 
 vi.mock("./AccountSettingsOverlay", () => ({
@@ -136,6 +137,7 @@ async function render(props: Partial<React.ComponentProps<typeof SettingsOverlay
             onClose={() => undefined}
             section="general"
             onSectionChange={() => undefined}
+            shellRpc={{} as never}
             {...next}
           />
         </QueryClientProvider>,
@@ -326,5 +328,22 @@ it("offers Wallet only when the deployment has a wallet provider", async () => {
     expect(shown()).toBe("wallet");
   } finally {
     await cleanup();
+  }
+});
+
+it("says what a page is for only where its name does not", async () => {
+  const general = await render({ section: "general" });
+  try {
+    expect(general.container.querySelector("h2 + p")).toBeNull();
+  } finally {
+    await general.cleanup();
+  }
+  const memory = await render({ section: "memory" });
+  try {
+    expect(memory.container.querySelector("h2 + p")?.textContent).toBe(
+      "What your bots remember between chats.",
+    );
+  } finally {
+    await memory.cleanup();
   }
 });

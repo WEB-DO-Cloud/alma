@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import type { DesktopUpdateState } from "@rakazo/contracts";
-import { MOBILE_APP_STORES } from "@rakazo/contracts";
+import { ANDROID_APP_STORE_URL, IOS_APP_STORE_URL } from "@rakazo/contracts";
 import { Toaster } from "@rakazo/ui-web";
 import type { ReactNode } from "react";
 import { act } from "react";
@@ -154,7 +154,10 @@ it("opens integrations and keeps the existing account actions and links", async 
   ]);
   expect(
     [...menu.querySelectorAll("a")].find((link) => link.textContent === "Get the mobile app")?.href,
-  ).toBe(MOBILE_APP_STORES.ios);
+  ).toBe(IOS_APP_STORE_URL);
+  expect([...menu.querySelectorAll("a")].find((link) => link.textContent === "Docs")?.href).toBe(
+    "https://app.alma.com.do/docs",
+  );
   expect(host.querySelector('[data-testid="user-menu-trigger"]')?.getAttribute("aria-label")).toBe(
     "Account menu for Demo User",
   );
@@ -166,13 +169,13 @@ it("omits Board when unavailable", async () => {
   );
 });
 
-it("offers the Play listing on Android", async () => {
+it("offers Google Play on Android", async () => {
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue("Android");
   await render();
   const mobile = [...document.querySelectorAll("a")].find(
     (link) => link.textContent === "Get the mobile app",
-  );
-  expect(mobile?.href).toBe(MOBILE_APP_STORES.android);
+  )!;
+  expect(mobile.href).toBe(ANDROID_APP_STORE_URL);
   expect(document.body.innerHTML).not.toContain("github.com/elie222/rakazo");
 });
 
@@ -250,4 +253,67 @@ it("keeps at most three marks with the same tile and a missing-logo fallback", a
   expect(tiles).toHaveLength(3);
   expect(new Set(tiles.map((tile) => tile.className)).size).toBe(1);
   expect(tiles[1]!.textContent).toBe("N");
+});
+
+const personal = {
+  id: "org-personal",
+  name: "Personal",
+  defaultSpaceId: "s1",
+  spaceIds: ["s1"],
+  canManage: true,
+};
+const work = {
+  id: "org-work",
+  name: "Work",
+  defaultSpaceId: "s2",
+  spaceIds: ["s2"],
+  canManage: true,
+};
+
+async function renderOrganizations(
+  organizations: (typeof personal)[],
+  onSwitchOrganization = vi.fn(),
+) {
+  await act(async () =>
+    root.render(
+      <DesktopUpdatesProvider>
+        <SidebarFooter
+          name="Demo User"
+          initials="DU"
+          email="account@rakazo.test"
+          open
+          onOpenChange={() => {}}
+          onIntegrations={() => {}}
+          onSkills={() => {}}
+          onArtifacts={() => {}}
+          onSettings={() => {}}
+          onUsage={() => {}}
+          onLogOut={() => {}}
+          signingOut={false}
+          logOutError={null}
+          organizations={organizations}
+          activeOrganizationId="org-personal"
+          onSwitchOrganization={onSwitchOrganization}
+        />
+      </DesktopUpdatesProvider>,
+    ),
+  );
+  return [...document.querySelector('[data-slot="popover-content"]')!.querySelectorAll("button")];
+}
+
+it("shows no organization rows with one organization", async () => {
+  const rows = await renderOrganizations([personal]);
+  expect(rows[0]!.textContent).toBe("Settings");
+});
+
+it("lists two organizations with the active one checked", async () => {
+  const onSwitch = vi.fn();
+  const rows = await renderOrganizations([personal, work], onSwitch);
+  expect(rows.map((row) => row.textContent).slice(0, 3)).toEqual(["Personal", "Work", "Settings"]);
+  expect(rows[0]!.getAttribute("aria-current")).toBe("true");
+  expect(rows[0]!.querySelector("svg")).not.toBeNull();
+  expect(rows[1]!.hasAttribute("aria-current")).toBe(false);
+  expect(rows[1]!.querySelector("svg")).toBeNull();
+  await act(async () => rows[1]!.click());
+  expect(onSwitch).toHaveBeenCalledWith(work);
 });
