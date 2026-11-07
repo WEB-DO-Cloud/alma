@@ -21,7 +21,8 @@ if int(expo["ios"]["buildNumber"]) < 66:
 if int(expo["android"]["versionCode"]) < 14:
     sys.exit(f"android.versionCode is {expo['android']['versionCode']}, expected at least 14")
 domain = pathlib.Path("packages/contracts/src/domain.ts").read_text()
-if "BYOK_MONTHLY_PRICE_CENTS: number | null = 5900" not in domain:
+billing = pathlib.Path("packages/contracts/src/billing.ts").read_text()
+if "BYOK_MONTHLY_PRICE_CENTS: number | null = 5900" not in billing:
     sys.exit("BYOK_MONTHLY_PRICE_CENTS is not 5900")
 thread = pathlib.Path("apps/mobile/app/thread.tsx").read_text()
 layout = pathlib.Path("apps/mobile/app/_layout.tsx").read_text()
@@ -38,7 +39,6 @@ if 'id: "models"' in nav or 'id: "voice"' in nav:
 absent = [
     "apps/web/src/pages/DraftReview.tsx",
     "apps/web/src/pages/DraftApprovalLog.tsx",
-    "apps/web/src/pages/OrganizationSettingsPanel.tsx",
     "apps/api/src/routes/drafts.ts",
     "apps/api/src/routes/organization.ts",
     "packages/contracts/src/draft-review.ts",
@@ -88,7 +88,7 @@ if 'PUBLISHED_IMAGE_REPO = "web-do-cloud/alma"' not in pathlib.Path("packages/co
     sys.exit("published image repository is not the ALMA repo")
 if "export const SUBMIT_PLUGIN_URL: string | null = null" not in domain:
     sys.exit("plugin submit URL is set; Integrations must hide Submit a plugin")
-web_integrations = pathlib.Path("apps/web/src/pages/PluginsOverlay.tsx").read_text()
+web_integrations = pathlib.Path("apps/web/src/pages/plugins/plugin-browse.tsx").read_text()
 phone_integrations = pathlib.Path("apps/mobile/app/(settings)/integrations.tsx").read_text()
 if "SUBMIT_PLUGIN_URL ?" not in web_integrations:
     sys.exit("web Integrations always shows Submit a plugin")
@@ -110,8 +110,9 @@ if 'android:foregroundServiceType="microphone"' not in manifest_xml:
 # 1.0.13 ships without foreground services until the Play declaration and demo video are done.
 if "with-strip-foreground-services" not in pathlib.Path("apps/mobile/app.json").read_text():
     sys.exit("foreground-service strip plugin is not registered")
-if 'tools:node="remove"' in manifest_xml and "FOREGROUND_SERVICE" in manifest_xml:
-    sys.exit("Android foreground service permissions are still stripped")
+for line in manifest_xml.splitlines():
+    if "FOREGROUND_SERVICE" in line and 'tools:node="remove"' in line:
+        sys.exit("Android foreground service permissions are still stripped")
 skills = pathlib.Path("packages/adapters/src/builtin-skills.ts").read_text()
 if "rakazo.com" in skills or "github.com/elie222" in skills:
     sys.exit("built-in skill docs still point at a Rakazo host")

@@ -1,0 +1,51 @@
+---
+import { ANDROID_APP_STORE_URL } from "@rakazo/contracts/client-build";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { APP_URL, DESKTOP_DOWNLOADS, IOS_APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
+
+const DESKTOP_NAMES = { mac: "macOS", windows: "Windows", linux: "Linux" } as const;
+const platforms = [
+  ...(Object.keys(DESKTOP_NAMES) as (keyof typeof DESKTOP_NAMES)[]).map((platform) => ({
+    name: DESKTOP_NAMES[platform],
+    action: "Download",
+    href: DESKTOP_DOWNLOADS[platform],
+    attr: platform,
+  })),
+  { name: "iPhone", action: "App Store", href: IOS_APP_URL, attr: "ios" },
+  { name: "Android", action: "Google Play", href: ANDROID_APP_STORE_URL, attr: "android" },
+  { name: "Web", action: "Open", href: APP_URL, attr: "web" },
+];
+---
+
+<BaseLayout title="Download · ALMA" description="Get ALMA for macOS, Windows, Linux, iPhone, Android, and the web.">
+  <div class="container">
+    <Header />
+    <main id="main" class="privacy-copy">
+      <h1>Download ALMA</h1>
+      <ul class="platform-list">
+        {
+          platforms.map((platform) => (
+            <li>
+              <span>{platform.name}</span>
+              <a
+                class="button button--secondary button--small"
+                href={platform.href}
+                aria-label={`${platform.action}: ${platform.name}`}
+                data-attr={`download-page-${platform.attr}`}
+              >
+                {platform.action}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        Running your own server? The apps connect to it too. See the{" "}
+        <a href={SELF_HOST_GUIDE_PATH}>self-hosting guide</a>.
+      </p>
+    </main>
+    <Footer />
+  </div>
+</BaseLayout>

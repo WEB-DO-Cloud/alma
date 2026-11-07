@@ -1,4 +1,6 @@
 FROM node:24.22.1-bookworm@sha256:6449e19d8184d84062525b6a7524def03146c2cb04a7f08b076680d0e8e4240a
+COPY infra/sandboxes/computer/apt-security.sh /tmp/apt-security.sh
+RUN /tmp/apt-security.sh
 # pnpm lives in the image so containers start without downloading it.
 ENV COREPACK_HOME=/usr/local/share/corepack
 RUN corepack enable
@@ -7,7 +9,7 @@ WORKDIR /app
 # install. pnpm gets a partial workspace: every package listed in pnpm-workspace.yaml
 # needs its manifest below, or --frozen-lockfile fails. The store is a cache mount, so
 # a lockfile change reuses whatever was already downloaded.
-COPY --chmod=755 package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY --chmod=755 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN corepack install && chmod -R a+rX "${COREPACK_HOME}"
 COPY --chmod=755 patches patches
 COPY --chmod=755 apps/api/package.json apps/api/
@@ -25,6 +27,7 @@ COPY --chmod=755 packages/core/package.json packages/core/
 COPY --chmod=755 packages/db/package.json packages/db/
 COPY --chmod=755 packages/logging/package.json packages/logging/
 COPY --chmod=755 packages/memory/package.json packages/memory/
+COPY --chmod=755 packages/page-kit/package.json packages/page-kit/
 COPY --chmod=755 packages/testkit/package.json packages/testkit/
 COPY --chmod=755 packages/ui-tokens/package.json packages/ui-tokens/
 COPY --chmod=755 packages/ui-web/package.json packages/ui-web/
@@ -48,6 +51,8 @@ RUN if [ "$INSTALL_GROK_CLI" = "1" ]; then \
       curl -fsSL https://x.ai/cli/install.sh | bash; \
       if [ -x /root/.local/bin/grok ]; then install -m 755 /root/.local/bin/grok /usr/local/bin/grok; fi; \
     fi
+# Last root step, so a cached earlier layer cannot be the filesystem that ships.
+RUN /tmp/apt-security.sh --check && rm -f /tmp/apt-security.sh
 ARG GIT_SHA
 ENV NODE_ENV=production
 ENV GIT_SHA=$GIT_SHA

@@ -53,7 +53,7 @@ describe("preset OAuth clients in API responses", () => {
     );
     const dto = mcpServerDto(row, summary);
 
-    expect(summary).toEqual({ status: "none", clientId: null, preset: true });
+    expect(summary).toEqual({ status: "none", clientId: null, preset: true, credential: false });
     expect(dto.oauthPreset).toBe(true);
     expect(dto.oauthClientId).toBeNull();
     expect(dto.health).toMatchObject({ status: "unknown", code: null });
@@ -80,7 +80,7 @@ describe("preset OAuth clients in API responses", () => {
     );
     const dto = mcpServerDto({ ...row, secretId: "record-1" }, summary);
 
-    expect(summary).toEqual({ status: "none", clientId: "user-client" });
+    expect(summary).toEqual({ status: "none", clientId: "user-client", credential: true });
     expect(dto.oauthPreset).toBe(false);
     expect(dto.oauthClientId).toBe("user-client");
     const encoded = JSON.stringify(dto);

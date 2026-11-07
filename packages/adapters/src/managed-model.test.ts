@@ -54,7 +54,7 @@ it("uses the deployment model for the Pi runtime and leaves Grok unlabeled witho
   ).toEqual({ provider: "deepseek", id: "deepseek-flash" });
   expect(managedChatModel({ ALMA_MODEL_RUNTIME: "pi" })).toEqual({
     provider: "openrouter",
-    id: "openai/gpt-6-luna",
+    id: "anthropic/claude-haiku-5.5",
   });
   expect(managedChatModel({})).toBeUndefined();
   expect(managedChatModel({ ALMA_MODEL_PROVIDER: "xai", ALMA_MODEL_ID: "grok-4" })).toEqual({

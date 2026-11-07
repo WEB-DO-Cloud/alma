@@ -10,8 +10,7 @@ import {
 } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
 import type { PrismaClient } from "@rakazo/db";
-import { findSpaceMemoryConfig, Prisma } from "@rakazo/db";
-import { withSerializableRetry } from "./serializable-retry.js";
+import { findSpaceMemoryConfig, Prisma, requireSpaceOwner, withTransactionRetry } from "@rakazo/db";
 
 export interface MemoryProviderConfigDeps {
   prisma: PrismaClient;
@@ -29,15 +28,6 @@ export interface MemoryProviderConfigDeps {
   prepareConnection?: (
     input: Parameters<typeof prepareMemoryProviderConnection>[0],
   ) => ReturnType<typeof prepareMemoryProviderConnection>;
-}
-
-async function requireSpaceOwner(prisma: PrismaClient, actor: Actor): Promise<void> {
-  const member = await prisma.spaceMember.findUnique({
-    where: { spaceId_userId: { spaceId: actor.spaceId, userId: actor.userId } },
-    select: { role: true },
-  });
-  const roles = member?.role.split(",").map((role) => role.trim());
-  if (!roles?.includes("owner")) throw new ORPCError("FORBIDDEN");
 }
 
 function deploymentManaged(deps: MemoryProviderConfigDeps): boolean {
@@ -122,7 +112,7 @@ export async function persistMemoryProviderConfig(
     userId: actor.userId,
     signal: new AbortController().signal,
   });
-  const config = await withSerializableRetry(() =>
+  const config = await withTransactionRetry(() =>
     deps.prisma.$transaction(
       async (tx) => {
         const existing = await findSpaceMemoryConfig(tx, actor.spaceId);
@@ -226,7 +216,7 @@ export function serializeSpaceMemoryConfig(config: {
 export async function disconnectMemoryProvider(deps: MemoryProviderConfigDeps, actor: Actor) {
   if (deploymentManaged(deps)) refuseManagedProvider();
   await requireSpaceOwner(deps.prisma, actor);
-  await withSerializableRetry(() =>
+  await withTransactionRetry(() =>
     deps.prisma.$transaction(
       async (tx) => {
         const existing = await findSpaceMemoryConfig(tx, actor.spaceId);
