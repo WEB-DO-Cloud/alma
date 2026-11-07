@@ -1507,6 +1507,8 @@ export const MeSchema = z.object({
   undoDispatchEnabled: z.boolean().optional(),
   /** Editable transcripts of uploaded audio. Absent means off. */
   voiceNotesEnabled: z.boolean().optional(),
+  /** Morning and Monday counts. Absent means off. */
+  digestEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

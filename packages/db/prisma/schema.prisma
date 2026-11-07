@@ -104,6 +104,8 @@ model User {
   notificationBatches         NotificationBatch[]
   sendUndoSetting             SendUndoSetting?
   voiceTranscripts            VoiceTranscript[]
+  digestSubscription          DigestSubscription?
+  digestIssues                DigestIssue[]
 
   @@unique([email])
   @@map("user")
@@ -2997,4 +2999,32 @@ model SendUndoSetting {
   updatedAt DateTime @updatedAt
 
   @@map("send_undo_settings")
+}
+
+/// Opt-in morning and Monday counts. Empty while ALMA_DIGEST is off.
+model DigestSubscription {
+  userId      String   @id
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enabled     Boolean  @default(false)
+  weekly      Boolean  @default(true)
+  minuteOfDay Int      @default(450)
+  email       Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+
+  @@map("digest_subscriptions")
+}
+
+/// One count row per user, kind, and local date. No free text.
+model DigestIssue {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind           String
+  localDate      String
+  draftCount     Int
+  reminderCount  Int
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, kind, localDate])
+  @@map("digest_issues")
 }

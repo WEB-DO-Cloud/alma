@@ -157,6 +157,7 @@ export interface RouterDeps {
     sendUndoEnabled?: boolean;
     undoDispatchEnabled?: boolean;
     voiceNotesEnabled?: boolean;
+    digestEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }
