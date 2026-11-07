@@ -95,6 +95,10 @@ export function DigestPage() {
             setError("digest_disabled");
             return;
           }
+          if (preview) {
+            setError(null);
+            return;
+          }
           void rpc.digest
             .update({ enabled: on, weekly, minuteOfDay })
             .then(() => setError(null))
