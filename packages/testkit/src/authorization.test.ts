@@ -537,6 +537,26 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["botSecrets/list"],
       ["botSecrets/put"],
       ["botSecrets/remove"],
+      ["phase2a/contexts/list"],
+      ["phase2a/contexts/create", { kind: "personal", label: "Home" }],
+      ["phase2a/contexts/grant", { contextId: "missing", userId: "missing", role: "reader" }],
+      ["phase2a/contexts/revoke", { contextId: "missing", userId: "missing" }],
+      ["phase2a/records/list", { contextId: "missing" }],
+      ["phase2a/records/create", { contextId: "missing", kind: "note", title: "Note" }],
+      ["phase2a/records/resolve", { contextId: "missing", title: "Note" }],
+      ["phase2a/links/create", { contextId: "missing", targetKind: "thread", targetId: "missing" }],
+      ["phase2a/drafts/list", { contextId: "missing" }],
+      [
+        "phase2a/drafts/create",
+        { contextId: "missing", recipient: "ada@example.test", channel: "email", body: "Hola" },
+      ],
+      [
+        "phase2a/drafts/edit",
+        { id: "missing", recipient: "ada@example.test", channel: "email", body: "Hola" },
+      ],
+      ["phase2a/drafts/submit", { id: "missing" }],
+      ["phase2a/drafts/approve", { id: "missing" }],
+      ["phase2a/drafts/cancel", { id: "missing" }],
     ]);
 
     const results = await Promise.all(

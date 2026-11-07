@@ -70,6 +70,14 @@ model User {
   computerRuns                ComputerRun[]
   devices                     UserDevice[]
   supportLink                 SupportLink?
+  ownedWorkContexts           WorkContext[]            @relation("WorkContextOwner")
+  workContextRoles            WorkContextRole[]        @relation("WorkContextRoleUser")
+  grantedWorkContextRoles     WorkContextRole[]        @relation("WorkContextRoleGrantor")
+  workRecords                 WorkRecord[]
+  workLinks                   WorkLink[]
+  outboundDrafts              OutboundDraft[]          @relation("OutboundDraftAuthor")
+  approvedOutboundDrafts      OutboundDraft[]          @relation("OutboundDraftApprover")
+  workApprovalEvents          WorkApprovalEvent[]
 
   @@unique([email])
   @@map("user")
@@ -235,6 +243,7 @@ model Organization {
   almaTrial    AlmaTrial?
   almaProfile  AlmaProfile?
   activationEvents ActivationEvent[]
+  workContexts WorkContext[]
   referralCode ReferralCode?
   referredBy   Referral?           @relation("ReferredOrganization")
   referrals    Referral[]          @relation("ReferrerOrganization")
@@ -446,6 +455,12 @@ model Space {
   mcpServerSpaces             McpServerSpace[]
   capabilityInstallSpaces     CapabilityInstallSpace[]
   supportLinks                SupportLink[]
+  workContexts                WorkContext[]
+  workContextRoles            WorkContextRole[]
+  workRecords                 WorkRecord[]
+  workLinks                   WorkLink[]
+  outboundDrafts              OutboundDraft[]
+  workApprovalEvents          WorkApprovalEvent[]
 
   @@unique([id, organizationId])
   @@index([organizationId, createdAt])
@@ -2376,4 +2391,144 @@ model CapabilityInstallSpace {
   @@id([installId, spaceId])
   @@index([spaceId, userId])
   @@map("capability_install_spaces")
+}
+
+/// Personal, work, or per-client boundary inside one space. Empty while Phase 2A is off.
+model WorkContext {
+  id             String            @id @default(cuid())
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  spaceId        String
+  space          Space             @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  ownerUserId    String
+  owner          User              @relation("WorkContextOwner", fields: [ownerUserId], references: [id], onDelete: Restrict)
+  /// personal, work, or client
+  kind           String
+  label          String
+  parentId       String?
+  parent         WorkContext?      @relation("WorkContextParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children       WorkContext[]     @relation("WorkContextParent")
+  roles          WorkContextRole[]
+  records        WorkRecord[]
+  links          WorkLink[]
+  drafts         OutboundDraft[]
+  approvalEvents WorkApprovalEvent[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([spaceId, ownerUserId])
+  @@index([parentId])
+  @@map("work_contexts")
+}
+
+model WorkContextRole {
+  contextId       String
+  context         WorkContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User        @relation("WorkContextRoleUser", fields: [userId], references: [id], onDelete: Cascade)
+  organizationId  String
+  spaceId         String
+  space           Space       @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  /// Copied from the context so policies do not read work_contexts.
+  kind            String
+  /// owner, professional, assistant, or reader
+  role            String
+  grantedByUserId String
+  grantedBy       User        @relation("WorkContextRoleGrantor", fields: [grantedByUserId], references: [id], onDelete: Restrict)
+  createdAt       DateTime    @default(now())
+
+  @@id([contextId, userId])
+  @@index([spaceId, userId])
+  @@map("work_context_roles")
+}
+
+model WorkRecord {
+  id              String      @id @default(cuid())
+  contextId       String
+  context         WorkContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  organizationId  String
+  spaceId         String
+  space           Space       @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  createdByUserId String
+  createdBy       User        @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+  /// contact, matter, or note
+  kind            String
+  title           String
+  body            String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([contextId])
+  @@map("work_records")
+}
+
+model WorkLink {
+  id              String      @id @default(cuid())
+  contextId       String
+  context         WorkContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  organizationId  String
+  spaceId         String
+  space           Space       @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  createdByUserId String
+  createdBy       User        @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+  /// thread or artifact
+  targetKind      String
+  targetId        String
+  createdAt       DateTime    @default(now())
+
+  @@unique([targetKind, targetId])
+  @@index([contextId])
+  @@map("work_links")
+}
+
+model OutboundDraft {
+  id               String      @id @default(cuid())
+  contextId        String
+  context          WorkContext @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  organizationId   String
+  spaceId          String
+  space            Space       @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  createdByUserId  String
+  createdBy        User        @relation("OutboundDraftAuthor", fields: [createdByUserId], references: [id], onDelete: Restrict)
+  /// Role of the author when the draft was created. Approval reads this, not the role row.
+  creatorRole      String
+  recipient        String
+  /// whatsapp, email, or other
+  channel          String
+  body             String      @db.Text
+  attachmentIds    String[]    @default([])
+  bodyHash         String
+  /// message. Refused classes are not stored.
+  actionClass      String
+  status           String
+  approvedByUserId String?
+  approvedBy       User?       @relation("OutboundDraftApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  approvedAt       DateTime?
+  approvedBodyHash String?
+  dispatchAfter    DateTime?
+  approvalEvents   WorkApprovalEvent[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([contextId, status])
+  @@map("outbound_drafts")
+}
+
+model WorkApprovalEvent {
+  id             String         @id @default(cuid())
+  draftId        String
+  draft          OutboundDraft  @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  contextId      String
+  context        WorkContext    @relation(fields: [contextId], references: [id], onDelete: Cascade)
+  organizationId String
+  spaceId        String
+  space          Space          @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  actorUserId    String
+  actor          User           @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  action         String
+  bodyHash       String
+  createdAt      DateTime       @default(now())
+
+  @@index([draftId])
+  @@map("work_approval_events")
 }

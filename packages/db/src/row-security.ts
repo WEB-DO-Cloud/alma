@@ -165,6 +165,12 @@ export const ROW_SECURITY_MODELS: ReadonlySet<string> = new Set([
   "AlmaTrial",
   "AlmaProfile",
   "ActivationEvent",
+  "WorkContext",
+  "WorkContextRole",
+  "WorkRecord",
+  "WorkLink",
+  "OutboundDraft",
+  "WorkApprovalEvent",
 ]);
 
 /**

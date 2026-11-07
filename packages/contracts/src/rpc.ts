@@ -157,6 +157,19 @@ import {
 import { ModelHeadersSchema } from "./model-headers.js";
 import { ModelRoleSchema, ModelRoleUpdateSchema, ModelRoleViewSchema } from "./model-roles.js";
 import { PaymentWalletStatusSchema } from "./payments.js";
+import {
+  OutboundDraftCreateSchema,
+  OutboundDraftEditSchema,
+  OutboundDraftSchema,
+  WorkContextCreateSchema,
+  WorkContextGrantSchema,
+  WorkContextSchema,
+  WorkLinkCreateSchema,
+  WorkRecordCreateSchema,
+  WorkRecordResolveInputSchema,
+  WorkRecordResolveSchema,
+  WorkRecordSchema,
+} from "./phase2a.js";
 import { MessageReactionSchema } from "./reactions.js";
 import { RoutineWatchSchema } from "./routine-watch.js";
 import {
@@ -1398,6 +1411,32 @@ export const appContract = {
     remove: oc
       .input(z.object({ botId: Id, name: StoredBotSecretName }))
       .output(z.object({ ok: z.literal(true) })),
+  },
+  phase2a: {
+    contexts: {
+      list: oc.output(z.array(WorkContextSchema)),
+      create: oc.input(WorkContextCreateSchema).output(WorkContextSchema),
+      grant: oc.input(WorkContextGrantSchema).output(z.object({ ok: z.literal(true) })),
+      revoke: oc
+        .input(z.object({ contextId: Id, userId: Id }))
+        .output(z.object({ ok: z.literal(true) })),
+    },
+    records: {
+      list: oc.input(z.object({ contextId: Id })).output(z.array(WorkRecordSchema)),
+      create: oc.input(WorkRecordCreateSchema).output(WorkRecordSchema),
+      resolve: oc.input(WorkRecordResolveInputSchema).output(WorkRecordResolveSchema),
+    },
+    links: {
+      create: oc.input(WorkLinkCreateSchema).output(z.object({ id: Id })),
+    },
+    drafts: {
+      list: oc.input(z.object({ contextId: Id })).output(z.array(OutboundDraftSchema)),
+      create: oc.input(OutboundDraftCreateSchema).output(OutboundDraftSchema),
+      edit: oc.input(OutboundDraftEditSchema).output(OutboundDraftSchema),
+      submit: oc.input(z.object({ id: Id })).output(OutboundDraftSchema),
+      approve: oc.input(z.object({ id: Id })).output(OutboundDraftSchema),
+      cancel: oc.input(z.object({ id: Id })).output(OutboundDraftSchema),
+    },
   },
 };
 

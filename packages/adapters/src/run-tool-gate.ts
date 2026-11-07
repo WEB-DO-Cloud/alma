@@ -15,10 +15,12 @@ import {
   connectorToolRequiresApproval,
   decisiveActionApprovalRules,
   displayName,
+  externalSendHold,
   humanizeToolName,
   newSiteOutcome,
   outboundSiteGate,
   planActionGate,
+  readPhase2aConfig,
   redactSecrets,
   repeatsDeniedAction,
   resolveActionApprovalForTools,
@@ -173,6 +175,18 @@ export async function gateToolCall(
     );
   const connectorProviders = ctx.tools.connectedPlugins.map((plugin) => plugin.provider);
   const connectorKind = connectorKindFromToolName(name, connectorProviders);
+  if (readPhase2aConfig().enabled) {
+    const hold = externalSendHold({
+      enabled: true,
+      viaConnector,
+      connectorKind,
+      tools: approvalToolNames.map((toolName) => ({
+        name: toolName,
+        readOnly: declaredReadOnlyFor(toolName),
+      })),
+    });
+    if (hold) return { result: { error: hold.code } };
+  }
   // paid_request with only a purchase id sends the request its approval already named.
   const sendsToSite =
     SITE_SENDING_TOOLS.has(name) && (name === "web_fetch" || args.url !== undefined);

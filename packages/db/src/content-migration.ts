@@ -13,7 +13,14 @@ export type ContentMigrationMode = "encrypt" | "reencrypt" | "decrypt";
 
 interface TableSpec {
   model: keyof typeof ENCRYPTED_MODELS;
-  delegate: "message" | "event" | "memoryDocument" | "memoryRevision" | "thread";
+  delegate:
+    | "message"
+    | "event"
+    | "memoryDocument"
+    | "memoryRevision"
+    | "thread"
+    | "workRecord"
+    | "outboundDraft";
   column: string;
   json: boolean;
   /** Preserve @updatedAt so a migration does not reorder recently edited documents. */
@@ -89,6 +96,30 @@ const TABLES: TableSpec[] = [
       WHERE id > ${cursor} AND "historyCompactionSummary" IS NOT NULL ORDER BY id LIMIT ${limit}`,
     writePlaintext: (id, value) =>
       Prisma.sql`UPDATE threads SET "historyCompactionSummary" = ${value as string} WHERE id = ${id}`,
+  },
+  {
+    model: "WorkRecord",
+    delegate: "workRecord",
+    column: "body",
+    json: false,
+    updatedAt: true,
+    scan: (cursor, limit) => Prisma.sql`
+      SELECT id, body AS value, "spaceId", "createdByUserId" AS owner FROM work_records
+      WHERE id > ${cursor} AND body IS NOT NULL ORDER BY id LIMIT ${limit}`,
+    writePlaintext: (id, value) =>
+      Prisma.sql`UPDATE work_records SET body = ${value as string} WHERE id = ${id}`,
+  },
+  {
+    model: "OutboundDraft",
+    delegate: "outboundDraft",
+    column: "body",
+    json: false,
+    updatedAt: true,
+    scan: (cursor, limit) => Prisma.sql`
+      SELECT id, body AS value, "spaceId", "createdByUserId" AS owner FROM outbound_drafts
+      WHERE id > ${cursor} ORDER BY id LIMIT ${limit}`,
+    writePlaintext: (id, value) =>
+      Prisma.sql`UPDATE outbound_drafts SET body = ${value as string} WHERE id = ${id}`,
   },
 ];
 
@@ -308,6 +339,12 @@ export async function contentEncryptionStatus(
     UNION ALL
     SELECT 'threads', count(*) FILTER (WHERE "historyCompactionSummary" IS NOT NULL),
       count(*) FILTER (WHERE "historyCompactionSummary" NOT LIKE 'rkz1:%') FROM threads
+    UNION ALL
+    SELECT 'work_records', count(*) FILTER (WHERE body IS NOT NULL),
+      count(*) FILTER (WHERE body IS NOT NULL AND body NOT LIKE 'rkz1:%') FROM work_records
+    UNION ALL
+    SELECT 'outbound_drafts', count(*),
+      count(*) FILTER (WHERE body NOT LIKE 'rkz1:%') FROM outbound_drafts
   `;
   const keys = await prisma.spaceKey.groupBy({ by: ["masterKeyId"], _count: { _all: true } });
   return {
