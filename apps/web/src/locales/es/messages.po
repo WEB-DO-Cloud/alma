@@ -6533,7 +6533,7 @@ msgstr "Compartir ALMA"
 
 #: src/pages/ReferralPage.tsx
 msgid "Share text"
-msgstr ""
+msgstr "Texto para compartir"
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share, anyone with the link can view"
