@@ -6519,11 +6519,20 @@ msgstr "形 {0}"
 
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
+#: src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr ""
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share “{title}”"
+msgstr ""
+
+#: src/pages/ReferralPage.tsx
+msgid "Share ALMA"
+msgstr ""
+
+#: src/pages/ReferralPage.tsx
+msgid "Share text"
 msgstr ""
 
 #: src/components/pages/SharePopover.tsx

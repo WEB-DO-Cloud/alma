@@ -1732,6 +1732,9 @@ export const appContract = {
       }),
     ),
   },
+  referralShare: {
+    get: oc.output(z.object({ url: z.string().nullable(), text: z.string() })),
+  },
   phase2a: {
     contexts: {
       list: oc.output(z.array(WorkContextSchema)),
