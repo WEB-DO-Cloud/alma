@@ -6,11 +6,11 @@ import {
   assertGrant,
   assertRevoke,
   deliveryLabel,
-  draftBodyHash,
   nextDraftState,
   Phase2aError,
   resolveRecordTitles,
 } from "@rakazo/core";
+import { draftBodyHash } from "@rakazo/core/node/phase2a-hash";
 import type { Prisma, PrismaClient } from "./client.js";
 import { Prisma as PrismaNamespace } from "./client.js";
 import { createRowId } from "./row-id.js";

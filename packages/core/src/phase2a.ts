@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import type { WorkContextKind, WorkContextRole } from "@rakazo/contracts";
 import { connectorToolRequiresApproval } from "./action-approval.js";
 
@@ -249,21 +248,6 @@ export function recordDispatchResult(input: {
 }): "sent" | "failed" | "unknown" {
   if (input.status !== "dispatching") throw new Phase2aError("phase2a_stale_approval");
   return input.result;
-}
-
-export function draftBodyHash(payload: {
-  recipient: string;
-  channel: string;
-  body: string;
-  attachmentIds: readonly string[];
-}): string {
-  const canonical = JSON.stringify({
-    recipient: payload.recipient,
-    channel: payload.channel,
-    body: payload.body,
-    attachmentIds: [...payload.attachmentIds].sort(),
-  });
-  return createHash("sha256").update(canonical, "utf8").digest("hex");
 }
 
 export function visibleRecordIds(
