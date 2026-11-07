@@ -39,12 +39,17 @@ for (const platform of ["darwin", "linux"]) {
     }, platform);
     let chosen: "this-mac" | null = null;
     await page.route(/\/rpc\/(me|bootstrap)$/, async (route) => {
-      const response = await route.fetch();
-      const body = await response.json();
-      const me = route.request().url().endsWith("/me") ? body.json : body.json.me;
-      me.canChooseHostComputer = true;
-      me.computerHost = chosen;
-      await route.fulfill({ response, json: body });
+      try {
+        const response = await route.fetch();
+        const body = await response.json();
+        const me = route.request().url().endsWith("/me") ? body.json : body.json.me;
+        me.canChooseHostComputer = true;
+        me.computerHost = chosen;
+        await route.fulfill({ response, json: body });
+      } catch {
+        // Reload aborts a request this handler has already started.
+        await route.abort().catch(() => undefined);
+      }
     });
     await page.reload();
     const dialog = page.getByRole("dialog", { name: "Where should bots run?" });
