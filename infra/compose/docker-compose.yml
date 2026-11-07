@@ -314,6 +314,9 @@ x-app-environment: &app-environment
   ALMA_TRIAL_DAYS:
   ALMA_TRIAL_MESSAGE_CAP:
   ALMA_ONBOARDING_V2:
+  # Phase 2A foundation. Off unless set to the exact string true.
+  ALMA_PHASE2A:
+  ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
 
 services:
   postgres:
@@ -467,6 +470,8 @@ services:
       ALMA_TRIAL_DAYS:
       ALMA_TRIAL_MESSAGE_CAP:
       ALMA_ONBOARDING_V2:
+      ALMA_PHASE2A:
+      ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:

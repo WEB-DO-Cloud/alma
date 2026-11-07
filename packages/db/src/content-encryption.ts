@@ -81,6 +81,18 @@ export const ENCRYPTED_MODELS: Record<string, ModelSpec> = {
     space: { column: "spaceId" },
     ownerRelation: "user",
   },
+  WorkRecord: {
+    table: "work_records",
+    fields: { body: {} },
+    space: { column: "spaceId" },
+    ownerRelation: "createdBy",
+  },
+  OutboundDraft: {
+    table: "outbound_drafts",
+    fields: { body: {} },
+    space: { column: "spaceId" },
+    ownerRelation: "createdBy",
+  },
 };
 
 /** Rows whose id → space mapping the ring learns from results, for child writes. */
