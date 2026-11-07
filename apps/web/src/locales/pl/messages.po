@@ -1451,6 +1451,10 @@ msgstr "Dzwonienie…"
 msgid "Calls"
 msgstr "Połączenia"
 
+#: src/components/QuickActions.tsx
+msgid "Camera"
+msgstr ""
+
 #: src/components/pages/SharePopover.tsx
 msgid "Can view without signing in"
 msgstr "Można przeglądać bez logowania"
@@ -6521,6 +6525,7 @@ msgstr "Kształt {0}"
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
 #: src/pages/ReferralPage.tsx
+#: src/components/QuickActions.tsx
 msgid "Share"
 msgstr "Udostępnij"
 
@@ -7760,6 +7765,10 @@ msgstr "Zobacz źródło"
 #: src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "Głos"
+
+#: src/components/QuickActions.tsx
+msgid "Voice note"
+msgstr ""
 
 #: src/lib/tts.ts
 msgid "Voice request timed out."
