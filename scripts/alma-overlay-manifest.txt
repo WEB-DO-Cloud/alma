@@ -801,6 +801,7 @@ overlay packages/testkit/src/cli/harness.ts
 overlay packages/testkit/src/cli/mobile-screenshots.ts
 overlay packages/testkit/src/computer-use.e2e.test.ts
 overlay packages/testkit/src/executor-lifecycle.test.ts
+overlay packages/testkit/src/ios-screenshot-catalog.test.ts
 overlay packages/testkit/src/ios-screenshot-gallery.ts
 overlay packages/testkit/src/parallel-web.test.ts
 overlay packages/testkit/src/pin-test-env.test.ts

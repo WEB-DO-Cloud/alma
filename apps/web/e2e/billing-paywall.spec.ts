@@ -488,7 +488,6 @@ test("move an own-key plan to a bigger tier", async ({ page }, testInfo) => {
   await expect(plan.getByText("8 vCPU, 16 GB, 100 computer hours a month")).toBeVisible();
 });
 
-
 test("a no-card trial shows the countdown and the plan states the renewal", async ({
   page,
 }, testInfo) => {

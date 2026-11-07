@@ -1560,7 +1560,7 @@ msgstr "圖表渲染失敗：{error}"
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/shell/bot-settings-sections.tsx
 msgid "Chat"
-msgstr ""
+msgstr "聊天"
 
 #: src/pages/model-settings/compatible-model-fields.tsx
 msgid "Chat Completions"

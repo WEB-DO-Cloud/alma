@@ -18,7 +18,7 @@ export function TrialBanner({
   return (
     <div
       data-testid="trial-banner"
-      className="pointer-events-auto mx-auto mb-2 flex w-full max-w-xl items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-sm"
+      className="pointer-events-auto mx-auto mb-2 flex w-full max-w-xl items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-body-sm"
     >
       <p>
         {trial.daysLeft === 1 ? (
@@ -49,7 +49,10 @@ export function PlanClarityCopy({ status }: { status: BillingStatus }) {
   );
   const promo = status.byokPromo;
   return (
-    <div data-testid="plan-clarity" className="flex flex-col gap-1 text-sm text-muted-foreground">
+    <div
+      data-testid="plan-clarity"
+      className="flex flex-col gap-1 text-body-sm text-muted-foreground"
+    >
       {status.almaTrial && !status.access ? (
         <p>
           <Trans>The trial ended.</Trans>
@@ -102,7 +105,7 @@ export function SetupChecklist({
   return (
     <section
       data-testid="setup-checklist"
-      className="pointer-events-auto mx-auto mb-2 w-full max-w-xl rounded-lg border border-border bg-card px-3 py-2 text-sm"
+      className="pointer-events-auto mx-auto mb-2 w-full max-w-xl rounded-lg border border-border bg-card px-3 py-2 text-body-sm"
     >
       <div className="mb-1 flex items-center justify-between">
         <h2 className="font-medium">
@@ -151,7 +154,7 @@ export function StarterWorkspace({
   return (
     <div
       data-testid="starter-workspace"
-      className="pointer-events-auto mx-auto mb-3 w-full max-w-xl text-sm"
+      className="pointer-events-auto mx-auto mb-3 w-full max-w-xl text-body-sm"
     >
       <p className="text-muted-foreground">
         <Trans>Nothing due today.</Trans>

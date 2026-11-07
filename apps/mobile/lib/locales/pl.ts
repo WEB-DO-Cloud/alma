@@ -5,7 +5,8 @@ export const PL_MESSAGES: Record<string, string> = {
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "Anuluj w portalu płatności. Dostęp trwa do końca opłaconego okresu.",
   "Personal use": "Użytek osobisty",
-  "The plan renews monthly until you cancel.": "Plan odnawia się co miesiąc, dopóki go nie anulujesz.",
+  "The plan renews monthly until you cancel.":
+    "Plan odnawia się co miesiąc, dopóki go nie anulujesz.",
   "The trial ended.": "Okres próbny się skończył.",
   "The trial has reached its limit.": "Okres próbny osiągnął limit.",
   "What do you want ALMA for first?": "Do czego chcesz najpierw użyć ALMA?",
