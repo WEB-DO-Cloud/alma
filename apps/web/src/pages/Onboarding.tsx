@@ -42,8 +42,13 @@ export function OnboardingPage() {
         setCatalog(models);
         const next = me.managedModel || !me.needsModel ? "bot" : "model";
         setAfterSurvey(next);
+        if (me.needsSectorChoice) {
+          navigate("/onboarding/sector", { replace: true });
+          return;
+        }
         if (!linkedStep || (linkedStep === "model" && next === "bot")) {
-          goTo(me.needsSignupSurvey && linkedStep !== "model" ? "survey" : next);
+          const survey = !me.onboardingV2 && me.needsSignupSurvey && linkedStep !== "model";
+          goTo(survey ? "survey" : next);
         }
       })
       .catch(() => {

@@ -20,6 +20,29 @@ describe("model access", () => {
   ])("$mode with balance $balanceMicros and $status: $access", ({ status, access, ...credits }) => {
     expect(hasModelAccess(credits, status, now)).toBe(access);
   });
+
+  const trial = { endsAt: later, messagesUsed: 0, messageCap: 50 };
+  const open = { mode: null, balanceMicros: 0n, byokFreeUntil: null };
+
+  it("grants access only while the trial clock and cap remain", () => {
+    expect(hasModelAccess(open, null, now, trial)).toBe(true);
+    expect(hasModelAccess(open, null, now, { ...trial, messagesUsed: 50 })).toBe(false);
+    expect(hasModelAccess(open, null, now, { ...trial, endsAt: now })).toBe(false);
+    expect(hasModelAccess(open, null, now, null)).toBe(false);
+  });
+
+  it("keeps a subscription and a complimentary period ahead of an exhausted trial", () => {
+    const exhausted = { endsAt: now, messagesUsed: 50, messageCap: 50 };
+    expect(hasModelAccess(open, "active", now, exhausted)).toBe(true);
+    expect(
+      hasModelAccess(
+        { mode: "byok", balanceMicros: 0n, byokFreeUntil: later },
+        null,
+        now,
+        exhausted,
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("one trial per person", () => {

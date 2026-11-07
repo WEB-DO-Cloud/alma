@@ -1,5 +1,6 @@
 import { ORPCError } from "@orpc/server";
 import { signupSurveyAsksTeamSize } from "@rakazo/contracts";
+import { almaOnboarding } from "../alma-onboarding.js";
 import {
   chooseFocus,
   dismissFocus,
@@ -38,6 +39,21 @@ export function onboardingRoutes(ctx: RouterContext) {
         );
         return { ok: true as const };
       }),
+      sector: authed.onboarding.sector.handler(async ({ context, input }) =>
+        almaOnboarding(deps).sector(context.actor, input),
+      ),
+      checklist: authed.onboarding.checklist.handler(async ({ context }) =>
+        almaOnboarding(deps).checklist(context.actor),
+      ),
+      checklistDismiss: authed.onboarding.checklistDismiss.handler(async ({ context }) =>
+        almaOnboarding(deps).checklistDismiss(context.actor),
+      ),
+      checklistReopen: authed.onboarding.checklistReopen.handler(async ({ context }) =>
+        almaOnboarding(deps).checklistReopen(context.actor),
+      ),
+      event: authed.onboarding.event.handler(async ({ context }) =>
+        almaOnboarding(deps).event(context.actor),
+      ),
       start: authed.onboarding.start.handler(async ({ context, input }) => {
         await startOnboarding(onboardingDeps, context.actor, input.botId);
         return { ok: true as const };

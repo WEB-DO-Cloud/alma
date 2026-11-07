@@ -7,6 +7,24 @@ const base = {
 };
 
 describe("loadEnv", () => {
+  it("keeps the phase 1 trial and onboarding flags off", () => {
+    expect(loadEnv(base)).toMatchObject({
+      almaTrialEnabled: false,
+      almaTrialDays: 14,
+      almaTrialMessageCap: 50,
+      almaOnboardingV2: false,
+    });
+    expect(
+      loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
+    ).toMatchObject({
+      almaTrialEnabled: true,
+      almaOnboardingV2: true,
+    });
+    expect(() => loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_TRIAL_DAYS: "99" })).toThrow(
+      "ALMA_TRIAL_DAYS",
+    );
+  });
+
   it("reads an optional launch coupon and ignores a blank one", () => {
     expect(loadEnv(base).stripePromoCouponId).toBeUndefined();
     expect(

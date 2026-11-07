@@ -4,8 +4,10 @@ import { runContinueJob } from "@rakazo/adapter-kit";
 import type { Actor, GroupMember, MessageBlock, ReplyPreview } from "@rakazo/contracts";
 import {
   GROUP_MEMBER_MIN,
+  isTrialLimitError,
   MessageBlock as MessageBlockSchema,
   resolveBotAvatarSet,
+  TRIAL_LIMIT_ERROR,
 } from "@rakazo/contracts";
 import {
   ACTIVE_RUN_STATUSES,
@@ -21,6 +23,7 @@ import {
 import { deriveMessageQuote, messageReplyPreview } from "@rakazo/core/message-quote";
 import type { Prisma, PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
+  admitUserRun,
   answerWaitingRunWithTextInTransaction,
   appendEventInTransaction,
   clearEndedRunState,
@@ -31,6 +34,7 @@ import {
   IsolationError,
   loadMessageAuthor,
   lockSpaceGroup,
+  noteTrialCap,
   primaryActiveRun,
   retireWaitingQuestionInTransaction,
   SpaceDeletionInProgressError,
@@ -485,6 +489,15 @@ function sendAttachmentBlocks(
   });
 }
 
+async function chargeQueuedRun(tx: Prisma.TransactionClient, actor: Actor, messageId: string) {
+  const admitted = await admitUserRun(tx, {
+    spaceId: actor.spaceId,
+    userId: actor.userId,
+    messageId,
+  });
+  if (admitted === "limit") throw new ORPCError("FORBIDDEN", { message: TRIAL_LIMIT_ERROR });
+}
+
 export async function sendThreadMessage(
   deps: {
     prisma: PrismaClient;
@@ -759,6 +772,7 @@ export async function sendThreadMessage(
           }
           return { message, runs: [active], routineRuns, eventSeq: event.seq };
         }
+        await chargeQueuedRun(tx, actor, message.id);
         const task = await tx.task.create({
           data: {
             spaceId: actor.spaceId,
@@ -921,6 +935,7 @@ export async function sendThreadMessage(
         userId: string;
         trigger?: string | null;
       }> = [];
+      let chargedTrial = false;
       for (const botId of targetBotIds) {
         const answered = answeredByBotId.get(botId);
         if (answered) {
@@ -956,6 +971,10 @@ export async function sendThreadMessage(
           });
           runs.push(active);
           continue;
+        }
+        if (!chargedTrial) {
+          await chargeQueuedRun(tx, actor, message.id);
+          chargedTrial = true;
         }
         const task = await tx.task.create({
           data: {
@@ -1028,6 +1047,12 @@ export async function sendThreadMessage(
     }, THREAD_LOCK_TRANSACTION_OPTIONS);
 
   const committed = await withTransactionRetry(commit).catch(async (error) => {
+    if (isTrialLimitError(error)) {
+      await noteTrialCap(deps.prisma, { spaceId: actor.spaceId, userId: actor.userId }).catch(
+        () => undefined,
+      );
+      throw error;
+    }
     const winner = await replayExistingSend(
       deps,
       target.threadId,

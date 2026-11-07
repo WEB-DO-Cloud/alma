@@ -1,4 +1,5 @@
 import { isModelRequiredSendError } from "@rakazo/core";
+import { router } from "expo-router";
 import { Alert, AppState } from "react-native";
 import type { RpcArgs } from "./api";
 import {
@@ -122,6 +123,10 @@ configureUnsentSends({
   disk: outboxDisk,
   errorText: (error) => errorText(error, t("Failed to send message")),
   notDelivered: (attempt) => {
+    if (attempt.error === t("The trial has reached its limit.")) {
+      router.push("/paywall");
+      return;
+    }
     if (isModelRequiredSendError(attempt.error)) {
       void Promise.resolve(rpc("me")).then(
         (me) => {

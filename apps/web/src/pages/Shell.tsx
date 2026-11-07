@@ -38,17 +38,25 @@ import {
   useState,
 } from "react";
 import { useParams } from "react-router-dom";
+import {
+  SetupChecklist,
+  StarterWorkspace,
+  TrialBanner,
+  useChecklist,
+} from "../components/activation";
 import { ComputerUpdateProgress } from "../components/ComputerUpdateProgress";
 import { CallCard, CallReturnBar } from "../components/call/CallCard";
 import { IncomingCall } from "../components/call/IncomingCall";
 import { PageLoading } from "../components/PageLoading";
 import { PageViewHost } from "../components/pages/PageViewHost";
+import { useBilling } from "../components/SubscriptionGate";
 import type { ArtifactTarget } from "../lib/artifact-open";
 import { authClient } from "../lib/auth";
 import { peekBootstrapSeed } from "../lib/bootstrap";
 import { botsSidebarDensityPreference } from "../lib/bots-sidebar-density-pref";
 import { readBotsSidebarCollapsed, writeBotsSidebarCollapsed } from "../lib/bots-sidebar-pref";
 import { setCallMinimized, startCall, useCallSession } from "../lib/call-session";
+import { requestComposerFill, writeComposerDraft } from "../lib/composer-draft";
 import { composerEnterToSendPreference } from "../lib/composer-enter-to-send-pref";
 import { computersAreUnavailable } from "../lib/computer-sandbox";
 import { desktopBridge } from "../lib/desktop";
@@ -167,6 +175,11 @@ function SpaceShell() {
     setBootstrapMe,
     refreshBots,
   } = roster;
+  const billing = useBilling();
+  const checklist = useChecklist(Boolean(bootstrapMe?.onboardingV2));
+  useEffect(() => {
+    if (bootstrapMe?.needsSectorChoice) navigate("/onboarding/sector", { replace: true });
+  }, [bootstrapMe?.needsSectorChoice, navigate]);
   const { collapsedSidebarSections, toggleSidebarSection } = useSidebarExpansion(userId);
   const [botsSidebarCollapsed, setBotsSidebarCollapsed] = useState(false);
   useEffect(() => {
@@ -979,6 +992,7 @@ function SpaceShell() {
         openIntegrations={() => setOverlay({ kind: "integrations" })}
         openSkills={() => setOverlay({ kind: "skills" })}
         openSpaceChat={openSpaceChat}
+        onboardingV2={Boolean(bootstrapMe?.onboardingV2)}
       />
 
       {/* Keep the composer's z-index inside the chat so phone overlays like the side panel cover it. */}
@@ -1024,6 +1038,21 @@ function SpaceShell() {
             panelOpen={chatPanelOpen}
             onOpenNavigation={() => setMobileSidebarOpen(true)}
             onTogglePanel={toggleChatPanel}
+            onFeedback={
+              bots.some((bot) => bot.kind === "support")
+                ? () => {
+                    const support = bots.find((bot) => bot.kind === "support");
+                    if (!support) return;
+                    const english = (bootstrapMe?.locale ?? "").toLowerCase().startsWith("en");
+                    const draft = english
+                      ? "I want to comment on an answer.\nWhat I expected:\nWhat happened:\n"
+                      : "Quiero comentar una respuesta.\nQué esperaba:\nQué ocurrió:\n";
+                    writeComposerDraft(`bot:${support.id}`, draft);
+                    if (active?.id === support.id) requestComposerFill(draft);
+                    else navigate(`/app/${support.id}`);
+                  }
+                : undefined
+            }
             onCall={(bot) => {
               if (call?.botId === bot.id) {
                 setCallMinimized(false);
@@ -1100,6 +1129,40 @@ function SpaceShell() {
         {active || activeGroup ? (
           // Let messages continue behind the composer's rounded top corners.
           <div className="pointer-events-none relative z-30 -mt-7">
+            {bootstrapMe?.onboardingV2 ? (
+              <>
+                <TrialBanner status={billing.status} onUpgrade={billing.showPlans} />
+                <SetupChecklist
+                  checklist={checklist}
+                  onHide={() => {
+                    void rpc.onboarding.checklistDismiss().then(() => {
+                      window.dispatchEvent(new Event("alma-checklist"));
+                    });
+                  }}
+                  onOpen={(id) => {
+                    if (id === "assistant") navigate("/onboarding/sector");
+                    else if (id === "calendar" || id === "email")
+                      setOverlay({ kind: "integrations" });
+                    else if (id === "file") navigate("/app/artifacts");
+                  }}
+                />
+                <StarterWorkspace
+                  sectorId={
+                    bootstrapMe.almaUse === "personal"
+                      ? "personal"
+                      : (bootstrapMe.almaSector ?? null)
+                  }
+                  locale={bootstrapMe.locale}
+                  empty={
+                    bootstrapMe.almaProfileSource === "choice" &&
+                    !inGroup &&
+                    !isSupportBot(active) &&
+                    !(activeSnapshot?.messages ?? []).some((message) => message.role === "user")
+                  }
+                  onConnect={() => setOverlay({ kind: "integrations" })}
+                />
+              </>
+            ) : null}
             {isSupportBot(active) && (activeSnapshot?.messages.length ?? 0) === 0 ? (
               <div className="pointer-events-auto px-6 pb-3 text-center text-body-sm text-muted-foreground">
                 <p>{t`Write to the ALMA team. A person will reply here.`}</p>

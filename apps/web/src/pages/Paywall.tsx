@@ -2,7 +2,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { BillingStatus } from "@rakazo/contracts";
 import { Button } from "@rakazo/ui-web";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AccountMenu } from "../components/AccountMenu";
 import { CreditChoice } from "../components/ModelCredits";
 import { formatBillingPrice } from "../lib/billing";
@@ -21,6 +21,10 @@ export function PaywallPage({
   /** Opened from the app rather than required, so it closes instead of logging out. */
   dismissible?: boolean;
 }) {
+  useEffect(() => {
+    if (!status.planClarity) return;
+    void client.onboarding.event({ name: "plan_viewed" }).catch(() => undefined);
+  }, [status.planClarity]);
   return status.funding !== undefined ? (
     <CreditChoice status={status} client={client} dismissible={dismissible} />
   ) : (

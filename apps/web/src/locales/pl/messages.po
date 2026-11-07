@@ -91,6 +91,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "Połączenie {0}"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr "Zostało {0} dni"
+
 #. placeholder {0}: parts.amount
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} GB"
@@ -125,6 +130,11 @@ msgstr "{0} KB"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr "{0} wiadomości"
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -267,6 +277,10 @@ msgstr "{names} zachowują własny model"
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "{names} keeps its own model"
 msgstr "{names} zachowuje własny model"
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr "{price}/mies., rozliczane w dolarach amerykańskich."
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
@@ -551,6 +565,14 @@ msgstr "**Czwartek**\n"
 msgid "/ month"
 msgstr "/ miesiąc"
 
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr "Został 1 dzień"
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr "1 wiadomość"
+
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
 msgstr "1 przestrzeń"
@@ -821,6 +843,10 @@ msgstr "Zaawansowane"
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "Advanced..."
 msgstr "Zaawansowane..."
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr "Potem plan odnawia się za {price}/mies., dopóki go nie anulujesz."
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
@@ -1123,6 +1149,10 @@ msgstr "Pyta tylko przed zakupami i pierwszym użyciem twojego komputera. Obowi�
 msgid "Asleep"
 msgstr "Uśpiony"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr "Asystent"
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1252,6 +1282,10 @@ msgstr "Uwierzytelnianie Basic ({username})"
 msgid "Bearer token"
 msgstr "Token Bearer"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr "Rozliczane w dolarach amerykańskich."
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr "Rozliczenia"
@@ -1374,6 +1408,14 @@ msgstr "Wbudowane"
 msgid "Button “{button}” · read from the page, not checked"
 msgstr "Przycisk „{button}” · odczytane ze strony, niesprawdzone"
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr "Kalendarz"
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr "Kalendarz i poczta łączą się w Ustawieniach. Nie są połączone."
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr "Zadzwoń"
@@ -1432,6 +1474,10 @@ msgstr "Nie odczytuje obrazów"
 #: src/pages/shell/dialogs.tsx
 msgid "Cancel"
 msgstr "Anuluj"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr "Anuluj w portalu płatności. Dostęp trwa do końca opłaconego okresu."
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2559,6 +2605,7 @@ msgstr "Nie udało się uruchomić rutyny"
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -3165,6 +3212,7 @@ msgid "Don’t have an account?"
 msgstr "Nie masz konta?"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -3240,6 +3288,7 @@ msgstr "Edytuj nazwę"
 msgid "Edit Profile"
 msgstr "Edytuj profil"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AdminAccessPage.tsx
@@ -3480,6 +3529,10 @@ msgstr "Niepowodzenie."
 msgid "Failure handling"
 msgstr "Obsługa błędów"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr "Opinia"
+
 #: src/pages/routine-editor/trigger-cards.tsx
 msgid "Fields that mark a change"
 msgstr "Pola wskazujące zmianę"
@@ -3568,6 +3621,14 @@ msgstr "Ukończono."
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "Kończenie połączenia MCP…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr "Pierwszy plik"
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr "Pierwsze zadanie"
 
 #: src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Focus message"
@@ -3742,6 +3803,7 @@ msgstr "Cześć, tak będzie brzmiał mój głos podczas odczytywania odpowiedzi
 msgid "Hidden"
 msgstr "Ukryte"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 msgid "Hide"
 msgstr "Ukryj"
@@ -4806,6 +4868,10 @@ msgstr "Brak botów"
 msgid "No bots match"
 msgstr "Brak pasujących botów"
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr "Nie ma jeszcze plików."
+
 #: src/components/AskCard.tsx
 #: src/components/SecretAskCard.tsx
 msgid "No longer active"
@@ -4961,6 +5027,10 @@ msgstr "Nieużywane przez ALMA"
 #: src/pages/plugins/parts.tsx
 msgid "Not working"
 msgstr "Nie działa"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr "Nic na dziś."
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -5308,6 +5378,10 @@ msgstr "Osobowość"
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
 msgstr "Osobiste"
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
+msgstr "Użytek osobisty"
 
 #: src/components/vault/VaultItemDetail.tsx
 #: src/components/vault/VaultItemEditor.tsx
@@ -6332,6 +6406,11 @@ msgstr "Ustawienia: Ogólne"
 msgid "Settings: Usage"
 msgstr "Ustawienia: Użycie"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr "Konfiguracja"
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "Konfiguracja zakończona"
@@ -6501,6 +6580,7 @@ msgstr "Umiejętności"
 msgid "Skills join the library all your bots share."
 msgstr "Umiejętności trafiają do biblioteki wspólnej dla wszystkich Twoich botów."
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "Pomiń"
@@ -6914,6 +6994,10 @@ msgstr "Model zwrócił odpowiedź, której nie można użyć. Spróbuj ponownie
 msgid "The owner may have turned off its link or deleted it."
 msgstr "Właściciel mógł wyłączyć link lub usunąć stronę."
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr "Plan odnawia się co miesiąc, dopóki go nie anulujesz."
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "Dostawca ogranicza liczbę żądań."
@@ -6937,6 +7021,15 @@ msgstr "Wybrany dostawca pamięci nie jest dostępny w tej wersji."
 #: src/components/pages/SharePopover.tsx
 msgid "The shared link stops working"
 msgstr "Link udostępniania przestanie działać"
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr "Okres próbny się skończył."
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr "Okres próbny osiągnął limit."
 
 #: src/components/ModelCredits.tsx
 msgid "The unused difference is credited to your next invoice."
@@ -7390,6 +7483,7 @@ msgstr "Aktualizowanie komputera zespołu"
 msgid "Updating…"
 msgstr "Aktualizowanie…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 #: src/pages/shell/use-computer.tsx
 msgid "Upgrade"
@@ -7407,6 +7501,7 @@ msgstr "Prześlij"
 msgid "Urgent"
 msgstr "Pilne"
 
+#: src/components/SidebarFooter.tsx
 #: src/pages/settings-nav.ts
 msgid "Usage"
 msgstr "Użycie"
@@ -7632,9 +7727,17 @@ msgstr "Z czego może korzystać ta przestrzeń?"
 msgid "What do you most want ALMA to help with?"
 msgstr "W czym ALMA ma Ci najbardziej pomóc?"
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr "Do czego chcesz najpierw użyć ALMA?"
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
 msgstr "Od czego mam zacząć?"
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
+msgstr "Jaka praca?"
 
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "What result will you demonstrate?"
@@ -7714,6 +7817,7 @@ msgid "Won't do"
 msgstr "Nie będzie robione"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "Praca"
 
@@ -7881,6 +7985,10 @@ msgstr "U Twojego dostawcy głosu skończyły się środki."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Klucz dostawcy głosu został odrzucony."
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr "Twoja praca"
 
 #: src/components/vault/VaultItemEditor.tsx
 msgid "ZIP or postal code"

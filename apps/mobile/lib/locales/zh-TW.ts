@@ -1536,6 +1536,19 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   "Report response": "檢舉回覆",
   "No chat apps are connected on this server": "此伺服器沒有已連接的聊天應用程式",
+  "What do you want ALMA for first?": "你想先用 ALMA 做什麼？",
+  "What kind of work?": "哪種工作？",
+  "Personal use": "個人使用",
+  "{days} days left · {left} messages": "剩餘 {days} 天 · {left} 則訊息",
+  "The trial ended.": "試用已結束。",
+  "The trial has reached its limit.": "試用已達到上限。",
+  "Billed in US dollars.": "以美元計費。",
+  "{price}/month, billed in US dollars.": "每月 {price}，以美元計費。",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "之後，方案按每月 {price} 續訂，直到你取消。",
+  "The plan renews monthly until you cancel.": "方案每月續訂，直到你取消。",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "在帳單入口取消。存取權持續到已付費週期結束。",
 };
 
 export const PEER_MESSAGE_FORMS = { other: "與{peer}的 {count} 則訊息" };

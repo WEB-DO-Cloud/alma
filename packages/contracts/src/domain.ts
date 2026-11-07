@@ -1495,6 +1495,12 @@ export const MeSchema = z.object({
   billingEnabled: z.boolean(),
   /** True until a user of a billing deployment answers or skips the signup survey. Absent from older servers. */
   needsSignupSurvey: z.boolean().optional(),
+  /** Phase 1 onboarding. Absent from older servers. */
+  onboardingV2: z.boolean().optional(),
+  needsSectorChoice: z.boolean().optional(),
+  almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
+  almaSector: z.string().nullable().optional(),
+  almaProfileSource: z.enum(["choice", "existing"]).nullable().optional(),
   /** The wallet bots can spend from, when this deployment offers one. Absent from older servers. */
   paymentWalletProvider: z.object({ id: z.string(), name: z.string() }).nullable().optional(),
 });

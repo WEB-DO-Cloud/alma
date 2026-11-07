@@ -169,6 +169,7 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
     setSpaces,
     me,
     setMe,
+    trialBanner,
     error,
     setError,
     inboxLoading,
@@ -753,6 +754,20 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
                 ListHeaderComponent={
                   <>
                     {inlineError ? <Text style={styles.error}>{inlineError}</Text> : null}
+                    {trialBanner ? (
+                      <Pressable
+                        accessibilityRole="button"
+                        onPress={() => router.push("/paywall")}
+                        style={styles.recoveryAction}
+                      >
+                        <Text style={styles.spaceTitle}>
+                          {t("{days} days left · {left} messages", {
+                            days: trialBanner.daysLeft,
+                            left: trialBanner.messagesLeft,
+                          })}
+                        </Text>
+                      </Pressable>
+                    ) : null}
                     {spaceRecoveryId ? (
                       <Pressable
                         accessibilityRole="button"

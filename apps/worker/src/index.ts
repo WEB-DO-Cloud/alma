@@ -71,6 +71,7 @@ import {
   isTooManyDatabaseConnections,
   parsePositiveInteger,
   pushSessionExpiresAt,
+  readAlmaFlags,
   rowSecurityWarning,
   runAsSystem,
   verifyContentKeys,
@@ -82,6 +83,7 @@ import { MarkdownMemoryStore } from "@rakazo/memory";
 const logger = await createRootLogger(SERVICE_NAMES.worker);
 
 async function main() {
+  readAlmaFlags();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");

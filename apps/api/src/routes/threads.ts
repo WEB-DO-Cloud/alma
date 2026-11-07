@@ -7,6 +7,7 @@ import {
   settleCallRequest,
 } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
+import { TRIAL_LIMIT_ERROR } from "@rakazo/contracts";
 import {
   AttachmentValidationError,
   CALL_CLIENT_NONCE_PREFIX,
@@ -18,6 +19,7 @@ import {
 import type { Prisma } from "@rakazo/db";
 import {
   AnswerTooLongError,
+  admitUserRun,
   appendEventInTransaction,
   createExternalConversationRepos,
   createThreadMessageInTransaction,
@@ -449,6 +451,26 @@ export function threadsRoutes(ctx: RouterContext) {
             trigger: "follow_up",
             clientNonce: input.clientNonce,
           });
+          if (sent.messageId) {
+            const admitted = await deps.prisma.$transaction((tx) =>
+              admitUserRun(tx, {
+                spaceId: context.actor.spaceId,
+                userId: context.actor.userId,
+                messageId: sent.messageId,
+              }),
+            );
+            if (admitted === "limit") {
+              if (sent.runId) {
+                await deps.prisma.run
+                  .updateMany({
+                    where: { id: sent.runId, status: "queued" },
+                    data: { status: "cancelled" },
+                  })
+                  .catch(() => undefined);
+              }
+              throw new ORPCError("FORBIDDEN", { message: TRIAL_LIMIT_ERROR });
+            }
+          }
           if (sent.taskId && sent.runId) {
             await deps.jobs.enqueue(runContinueJob(sent.runId)).catch((error) => {
               getLogger().error("follow-up enqueue", error);

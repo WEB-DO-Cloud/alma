@@ -36,6 +36,9 @@ export function useHomeInbox(
   const [botSections, setBotSections] = useState<MobileBotSection[]>([]);
   const [spaces, setSpaces] = useState<MobileSpace[]>([]);
   const [me, setMe] = useState<Pick<MobileMe, "userId" | "spaceId" | "name"> | null>(null);
+  const [trialBanner, setTrialBanner] = useState<{ daysLeft: number; messagesLeft: number } | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   // Kept apart from action errors so a failed action never borrows the load's title.
   const [inboxLoading, setInboxLoading] = useState(false);
@@ -85,6 +88,16 @@ export function useHomeInbox(
             // Only while this session is still the live one: a reply after sign-out must not
             // restore the previous owner's link.
             if (current) rememberReferral(spaceId, billing.referral);
+            if (current) {
+              setTrialBanner(
+                billing.access && billing.almaTrial
+                  ? {
+                      daysLeft: billing.almaTrial.daysLeft,
+                      messagesLeft: billing.almaTrial.messagesLeft,
+                    }
+                  : null,
+              );
+            }
             if (current && billing.funding !== undefined && !billing.access && !isPaywallShown())
               router.push("/paywall");
           })
@@ -95,6 +108,7 @@ export function useHomeInbox(
       setGroups((current) => retainInboxValue(current, navigation.current.groups));
       setSpaces((current) => retainInboxValue(current, navigation.spaces));
       setMe((current) => retainInboxValue(current, nextMe));
+      if (nextMe.needsSectorChoice) router.push("/sector");
       // Emails follow the app's language, so the account keeps the one this app runs in. Once
       // per account and launch: polls must not undo a language picked on another device since.
       // A server that predates it leaves `locale` out.
@@ -160,6 +174,7 @@ export function useHomeInbox(
     setSpaces,
     me,
     setMe,
+    trialBanner,
     error,
     setError,
     inboxLoading,

@@ -1578,6 +1578,20 @@ export const RU_MESSAGES: Record<string, string> = {
   "Create your ALMA account": "Create your ALMA account",
   "Report response": "Пожаловаться на ответ",
   "No chat apps are connected on this server": "На этом сервере нет подключённых чат-приложений",
+  "What do you want ALMA for first?": "Для чего вам ALMA в первую очередь?",
+  "What kind of work?": "Какая работа?",
+  "Personal use": "Личное использование",
+  "{days} days left · {left} messages": "Осталось {days} дн. · {left} сообщений",
+  "The trial ended.": "Пробный период закончился.",
+  "The trial has reached its limit.": "Достигнут лимит пробного периода.",
+  "Billed in US dollars.": "Счёт выставляется в долларах США.",
+  "{price}/month, billed in US dollars.": "{price}/мес., счёт в долларах США.",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "После этого план продлевается за {price}/мес., пока вы не отмените его.",
+  "The plan renews monthly until you cancel.":
+    "План продлевается каждый месяц, пока вы его не отмените.",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "Отмените в портале оплаты. Доступ действует до конца уже оплаченного периода.",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

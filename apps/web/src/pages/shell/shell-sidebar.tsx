@@ -21,6 +21,7 @@ import type { BotsSidebarDensity } from "../../lib/bots-sidebar-density-pref";
 import { switchOrganization, useOrganizations } from "../../lib/organizations";
 import { useQueryUserId } from "../../lib/query";
 import type { Panel } from "../../lib/right-panel-state";
+import { rpc } from "../../lib/rpc";
 import { useSignOut } from "../../lib/sign-out";
 import { ActivityList } from "../ActivityList";
 import { SpaceSearchResults } from "../SpaceSearch";
@@ -69,6 +70,7 @@ export function ShellSidebar({
   openIntegrations,
   openSkills,
   openSpaceChat,
+  onboardingV2 = false,
 }: {
   isMobile: boolean;
   mobileOpen: boolean;
@@ -98,6 +100,7 @@ export function ShellSidebar({
   openIntegrations: () => void;
   openSkills: () => void;
   openSpaceChat: (spaceId: string, path: string) => void;
+  onboardingV2?: boolean;
 }) {
   const { t } = useLingui();
   const {
@@ -291,6 +294,7 @@ export function ShellSidebar({
           openIntegrations={openIntegrations}
           openSkills={openSkills}
           openSpaceChat={openSpaceChat}
+          onboardingV2={onboardingV2}
         />
       </Sidebar>
     </>
@@ -309,6 +313,7 @@ function ShellSidebarFooter({
   openIntegrations,
   openSkills,
   openSpaceChat,
+  onboardingV2 = false,
 }: {
   mini: boolean;
   logos: Array<{ name: string; logo?: string | null }>;
@@ -321,6 +326,7 @@ function ShellSidebarFooter({
   openIntegrations: () => void;
   openSkills: () => void;
   openSpaceChat: (spaceId: string, path: string) => void;
+  onboardingV2?: boolean;
 }) {
   const { t, i18n } = useLingui();
   const userId = useQueryUserId();
@@ -400,6 +406,29 @@ function ShellSidebarFooter({
         onSettings={() => {
           setMenuOpen(false);
           openSettings("general");
+        }}
+        onWork={
+          onboardingV2
+            ? () => {
+                setMenuOpen(false);
+                closeMobileSidebar();
+                navigate("/onboarding/sector");
+              }
+            : undefined
+        }
+        onSetup={
+          onboardingV2
+            ? () => {
+                setMenuOpen(false);
+                void rpc.onboarding.checklistReopen().then(() => {
+                  window.dispatchEvent(new Event("alma-checklist"));
+                });
+              }
+            : undefined
+        }
+        onUsage={() => {
+          setMenuOpen(false);
+          openSettings("usage");
         }}
         onInvite={
           referral

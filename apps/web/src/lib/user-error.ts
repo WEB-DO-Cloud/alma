@@ -1,6 +1,7 @@
 import { t } from "@lingui/core/macro";
 import {
   CONNECTOR_AUTH_UNAVAILABLE,
+  isTrialLimitError,
   isVoiceAccountErrorCode,
   MCP_OAUTH_CLIENT_REQUIRED,
 } from "@rakazo/contracts";
@@ -32,6 +33,7 @@ export function errorText(error: unknown, fallback = t`Something went wrong. Try
   if (errorCode(error) === CONNECTOR_AUTH_UNAVAILABLE)
     return t`This app needs its own sign-in setup to connect.`;
   if (errorCode(error) === MCP_OAUTH_CLIENT_REQUIRED) return t`Needs an OAuth client ID`;
+  if (isTrialLimitError(error)) return t`The trial has reached its limit.`;
   return (
     voiceAccountErrorText(error) ??
     userErrorMessage(error, { fallback, offline: t`Could not reach the server` })

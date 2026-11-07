@@ -91,6 +91,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "{0} connection"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr "{0} days left"
+
 #. placeholder {0}: parts.amount
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} GB"
@@ -125,6 +130,11 @@ msgstr "{0} KB"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr "{0} messages"
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -267,6 +277,10 @@ msgstr "{names} keep their own model"
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "{names} keeps its own model"
 msgstr "{names} keeps its own model"
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr "{price}/month, billed in US dollars."
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
@@ -551,6 +565,14 @@ msgstr "**Thursday**\n"
 msgid "/ month"
 msgstr "/ month"
 
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr "1 day left"
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr "1 message"
+
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
 msgstr "1 space"
@@ -821,6 +843,10 @@ msgstr "Advanced"
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "Advanced..."
 msgstr "Advanced..."
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr "After that, the plan renews at {price}/month until you cancel."
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
@@ -1123,6 +1149,10 @@ msgstr "Asks only before purchases and the first use of your computer. Only Bloc
 msgid "Asleep"
 msgstr "Asleep"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr "Assistant"
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1252,6 +1282,10 @@ msgstr "Basic auth ({username})"
 msgid "Bearer token"
 msgstr "Bearer token"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr "Billed in US dollars."
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr "Billing"
@@ -1374,6 +1408,14 @@ msgstr "Built-in"
 msgid "Button “{button}” · read from the page, not checked"
 msgstr "Button “{button}” · read from the page, not checked"
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr "Calendar"
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr "Calendar and email connect in Settings. They are not connected."
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr "Call"
@@ -1432,6 +1474,10 @@ msgstr "Can't read images"
 #: src/pages/shell/dialogs.tsx
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr "Cancel in the billing portal. Access lasts through the period already paid."
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2559,6 +2605,7 @@ msgstr "Could not run routine"
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -3165,6 +3212,7 @@ msgid "Don’t have an account?"
 msgstr "Don’t have an account?"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -3240,6 +3288,7 @@ msgstr "Edit name"
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AdminAccessPage.tsx
@@ -3480,6 +3529,10 @@ msgstr "Failed."
 msgid "Failure handling"
 msgstr "Failure handling"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr "Feedback"
+
 #: src/pages/routine-editor/trigger-cards.tsx
 msgid "Fields that mark a change"
 msgstr "Fields that mark a change"
@@ -3568,6 +3621,14 @@ msgstr "Finished."
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "Finishing MCP connection…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr "First file"
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr "First task"
 
 #: src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Focus message"
@@ -3742,6 +3803,7 @@ msgstr "Hi, this is how I'll sound when I read replies out loud."
 msgid "Hidden"
 msgstr "Hidden"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 msgid "Hide"
 msgstr "Hide"
@@ -4806,6 +4868,10 @@ msgstr "No bots"
 msgid "No bots match"
 msgstr "No bots match"
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr "No files yet."
+
 #: src/components/AskCard.tsx
 #: src/components/SecretAskCard.tsx
 msgid "No longer active"
@@ -4961,6 +5027,10 @@ msgstr "Not used by ALMA"
 #: src/pages/plugins/parts.tsx
 msgid "Not working"
 msgstr "Not working"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr "Nothing due today."
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -5308,6 +5378,10 @@ msgstr "Persona"
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
 msgstr "Personal"
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
+msgstr "Personal use"
 
 #: src/components/vault/VaultItemDetail.tsx
 #: src/components/vault/VaultItemEditor.tsx
@@ -6332,6 +6406,11 @@ msgstr "Settings: General"
 msgid "Settings: Usage"
 msgstr "Settings: Usage"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr "Setup"
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "Setup complete"
@@ -6501,6 +6580,7 @@ msgstr "Skills"
 msgid "Skills join the library all your bots share."
 msgstr "Skills join the library all your bots share."
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "Skip"
@@ -6914,6 +6994,10 @@ msgstr "The model returned an unusable response. Try again."
 msgid "The owner may have turned off its link or deleted it."
 msgstr "The owner may have turned off its link or deleted it."
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr "The plan renews monthly until you cancel."
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "The provider is rate-limiting requests."
@@ -6937,6 +7021,15 @@ msgstr "The selected memory provider is not available in this build."
 #: src/components/pages/SharePopover.tsx
 msgid "The shared link stops working"
 msgstr "The shared link stops working"
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr "The trial ended."
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr "The trial has reached its limit."
 
 #: src/components/ModelCredits.tsx
 msgid "The unused difference is credited to your next invoice."
@@ -7390,6 +7483,7 @@ msgstr "Updating Team Computer"
 msgid "Updating…"
 msgstr "Updating…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 #: src/pages/shell/use-computer.tsx
 msgid "Upgrade"
@@ -7407,6 +7501,7 @@ msgstr "Upload"
 msgid "Urgent"
 msgstr "Urgent"
 
+#: src/components/SidebarFooter.tsx
 #: src/pages/settings-nav.ts
 msgid "Usage"
 msgstr "Usage"
@@ -7632,9 +7727,17 @@ msgstr "What can this space use?"
 msgid "What do you most want ALMA to help with?"
 msgstr "What do you most want ALMA to help with?"
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr "What do you want ALMA for first?"
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
 msgstr "What do you want me on first?"
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
+msgstr "What kind of work?"
 
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "What result will you demonstrate?"
@@ -7714,6 +7817,7 @@ msgid "Won't do"
 msgstr "Won't do"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "Work"
 
@@ -7881,6 +7985,10 @@ msgstr "Your voice provider is out of credit."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Your voice provider key was rejected."
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr "Your work"
 
 #: src/components/vault/VaultItemEditor.tsx
 msgid "ZIP or postal code"

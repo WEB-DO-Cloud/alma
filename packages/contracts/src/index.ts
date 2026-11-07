@@ -2,6 +2,7 @@ export * from "./account-export.js";
 export * from "./agent-import.js";
 export * from "./agent-import-setup.js";
 export * from "./ai-consent.js";
+export * from "./alma-sectors.js";
 export * from "./analytics.js";
 export * from "./attachments.js";
 export * from "./audit-events.js";

@@ -220,7 +220,9 @@ export default function SignIn() {
   async function openApp() {
     if (hasIncomingShare()) return router.replace("/share");
     const me = await rpc("me").catch(() => null);
-    router.replace(me?.needsSignupSurvey ? "/signup-survey" : "/");
+    router.replace(
+      me?.needsSectorChoice ? "/sector" : me?.needsSignupSurvey ? "/signup-survey" : "/",
+    );
   }
 
   async function externalSignIn(run: () => Promise<boolean>) {

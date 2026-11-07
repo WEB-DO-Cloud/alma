@@ -1492,6 +1492,35 @@ export const ES_MESSAGES: Record<string, string> = {
   "Could not show the credential": "No se pudo mostrar la credencial",
   "Create your ALMA account": "Crea tu cuenta de ALMA",
   "Report response": "Reportar respuesta",
+  "What do you want ALMA for first?": "¿Para qué quieres ALMA primero?",
+  "What kind of work?": "¿En qué trabajas?",
+  "Personal use": "Uso personal",
+  Upgrade: "Mejorar plan",
+  "1 day left": "Queda 1 día",
+  "{days} days left": "Quedan {days} días",
+  "1 message": "1 mensaje",
+  "{messages} messages": "Quedan {messages} mensajes",
+  "{days} days left · {left} messages": "Quedan {days} días · {left} mensajes",
+  "The trial ended.": "La prueba terminó.",
+  "The trial has reached its limit.": "La prueba llegó a su límite.",
+  "Billed in US dollars.": "Se cobra en dólares de Estados Unidos.",
+  "After that, the plan renews at {price}/month until you cancel.":
+    "Después, el plan se renueva a {price}/mes hasta que lo canceles.",
+  "{price}/month, billed in US dollars.": "{price}/mes, en dólares de Estados Unidos.",
+  "The plan renews monthly until you cancel.": "El plan se renueva cada mes hasta que lo canceles.",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "Cancela en el portal de facturación. El acceso dura hasta el final del período ya pagado.",
+  Feedback: "Comentarios",
+  "Your work": "Tu trabajo",
+  Setup: "Preparación",
+  Assistant: "Asistente",
+  "First file": "Primer archivo",
+  "First task": "Primera tarea",
+  Hide: "Ocultar",
+  "Nothing due today.": "Nada pendiente hoy.",
+  "No files yet.": "Todavía no hay archivos.",
+  "Calendar and email connect in Settings. They are not connected.":
+    "El calendario y el correo se conectan en Ajustes. No están conectados.",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

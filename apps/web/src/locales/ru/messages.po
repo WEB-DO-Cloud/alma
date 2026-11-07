@@ -91,6 +91,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "Соединение {0}"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr ""
+
 #. placeholder {0}: parts.amount
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} GB"
@@ -125,6 +130,11 @@ msgstr "{0} КБ"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} МБ"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr ""
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -266,6 +276,10 @@ msgstr ""
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "{names} keeps its own model"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
 msgstr ""
 
 #: src/components/ModelCredits.tsx
@@ -464,7 +478,16 @@ msgid "**12 new since 8:00**\n"
 "**For your information**: a shipping update and a calendar change\n"
 "\n"
 "**Low priority**: 7 newsletters and notifications"
-msgstr "**12 new since 8:00**\n\n**Reply needed**\n1. Priya wants to move Friday's review. Draft: \"Friday works if we start at 2.\"\n2. Your card expires on the 30th. Draft ready.\n3. Sam asked about the API limits. Draft ready.\n\n**For your information**: a shipping update and a calendar change\n\n**Low priority**: 7 newsletters and notifications"
+msgstr "**12 new since 8:00**\n"
+"\n"
+"**Reply needed**\n"
+"1. Priya wants to move Friday's review. Draft: \"Friday works if we start at 2.\"\n"
+"2. Your card expires on the 30th. Draft ready.\n"
+"3. Sam asked about the API limits. Draft ready.\n"
+"\n"
+"**For your information**: a shipping update and a calendar change\n"
+"\n"
+"**Low priority**: 7 newsletters and notifications"
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "**2 pull requests are waiting on you**\n"
@@ -477,7 +500,16 @@ msgid "**2 pull requests are waiting on you**\n"
 "\n"
 "**#479 Fix date parsing in reports**\n"
 "Looks good. Suggested review: approve."
-msgstr "**2 pull requests are waiting on you**\n\n**#482 Add retry to webhook delivery**\n- Retries on 404 too, so a deleted endpoint is retried five times. Retry only 5xx and timeouts?\n- No test for the backoff cap.\n\nSuggested review: request changes.\n\n**#479 Fix date parsing in reports**\nLooks good. Suggested review: approve."
+msgstr "**2 pull requests are waiting on you**\n"
+"\n"
+"**#482 Add retry to webhook delivery**\n"
+"- Retries on 404 too, so a deleted endpoint is retried five times. Retry only 5xx and timeouts?\n"
+"- No test for the backoff cap.\n"
+"\n"
+"Suggested review: request changes.\n"
+"\n"
+"**#479 Fix date parsing in reports**\n"
+"Looks good. Suggested review: approve."
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "**This week**\n"
@@ -490,7 +522,16 @@ msgid "**This week**\n"
 "- Pricing: the Team plan went from $20 to $25 per seat\n"
 "\n"
 "Nothing new on battery recycling."
-msgstr "**This week**\n\n**Open-source AI agents**\n- A major release adds scheduled tasks (3 days ago)\n- Two new comparisons; both call memory the main gap\n\n**competitor.example**\n- Pricing: the Team plan went from $20 to $25 per seat\n\nNothing new on battery recycling."
+msgstr "**This week**\n"
+"\n"
+"**Open-source AI agents**\n"
+"- A major release adds scheduled tasks (3 days ago)\n"
+"- Two new comparisons; both call memory the main gap\n"
+"\n"
+"**competitor.example**\n"
+"- Pricing: the Team plan went from $20 to $25 per seat\n"
+"\n"
+"Nothing new on battery recycling."
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "**Thursday**\n"
@@ -506,11 +547,31 @@ msgid "**Thursday**\n"
 "**Worth knowing**\n"
 "- Light rain after 4pm\n"
 "- Two stories on the topics you follow"
-msgstr "**Thursday**\n\n**Calendar**\n- 10:00 Design review, moved to 11:30\n- 14:00 Call with Dana\n\n**Needs you**\n- Alex asked for the Q4 numbers by noon\n- A contract is waiting for your signature\n\n**Worth knowing**\n- Light rain after 4pm\n- Two stories on the topics you follow"
+msgstr "**Thursday**\n"
+"\n"
+"**Calendar**\n"
+"- 10:00 Design review, moved to 11:30\n"
+"- 14:00 Call with Dana\n"
+"\n"
+"**Needs you**\n"
+"- Alex asked for the Q4 numbers by noon\n"
+"- A contract is waiting for your signature\n"
+"\n"
+"**Worth knowing**\n"
+"- Light rain after 4pm\n"
+"- Two stories on the topics you follow"
 
 #: src/components/ModelCredits.tsx
 msgid "/ month"
 msgstr "/ месяц"
+
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr ""
 
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
@@ -782,6 +843,10 @@ msgstr "Расширенные"
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "Advanced..."
 msgstr "Расширенные..."
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
@@ -1084,6 +1149,10 @@ msgstr ""
 msgid "Asleep"
 msgstr "Спит"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr ""
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1213,6 +1282,10 @@ msgstr ""
 msgid "Bearer token"
 msgstr "Bearer-токен"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr ""
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr ""
@@ -1335,6 +1408,14 @@ msgstr "Встроенный"
 msgid "Button “{button}” · read from the page, not checked"
 msgstr ""
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr ""
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr "Позвонить"
@@ -1393,6 +1474,10 @@ msgstr "Не может читать изображения"
 #: src/pages/shell/dialogs.tsx
 msgid "Cancel"
 msgstr "Отмена"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2520,6 +2605,7 @@ msgstr "Не удалось запустить задачу"
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -3126,6 +3212,7 @@ msgid "Don’t have an account?"
 msgstr "У вас нет учетной записи?"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -3201,6 +3288,7 @@ msgstr "Изменить имя"
 msgid "Edit Profile"
 msgstr "Редактировать профиль"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AdminAccessPage.tsx
@@ -3441,6 +3529,10 @@ msgstr "Неуспешный."
 msgid "Failure handling"
 msgstr "Обработка сбоев"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr ""
+
 #: src/pages/routine-editor/trigger-cards.tsx
 msgid "Fields that mark a change"
 msgstr "Поля, указывающие на изменение"
@@ -3529,6 +3621,14 @@ msgstr "Завершено."
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "Завершение подключения MCP…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr ""
 
 #: src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Focus message"
@@ -3703,6 +3803,7 @@ msgstr "Привет, вот как я буду звучать, когда бу�
 msgid "Hidden"
 msgstr "Скрыто"
 
+#: src/components/activation.tsx
 #: src/components/vault/VaultItemDetail.tsx
 msgid "Hide"
 msgstr "Скрыть"
@@ -4767,6 +4868,10 @@ msgstr ""
 msgid "No bots match"
 msgstr "Ни один бот не подходит"
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr ""
+
 #: src/components/AskCard.tsx
 #: src/components/SecretAskCard.tsx
 msgid "No longer active"
@@ -4922,6 +5027,10 @@ msgstr "Не используется в ALMA"
 #: src/pages/plugins/parts.tsx
 msgid "Not working"
 msgstr "Не работает"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -5268,6 +5377,10 @@ msgstr "Личность"
 
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
 msgstr ""
 
 #: src/components/vault/VaultItemDetail.tsx
@@ -6293,6 +6406,11 @@ msgstr "Настройки: Общие"
 msgid "Settings: Usage"
 msgstr "Настройки: Использование"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr ""
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "Настройка завершена"
@@ -6462,6 +6580,7 @@ msgstr "Навыки"
 msgid "Skills join the library all your bots share."
 msgstr "Навыки попадают в библиотеку, общую для всех ваших ботов."
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "Пропустить"
@@ -6875,6 +6994,10 @@ msgstr "Модель вернула непригодный ответ. Попр�
 msgid "The owner may have turned off its link or deleted it."
 msgstr ""
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr ""
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "Поставщик ограничивает частоту запросов."
@@ -6897,6 +7020,15 @@ msgstr "Выбранный поставщик памяти недоступен 
 
 #: src/components/pages/SharePopover.tsx
 msgid "The shared link stops working"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr ""
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
 msgstr ""
 
 #: src/components/ModelCredits.tsx
@@ -7351,6 +7483,7 @@ msgstr "Обновление компьютера команды"
 msgid "Updating…"
 msgstr "Обновление…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 #: src/pages/shell/use-computer.tsx
 msgid "Upgrade"
@@ -7368,6 +7501,7 @@ msgstr "Загрузить"
 msgid "Urgent"
 msgstr ""
 
+#: src/components/SidebarFooter.tsx
 #: src/pages/settings-nav.ts
 msgid "Usage"
 msgstr "Использование"
@@ -7593,8 +7727,16 @@ msgstr ""
 msgid "What do you most want ALMA to help with?"
 msgstr ""
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
 msgstr ""
 
 #: src/components/teach/TeachComputerOverlay.tsx
@@ -7675,6 +7817,7 @@ msgid "Won't do"
 msgstr ""
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr ""
 
@@ -7842,6 +7985,10 @@ msgstr "У вашего голосового провайдера закончи
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Ваш голосовой провайдер отклонил ключ."
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr ""
 
 #: src/components/vault/VaultItemEditor.tsx
 msgid "ZIP or postal code"

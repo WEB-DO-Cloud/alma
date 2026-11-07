@@ -319,6 +319,11 @@ x-app-environment: &app-environment
   http_proxy: ${http_proxy:-${HTTP_PROXY:-}}
   https_proxy: ${https_proxy:-${HTTPS_PROXY:-}}
   no_proxy: ${no_proxy:-${NO_PROXY:-}}
+  # Phase 1 activation. Off unless set to the exact string true.
+  ALMA_TRIAL_ENABLED:
+  ALMA_TRIAL_DAYS:
+  ALMA_TRIAL_MESSAGE_CAP:
+  ALMA_ONBOARDING_V2:
 
 services:
   postgres:
@@ -512,6 +517,10 @@ services:
       STRIPE_WEBHOOK_SECRET:
       STRIPE_PRICE_ID:
       STRIPE_PROMO_COUPON_ID:
+      ALMA_TRIAL_ENABLED:
+      ALMA_TRIAL_DAYS:
+      ALMA_TRIAL_MESSAGE_CAP:
+      ALMA_ONBOARDING_V2:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:

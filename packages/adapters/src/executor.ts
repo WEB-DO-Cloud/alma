@@ -36,6 +36,7 @@ import {
   parseComputerMode,
   RunHistoryWriteError,
   readRunTimingFields,
+  recordTaskCompleted,
   recordUsage,
   settleReleasedTakeoverCards,
   teamChatRunFromOwner,
@@ -2036,6 +2037,9 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
           if (await consumeRunEvents(ctx, runtimeEvents)) return;
           if (await interruptedByShutdown()) return;
           await completeRun(ctx);
+          await recordTaskCompleted(deps.prisma, runId).catch((error) => {
+            getLogger().warn("activation task completed", { runId, error });
+          });
         } catch (turnError) {
           if (await interruptedByShutdown()) return;
           let caughtError = turnError;

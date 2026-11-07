@@ -42,6 +42,7 @@ import {
   settleComposerDraftSubmission,
   subscribeComposerDraftAccepted,
   subscribeComposerDraftReplaced,
+  subscribeComposerFill,
   subscribeComposerOffer,
   writeComposerDraft,
   writeComposerRetryNonce,
@@ -182,6 +183,9 @@ const ComposerBody = memo(function Composer({
     editSelections.current = [];
     if (persist) writeComposerDraft(draftKey, next.text, undefined, next.bindings);
   }
+  const commitRef = useRef(commitComposition);
+  commitRef.current = commitComposition;
+  useEffect(() => subscribeComposerFill((text) => commitRef.current({ text, bindings: [] })), []);
   /** False when the words went to this chat's saved draft because it is no longer shown. */
   function appendDictation(text: string): boolean {
     if (!mountedRef.current || draftKeyRef.current !== draftKey) {

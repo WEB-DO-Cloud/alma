@@ -487,3 +487,84 @@ test("move an own-key plan to a bigger tier", async ({ page }, testInfo) => {
   await expect(plan.getByText("$49 / month", { exact: true })).toBeVisible();
   await expect(plan.getByText("8 vCPU, 16 GB, 100 computer hours a month")).toBeVisible();
 });
+
+
+test("a no-card trial shows the countdown and the plan states the renewal", async ({
+  page,
+}, testInfo) => {
+  const stamp = Date.now();
+  await signup(page, `trial-clarity-${stamp}@rakazo.test`, "password12", "Trial Customer");
+  await completeOnboarding(page);
+  await page.route("**/api/auth/capabilities", async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+  });
+  await page.route("**/rpc/me", async (route) => {
+    const response = await route.fetch();
+    const body = (await response.json()) as { json?: Record<string, unknown> };
+    if (body.json) {
+      body.json.billingEnabled = true;
+      body.json.onboardingV2 = true;
+      body.json.needsSectorChoice = false;
+      body.json.almaProfileSource = "choice";
+      body.json.almaUse = "personal";
+      body.json.almaSector = "personal";
+    }
+    await route.fulfill({ response, json: body });
+  });
+  await page.route("**/rpc/bootstrap", async (route) => {
+    const response = await route.fetch();
+    const body = (await response.json()) as { json?: { me?: Record<string, unknown> } };
+    if (body.json?.me) {
+      body.json.me.billingEnabled = true;
+      body.json.me.onboardingV2 = true;
+      body.json.me.needsSectorChoice = false;
+      body.json.me.almaProfileSource = "choice";
+      body.json.me.almaUse = "personal";
+      body.json.me.almaSector = "personal";
+    }
+    await route.fulfill({ response, json: body });
+  });
+  await page.route("**/rpc/onboarding/checklist", (route) =>
+    route.fulfill({
+      json: {
+        json: {
+          visible: true,
+          dismissed: false,
+          steps: [
+            { id: "assistant", done: true },
+            { id: "calendar", done: false },
+            { id: "email", done: false },
+            { id: "file", done: false },
+            { id: "task", done: false },
+          ],
+        },
+      },
+    }),
+  );
+  await page.route("**/rpc/onboarding/event", (route) =>
+    route.fulfill({ json: { json: { ok: true } } }),
+  );
+  const status = billingStatus({
+    access: true,
+    funding: "byok",
+    byokPriceCents: 5900,
+    byokPromo: { priceCents: 900, months: 3 },
+    planClarity: true,
+    trialAvailable: false,
+    almaTrial: {
+      endsAt: "2030-01-20T00:00:00.000Z",
+      messagesUsed: 1,
+      messageCap: 50,
+      daysLeft: 12,
+      messagesLeft: 49,
+    },
+  });
+  await page.route("**/rpc/billing/status", (route) => route.fulfill({ json: { json: status } }));
+  await page.reload();
+  await expect(page.getByTestId("trial-banner")).toBeVisible();
+  await captureScreenshot(page, testInfo, "trial-countdown");
+  await page.getByRole("button", { name: "Upgrade" }).click();
+  await expect(page.getByTestId("plan-clarity")).toContainText("US dollars");
+  await captureScreenshot(page, testInfo, "plan-renewal");
+});

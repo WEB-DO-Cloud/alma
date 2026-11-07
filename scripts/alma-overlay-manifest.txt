@@ -24,6 +24,8 @@ overlay apps/api/src/account-import.ts
 overlay apps/api/src/account-zip-reader.ts
 overlay apps/api/src/ai-consent.test.ts
 overlay apps/api/src/ai-consent.ts
+overlay apps/api/src/alma-onboarding.ts
+overlay apps/api/src/alma-trial.postgres.test.ts
 overlay apps/api/src/app-association.test.ts
 overlay apps/api/src/app-association.ts
 overlay apps/api/src/app.ts
@@ -65,6 +67,7 @@ overlay apps/api/src/routes/bots.ts
 overlay apps/api/src/routes/context.ts
 overlay apps/api/src/routes/mcp.ts
 overlay apps/api/src/routes/memory.ts
+overlay apps/api/src/routes/onboarding.ts
 overlay apps/api/src/routes/routines.ts
 overlay apps/api/src/routes/shared.ts
 overlay apps/api/src/routes/threads.ts
@@ -75,6 +78,7 @@ overlay apps/api/src/support-chatwoot-send.ts
 overlay apps/api/src/support-chatwoot-webhook.ts
 overlay apps/api/src/team-chat-bridge.ts
 overlay apps/api/src/team-chat-delivery.ts
+overlay apps/api/src/thread-target.ts
 overlay apps/api/src/voice.test.ts
 overlay apps/api/src/voice.ts
 overlay apps/api/src/welcome-email.postgres.test.ts
@@ -148,7 +152,9 @@ overlay apps/mobile/app/(settings)/space.tsx
 overlay apps/mobile/app/(settings)/voice.tsx
 overlay apps/mobile/app/_layout.tsx
 overlay apps/mobile/app/bot-settings.tsx
+overlay apps/mobile/app/index.tsx
 overlay apps/mobile/app/paywall.tsx
+overlay apps/mobile/app/sector.tsx
 overlay apps/mobile/app/sign-in.tsx
 overlay apps/mobile/assets/adaptive-icon.png
 overlay apps/mobile/assets/alma-logo-black.png
@@ -246,6 +252,8 @@ overlay apps/mobile/lib/theme.ts
 overlay apps/mobile/lib/thread-composer.test.tsx
 overlay apps/mobile/lib/unsent-sends.test.ts
 overlay apps/mobile/lib/unsent-sends.ts
+overlay apps/mobile/lib/use-home-inbox.ts
+overlay apps/mobile/lib/user-error.ts
 overlay apps/mobile/lib/voice-settings-screen.test.tsx
 overlay apps/mobile/lib/voice-settings.test.tsx
 overlay apps/mobile/locales/es.json
@@ -311,6 +319,7 @@ overlay apps/web/public/favicon.png
 overlay apps/web/public/favicon.svg
 overlay apps/web/public/icon-192.png
 overlay apps/web/public/icon-512.png
+overlay apps/web/src/App.tsx
 overlay apps/web/src/api-proxy.ts
 overlay apps/web/src/components/GitHubStarPrompt.test.tsx
 overlay apps/web/src/components/GitHubStarPrompt.tsx
@@ -321,14 +330,18 @@ overlay apps/web/src/components/SidebarFooter.test.tsx
 overlay apps/web/src/components/SidebarFooter.tsx
 overlay apps/web/src/components/SignupSurvey.tsx
 overlay apps/web/src/components/SubscriptionGate.tsx
+overlay apps/web/src/components/activation.test.tsx
+overlay apps/web/src/components/activation.tsx
 overlay apps/web/src/components/pages/PublicPageShell.tsx
 overlay apps/web/src/lib/billing.ts
+overlay apps/web/src/lib/composer-draft.ts
 overlay apps/web/src/lib/desktop-speech.test.ts
 overlay apps/web/src/lib/dictation.ts
 overlay apps/web/src/lib/i18n-catalog.test.ts
 overlay apps/web/src/lib/logo-avatar-render.test.tsx
 overlay apps/web/src/lib/run-error.ts
 overlay apps/web/src/lib/tts.ts
+overlay apps/web/src/lib/user-error.ts
 overlay apps/web/src/novnc-html.test.ts
 overlay apps/web/src/novnc-html.ts
 overlay apps/web/src/pages/AccountSettingsOverlay.tsx
@@ -342,7 +355,9 @@ overlay apps/web/src/pages/McpServersOverlay.test.tsx
 overlay apps/web/src/pages/McpServersOverlay.tsx
 overlay apps/web/src/pages/MemorySettingsOverlay.tsx
 overlay apps/web/src/pages/Onboarding.tsx
+overlay apps/web/src/pages/Paywall.tsx
 overlay apps/web/src/pages/PluginSubmissionsPanel.test.tsx
+overlay apps/web/src/pages/SectorStart.tsx
 overlay apps/web/src/pages/SettingsOverlay.test.tsx
 overlay apps/web/src/pages/SettingsOverlay.tsx
 overlay apps/web/src/pages/SharedPage.tsx
@@ -371,6 +386,7 @@ overlay apps/web/src/pages/shell/import-status.ts
 overlay apps/web/src/pages/shell/message-hover-actions.tsx
 overlay apps/web/src/pages/shell/message-view.test.tsx
 overlay apps/web/src/pages/shell/message-view.tsx
+overlay apps/web/src/pages/shell/shell-sidebar.tsx
 overlay apps/web/src/pages/shell/sidebar-roster.tsx
 overlay apps/web/src/pages/shell/transcript.tsx
 overlay apps/web/src/pages/shell/use-composer-actions.ts
@@ -538,6 +554,7 @@ overlay docs/designs/alma-restore-original-ui.md
 overlay docs/designs/deepseek-managed-model.md
 overlay docs/designs/launch-promo.md
 overlay docs/designs/managed-model-consent.md
+overlay docs/designs/phase1-activation.md
 overlay docs/designs/preset-oauth-clients.md
 overlay docs/designs/reviews/2026-10-26-alma-managed-model.md
 overlay docs/designs/reviews/2026-10-26-alma-mobile-app.md
@@ -723,6 +740,8 @@ overlay packages/chat-ui/src/markdown.ts
 overlay packages/contracts/src/account-export.ts
 overlay packages/contracts/src/agent-import.ts
 overlay packages/contracts/src/ai-consent.ts
+overlay packages/contracts/src/alma-sectors.test.ts
+overlay packages/contracts/src/alma-sectors.ts
 overlay packages/contracts/src/billing.ts
 overlay packages/contracts/src/bot-secrets.ts
 overlay packages/contracts/src/client-build.test.ts
@@ -755,8 +774,14 @@ overlay packages/db/prisma/migrations/20261026140000_draft_approval/migration.sq
 overlay packages/db/prisma/migrations/20261031120000_message_reports/migration.sql
 overlay packages/db/prisma/migrations/20261115130000_retired_alma_rls_key/migration.sql
 overlay packages/db/prisma/migrations/20261118120000_support_bot/migration.sql
+overlay packages/db/prisma/migrations/20261119120000_alma_activation/migration.sql
 overlay packages/db/prisma/schema.prisma
 overlay packages/db/src/account-export.ts
+overlay packages/db/src/alma-activation.ts
+overlay packages/db/src/alma-flags.test.ts
+overlay packages/db/src/alma-flags.ts
+overlay packages/db/src/alma-trial.ts
+overlay packages/db/src/billing.test.ts
 overlay packages/db/src/billing.ts
 overlay packages/db/src/computer-runs.ts
 overlay packages/db/src/index.ts

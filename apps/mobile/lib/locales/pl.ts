@@ -1,4 +1,17 @@
 export const PL_MESSAGES: Record<string, string> = {
+  "After that, the plan renews at {price}/month until you cancel.":
+    "Potem plan odnawia się za {price}/mies., dopóki go nie anulujesz.",
+  "Billed in US dollars.": "Rozliczane w dolarach amerykańskich.",
+  "Cancel in the billing portal. Access lasts through the period already paid.":
+    "Anuluj w portalu płatności. Dostęp trwa do końca opłaconego okresu.",
+  "Personal use": "Użytek osobisty",
+  "The plan renews monthly until you cancel.": "Plan odnawia się co miesiąc, dopóki go nie anulujesz.",
+  "The trial ended.": "Okres próbny się skończył.",
+  "The trial has reached its limit.": "Okres próbny osiągnął limit.",
+  "What do you want ALMA for first?": "Do czego chcesz najpierw użyć ALMA?",
+  "What kind of work?": "Jaka praca?",
+  "{days} days left · {left} messages": "Zostało {days} dni · {left} wiadomości",
+  "{price}/month, billed in US dollars.": "{price}/mies., rozliczane w dolarach amerykańskich.",
   "ALMA Support": "Wsparcie ALMA",
   "Connect OAuth": "Połącz przez OAuth",
   "Create your ALMA account": "Utwórz konto ALMA",

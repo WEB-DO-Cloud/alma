@@ -419,6 +419,9 @@ model Organization {
   spaces       Space[]
   billing      BillingAccount?
   modelCredits ModelCreditAccount?
+  almaTrial    AlmaTrial?
+  almaProfile  AlmaProfile?
+  activationEvents ActivationEvent[]
   referralCode ReferralCode?
   referredBy   Referral?           @relation("ReferredOrganization")
   referrals    Referral[]          @relation("ReferrerOrganization")
@@ -2482,6 +2485,55 @@ model ModelCreditAccount {
   updatedAt             DateTime           @updatedAt
 
   @@map("model_credit_accounts")
+}
+
+/// No-card product trial. One row per organization. Empty while the flag is off.
+model AlmaTrial {
+  organizationId String       @id
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  startedAt      DateTime     @default(now())
+  endsAt         DateTime
+  messageCap     Int
+  messagesUsed   Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("alma_trials")
+}
+
+/// Personal-or-sector choice for the starter assistant. One row per organization.
+model AlmaProfile {
+  organizationId        String       @id
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId                String
+  /// personal, work, or skip
+  use                   String
+  sector                String?
+  /// choice or existing
+  source                String
+  /// Instructions last written by the sector apply, so a later edit is left alone.
+  appliedInstructions   String?
+  checklistDismissedAt  DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@map("alma_profiles")
+}
+
+/// First-party activation events. No message text.
+model ActivationEvent {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  name           String
+  dedupeKey      String       @unique
+  sector         String?
+  use            String?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, createdAt])
+  @@map("activation_events")
 }
 
 /// Current purchase, reservation, or expiry projection. Database triggers journal every change.

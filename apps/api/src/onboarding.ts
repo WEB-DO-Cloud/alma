@@ -11,6 +11,7 @@ import {
   appendEventInTransaction,
   createThreadMessageInTransaction,
   IsolationError,
+  readAlmaFlags,
   THREAD_LOCK_TRANSACTION_OPTIONS,
 } from "@rakazo/db";
 import { requireBotThread } from "./bot-thread.js";
@@ -155,6 +156,8 @@ export async function promptFocus(
   actor: Actor,
   botId: string,
 ): Promise<void> {
+  // The sector screen is the first question when onboarding v2 is on.
+  if (readAlmaFlags().onboardingV2) return;
   const { bot, thread } = await requireBotThread(deps, actor, botId);
   const target = { spaceId: actor.spaceId, botId: bot.id, threadId: thread.id };
   const blocks: MessageBlock[] = [

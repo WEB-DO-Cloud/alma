@@ -14,6 +14,7 @@ import {
   Check,
   Download,
   FolderOpen,
+  Gauge,
   Link2,
   LogOut,
   Plug,
@@ -45,6 +46,9 @@ type Props = {
   onLink?: (link: NavLink) => void;
   onArtifacts: () => void;
   onSettings: () => void;
+  onWork?: () => void;
+  onSetup?: () => void;
+  onUsage: () => void;
   onInvite?: () => void;
   onLogOut: () => void;
   signingOut: boolean;
@@ -75,6 +79,9 @@ export function SidebarFooter({
   onLink,
   onArtifacts,
   onSettings,
+  onWork,
+  onSetup,
+  onUsage,
   onInvite,
   onLogOut,
   signingOut,
@@ -188,6 +195,24 @@ export function SidebarFooter({
               <Settings className="text-muted-foreground" strokeWidth={1.75} />
               <Trans>Settings</Trans>
             </Button>
+            {onWork ? (
+              <Button
+                variant="ghost"
+                className="h-9 w-full justify-start gap-2.5 font-normal"
+                onClick={onWork}
+              >
+                <Trans>Your work</Trans>
+              </Button>
+            ) : null}
+            {onSetup ? (
+              <Button
+                variant="ghost"
+                className="h-9 w-full justify-start gap-2.5 font-normal"
+                onClick={onSetup}
+              >
+                <Trans>Setup</Trans>
+              </Button>
+            ) : null}
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-2.5 font-normal"
@@ -225,6 +250,14 @@ export function SidebarFooter({
                 {link.label}
               </Button>
             ))}
+            <Button
+              variant="ghost"
+              className="h-9 w-full justify-start gap-2.5 font-normal"
+              onClick={onUsage}
+            >
+              <Gauge className="text-muted-foreground" strokeWidth={1.75} />
+              <Trans>Usage</Trans>
+            </Button>
             <div className="my-1 border-t border-border" />
             <a
               className={`${buttonVariants({ variant: "ghost" })} h-9 w-full justify-start gap-2.5 font-normal`}

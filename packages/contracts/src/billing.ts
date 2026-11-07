@@ -183,6 +183,22 @@ export const BillingStatusSchema = z.object({
   currentPeriodEndsAt: z.string().nullable(),
   cancelAtPeriodEnd: z.boolean(),
   hasCustomer: z.boolean(),
+  /**
+   * No-card trial countdown. Absent from older servers, and null when this organization
+   * has no trial or the trial flag is off.
+   */
+  almaTrial: z
+    .object({
+      endsAt: z.string(),
+      messagesUsed: z.number().int().nonnegative(),
+      messageCap: z.number().int().positive(),
+      daysLeft: z.number().int().nonnegative(),
+      messagesLeft: z.number().int().nonnegative(),
+    })
+    .nullable()
+    .optional(),
+  /** Renewal and currency sentences on the plan page. Absent from older servers. */
+  planClarity: z.boolean().optional(),
   /** Computer hours left this calendar month; absent when computers have no limit. */
   computerHoursLeft: z.number().nonnegative().nullable().optional(),
   /** Present once the organization has subscribed: its invite link and free months earned. */

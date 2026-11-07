@@ -12,6 +12,7 @@ import {
 } from "./agent-import.js";
 import { AgentImportSetupStateInput, AgentImportSetupStateSchema } from "./agent-import-setup.js";
 import { AiConsentQuerySchema, AiConsentStatusSchema } from "./ai-consent.js";
+import { AlmaChecklistSchema, AlmaSectorChoiceSchema } from "./alma-sectors.js";
 import { AnalyticsScreenInput } from "./analytics.js";
 import {
   ARTIFACT_DESCRIPTION_MAX_LENGTH,
@@ -1211,6 +1212,17 @@ export const appContract = {
       .output(z.object({ ok: z.literal(true) })),
     /** Dismiss the unanswered focus card without choosing an option. */
     dismissFocus: oc.input(z.object({ botId: Id })).output(z.object({ ok: z.literal(true) })),
+    /** Personal use, then a sector. Configures the starter assistant. */
+    sector: oc
+      .input(AlmaSectorChoiceSchema)
+      .output(z.object({ ok: z.literal(true), botId: z.string().nullable() })),
+    checklist: oc.output(AlmaChecklistSchema),
+    checklistDismiss: oc.output(AlmaChecklistSchema),
+    checklistReopen: oc.output(AlmaChecklistSchema),
+    /** The plan page reports that it was opened. Other names are rejected. */
+    event: oc
+      .input(z.object({ name: z.literal("plan_viewed") }))
+      .output(z.object({ ok: z.literal(true) })),
     /** Flip an app_connect card to connected after authorization completes. */
     appConnected: oc
       .input(
