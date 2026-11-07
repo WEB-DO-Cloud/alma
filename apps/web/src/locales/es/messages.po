@@ -850,7 +850,7 @@ msgstr "Después, el plan se renueva a {price}/mes hasta que lo canceles."
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
-msgstr ""
+msgstr "Agente de otra app"
 
 #: src/components/VaultSettings.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -3903,7 +3903,7 @@ msgstr "Área de carga de imagen"
 
 #: src/components/AccountDataSettings.tsx
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 #: src/components/AccountDataSettings.tsx
 #: src/pages/shell/agent-import.tsx
@@ -7917,7 +7917,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
-msgstr ""
+msgstr "Tus datos"
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Your day at a glance, every weekday morning"

@@ -850,7 +850,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
-msgstr ""
+msgstr "別のアプリのエージェント"
 
 #: src/components/VaultSettings.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -2931,7 +2931,7 @@ msgstr "ダーク"
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/plugins/use-catalog-browse.ts
 msgid "Data"
-msgstr ""
+msgstr "データ"
 
 #: src/lib/billing.ts
 #: src/lib/cron.ts
@@ -3903,7 +3903,7 @@ msgstr "画像アップロードエリア"
 
 #: src/components/AccountDataSettings.tsx
 msgid "Import"
-msgstr ""
+msgstr "インポート"
 
 #: src/components/AccountDataSettings.tsx
 #: src/pages/shell/agent-import.tsx
@@ -7917,7 +7917,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
-msgstr ""
+msgstr "あなたのデータ"
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Your day at a glance, every weekday morning"

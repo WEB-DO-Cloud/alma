@@ -1,7 +1,7 @@
 import { isRetryableError, reportUiLocale } from "@rakazo/core";
 import { useRouter } from "expo-router";
 import type { RefObject } from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { currentApiBase, rpc, selectedSpaceId } from "./api";
 import { selectInitialSpace } from "./api-server";
 import { appBadgeGeneration } from "./app-badge";
@@ -19,6 +19,7 @@ import { ensureOrganizations } from "./organizations";
 import { forgetReferrals, rememberReferral } from "./referral";
 import { saveInbox } from "./saved-chats";
 import { currentSessionGeneration } from "./session";
+import { subscribeDelivered } from "./thread-feedback";
 import type { LoadFailureKind } from "./user-error";
 import { errorText, loadFailureKind } from "./user-error";
 
@@ -39,6 +40,7 @@ export function useHomeInbox(
   const [trialBanner, setTrialBanner] = useState<{ daysLeft: number; messagesLeft: number } | null>(
     null,
   );
+  const billingEnabled = useRef(false);
   const [error, setError] = useState<string | null>(null);
   // Kept apart from action errors so a failed action never borrows the load's title.
   const [inboxLoading, setInboxLoading] = useState(false);
@@ -75,6 +77,7 @@ export function useHomeInbox(
         apiBase !== currentApiBase()
       )
         return;
+      billingEnabled.current = Boolean(nextMe.billingEnabled);
       if (!nextMe.billingEnabled) forgetReferrals();
       else {
         // Filed under the Space it was fetched for, so a late answer never shows in another.
@@ -153,6 +156,24 @@ export function useHomeInbox(
       if (requestId === inboxRequestId.current) setInboxLoading(false);
     }
   }, []);
+
+  const refreshTrialBanner = useCallback(() => {
+    if (!billingEnabled.current) return;
+    void rpc("billing/status")
+      .then((billing) => {
+        setTrialBanner(
+          billing.access && billing.almaTrial
+            ? {
+                daysLeft: billing.almaTrial.daysLeft,
+                messagesLeft: billing.almaTrial.messagesLeft,
+              }
+            : null,
+        );
+      })
+      .catch(() => undefined);
+  }, []);
+
+  useEffect(() => subscribeDelivered(() => refreshTrialBanner()), [refreshTrialBanner]);
 
   const refreshBots = useCallback(async () => {
     setRefreshing(true);

@@ -329,6 +329,7 @@ overlay apps/web/src/components/ModelCredits.tsx
 overlay apps/web/src/components/SidebarFooter.test.tsx
 overlay apps/web/src/components/SidebarFooter.tsx
 overlay apps/web/src/components/SignupSurvey.tsx
+overlay apps/web/src/components/SubscriptionGate.test.tsx
 overlay apps/web/src/components/SubscriptionGate.tsx
 overlay apps/web/src/components/activation.test.tsx
 overlay apps/web/src/components/activation.tsx
@@ -389,6 +390,7 @@ overlay apps/web/src/pages/shell/message-view.tsx
 overlay apps/web/src/pages/shell/shell-sidebar.tsx
 overlay apps/web/src/pages/shell/sidebar-roster.tsx
 overlay apps/web/src/pages/shell/transcript.tsx
+overlay apps/web/src/pages/shell/use-composer-actions.test.tsx
 overlay apps/web/src/pages/shell/use-composer-actions.ts
 overlay apps/web/src/pwa/plugin.ts
 overlay apps/web/src/screen-proxy.ts

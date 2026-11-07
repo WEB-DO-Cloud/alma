@@ -850,7 +850,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
-msgstr ""
+msgstr "Başka bir uygulamadan aracı"
 
 #: src/components/VaultSettings.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -2931,7 +2931,7 @@ msgstr "Koyu"
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/plugins/use-catalog-browse.ts
 msgid "Data"
-msgstr ""
+msgstr "Veriler"
 
 #: src/lib/billing.ts
 #: src/lib/cron.ts
@@ -3903,7 +3903,7 @@ msgstr "Görüntü yükleme alanı"
 
 #: src/components/AccountDataSettings.tsx
 msgid "Import"
-msgstr ""
+msgstr "İçe aktar"
 
 #: src/components/AccountDataSettings.tsx
 #: src/pages/shell/agent-import.tsx
@@ -7917,7 +7917,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
-msgstr ""
+msgstr "Verileriniz"
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Your day at a glance, every weekday morning"

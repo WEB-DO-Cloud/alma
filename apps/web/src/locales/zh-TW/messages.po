@@ -851,7 +851,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
-msgstr ""
+msgstr "來自其他應用程式的代理程式"
 
 #: src/components/VaultSettings.tsx
 #: src/pages/PluginsOverlay.tsx
@@ -2932,7 +2932,7 @@ msgstr "深色"
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/plugins/use-catalog-browse.ts
 msgid "Data"
-msgstr ""
+msgstr "資料"
 
 #: src/lib/billing.ts
 #: src/lib/cron.ts
@@ -3904,7 +3904,7 @@ msgstr "圖片上傳區域"
 
 #: src/components/AccountDataSettings.tsx
 msgid "Import"
-msgstr ""
+msgstr "匯入"
 
 #: src/components/AccountDataSettings.tsx
 #: src/pages/shell/agent-import.tsx
@@ -7918,7 +7918,7 @@ msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Your data"
-msgstr ""
+msgstr "你的資料"
 
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Your day at a glance, every weekday morning"
