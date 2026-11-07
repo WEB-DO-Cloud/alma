@@ -19,7 +19,12 @@ describe("Android call service", () => {
       'android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"',
     );
     expect(manifest).toContain('android:name="android.permission.FOREGROUND_SERVICE"');
-    expect(manifest).not.toContain('tools:node="remove"');
+    expect(manifest).not.toMatch(
+      /android:name="android\.permission\.FOREGROUND_SERVICE"[^/]*tools:node="remove"/,
+    );
+    expect(manifest).toContain(
+      'android:name="expo.modules.notifications.service.ExpoFirebaseMessagingService" tools:node="remove"',
+    );
     expect(manifest).toContain("android.permission.WAKE_LOCK");
     expect(manifest).toContain('android:name=".RakazoCallService"');
     expect(manifest).toContain('android:foregroundServiceType="microphone"');
@@ -55,6 +60,25 @@ describe("Android call service", () => {
     expect(service).toContain("if (!promoted) manager.notify(LIVE_NOTIFICATION_ID, notification)");
   });
 
+  it("uses the saved app locale for call notification strings and keeps a supplied title", () => {
+    const service = source("java/com/rakazo/notifications/RakazoCallService.kt");
+    expect(service).toContain(
+      "val copyContext = localizedContext(this, NotificationStorage(this).locale)",
+    );
+    expect(service).toMatch(
+      /getStringExtra\(EXTRA_TITLE\)\?\.takeIf\(String::isNotBlank\) \?: copyContext\.getString\(/,
+    );
+    expect(service).toContain("createChannel(copyContext)");
+    expect(service).toContain("startForegroundCompat(copyContext, title)");
+    expect(service).toContain("private fun createChannel(copyContext: Context)");
+    expect(service).toContain(
+      "private fun startForegroundCompat(copyContext: Context, title: String)",
+    );
+    for (const key of ["rakazo_call_title", "rakazo_call_text", "rakazo_call_channel"]) {
+      expect(service).toMatch(new RegExp(`copyContext\\.getString\\(\\s*R\\.string\\.${key}`));
+    }
+  });
+
   it("provides call strings in every shipped mobile locale", () => {
     const directories = {
       es: "values-es",
@@ -65,8 +89,15 @@ describe("Android call service", () => {
       de: "values-de",
       nl: "values-nl",
       ja: "values-ja",
+      pl: "values-pl",
     } as const satisfies Record<(typeof UI_LOCALES)[number], string>;
-    const keys = ["rakazo_call_channel", "rakazo_call_title", "rakazo_call_text"];
+    const keys = [
+      "rakazo_call_channel",
+      "rakazo_call_title",
+      "rakazo_call_text",
+      "rakazo_call_answer",
+      "rakazo_call_decline",
+    ];
     for (const locale of UI_LOCALES) {
       const xml = source(`res/${directories[locale]}/call_strings.xml`);
       for (const key of keys) expect(xml).toContain(`name="${key}"`);

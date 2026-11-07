@@ -16,11 +16,13 @@ export const CLIENT_KINDS = ["web", "mobile"] as const;
 export type ClientKind = (typeof CLIENT_KINDS)[number];
 export type MinimumClientBuilds = Partial<Record<ClientKind, string>>;
 
-/** Store listings for the ALMA apps. */
+/** Store listings for the ALMA apps. There is no APK download. */
 export const MOBILE_APP_STORES = {
   ios: "https://apps.apple.com/app/id6829162072",
   android: "https://play.google.com/store/apps/details?id=do.alma.app",
 } as const;
+export const IOS_APP_STORE_URL = MOBILE_APP_STORES.ios;
+export const ANDROID_APP_STORE_URL = MOBILE_APP_STORES.android;
 
 const BUILD_ID = /^\d{14}$/;
 

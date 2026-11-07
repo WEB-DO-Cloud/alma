@@ -1,14 +1,43 @@
 # Mobile builds and store releases
 
-ALMA ships as an iOS and Android app with bundle id and package `do.alma.app`.
-The name under the icon is ALMA. The store listing name is
-`ALMA Asistente IA`.
+ALMA's public repository does not contain production App Store Connect,
+Google Play, Apple team, or private EAS submission identifiers. Those values
+belong in the release operator's private configuration.
 
-Store builds use Expo prebuild, then fastlane, on Bitrise. Over-the-air updates
-and the old Expo submit profile are not the store path. The icon in the repo is
-a placeholder; final art is still pending.
+Self-hosters normally do not need to publish their own mobile app: the ALMA
+client can select a compatible server from the sign-in screen. If you distribute
+your own branded build, use your own Expo and store accounts.
 
-## One-time match setup
+## Configure a build
+
+1. Link `apps/mobile` to an Expo project owned by your account.
+2. Choose unique iOS and Android application identifiers.
+3. Configure `EXPO_PUBLIC_API_URL` in the EAS build environment. Production
+   builds require a valid HTTPS URL.
+4. Keep store application IDs, team IDs, signing credentials, API keys, and
+   review-account credentials out of Git.
+5. Before a native iOS or Android build, run
+   `pnpm --filter @rakazo/mobile exec expo install --check`. Attachment pickers
+   and other Expo native modules must match the SDK (SDK 57 needs
+   `expo-image-picker@~57.0.11`, not 17.x). Use `pnpm exec expo install --fix`
+   from `apps/mobile` if that check fails.
+
+From `apps/mobile`:
+
+```sh
+eas project:init
+eas env:create --environment production --name EXPO_PUBLIC_API_URL --value https://app.example.com --visibility plaintext
+eas build --platform ios --profile production
+eas submit --platform ios --profile production --latest
+```
+
+EAS can prompt for store identity interactively. For automated submission, add
+the required identifiers through a private CI configuration or a short-lived
+local change that is never committed.
+
+Before submission, verify the production API, account deletion, sign-in,
+notifications, store privacy answers, age rating, screenshots, support page,
+and review account on a physical device.
 
 ## Release
 
@@ -16,8 +45,9 @@ Bump `expo.version` in `apps/mobile/app.json` when native code changes (see
 Over-the-air updates below), then run the `release-mobile` workflow from `main`
 with the App Store "What's New" text. It builds iOS on EAS, uploads it to App
 Store Connect, puts the build on that App Store version with the notes, and
-submits it for review; Apple releases it once approved. The same run publishes
-the Android APK below.
+submits it for review; Apple releases it once approved. The same run submits a
+production Android App Bundle to Google Play for review and publishes the
+Android APK below. The stores review independently, so publication times differ.
 
 It needs these repository secrets:
 
@@ -31,128 +61,82 @@ It needs these repository secrets:
 Re-running it for a version that is already in review leaves that submission
 alone.
 
-## Android
+If the iOS upload succeeded but App Review submission failed, run `release-mobile`
+with `ios_build_id` set to that finished EAS build's ID and the release notes.
+This retries only App Review: it skips both Android jobs, the iOS build, and the
+upload. The workflow verifies that the reused build belongs to this app and was
+built with the production iOS profile. Review failures include Apple's associated
+validation errors so missing metadata can be corrected before retrying.
 
-Android users install from Google Play (`do.alma.app`). The store build's API
-origin is `https://app.alma.com.do` unless `EXPO_PUBLIC_API_URL` overrides it.
+## Google Play
 
-Do this once, from `apps/mobile`, on a machine that can sign in to Apple.
-CI only reads the match repo. The one exception is a build whose parameter
-`ALMA_MATCH_CREATE` is `true`: that run may create the certificate and profile
-when the certificates repo is still empty. Do not store that parameter as a
-standing secret. Leave it unset after the certificates exist.
+Run `release-google-play` from `main` for an Android-only store release, or
+`release-mobile` for both stores. The production EAS profile increments the
+Android version code automatically and retains the production update channel
+and managed upload key. The workflow checks native dependency compatibility,
+builds an AAB, and requires its R8 report to show at least 25% optimization,
+obfuscation, and shrinking, with a crash deobfuscation mapping included.
 
-HTTPS, with a GitHub personal access token that can read and write the
-certificates repo:
+Configure a Google service account with access to publish this app in Play
+Console, then assign its key under Android submissions in `eas credentials`.
+EAS stores the key; do not commit it or add it to `eas.json`. The workflow uses
+the existing `EXPO_TOKEN` secret to build and submit non-interactively. The
+`GOOGLE_SERVICES_JSON` production file variable is also required for push.
+
+The submit profile targets production with a completed rollout and sends the
+changes for review. Submission success means Google accepted the upload, not
+that it approved or published the app. Check Publishing overview and Production
+in Play Console after submission, and inspect the new bundle's optimization
+scores once processed. Managed publishing can delay release after approval.
+
+## Android APK
+
+Android users should install [ALMA from Google Play](https://play.google.com/store/apps/details?id=do.alma.app).
+`release-mobile` also publishes an APK, or run the `release-android-apk` workflow from
+`main` on its own. It builds the `android-apk` EAS profile, signed with the
+project's managed keystore, and replaces the rolling `android` GitHub release.
+
+The APK uses the production update channel, so JavaScript changes reach it
+through the over-the-air updates below without a new APK. A Google Play install
+is signed with Play's key, so switching from the APK to Play means uninstalling
+the APK first.
+
+## Android push
+
+For Android push notifications, create a Firebase project and register the app's
+Android package. Download `google-services.json` and, from `apps/mobile`, store
+it as an EAS file environment variable:
 
 ```sh
-cd apps/mobile
-bundle install
-export MATCH_PASSWORD='choose-a-long-password'
-export MATCH_GIT_BASIC_AUTHORIZATION="$(printf '%s' 'git:GITHUB_TOKEN' | base64)"
-export APP_STORE_CONNECT_API_KEY_ID='key id'
-export APP_STORE_CONNECT_API_KEY_ISSUER_ID='issuer id'
-export APP_STORE_CONNECT_API_KEY="$(cat AuthKey_example.p8)"
-bundle exec fastlane match appstore
-bundle exec fastlane match development
+eas env:set production --name GOOGLE_SERVICES_JSON --type file --value ./google-services.json --visibility secret
 ```
 
-SSH deploy key instead of HTTPS: put the private key PEM in
-`MATCH_GIT_BASIC_AUTHORIZATION` and point match at the SSH remote.
+Keep the file and credentials out of Git. Upload an FCM V1 service account key
+with `eas credentials` under Android > Google Service Account > FCM V1. Then
+rebuild the APK: Firebase configuration is native, so an OTA update cannot add
+it to an existing binary. Builds without the variable remain supported.
+
+## Over-the-air updates
+
+Production and preview builds include `expo-updates` and use the corresponding
+EAS Update channel. The runtime version follows the public app version, so bump
+`expo.version` whenever native code, config plugins, permissions, or native
+dependencies change, then create and submit new store builds.
+
+After the full GitHub Actions test suite passes on `main`, CI publishes a
+production OTA update when the revision only changes the mobile JavaScript,
+TypeScript, or bundled CSS. CI deliberately skips OTA publishing when native
+configuration, modules, dependencies, assets, or the update workflow changed.
+The repository needs an `EXPO_TOKEN` Actions secret with access to the linked
+Expo project.
+
+To publish a compatible update manually from `apps/mobile`:
 
 ```sh
-export MATCH_GIT_URL='git@github.com:WEB-DO-Cloud/alma-certificates.git'
-export MATCH_GIT_BASIC_AUTHORIZATION="$(cat alma-certificates-deploy-key)"
+eas update --platform all --channel production --environment production --message "Short description"
 ```
 
-The Matchfile uses that PEM only when the URL is SSH and the value contains a
-private key. Otherwise it passes the value to match as
-`git_basic_authorization`. A Bitrise SSH key loaded into the agent also works
-for an SSH `MATCH_GIT_URL`; leave `MATCH_GIT_BASIC_AUTHORIZATION` empty in that
-case.
-
-`fastlane match appstore` and `fastlane match development` create the
-distribution and development certificates in the empty repo. Later CI builds
-only download them.
-
-## Secrets to create in Bitrise
-
-Leave `ALMA_STORE_RELEASE_APPROVED` unset. The release lane refuses to run
-unless it is exactly `yes`, and even then it does not submit for App Store
-review or promote a Play release.
-
-| Secret | Purpose |
-| --- | --- |
-| `MATCH_PASSWORD` | Encrypts the certificates repo. Required. |
-| `MATCH_GIT_URL` | Optional. Defaults to the certificates repo above. |
-| `MATCH_GIT_BASIC_AUTHORIZATION` | Base64 `username:token` for HTTPS, or the SSH deploy key PEM. |
-| `APP_STORE_CONNECT_API_KEY_ID` | App Store Connect API key id. |
-| `APP_STORE_CONNECT_API_KEY_ISSUER_ID` | App Store Connect issuer id. |
-| `APP_STORE_CONNECT_API_KEY` | Contents of the `.p8` key. |
-| `APPLE_TEAM_ID` | Apple Developer team id. |
-| `ITC_TEAM_ID` | Optional App Store Connect team id, when it differs. |
-| `APPLE_ID` | Optional. The API key is enough for CI. |
-| `SUPPLY_JSON_KEY_DATA` | Play service-account JSON, as text. |
-| `ANDROID_KEYSTORE_BASE64` | Upload keystore, base64. Or set `ANDROID_KEYSTORE_PATH`. |
-| `ANDROID_KEYSTORE_PASSWORD` | Keystore password. |
-| `ANDROID_KEY_ALIAS` | Upload key alias. |
-| `ANDROID_KEY_PASSWORD` | Upload key password. |
-| `EXPO_PUBLIC_API_URL` | API origin. Unset store builds use `https://app.alma.com.do`. Use HTTPS. |
-| `BITRISE_USE_UPLOADED_SIGNING` | Set to `true` only to install profiles uploaded in the Bitrise UI instead of match. |
-
-`BITRISE_BUILD_NUMBER` is provided by Bitrise. The bump lane writes it to the
-iOS build number and the Android version code before prebuild. Set
-`ALMA_VERSION` only when the marketing version should change. Set
-`ALMA_BUILD_NUMBER` when a build is not running on Bitrise.
-
-## App Store Connect API key
-
-In App Store Connect, open Users and Access, then Integrations, then App Store
-Connect API. Generate a team key with access to the ALMA app. Download the
-`.p8` once. The key id and the issuer id go in the two id secrets. Paste the
-`.p8` contents into `APP_STORE_CONNECT_API_KEY`.
-
-## Play service account
-
-In Google Cloud, create a service account and a JSON key. In Play Console,
-invite that account and grant it permission to release to testing tracks. Copy
-the whole JSON file into `SUPPLY_JSON_KEY_DATA`. The internal lane uploads an
-Android App Bundle to the internal track and no other track.
-
-## What Bitrise runs
-
-`bitrise.yml` uses the Xcode 27.1 stack `osx-xcode-27.1.x` for iOS and
-`ubuntu-resolute-26.04-bitrise-2026-android` for Android and unit tests.
-Confirm those stacks are enabled on the workspace. Native workflows install
-pnpm, then `bundle install` in `apps/mobile`, then a fastlane lane.
-`mobile-tests` runs `pnpm db:generate` after install so the privacy checks can
-load the database client. Generate does not open a database connection.
-
-Order for a signed build: bump, Expo prebuild, then gym or Gradle. iOS reads
-the workspace Expo generates (scheme `ALMA`, override with `ALMA_IOS_SCHEME`
-or `ALMA_IOS_WORKSPACE`).
-
-| Workflow | Lane | When it runs |
-| --- | --- | --- |
-| `mobile-tests` | mobile unit tests | Push to `main` and pull requests |
-| `android-debug` | `android debug` | Manual |
-| `android-apk` | `android apk` | Manual. Signed APK, not uploaded |
-| `android-aab` | `android aab` | Manual. Signed bundle, not uploaded |
-| `ios-simulator` | `ios simulator` | Manual |
-| `ios-archive` | `ios archive` | Manual. Signed archive, not uploaded |
-| `manual-testflight` | `ios beta` | Manual. TestFlight only |
-| `manual-play-internal` | `android internal` | Manual. Play internal track only |
-
-`manual-testflight` and `manual-play-internal` are not in `trigger_map`.
-Nothing in this file submits for App Store review or promotes a Play release
-to production, beta, or alpha.
-
-## Before Expo push
-
-The Expo project id was removed so this app does not receive the previous
-product's updates. Create an Expo project for `do.alma.app` before enabling
-Expo push. Push payloads stay generic: the title is ALMA and the body is
-`Hay un borrador pendiente de revisión`. The app loads the draft from the API.
-
-Sentry reporting stays off unless the server offers a self-hosted DSN.
-`EXPO_PUBLIC_SENTRY_ENABLED=0` turns that off too. A sentry.io DSN is ignored.
+Installed release builds download a compatible update in the background on
+launch and apply it after the next restart. Builds created before
+`expo-updates` was configured cannot receive OTA updates and must be replaced
+with a new iOS and Android build once.

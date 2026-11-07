@@ -1,51 +1,61 @@
 ---
 import type { HomeCopy } from "../i18n/home";
-import { APP_URL, DESKTOP_DOWNLOADS, IOS_APP_URL } from "../site";
+import {
+  ANDROID_APP_STORE_URL,
+  APP_URL,
+  DESKTOP_DOWNLOADS,
+  GITHUB_URL,
+  IOS_APP_URL,
+} from "../site";
 
 type Props = {
   class: string;
   copy: HomeCopy["hero"];
   /** PostHog `data-attr` prefix that tells this placement apart from others. */
   placement: string;
+  githubLabel?: string;
 };
 
-const { class: className, copy, placement } = Astro.props;
+const { class: className, copy, placement, githubLabel = copy.viewOnGithub } = Astro.props;
+
+const desktopPlatforms = ["mac", "windows", "linux"] as const;
 ---
 
 <div class={className}>
   <a
     class="button button--primary"
     href={APP_URL}
-    data-show="web"
+    data-show="mac windows linux web"
     data-attr={`${placement}-start`}
   >
     {copy.getStarted}
   </a>
-  <a
-    class="button button--primary"
-    href={DESKTOP_DOWNLOADS.mac}
-    data-show="mac"
-    data-attr={`${placement}-mac`}
-  >
-    {copy.download.mac}
-  </a>
-  <a
-    class="button button--primary"
-    href={DESKTOP_DOWNLOADS.windows}
-    data-show="windows"
-    data-attr={`${placement}-windows`}
-  >
-    {copy.download.windows}
-  </a>
-  <a
-    class="button button--primary"
-    href={DESKTOP_DOWNLOADS.linux}
-    data-show="linux"
-    data-attr={`${placement}-linux`}
-  >
-    {copy.download.linux}
-  </a>
   <a class="button button--primary" href={IOS_APP_URL} data-show="ios">{copy.download.ios}</a>
+  <a class="button button--primary" href={ANDROID_APP_STORE_URL} data-show="android">
+    {copy.download.android}
+  </a>
+  {
+    desktopPlatforms.map((platform) => (
+      <a
+        class="button button--secondary"
+        href={DESKTOP_DOWNLOADS[platform]}
+        data-show={platform}
+        data-attr={`${placement}-${platform}`}
+      >
+        {copy.download[platform]}
+      </a>
+    ))
+  }
+  <a
+    class="button button--secondary"
+    href={GITHUB_URL}
+    target="_blank"
+    rel="noopener"
+    data-show="ios android web"
+    data-attr={`${placement}-github`}
+  >
+    {githubLabel}
+  </a>
   <p class="download-note" data-show="windows">{copy.windowsUnsigned}</p>
   <p class="download-note" data-show="mac windows linux">{copy.downloadNote}</p>
 </div>

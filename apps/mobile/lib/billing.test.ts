@@ -12,6 +12,9 @@ import {
 } from "./billing";
 import { openAndroidBillingAuth } from "./billing-auth";
 
+vi.mock("./api-server", () => ({}));
+vi.mock("./api-auth", () => ({}));
+vi.mock("./api-live", () => ({}));
 vi.mock("./api", () => ({ rpc: vi.fn() }));
 vi.mock("./billing-auth", () => ({ openAndroidBillingAuth: vi.fn() }));
 vi.mock("expo-web-browser", () => ({ openAuthSessionAsync: vi.fn() }));

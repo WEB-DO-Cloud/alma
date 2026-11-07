@@ -21,6 +21,9 @@ vi.mock("expo-router", () => ({
   useLocalSearchParams: () => state.params,
   useRouter: () => ({ replace: vi.fn(), push: vi.fn(), back: vi.fn() }),
 }));
+vi.mock("./api-server", () => ({}));
+vi.mock("./api-auth", () => ({}));
+vi.mock("./api-live", () => ({}));
 vi.mock("./api", () => ({
   rpc: state.rpc,
   currentApiBase: () => "https://app.example.test",
@@ -36,6 +39,7 @@ vi.mock("./device-voice", () => ({
   saveDeviceVoiceEnabled: state.save,
 }));
 vi.mock("./call-sounds", () => ({
+  loadCallGreetingEnabled: async () => true,
   loadCallSoundsEnabled: async () => true,
   loadWaitSoundEnabled: async () => true,
   saveCallSoundsEnabled: vi.fn(),
@@ -106,7 +110,7 @@ vi.mock("react-native", () => {
 });
 
 const catalog = [
-  { id: "fish-audio", name: "Fish Audio", transcribe: true },
+  { id: "fish-audio", name: "Fish Audio", transcribe: true, speechModel: true },
   { id: "other", name: "Other provider", transcribe: false },
   { id: "new", name: "New provider", transcribe: false },
 ];

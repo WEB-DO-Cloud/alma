@@ -4,7 +4,7 @@
 
 [![Discord コミュニティに参加](https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?labelColor=black&style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/RWwKa2Sn7h)
 [![App Store で iPhone 版をダウンロード](https://img.shields.io/badge/App%20Store-Download%20for%20iPhone-black?labelColor=black&style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/app/id6829162072)
-[![Google Play で入手](https://img.shields.io/badge/Google%20Play-ALMA-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
+[![Google Play で Android 版をダウンロード](https://img.shields.io/badge/Google%20Play-Get%20the%20app-black?labelColor=black&style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=do.alma.app)
 
 ![ALMA：本当に自分のものにできる AI チームメイト](./docs/readme-hero.png)
 
@@ -104,11 +104,11 @@ bash install-images.sh
 ## ローカル開発（ソースから実行）
 
 Node.js 22.x 系の 22.22.2 以降、Node.js 24.x、または Node.js 26 以降と、
-pnpm 9、Docker が必要です。Node.js 23.x と 25.x はサポートしていません。
+pnpm 12、Docker が必要です。Node.js 23.x と 25.x はサポートしていません。
 
 ```bash
 git clone https://github.com/WEB-DO-Cloud/alma.git
-cd rakazo
+cd alma
 cp .env.example .env
 ```
 

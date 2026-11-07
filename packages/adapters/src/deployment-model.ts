@@ -3,7 +3,7 @@ import type { ModelUsageLookup } from "@rakazo/adapter-kit";
 import { OpenRouterUsageLookup } from "./openrouter-usage.js";
 import { LOCAL_PROVIDER_ID, localModelIds } from "./pi-local-provider-id.js";
 
-export const DEFAULT_OPENROUTER_MODEL_ID = "openai/gpt-6-luna";
+export const DEFAULT_OPENROUTER_MODEL_ID = "anthropic/claude-haiku-5.5";
 /** DeepSeek-V4.1-Flash on api.deepseek.com. The catalog label stays human-readable. */
 export const DEFAULT_DEEPSEEK_MODEL_ID = "deepseek-flash";
 
