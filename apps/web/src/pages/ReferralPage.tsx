@@ -49,11 +49,13 @@ export function ReferralPage() {
         type="button"
         onClick={() => {
           const payload = { title: "ALMA", text, url };
+          const copy = () =>
+            void navigator.clipboard.writeText(`${text}\n${url}`).then(() => setNotice(t`Copied`));
           if (navigator.share) {
-            void navigator.share(payload).catch(() => undefined);
+            void navigator.share(payload).catch(copy);
             return;
           }
-          void navigator.clipboard.writeText(`${text}\n${url}`).then(() => setNotice("Copied"));
+          copy();
         }}
       >
         <Trans>Share</Trans>
