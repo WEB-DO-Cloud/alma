@@ -873,7 +873,7 @@ msgstr "Todos los bots"
 
 #: src/pages/ReportPage.tsx
 msgid "All customers"
-msgstr ""
+msgstr "Todos los clientes"
 
 #: src/pages/Artifacts.tsx
 msgid "All files"
@@ -5521,7 +5521,7 @@ msgstr "PR reviewer"
 
 #: src/pages/ReportPage.tsx
 msgid "Practice"
-msgstr ""
+msgstr "Práctica"
 
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
