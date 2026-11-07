@@ -106,6 +106,7 @@ model User {
   voiceTranscripts            VoiceTranscript[]
   digestSubscription          DigestSubscription?
   digestIssues                DigestIssue[]
+  reportRunMarks              ReportRunMark[]
 
   @@unique([email])
   @@map("user")
@@ -3027,4 +3028,17 @@ model DigestIssue {
 
   @@unique([userId, kind, localDate])
   @@map("digest_issues")
+}
+
+/// Explicit practice mark. Unmarked runs stay in the real totals. Nothing writes this except a test.
+model ReportRunMark {
+  runId     String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spaceId   String
+  practice  Boolean
+  createdAt DateTime @default(now())
+
+  @@index([userId, spaceId])
+  @@map("report_run_marks")
 }
