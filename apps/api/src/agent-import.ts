@@ -36,6 +36,7 @@ import {
   readAgentImportFolder,
   renameRoutineSkillMentions,
   resolveAgentImportNames,
+  resolveModelId,
 } from "@rakazo/core";
 import type { McpServer as McpServerRow, Prisma, PrismaClient, Routine } from "@rakazo/db";
 import {
@@ -423,7 +424,10 @@ export async function writeImportedBot<PreparedKey>(
           {
             provider: key.provider,
             apiKey,
-            modelId: model?.provider === key.provider ? model.modelId : undefined,
+            modelId:
+              model?.provider === key.provider
+                ? resolveModelId(model.provider, model.modelId)
+                : undefined,
           },
           signal,
         )

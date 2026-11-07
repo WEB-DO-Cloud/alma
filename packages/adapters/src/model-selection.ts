@@ -6,6 +6,7 @@ import {
   selectCompatibleModelCredential,
   usableModelId,
 } from "@rakazo/contracts";
+import { resolveModelId } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   chooseModelCredential,
@@ -36,8 +37,9 @@ import { OPENAI_COMPATIBLE_PROVIDER_ID } from "./pi-openai-compatible-provider.j
 export type ModelCredential = Awaited<ReturnType<typeof findModelCredential>>;
 
 export function isCatalogModelChoice(provider: string, modelId: string) {
+  const id = resolveModelId(provider, modelId);
   return [...listPiCatalog(), scriptedCatalogEntry].some(
-    (item) => item.provider === canonicalPiProviderId(provider) && item.id === modelId,
+    (item) => item.provider === canonicalPiProviderId(provider) && item.id === id,
   );
 }
 
@@ -715,9 +717,10 @@ export async function prepareAllowedThinkingLevels(
   storedEnabledModelIds?: string[];
 }> {
   if (provider !== OPENAI_COMPATIBLE_PROVIDER_ID) {
+    const id = resolveModelId(provider, modelId);
     return {
       allowed: listPiCatalog().find(
-        (item) => item.provider === canonicalPiProviderId(provider) && item.id === modelId,
+        (item) => item.provider === canonicalPiProviderId(provider) && item.id === id,
       )?.thinkingLevels,
     };
   }

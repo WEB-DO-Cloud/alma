@@ -24,7 +24,15 @@ import {
   OPENAI_COMPATIBLE_PROVIDER_ID,
   usableModelId,
 } from "@rakazo/contracts";
-import { clampCatalogThinkingLevel } from "@rakazo/core";
+import {
+  clampCatalogThinkingLevel,
+  presentCredential,
+  presentModelId,
+  publicProviderLabel,
+  resolveModelId,
+  sanitizeUserModelError,
+  upstreamModelChoice,
+} from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   appliedModelRole,
@@ -106,18 +114,20 @@ export function modelsRoutes(ctx: RouterContext) {
             };
             const runsMain = main?.credential && main.credential.id === row.id;
             const dto = (plaintext?: string) => {
-              const listed = modelCredentialDto(own, plaintext);
+              const listed = presentCredential(modelCredentialDto(own, plaintext));
               // The connection running the main model shows that model, as apps read it,
               // while its own model stays enabled.
               const shown = runsMain
-                ? modelCredentialDto(
-                    {
-                      ...row,
-                      isDefault: true,
-                      defaultModel: main.modelId,
-                      thinkingLevel: main.thinkingLevel ?? null,
-                    },
-                    plaintext,
+                ? presentCredential(
+                    modelCredentialDto(
+                      {
+                        ...row,
+                        isDefault: true,
+                        defaultModel: main.modelId,
+                        thinkingLevel: main.thinkingLevel ?? null,
+                      },
+                      plaintext,
+                    ),
                   )
                 : listed;
               return {
@@ -168,7 +178,9 @@ export function modelsRoutes(ctx: RouterContext) {
       setRole: authed.models.setRole.handler(async ({ context, input }) => {
         if (input.expectedUserId && input.expectedUserId !== context.actor.userId)
           throw new ORPCError("FORBIDDEN");
-        const { role, primary, backups, scope } = input;
+        const { role, scope } = input;
+        const primary = input.primary ? upstreamModelChoice(input.primary) : input.primary;
+        const backups = input.backups?.map(upstreamModelChoice);
         await validateRoleChoices(context.actor, role, [
           ...(primary ? [primary] : []),
           ...(backups ?? []),
@@ -189,16 +201,17 @@ export function modelsRoutes(ctx: RouterContext) {
       }),
       backups: authed.models.backups.handler(async ({ context }) =>
         (await appliedModelRole(deps.prisma, context.actor, "main")).backups.map(
-          ({ provider, modelId }) => ({ provider, modelId }),
+          ({ provider, modelId }) => ({ provider, modelId: presentModelId(provider, modelId) }),
         ),
       ),
       setBackups: authed.models.setBackups.handler(async ({ context, input }) => {
-        await validateRoleChoices(context.actor, "main", input);
+        const choices = input.map(upstreamModelChoice);
+        await validateRoleChoices(context.actor, "main", choices);
         await updateModelRole(
           deps.prisma,
           { userId: context.actor.userId, spaceId: context.actor.spaceId },
           "main",
-          { backups: input },
+          { backups: choices },
         );
         return { ok: true as const };
       }),
@@ -206,11 +219,21 @@ export function modelsRoutes(ctx: RouterContext) {
         const record = await firstModelConnectAnalytics(deps, context.actor, "api_key");
         record(input.provider, { name: "model_connect_started" });
         try {
-          const saved = await connectModelCredential(context.actor, input, context.signal);
+          const saved = await connectModelCredential(
+            context.actor,
+            {
+              ...input,
+              ...(input.modelId ? { modelId: resolveModelId(input.provider, input.modelId) } : {}),
+            },
+            context.signal,
+          );
           record(input.provider, { name: "model_connected" });
           return saved;
         } catch (error) {
           record(input.provider, { name: "model_connect_failed", error });
+          if (error instanceof Error && /deepseek/i.test(error.message)) {
+            error.message = sanitizeUserModelError(error.message);
+          }
           throw error;
         }
       }),
@@ -277,7 +300,9 @@ export function modelsRoutes(ctx: RouterContext) {
             return { models };
           } catch (error) {
             throw new ORPCError("BAD_REQUEST", {
-              message: error instanceof Error ? error.message : "Could not list models",
+              message: sanitizeUserModelError(
+                error instanceof Error ? error.message : "Could not list models",
+              ),
             });
           }
         },
@@ -292,7 +317,9 @@ export function modelsRoutes(ctx: RouterContext) {
           return { models };
         } catch (error) {
           throw new ORPCError("BAD_REQUEST", {
-            message: error instanceof Error ? error.message : "Could not list models",
+            message: sanitizeUserModelError(
+              error instanceof Error ? error.message : "Could not list models",
+            ),
           });
         }
       }),
@@ -313,7 +340,7 @@ export function modelsRoutes(ctx: RouterContext) {
             spaceId: context.actor.spaceId,
             provider: input.provider,
             credentialId: target?.id ?? null,
-            modelId: input.modelId,
+            modelId: input.modelId ? resolveModelId(input.provider, input.modelId) : input.modelId,
             thinkingLevel: input.thinkingLevel,
             makeDefault: input.makeDefault,
             settingsScope: input.scope,
@@ -400,7 +427,7 @@ export function modelsRoutes(ctx: RouterContext) {
         return { ok: true as const };
       }),
       setDefault: authed.models.setDefault.handler(async ({ context, input }) => {
-        const modelId = usableModelId(input.modelId);
+        const modelId = usableModelId(resolveModelId(input.provider, input.modelId));
         if (!modelId) throw new ORPCError("BAD_REQUEST", { message: "Choose a model" });
         // An omitted level keeps the one this model already has in the main list: on the
         // chosen connection first, then on another, as writeModelRole does.
@@ -438,7 +465,7 @@ export function modelsRoutes(ctx: RouterContext) {
             preferences,
             candidates: defaultModelCredentialCandidates({
               provider: input.provider,
-              modelId: input.modelId,
+              modelId,
               preferences,
               credentials,
             }),
@@ -458,7 +485,7 @@ export function modelsRoutes(ctx: RouterContext) {
                       context.actor.userId,
                       candidate.secretId,
                       input.provider,
-                      input.modelId,
+                      modelId,
                       codexCatalog,
                       {
                         onExpiredToken: () =>
@@ -481,12 +508,7 @@ export function modelsRoutes(ctx: RouterContext) {
           // Compatible defaults always load the secret so the transaction rechecks it.
           const thinking =
             needsThinking || compatible
-              ? await prepareAllowedThinkingLevels(
-                  deps,
-                  context.actor,
-                  input.provider,
-                  input.modelId,
-                )
+              ? await prepareAllowedThinkingLevels(deps, context.actor, input.provider, modelId)
               : { allowed: undefined, secret: undefined };
           if (compatible) {
             await assertCompatibleDefaultChange(deps, context.actor, modelId, thinking);
@@ -496,7 +518,7 @@ export function modelsRoutes(ctx: RouterContext) {
               const { preferences, candidates } = await loadModelState(tx);
               if (candidates.length === 0) {
                 throw new ORPCError("NOT_FOUND", {
-                  message: `No model credential is connected for ${input.provider}.`,
+                  message: `No model credential is connected for ${publicProviderLabel(input.provider)}.`,
                 });
               }
               if (thinking.secret) {
@@ -537,7 +559,7 @@ export function modelsRoutes(ctx: RouterContext) {
               }
               const chosenId = selectDefaultCredentialId({
                 provider: input.provider,
-                modelId: input.modelId,
+                modelId,
                 orderedIds: candidates.map((candidate) => candidate.id),
                 readyIds,
                 savedModelId: (credentialId) => savedModelId.get(credentialId),

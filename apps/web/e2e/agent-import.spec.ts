@@ -184,10 +184,10 @@ test("imports an OpenClaw folder and another assistant's document as new bots", 
   ).toHaveText("Home soul.");
   const model = homePreview.getByTestId("agent-import-model");
   const modelBox = model.getByRole("checkbox", {
-    name: "deepseek/deepseek-flash",
+    name: "ALMA V4.1 Flash",
   });
   await expect(modelBox).toBeDisabled();
-  await expect(model.getByText("API key for DeepSeek", { exact: true })).toBeVisible();
+  await expect(model.getByText("API key for ALMA", { exact: true })).toBeVisible();
   const keys = homePreview.getByTestId("agent-import-keys");
   const optIn = keys.getByRole("checkbox", { name: "Include API keys" });
   await expect(optIn).not.toBeChecked();
@@ -217,7 +217,7 @@ test("imports an OpenClaw folder and another assistant's document as new bots", 
   }
   await expect(optIn).toBeChecked();
   await expect(keys.getByRole("heading", { name: "API keys" })).toBeVisible();
-  await expect(keys.getByRole("checkbox", { name: "DeepSeek" })).toBeChecked();
+  await expect(keys.getByRole("checkbox", { name: "ALMA" })).toBeChecked();
   await expect(modelBox).toBeEnabled();
   await expect(modelBox).toBeChecked();
   await expect(homePreview).not.toContainText("placeholder-");

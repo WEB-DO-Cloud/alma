@@ -37,7 +37,9 @@ Linux 默认不提供相同的 `host.docker.internal` 行为。
 | --- | --- | --- |
 | `openrouter`（默认） | `OPENROUTER_API_KEY` | `anthropic/claude-haiku-5.5` |
 | `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5` |
-| `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-flash` |
+| `deepseek` | `DEEPSEEK_API_KEY` | `alma-flash` |
+
+界面上的名称是 ALMA Flash。`PI_DEFAULT_MODEL=deepseek-flash` 仍然运行同一模型。提供商 id 保持 `deepseek`，密钥变量是 `DEEPSEEK_API_KEY`。
 
 需要截图计算机工具时，选择支持视觉的模型。
 Compose 也会将运行时支持的标准提供商密钥（例如 `OPENAI_API_KEY`、`GEMINI_API_KEY`）传给 API 和 worker，

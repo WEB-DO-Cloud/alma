@@ -37,6 +37,7 @@ import {
   modelSupportsRole,
   OPENAI_COMPATIBLE_PROVIDER_ID,
 } from "@rakazo/contracts";
+import { presentCatalogEntry, presentModelChoice, resolveModelId, sameModelId } from "@rakazo/core";
 import { createGroupRepos, createRepos, recordSecurityEvent, runAsTenant } from "@rakazo/db";
 import { createAgentImportServices } from "../agent-import-services.js";
 import { createAgentSkillsService } from "../agent-skills.js";
@@ -136,7 +137,9 @@ export function createRouterContext(deps: RouterDeps) {
   // cannot execute it, so it stays out of the user-facing catalog otherwise.
   const chatCatalog = async (actor: Actor) => {
     const catalog = await catalogForSpace(actor);
-    return deps.env.agentRuntime === "scripted" ? [...catalog, scriptedCatalogEntry] : catalog;
+    const entries =
+      deps.env.agentRuntime === "scripted" ? [...catalog, scriptedCatalogEntry] : catalog;
+    return entries.map(presentCatalogEntry);
   };
   const catalogForSpace = async (actor: Actor) => {
     const auth = await modelCredentialAuthKindsForSpace(
@@ -208,7 +211,13 @@ export function createRouterContext(deps: RouterDeps) {
               : null,
           }
         : { env: process.env };
-    return { ...settings, deploymentPrimary: deploymentModelRole(role, defaults).primary };
+    const deploymentPrimary = deploymentModelRole(role, defaults).primary;
+    return {
+      ...settings,
+      primary: settings.primary ? presentModelChoice(settings.primary) : settings.primary,
+      backups: settings.backups.map(presentModelChoice),
+      deploymentPrimary: deploymentPrimary ? presentModelChoice(deploymentPrimary) : null,
+    };
   };
   /**
    * The main role also says whether its model reads images where runs use it, so settings
@@ -326,9 +335,11 @@ export function createRouterContext(deps: RouterDeps) {
     if (choices.length === 0) return;
     const catalog = await modelRoleCatalog(actor, role);
     for (const choice of choices) {
+      const modelId = resolveModelId(choice.provider, choice.modelId);
       const entry = catalog.find(
         (entry) =>
-          entry.provider === canonicalPiProviderId(choice.provider) && entry.id === choice.modelId,
+          entry.provider === canonicalPiProviderId(choice.provider) &&
+          sameModelId(choice.provider, entry.id, modelId),
       );
       // A row pinned to a connection runs only there, never on the deployment's.
       const resolution = { credentialId: choice.credentialId };
@@ -337,7 +348,7 @@ export function createRouterContext(deps: RouterDeps) {
         deps.secrets,
         actor,
         choice.provider,
-        choice.modelId,
+        modelId,
         resolution,
       );
       // Computer mode runs only on the member's own connections.
@@ -365,7 +376,7 @@ export function createRouterContext(deps: RouterDeps) {
           { prisma: deps.prisma, secretStore: deps.secrets },
           actor.userId,
           choice.provider,
-          choice.modelId,
+          modelId,
           credential,
           entry?.images,
         ))
@@ -376,7 +387,7 @@ export function createRouterContext(deps: RouterDeps) {
           deps,
           actor,
           choice.provider,
-          choice.modelId,
+          modelId,
           resolution,
         );
         if (allowed && !allowed.includes(choice.thinkingLevel))
@@ -391,7 +402,7 @@ export function createRouterContext(deps: RouterDeps) {
         deps.secrets,
         actor,
         choice.provider,
-        choice.modelId,
+        modelId,
         resolution,
       );
       if (error || choice.provider !== OPENAI_COMPATIBLE_PROVIDER_ID)

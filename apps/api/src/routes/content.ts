@@ -3,7 +3,7 @@ import type { UsageOperationKind } from "@rakazo/adapter-kit";
 import { resolveBotWorkspacePath } from "@rakazo/adapters";
 import type { ExportManifest } from "@rakazo/contracts";
 import { attachmentMaxBytes, resolveBotAvatarSet } from "@rakazo/contracts";
-import { AttachmentValidationError } from "@rakazo/core";
+import { AttachmentValidationError, presentUsageIdentity } from "@rakazo/core";
 import { IsolationError, LISTED_ARTIFACT, parseComputerMode } from "@rakazo/db";
 import {
   ArtifactListCursorError,
@@ -122,8 +122,7 @@ export function contentRoutes(ctx: RouterContext) {
           id: row.id,
           botId: row.botId,
           runId: row.runId,
-          provider: row.provider,
-          model: row.model,
+          ...presentUsageIdentity(row.provider, row.model),
           inputTokens: row.inputTokens,
           outputTokens: row.outputTokens,
           cacheReadTokens: row.cacheReadTokens,
@@ -184,8 +183,7 @@ export function contentRoutes(ctx: RouterContext) {
           runs,
           models: modelGroups
             .map((group) => ({
-              provider: group.provider,
-              model: group.model,
+              ...presentUsageIdentity(group.provider, group.model),
               ...completeSums(group),
             }))
             .sort(

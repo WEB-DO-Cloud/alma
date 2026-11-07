@@ -7,11 +7,17 @@ import type {
 import { isValidTimeZone, McpServerConfigInput as McpServerConfigSchema } from "@rakazo/contracts";
 import {
   AGENT_IMPORT_PROVIDER_KEYS,
+  ALMA_PUBLIC_PROVIDER_NAME,
+  isAlmaUpstreamProvider,
   mcpServerImportable,
   nextCronDateAcrossStrict,
   normalizeImportProvider,
   parseDotEnv,
+  presentCatalogEntry,
+  presentModelCopy,
+  presentModelId,
   readAgentImportConfig,
+  resolveModelId,
 } from "@rakazo/core";
 import { isCatalogProviderBaseUrl, listPiCatalog } from "./pi-models.js";
 
@@ -139,7 +145,13 @@ export function readAgentImportSettings(
       if (!key || !providers.has(id) || keyValues.has(id) || proxied.has(id)) return;
       if (text(baseUrl) && !isCatalogProviderBaseUrl(id, text(baseUrl))) return;
       keyValues.set(id, key);
-      apiKeys.push({ id: `key:${id}`, provider: id, title: providers.get(id) ?? id, source });
+      const rawTitle = providers.get(id) ?? id;
+      apiKeys.push({
+        id: `key:${id}`,
+        provider: id,
+        title: isAlmaUpstreamProvider(id) ? ALMA_PUBLIC_PROVIDER_NAME : presentModelCopy(rawTitle),
+        source,
+      });
     };
     for (const [provider, entry] of configured) {
       offer(provider, entry.key, configPath, entry.baseUrl);
@@ -224,9 +236,24 @@ function openClawEnv(config: Json): Record<string, unknown> {
 function catalogModel(title: string, provider: string, modelId: string): ImportedModel {
   const id = normalizeImportProvider(provider);
   const catalog = listPiCatalog();
-  const known = catalog.some((entry) => entry.provider === id && entry.id === modelId);
-  const providerName = catalog.find((entry) => entry.provider === id)?.providerName ?? id;
-  return { title, provider: id, providerName, modelId, known };
+  const upstreamId = resolveModelId(id, modelId);
+  const entry = catalog.find((item) => item.provider === id && item.id === upstreamId);
+  const known = Boolean(entry);
+  const rawName = catalog.find((item) => item.provider === id)?.providerName ?? id;
+  const aliased = isAlmaUpstreamProvider(id);
+  return {
+    title: aliased
+      ? entry
+        ? presentCatalogEntry(entry).label
+        : presentModelCopy(title)
+      : /deepseek/i.test(title)
+        ? presentModelCopy(title)
+        : title,
+    provider: id,
+    providerName: aliased ? ALMA_PUBLIC_PROVIDER_NAME : rawName,
+    modelId: aliased ? presentModelId(id, upstreamId) : modelId,
+    known,
+  };
 }
 
 /** The chosen agent's model: its own entry overrides `agents.defaults.model`. */

@@ -188,8 +188,8 @@ describe("consent grants", () => {
     expect(status.recipients).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "DeepSeek",
-          detail: "deepseek-flash",
+          name: "ALMA",
+          detail: "alma-flash",
           use: "model",
           allowed: true,
         }),
@@ -284,8 +284,8 @@ describe("consent grants", () => {
 
     expect(status.recipients).toEqual([
       expect.objectContaining({
-        name: "DeepSeek",
-        detail: "deepseek-flash",
+        name: "ALMA",
+        detail: "alma-flash",
         allowed: false,
       }),
     ]);

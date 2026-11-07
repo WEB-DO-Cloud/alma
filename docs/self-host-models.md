@@ -14,9 +14,9 @@ picks the provider and `PI_DEFAULT_MODEL` the model:
 | --- | --- | --- |
 | `openrouter` (default) | `OPENROUTER_API_KEY` | `anthropic/claude-haiku-5.5` |
 | `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5` |
-| `deepseek` | `DEEPSEEK_API_KEY` | `deepseek-flash` |
+| `deepseek` | `DEEPSEEK_API_KEY` | `alma-flash` |
 
-`deepseek-flash` is DeepSeek V4.1 Flash at `https://api.deepseek.com`. On this deployment, `ALMA_MODEL_RUNTIME=pi` with those two settings runs that model for every account. Leave `ALMA_MODEL_RUNTIME` unset to keep Grok Build. Speech-to-text stays on `XAI_API_KEY`.
+`alma-flash` is ALMA Flash. People see that name in the app. `PI_DEFAULT_MODEL=deepseek-flash` still runs the same model. On this deployment, `ALMA_MODEL_RUNTIME=pi` with the provider id `deepseek` and `DEEPSEEK_API_KEY` runs it for every account. Leave `ALMA_MODEL_RUNTIME` unset to keep Grok Build. Speech-to-text stays on `XAI_API_KEY`.
 
 Pick a vision-capable model so screenshot computer tools stay available.
 

@@ -64,9 +64,11 @@ overlay apps/api/src/router.test.ts
 overlay apps/api/src/router.ts
 overlay apps/api/src/routes/account.ts
 overlay apps/api/src/routes/bots.ts
+overlay apps/api/src/routes/content.ts
 overlay apps/api/src/routes/context.ts
 overlay apps/api/src/routes/mcp.ts
 overlay apps/api/src/routes/memory.ts
+overlay apps/api/src/routes/models.ts
 overlay apps/api/src/routes/onboarding.ts
 overlay apps/api/src/routes/routines.ts
 overlay apps/api/src/routes/shared.ts
@@ -584,6 +586,7 @@ overlay docs/self-host-billing.md
 overlay docs/self-host-docker-computers.md
 overlay docs/self-host-integrations.md
 overlay docs/self-host-models.md
+overlay docs/zh-CN/self-host-models.md
 overlay docs/self-host-restricted-network.md
 overlay docs/self-host-sandbox-providers.md
 overlay docs/self-host-secrets.md
@@ -624,6 +627,7 @@ overlay packages/adapter-kit/src/interfaces.ts
 overlay packages/adapter-kit/src/messaging-installations.ts
 overlay packages/adapter-kit/src/types.ts
 overlay packages/adapters/src/agent-import-settings.test.ts
+overlay packages/adapters/src/alma-model-alias.test.ts
 overlay packages/adapters/src/agent-import-settings.ts
 overlay packages/adapters/src/automated-messages.test.ts
 overlay packages/adapters/src/automated-messages.ts
@@ -653,6 +657,7 @@ overlay packages/adapters/src/executor-readonly-approval.test.ts
 overlay packages/adapters/src/executor-team-chat-sender.test.ts
 overlay packages/adapters/src/executor.ts
 overlay packages/adapters/src/favicon.test.ts
+overlay packages/adapters/src/fleet-tools.ts
 overlay packages/adapters/src/fish-audio-voice.ts
 overlay packages/adapters/src/grok-build-runtime.test.ts
 overlay packages/adapters/src/grok-build-runtime.ts
@@ -670,6 +675,8 @@ overlay packages/adapters/src/managed-model.test.ts
 overlay packages/adapters/src/managed-model.ts
 overlay packages/adapters/src/managed-voice.ts
 overlay packages/adapters/src/mcp-oauth-presets.test.ts
+overlay packages/adapters/src/model-choice.ts
+overlay packages/adapters/src/model-selection.ts
 overlay packages/adapters/src/mcp-oauth-presets.ts
 overlay packages/adapters/src/mcp-oauth.test.ts
 overlay packages/adapters/src/mcp-oauth.ts
@@ -688,6 +695,7 @@ overlay packages/adapters/src/pi-models.test.ts
 overlay packages/adapters/src/pi-models.ts
 overlay packages/adapters/src/pi-oauth.ts
 overlay packages/adapters/src/pi-runtime-helper-framing.test.ts
+overlay packages/adapters/src/pi-runtime-models.ts
 overlay packages/adapters/src/pi-runtime-subagent.ts
 overlay packages/adapters/src/pi-runtime.ts
 overlay packages/adapters/src/pi-session.ts
@@ -764,6 +772,9 @@ overlay packages/contracts/src/openai-compatible-ui.ts
 overlay packages/contracts/src/rpc.ts
 overlay packages/contracts/src/support-bot.ts
 overlay packages/core/src/agent-import/config.ts
+overlay packages/core/src/alma-model-alias.test.ts
+overlay packages/core/src/alma-model-alias.ts
+overlay packages/core/src/user-facing-model-name.test.ts
 overlay packages/core/src/agent-import/hermes.ts
 overlay packages/core/src/agent-import/openclaw.ts
 overlay packages/core/src/agent-import/shared.ts
@@ -780,6 +791,7 @@ overlay packages/core/src/index.ts
 overlay packages/core/src/model-providers.test.ts
 overlay packages/core/src/model-providers.ts
 overlay packages/core/src/node/terminal-server.ts
+overlay packages/core/src/run-error.test.ts
 overlay packages/core/src/run-error.ts
 overlay packages/core/src/secrets-guard.ts
 overlay packages/core/src/self-update.test.ts

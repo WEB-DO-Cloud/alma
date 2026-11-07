@@ -12,6 +12,8 @@ import {
   expandSkillReferencesInPrompt,
   hasMixedOneShotSchedule,
   isOneShotRoutineCrons,
+  presentModelId,
+  resolveModelId,
 } from "@rakazo/core";
 import { IsolationError, isRecordNotFound, Prisma } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
@@ -31,6 +33,14 @@ import {
   routineTestTarget,
 } from "../routines.js";
 import type { RouterContext } from "./context.js";
+
+function presentRoutine<T extends { modelProvider: string | null; modelId: string | null }>(
+  routine: T,
+): T {
+  if (!routine.modelProvider || !routine.modelId) return routine;
+  const modelId = presentModelId(routine.modelProvider, routine.modelId);
+  return modelId === routine.modelId ? routine : { ...routine, modelId };
+}
 
 export function routinesRoutes(ctx: RouterContext) {
   const { deps, repos, announceRoutine, codexCatalog, agentSkills, authed } = ctx;
@@ -52,7 +62,9 @@ export function routinesRoutes(ctx: RouterContext) {
         });
         return bots.map((bot) => ({
           botId: bot.id,
-          routines: rows.filter((row) => row.botId === bot.id).map(mapRoutine),
+          routines: rows
+            .filter((row) => row.botId === bot.id)
+            .map((row) => presentRoutine(mapRoutine(row))),
         }));
       }),
       history: authed.routines.history.handler(async ({ context, input }) =>
@@ -60,7 +72,7 @@ export function routinesRoutes(ctx: RouterContext) {
       ),
       list: authed.routines.list.handler(async ({ context, input }) => {
         await repos.getBot(context.actor, input.botId);
-        return listRoutinesDto(deps, context.actor, input.botId);
+        return (await listRoutinesDto(deps, context.actor, input.botId)).map(presentRoutine);
       }),
       create: authed.routines.create.handler(async ({ context, input }) => {
         assertRoutineSchedule(input);
@@ -82,12 +94,18 @@ export function routinesRoutes(ctx: RouterContext) {
         if (input.emailSenders) {
           await assertEmailTrigger(deps.prisma, deps.env.inboundEmailDomain, bot.id);
         }
-        await assertRoutineModel(deps, context.actor, input, codexCatalog);
+        const creating = {
+          ...input,
+          modelId: input.modelId
+            ? resolveModelId(input.modelProvider, input.modelId)
+            : input.modelId,
+        };
+        await assertRoutineModel(deps, context.actor, creating, codexCatalog);
         const row = await deps.prisma.routine.create({
-          data: routineRowData(context.actor, input, routineNextRunAt(input)),
+          data: routineRowData(context.actor, creating, routineNextRunAt(creating)),
         });
         await announceRoutine(context.actor, bot, row);
-        return mapRoutine(row);
+        return presentRoutine(mapRoutine(row));
       }),
       update: authed.routines.update.handler(async ({ context, input }) => {
         // Archived bots keep their routines paused, so resolve an active parent before any write.
@@ -122,11 +140,16 @@ export function routinesRoutes(ctx: RouterContext) {
           ? existing.modelId
           : input.modelId === undefined
             ? existing.modelId
-            : input.modelId;
+            : input.modelId
+              ? resolveModelId(modelProvider, input.modelId)
+              : null;
         const hasModel = Boolean(modelProvider && modelId);
+        const storedModelId = existing.modelId
+          ? resolveModelId(existing.modelProvider, existing.modelId)
+          : existing.modelId;
         const modelChanged =
           canonicalPiProviderId(modelProvider ?? "") !==
-            canonicalPiProviderId(existing.modelProvider ?? "") || modelId !== existing.modelId;
+            canonicalPiProviderId(existing.modelProvider ?? "") || modelId !== storedModelId;
         const touchesModel =
           !ignoreModel &&
           (input.modelProvider !== undefined ||
@@ -341,7 +364,7 @@ export function routinesRoutes(ctx: RouterContext) {
             await deps.jobs.cancel(routineJobKey(row.id));
           }
         }
-        return mapRoutine(row);
+        return presentRoutine(mapRoutine(row));
       }),
       remove: authed.routines.remove.handler(async ({ context, input }) => {
         // Any member can change a routine, so any member can delete one.

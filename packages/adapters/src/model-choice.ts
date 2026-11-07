@@ -1,5 +1,6 @@
 import type { Actor } from "@rakazo/contracts";
 import { canonicalPiProviderId } from "@rakazo/contracts";
+import { isAlmaUpstreamProvider, presentModelCopy, toPublicModelId } from "@rakazo/core";
 import type { BotModelChangeDeps } from "./model-selection.js";
 import { modelCredentialAuthKindsForSpace } from "./model-selection.js";
 import { listAvailablePiCatalog } from "./pi-catalog-availability.js";
@@ -78,11 +79,14 @@ export function matchModelChoice(
   preferredProvider?: string | null,
 ): { match?: ModelChoice; ranked: ModelChoice[] } {
   const wanted = query.trim().toLowerCase();
-  const exact = choices.filter((choice) =>
-    [choice.id, `${choice.provider}/${choice.id}`, `${choice.provider}:${choice.id}`].some(
-      (key) => key.toLowerCase() === wanted,
-    ),
-  );
+  const exact = choices.filter((choice) => {
+    const keys = [choice.id, `${choice.provider}/${choice.id}`, `${choice.provider}:${choice.id}`];
+    if (isAlmaUpstreamProvider(choice.provider)) {
+      const pub = toPublicModelId(choice.id);
+      keys.push(pub, `${choice.provider}/${pub}`, `${choice.provider}:${pub}`);
+    }
+    return keys.some((key) => key.toLowerCase() === wanted);
+  });
   const asked = words(query);
   const matches = exact.length
     ? exact
@@ -134,10 +138,12 @@ export async function resolveModelChoice(
   if (ranked.length)
     return {
       ok: false,
-      error: `"${echoedQuery(input.model)}" matches several models. Ask the user which one, or pass its id as model: ${ranked
-        .slice(0, CANDIDATE_LIMIT)
-        .map((choice) => `${choiceKey(choice)} (${choice.label})`)
-        .join(", ")}.`,
+      error: presentModelCopy(
+        `"${echoedQuery(input.model)}" matches several models. Ask the user which one, or pass its id as model: ${ranked
+          .slice(0, CANDIDATE_LIMIT)
+          .map((choice) => `${choiceKey(choice)} (${choice.label})`)
+          .join(", ")}.`,
+      ),
     };
   // Live and custom-server ids are not in the bundled catalog; the model check decides those.
   const [prefix = "", ...rest] = input.model.trim().split("/");
@@ -154,7 +160,9 @@ export async function resolveModelChoice(
   return {
     ok: false,
     error: providers.length
-      ? `No connected model matches "${echoedQuery(input.model)}". The user needs to connect ${providers.join(" or ")} in Settings first.`
-      : `No model matches "${echoedQuery(input.model)}".`,
+      ? presentModelCopy(
+          `No connected model matches "${echoedQuery(input.model)}". The user needs to connect ${providers.join(" or ")} in Settings first.`,
+        )
+      : presentModelCopy(`No model matches "${echoedQuery(input.model)}".`),
   };
 }
