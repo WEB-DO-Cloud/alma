@@ -182,6 +182,8 @@ export const ROW_SECURITY_MODELS: ReadonlySet<string> = new Set([
   "NotificationBatch",
   "SendUndoSetting",
   "VoiceTranscript",
+  "DigestSubscription",
+  "DigestIssue",
 ]);
 
 /**
