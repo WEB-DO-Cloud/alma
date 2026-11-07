@@ -20,6 +20,8 @@ import {
   displayName,
   isBackgroundRunTrigger,
   phoneCallSettings,
+  presentModelId,
+  resolveModelId,
   ringingCall,
   userVisibleMessages,
 } from "@rakazo/core";
@@ -154,7 +156,7 @@ function mapBot(
     voiceId: bot.voiceId ?? null,
     autoSpeak: bot.autoSpeak ?? false,
     modelProvider: bot.modelProvider ? canonicalPiProviderId(bot.modelProvider) : null,
-    modelId: bot.modelId ?? null,
+    modelId: bot.modelId ? presentModelId(bot.modelProvider, bot.modelId) : null,
     thinkingLevel: (bot.thinkingLevel as Bot["thinkingLevel"]) ?? null,
     teamChatAmbientEnabled: bot.teamChatAmbientEnabled ?? false,
     teamChatRules: bot.teamChatRules ?? "",
@@ -554,7 +556,7 @@ export function createRepos(
       // A reserved preview identity is also an idempotency key if the response is lost.
       const spawnKey = input.spawnKey ?? input.id;
       let modelProvider = input.modelProvider ?? null;
-      let modelId = input.modelId ?? null;
+      let modelId = input.modelId ? resolveModelId(modelProvider, input.modelId) : null;
       let thinkingLevel = input.thinkingLevel ?? null;
       let disabledBuiltinTools = input.disabledBuiltinTools ?? [];
       if (input.parentBotId) {

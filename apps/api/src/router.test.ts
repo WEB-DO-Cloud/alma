@@ -891,7 +891,7 @@ describe("model setup gate", () => {
     }
   });
 
-  it("names the configured DeepSeek model while the operator runtime is Pi", async () => {
+  it("names the configured ALMA model while the operator runtime is Pi", async () => {
     const previous = {
       managed: process.env.ALMA_MANAGED_MODEL,
       runtime: process.env.AGENT_RUNTIME,
@@ -915,7 +915,7 @@ describe("model setup gate", () => {
         managedModel: true,
         needsModel: false,
         defaultProvider: "deepseek",
-        defaultModel: "deepseek-flash",
+        defaultModel: "alma-flash",
       });
       expect(JSON.stringify(body)).not.toContain("sk-deepseek-fixture");
     } finally {

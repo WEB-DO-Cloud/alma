@@ -3,6 +3,7 @@ export * from "./activity-sections.js";
 export * from "./agent-import/index.js";
 export * from "./agent-skill.js";
 export * from "./ai-consent.js";
+export * from "./alma-model-alias.js";
 export * from "./alma-unavailable.js";
 export * from "./answerable-ask.js";
 export * from "./app-connect.js";

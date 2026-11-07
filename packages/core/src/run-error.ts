@@ -5,6 +5,7 @@ import {
   COMPUTER_RATE_LIMIT_ERROR,
   providerQuotaResetAt,
 } from "@rakazo/contracts";
+import { sanitizeUserModelError } from "./alma-model-alias.js";
 import { stuckWorkStatusMessages } from "./stuck-work.js";
 
 export const MISSING_TOOL_FINAL_RESPONSE_ERROR =
@@ -98,7 +99,7 @@ export function userRunError(error: unknown): string {
     .join("\n")
     .replace(SERVER_FILE_PATH, "[path]")
     .trim();
-  return cleaned || INTERNAL_RUN_ERROR;
+  return sanitizeUserModelError(cleaned) || INTERNAL_RUN_ERROR;
 }
 
 const MODEL_OUTPUT_RUN_ERRORS = new Set([
@@ -234,6 +235,8 @@ export function normalizeRunError(
   /** The provider's own message, unwrapped from its JSON envelope. */
   providerMessage?: string;
 } {
+  // Saved rows and pushes can still name the upstream model. Screens never do.
+  details = sanitizeUserModelError(details);
   const trimmed = details.trim();
   if ([MODEL_IMAGE_INPUT_ERROR, MODEL_IMAGE_INPUT_UNKNOWN].includes(trimmed)) {
     return {

@@ -331,7 +331,7 @@ it("shows the operator model label from the catalog", async () => {
     },
   ]);
   await render();
-  expect(container.querySelector('[id$="-model"]')?.textContent).toBe("DeepSeek V4.1 Flash");
+  expect(container.querySelector('[id$="-model"]')?.textContent).toBe("ALMA V4.1 Flash");
   expect(container.textContent).not.toContain("Grok");
   expect(container.querySelector('[aria-label="Model connections"]')).toBeNull();
 });

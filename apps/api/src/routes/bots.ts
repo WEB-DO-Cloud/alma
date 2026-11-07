@@ -33,7 +33,12 @@ import type {
   VaultPutInput,
 } from "@rakazo/contracts";
 import { BotSecretAuth, resolveBotAvatarSet } from "@rakazo/contracts";
-import { ACTIVE_RUN_STATUSES, COMPUTER_USING_RUNS, displayName } from "@rakazo/core";
+import {
+  ACTIVE_RUN_STATUSES,
+  COMPUTER_USING_RUNS,
+  displayName,
+  resolveModelId,
+} from "@rakazo/core";
 import type { Prisma } from "@rakazo/db";
 import {
   BotSectionNameConflictError,
@@ -435,16 +440,30 @@ export function botsRoutes(ctx: RouterContext) {
           if (!section) throw new IsolationError();
         }
         const ignoreModel = managedModelActive();
+        const modelProvider =
+          input.modelProvider !== undefined ? input.modelProvider : existing.modelProvider;
+        const modelId =
+          input.modelId !== undefined
+            ? input.modelId
+              ? resolveModelId(modelProvider, input.modelId)
+              : null
+            : existing.modelId
+              ? resolveModelId(existing.modelProvider, existing.modelId)
+              : existing.modelId;
         const modelChange = ignoreModel
           ? { ok: true as const }
           : await validateBotModelChange(botModelValidation(context.actor), {
               userId: context.actor.userId,
               spaceId: context.actor.spaceId,
-              provider:
-                input.modelProvider !== undefined ? input.modelProvider : existing.modelProvider,
-              model: input.modelId !== undefined ? input.modelId : existing.modelId,
+              provider: modelProvider,
+              model: modelId,
               thinkingLevel: input.thinkingLevel,
-              current: { provider: existing.modelProvider, model: existing.modelId },
+              current: {
+                provider: existing.modelProvider,
+                model: existing.modelId
+                  ? resolveModelId(existing.modelProvider, existing.modelId)
+                  : existing.modelId,
+              },
             });
         if (!modelChange.ok) throw new ORPCError("BAD_REQUEST", { message: modelChange.error });
         const thinkingLevel = input.thinkingLevel;
@@ -486,7 +505,7 @@ export function botsRoutes(ctx: RouterContext) {
             voiceId: input.voiceId,
             autoSpeak: input.autoSpeak,
             ...(!ignoreModel && input.modelProvider !== undefined
-              ? { modelProvider: input.modelProvider, modelId: input.modelId ?? null }
+              ? { modelProvider: input.modelProvider, modelId }
               : {}),
             ...(!ignoreModel && input.thinkingLevel !== undefined ? { thinkingLevel } : {}),
             ...(input.teamChatAmbientEnabled !== undefined

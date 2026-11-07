@@ -990,6 +990,11 @@ export async function failRun(
     await ctx.computer.checkpoint.flush().catch(() => undefined);
   }
   const message = redactSecrets(userRunError(error), ctx.secrets);
+  // Logs keep the provider's own wording. The saved message is what a person reads.
+  const operatorReason = redactSecrets(
+    error instanceof Error ? error.message : String(error),
+    ctx.secrets,
+  );
   // Reply text the user watched stream in since the last saved message stays in the
   // thread, above the error, instead of vanishing with the live row.
   recordExplicitNoResponse(reply, reply.assistantTurnText);
@@ -1035,7 +1040,7 @@ export async function failRun(
     getLogger().warn("run.failed", {
       "run.outcome": "failed",
       "run.failure": error.name,
-      reason: message,
+      reason: operatorReason,
       ...model.active,
     });
   } else {

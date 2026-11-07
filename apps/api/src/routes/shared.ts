@@ -18,6 +18,7 @@ import {
   canonicalPiProviderId,
   resolveBotAvatarSet,
 } from "@rakazo/contracts";
+import { presentModelId } from "@rakazo/core";
 import { isAdmin } from "../admins.js";
 import { almaMeFields } from "../alma-onboarding.js";
 import { effectiveSandboxProvider } from "../computer-provider-config.js";
@@ -70,9 +71,13 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     defaultProvider: managedModel
       ? (operatorModel?.provider ?? null)
       : canonicalPiProviderId(setup.model?.provider ?? deps.env.defaultProvider),
-    defaultModel: managedModel
-      ? (operatorModel?.id ?? null)
-      : (setup.model?.modelId ?? deps.env.defaultModel),
+    defaultModel:
+      presentModelId(
+        managedModel
+          ? (operatorModel?.provider ?? null)
+          : canonicalPiProviderId(setup.model?.provider ?? deps.env.defaultProvider),
+        managedModel ? (operatorModel?.id ?? "") : (setup.model?.modelId ?? deps.env.defaultModel),
+      ) || null,
     // Set only while the active default is the deployment's own, running on host credentials.
     ...hostCredentials(
       !managedModel &&

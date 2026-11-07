@@ -7,6 +7,12 @@ import {
   selectCompatibleModelCredential,
   withConnectionName,
 } from "@rakazo/contracts";
+import {
+  isAlmaUpstreamProvider,
+  presentModelCopy,
+  presentModelId,
+  resolveModelId,
+} from "./alma-model-alias.js";
 import { listSearch } from "./list-search.js";
 
 /** Bots that pick their own model ignore the space default and its changes. */
@@ -390,10 +396,16 @@ export function catalogModelLabel(
 ): string | null {
   if (!modelId) return null;
   const canonical = provider ? canonicalPiProviderId(provider) : "";
+  const wanted = isAlmaUpstreamProvider(provider)
+    ? new Set([modelId, presentModelId(provider, modelId), resolveModelId(provider, modelId)])
+    : new Set([modelId]);
   const entry = catalog.find(
-    (item) => canonicalPiProviderId(item.provider) === canonical && item.id === modelId,
+    (item) => canonicalPiProviderId(item.provider) === canonical && wanted.has(item.id),
   );
-  return entry?.label ?? modelId;
+  if (!entry) return isAlmaUpstreamProvider(provider) ? presentModelId(provider, modelId) : modelId;
+  return isAlmaUpstreamProvider(provider) || /deepseek/i.test(entry.label)
+    ? presentModelCopy(entry.label)
+    : entry.label;
 }
 
 /**

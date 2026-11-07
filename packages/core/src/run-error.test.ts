@@ -916,4 +916,14 @@ describe("the one action that fixes a failed run", () => {
       });
     },
   );
+
+  it("does not show the upstream model vendor in a provider error", () => {
+    const raw = 'deepseek API error (429): {"message":"deepseek-flash is busy"}';
+    const shown = normalizeRunError(raw);
+    expect(shown.details.toLowerCase()).not.toContain("deepseek");
+    expect(shown.providerMessage?.toLowerCase()).not.toContain("deepseek");
+    expect(userRunError(new Error(raw)).toLowerCase()).not.toContain("deepseek");
+    expect(shown.details).toContain("ALMA model error");
+    expect(shown.details).toContain("alma-flash");
+  });
 });

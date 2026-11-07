@@ -20,8 +20,11 @@ import {
 
 it("labels a configured model from the catalog", () => {
   const catalog = [{ provider: "deepseek", id: "deepseek-flash", label: "DeepSeek V4.1 Flash" }];
-  expect(catalogModelLabel(catalog, "deepseek", "deepseek-flash")).toBe("DeepSeek V4.1 Flash");
+  expect(catalogModelLabel(catalog, "deepseek", "deepseek-flash")).toBe("ALMA V4.1 Flash");
+  expect(catalogModelLabel(catalog, "deepseek", "alma-flash")).toBe("ALMA V4.1 Flash");
+  expect(catalogModelLabel([], "deepseek", "deepseek-flash")).toBe("alma-flash");
   expect(catalogModelLabel(catalog, "deepseek", "custom-id")).toBe("custom-id");
+  expect(catalogModelLabel(catalog, "openai", "gpt-6-luna")).toBe("gpt-6-luna");
   expect(catalogModelLabel(catalog, "deepseek", null)).toBeNull();
 });
 

@@ -19,6 +19,7 @@ import type {
   SettingsScope,
 } from "@rakazo/contracts";
 import { AI_DISCLOSURE_VERSION, AI_PRIVACY_URL, canonicalPiProviderId } from "@rakazo/contracts";
+import { presentAiRecipient } from "@rakazo/core";
 import {
   findDefaultVoiceCredential,
   findModelCredential,
@@ -294,7 +295,7 @@ export async function aiConsentStatus(
       .digest("hex"),
     version: AI_DISCLOSURE_VERSION,
     privacyUrl: deps.env.privacyPolicyUrl ?? AI_PRIVACY_URL,
-    recipients: [...recipients.values()],
+    recipients: [...recipients.values()].map(presentAiRecipient),
   };
 }
 

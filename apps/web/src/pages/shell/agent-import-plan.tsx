@@ -292,7 +292,7 @@ export function AgentImportPlanReview({
             {item(
               plan.model.id,
               plan.model.title,
-              `${plan.model.provider}\n${plan.model.modelId}`,
+              `${plan.model.providerName ?? plan.model.provider}\n${plan.model.modelId}`,
               modelUsable
                 ? undefined
                 : note(

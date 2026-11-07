@@ -14,7 +14,16 @@ import {
   TimeZoneSchema,
   UpdateGroupInput,
 } from "@rakazo/contracts";
-import { CARD_TITLE_ESCAPED_CHARACTERS, ONCE_ROUTINE_CRON, redactSecrets } from "@rakazo/core";
+import {
+  ALMA_PUBLIC_PROVIDER_NAME,
+  CARD_TITLE_ESCAPED_CHARACTERS,
+  isAlmaUpstreamProvider,
+  ONCE_ROUTINE_CRON,
+  presentModelCopy,
+  presentModelId,
+  redactSecrets,
+  resolveModelId,
+} from "@rakazo/core";
 import type { Prisma, PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
   commitBotUpdate,
@@ -1274,10 +1283,18 @@ export function modelLabel(provider: string | null, model: string | null): strin
   if (!provider || !model) return "Default model";
   const catalog = [...listPiCatalog(), scriptedCatalogEntry];
   const catalogProvider = canonicalPiProviderId(provider);
-  const entry = catalog.find((item) => item.provider === catalogProvider && item.id === model);
+  const modelId = resolveModelId(provider, model);
+  const entry = catalog.find((item) => item.provider === catalogProvider && item.id === modelId);
+  if (isAlmaUpstreamProvider(catalogProvider)) {
+    return entry
+      ? `${ALMA_PUBLIC_PROVIDER_NAME}: ${presentModelCopy(entry.label)}`
+      : `${presentModelId(catalogProvider, model)} (${ALMA_PUBLIC_PROVIDER_NAME})`;
+  }
   const providerName =
     catalog.find((item) => item.provider === catalogProvider)?.providerName ?? provider;
-  return entry ? `${entry.providerName}: ${entry.label}` : `${model} (${providerName})`;
+  return entry
+    ? `${presentModelCopy(entry.providerName)}: ${presentModelCopy(entry.label)}`
+    : `${presentModelCopy(model)} (${presentModelCopy(providerName)})`;
 }
 
 function issueMessage(error: { issues: Array<{ path: PropertyKey[]; message: string }> }): string {
