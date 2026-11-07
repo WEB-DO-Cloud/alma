@@ -1088,6 +1088,7 @@ msgstr "Aprobaciones"
 
 #: src/pages/MessagingSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "Aprobar"
@@ -1470,6 +1471,7 @@ msgstr "No puede leer imágenes"
 #: src/pages/onboarding/model-step.tsx
 #: src/pages/PaymentWalletSettingsPanel.tsx
 #: src/pages/PluginSubmissionsPanel.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/create-bot-dialog.tsx
 #: src/pages/shell/dialogs.tsx
 msgid "Cancel"
@@ -4461,6 +4463,7 @@ msgstr "Menciona funciones de OpenClaw"
 msgid "Mentions: {mentions}"
 msgstr "Menciona: {mentions}"
 
+#: src/pages/QueuePage.tsx
 #: src/pages/shell/chat-shared.ts
 #: src/pages/shell/composer.tsx
 #: src/pages/SpaceSearch.tsx
@@ -4679,6 +4682,7 @@ msgstr ""
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/OrganizationSettingsPanel.tsx
 #: src/pages/plugins/source-form.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/bot-panel.tsx
@@ -4777,6 +4781,10 @@ msgstr ""
 #: src/components/VaultSettings.tsx
 msgid "New contact"
 msgstr ""
+
+#: src/pages/QueuePage.tsx
+msgid "New draft"
+msgstr "Nuevo borrador"
 
 #: src/pages/GroupPanel.tsx
 msgid "New group"
@@ -5035,6 +5043,10 @@ msgstr "Nada pendiente hoy."
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
 msgstr "Aún no hay recuerdos"
+
+#: src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr "Nada en espera"
 
 #: src/pages/shell/bot-settings-sections.tsx
 msgid "Notifications"
@@ -5376,6 +5388,7 @@ msgid "Persona"
 msgstr "Personalidad"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr "Personal"
 
@@ -5536,6 +5549,11 @@ msgstr "Proveedores"
 msgid "Pull request"
 msgstr "Solicitud de incorporación"
 
+#: src/components/SidebarFooter.tsx
+#: src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr "Cola"
+
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "En cola"
@@ -5596,6 +5614,10 @@ msgstr "Recientes"
 #: src/components/SpendingLimitSettings.tsx
 msgid "Recent payments"
 msgstr ""
+
+#: src/pages/QueuePage.tsx
+msgid "Recipient"
+msgstr "Destinatario"
 
 #: src/pages/plugins/plugin-browse.tsx
 msgid "Recommended"
@@ -6130,6 +6152,7 @@ msgstr "sábado"
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -6803,6 +6826,7 @@ msgstr "subagente"
 
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/onboarding/model-step.tsx
+#: src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "Enviar"
 
@@ -7817,6 +7841,7 @@ msgid "Won't do"
 msgstr "No se hará"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QueuePage.tsx
 #: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "Trabajo"

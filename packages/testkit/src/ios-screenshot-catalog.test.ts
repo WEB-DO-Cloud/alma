@@ -13,6 +13,7 @@ const catalogDir = path.join(mobileDir, "e2e", "ios-screenshots");
 /** Screens the catalog cannot reach yet, and why. Capture one and remove it here. */
 const UNCOVERED: Record<string, string> = {
   "integration-setup": "redirects to Integrations",
+  queue: "shown only while Phase 2A is on, which the catalog leaves off",
   sector: "shown once before the inbox, which the catalog opens already signed in",
   share: "Android only: iOS has no share extension yet",
 };

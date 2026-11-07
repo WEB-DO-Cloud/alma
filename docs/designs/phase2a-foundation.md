@@ -46,7 +46,7 @@ Phase 1 (merged) already records the activation funnel in `activation_events`. T
 *   No OCR, no spreadsheet or statement parsing, no field extraction (MF02, IN04). Follow-up.
 *   No email invitations, expiring links, or seat prices (the rest of TE01, and D05).
 *   No WhatsApp provider, no email sender, no recall, no correction-after-delivery UI (WA01, UX04).
-*   No new screen on web, desktop, or phone. The flag stays off until a later slice ships the queue on every surface that can approve.
+*   No new screen on web, desktop, or phone, except the Queue increment below.
 *   No new analytics event, no PostHog change, no latency recorder, no dashboard.
 *   No change to Phase 1 trial, sector copy, checklist, or plan sentences.
 *   Photography, finance, and agriculture are not fixtures.
@@ -308,4 +308,60 @@ Rollback is setting `ALMA_PHASE2A` to anything other than `true` and restarting 
 
 ## Owner decision
 
-Do not set `ALMA_PHASE2A=true` on production until the approval queue is on the web app and the phone. The hold is safe and the missing screen is not.
+Do not set `ALMA_PHASE2A=true` on production until the approval queue in the next section is on the web app and the phone.
+
+## Queue increment
+
+This section overrides the tool-hold sentences, the Goals bullets that say connector writes and linked-chat mirroring do not run, the Review resolutions on the hold and the mirror skip, the Tests bullet that expects a hold when the switch is on, and the Rollout sentence that says turning the switch on holds connector writes. It is the screen that makes the switch usable.
+
+### Problem
+
+With the switch on, a mutating connector call returns `phase2a_external_hold` and linked-chat mirroring is skipped. The draft API exists, and no screen lists it. Turning the switch on stops work and leaves a draft with nowhere to approve it.
+
+### Decision
+
+*   Remove `phase2a_external_hold`. That does not add a new gate. A mutating connector call follows the existing approval card, including auto and allow rules, except tools that still return `phase2a_refused`. Clinical, filing, payment, and price tools stay refused.
+*   Restore linked-chat mirroring. It follows today's messaging delivery, not `outbound_drafts`. Skipping it dropped replies the queue does not show.
+*   Do not turn a connector call into a draft by guessing the client. Replaying an approved draft through a connector stays a later increment. This increment does not call a provider and does not mark a draft sent.
+*   `MeSchema` gains optional `phase2aEnabled`. `meDto` sets it from `deps.env.phase2aEnabled`. Older servers omit it. The queue is hidden when it is not true.
+
+### Screen
+
+Web route `/app/queue`, opened from the account menu item Queue. Do not reuse the onboarding item Your work. Phone route `queue` inside Account settings. The same actions on both:
+
+*   Show New draft and Submit only when the person's role on the context is `owner`, `professional`, or `assistant`. Show Approve only for `owner` or `professional`, and not when an assistant would be approving their own draft. Save and Cancel follow the same write roles, and only on a draft that can still change.
+*   Client contexts are not created here. The form creates `personal` or `work` only. New drafts send no attachments.
+
+*   List contexts the person can see. Creating one is a name plus Personal or Work.
+*   The selected context lists its drafts. Each row shows the recipient, the channel, the full text, and the delivery label. The label never says delivered.
+*   A new draft needs a recipient, a channel (`email`, `whatsapp`, or `other`), and the text. It is saved as `draft`.
+*   Submit moves `draft` to `pending`. Approve is only on `pending`. Save edits the recipient or the text and returns an approved or pending draft to `draft`. Cancel is only on `pending` or `approved`.
+*   A sent draft has no cancel control. The server error `phase2a_already_sent` is shown as the code's own words, which do not say recall or delivered.
+
+Copy, and why a label is not enough:
+
+| English | Spanish | Why it is there |
+| --- | --- | --- |
+| Queue | Cola | Names the screen. A blank header does not say what the list is. |
+| Nothing waiting | Nada en espera | The empty list. Hiding the list would look like a failed load. |
+| Recipient | Destinatario | Names the field. The placeholder alone is not a label. |
+| New draft | Nuevo borrador | Names the form. |
+| Personal | Personal | Already used for the sector choice. |
+| Work | Trabajo | Already used for the sector choice. |
+| Approve | Aprobar | Already used on approval cards. |
+| Submit | Enviar | Already used. Here it means hand the draft over for approval, not send it out. |
+| Save | Guardar | Already used. |
+| Cancel | Cancelar | Already used. |
+
+Channel values stay `email`, `whatsapp`, and `other` as the control's own words. No extra sentence explains them.
+
+### Tests
+
+*   The hold test expects `gmail_send_email` to be allowed when the switch is on. `prescribe`, `file_return`, `commit_price`, `paid_request`, and a mutating Stripe call stay refused.
+*   A web render test opens the queue with one waiting draft, approves it, and does not render the word delivered. Web strings go through the Lingui catalogs.
+*   A phone render test does the same. Every new `t()` id is added to the seven non-English catalogs under `apps/mobile/lib/locales/` (`es`, `de`, `nl`, `ja`, `ru`, `zh`, `zh-TW`).
+*   With the switch off, `me.phase2aEnabled` is absent or false and the account row is not rendered.
+
+### Out of scope
+
+Replaying an approved draft through a connector. A provider result of sent, failed, or unknown. Guessing which client a tool call belongs to.

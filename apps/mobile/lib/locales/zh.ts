@@ -1551,6 +1551,10 @@ export const ZH_MESSAGES: Record<string, string> = {
   "The plan renews monthly until you cancel.": "方案每月续订，直到你取消。",
   "Cancel in the billing portal. Access lasts through the period already paid.":
     "在账单门户中取消。访问权限持续到已付费周期结束。",
+  Queue: "队列",
+  "Nothing waiting": "没有待处理的内容",
+  "New draft": "新草稿",
+  Recipient: "收件人",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

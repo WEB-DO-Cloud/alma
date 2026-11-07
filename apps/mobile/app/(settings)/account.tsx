@@ -731,6 +731,9 @@ export default function Account() {
         ) : null}
 
         <SettingsGroup>
+          {me?.phase2aEnabled ? (
+            <SettingsRow title={t("Queue")} chevron="right" onPress={() => router.push("/queue")} />
+          ) : null}
           {me?.billingEnabled ? (
             <SettingsRow
               title={t("Billing")}

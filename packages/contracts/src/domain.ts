@@ -1497,6 +1497,8 @@ export const MeSchema = z.object({
   needsSignupSurvey: z.boolean().optional(),
   /** Phase 1 onboarding. Absent from older servers. */
   onboardingV2: z.boolean().optional(),
+  /** Phase 2A queue. Absent from older servers, false when the switch is off. */
+  phase2aEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

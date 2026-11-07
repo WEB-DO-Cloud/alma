@@ -1514,6 +1514,10 @@ export const PL_MESSAGES: Record<string, string> = {
   "Read from the page, not checked": "Odczytane ze strony, niesprawdzone",
   Total: "Razem",
   "{name} options": "Opcje modelu {name}",
+  Queue: "Kolejka",
+  "Nothing waiting": "Nic nie czeka",
+  "New draft": "Nowy szkic",
+  Recipient: "Odbiorca",
 };
 
 export const PEER_MESSAGE_FORMS: Partial<Record<Intl.LDMLPluralRule, string>> = {

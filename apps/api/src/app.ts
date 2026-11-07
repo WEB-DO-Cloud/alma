@@ -770,6 +770,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       desktopHostChoiceEnabled: Boolean(env.desktopStackToken),
       computerSettingsEnabled: env.computerSettingsEnabled,
       mcpStdioEnabled: env.mcpStdioEnabled,
+      phase2aEnabled: env.phase2aEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });
