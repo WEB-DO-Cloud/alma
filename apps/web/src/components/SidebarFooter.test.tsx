@@ -162,6 +162,63 @@ it("opens integrations and keeps the existing account actions and links", async 
     "Account menu for Demo User",
   );
 });
+it("aligns Your work and Setup with the other account rows", async () => {
+  const onWork = vi.fn();
+  const onSetup = vi.fn();
+  await act(async () =>
+    root.render(
+      <DesktopUpdatesProvider>
+        <SidebarFooter
+          name="Demo User"
+          initials="DU"
+          email="account@rakazo.test"
+          open
+          onOpenChange={() => {}}
+          onIntegrations={() => {}}
+          onSkills={() => {}}
+          onArtifacts={() => {}}
+          onSettings={() => {}}
+          onWork={onWork}
+          onSetup={onSetup}
+          onUsage={() => {}}
+          onLogOut={() => {}}
+          signingOut={false}
+          logOutError={null}
+        />
+      </DesktopUpdatesProvider>,
+    ),
+  );
+  const menu = document.querySelector('[data-slot="popover-content"]')!;
+  const row = (label: string) =>
+    [...menu.querySelectorAll("button")].find((button) => button.textContent === label)!;
+  const settings = row("Settings");
+  const work = row("Your work");
+  const setup = row("Setup");
+  expect(work.querySelector("svg")?.getAttribute("class")).toContain("lucide-briefcase");
+  expect(setup.querySelector("svg")?.getAttribute("class")).toContain("lucide-list-checks");
+  for (const button of [settings, work, setup]) {
+    const icon = button.querySelector("svg")!;
+    expect(button.firstElementChild).toBe(icon);
+    expect(icon.classList.contains("text-muted-foreground")).toBe(true);
+    expect(icon.getAttribute("stroke-width")).toBe("1.75");
+    expect(button.className).toContain("justify-start");
+    expect(button.className).toContain("gap-2.5");
+  }
+  expect([...menu.querySelectorAll("button")].map((button) => button.textContent)).toEqual([
+    "Settings",
+    "Your work",
+    "Setup",
+    "Skills",
+    "Artifacts",
+    "Usage",
+    "Log out",
+  ]);
+  await act(async () => work.click());
+  await act(async () => setup.click());
+  expect(onWork).toHaveBeenCalledOnce();
+  expect(onSetup).toHaveBeenCalledOnce();
+});
+
 it("omits Board when unavailable", async () => {
   await render();
   expect(document.querySelector('[data-slot="popover-content"]')?.textContent).not.toContain(
