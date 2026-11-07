@@ -14,7 +14,9 @@ describe("loadEnv", () => {
       almaTrialMessageCap: 50,
       almaOnboardingV2: false,
     });
-    expect(loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" })).toMatchObject({
+    expect(
+      loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
+    ).toMatchObject({
       almaTrialEnabled: true,
       almaOnboardingV2: true,
     });
