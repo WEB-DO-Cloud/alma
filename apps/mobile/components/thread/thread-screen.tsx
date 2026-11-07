@@ -674,7 +674,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                   name: "camera",
                   phase2aEnabled: false,
                   voiceNotesEnabled: true,
-                  threadId: threadKey,
+                  threadId: threadKey ?? null,
                 }) ? (
                   <Pressable
                     accessibilityRole="button"
@@ -691,7 +691,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                   name: "voice",
                   phase2aEnabled: false,
                   voiceNotesEnabled: true,
-                  threadId: threadKey,
+                  threadId: threadKey ?? null,
                 }) ? (
                   <Pressable
                     accessibilityRole="button"

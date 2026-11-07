@@ -1,6 +1,7 @@
 export const ZH_TW_MESSAGES: Record<string, string> = {
   Record: "錄音",
   Recording: "正在錄音",
+  "Voice note": "語音筆記",
   Support: "支援",
   "No matches": "沒有相符的結果",
   "Always ask": "一律詢問",

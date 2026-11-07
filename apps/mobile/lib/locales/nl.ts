@@ -1,6 +1,7 @@
 export const NL_MESSAGES: Record<string, string> = {
   Record: "Opnemen",
   Recording: "Bezig met opnemen",
+  "Voice note": "Spraaknotitie",
   Support: "Ondersteuning",
   "No matches": "Geen resultaten",
   "Always ask": "Altijd vragen",

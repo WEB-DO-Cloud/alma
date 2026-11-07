@@ -1,6 +1,7 @@
 export const RU_MESSAGES: Record<string, string> = {
   Record: "Записать",
   Recording: "Запись",
+  "Voice note": "Голосовая заметка",
   Support: "Поддержка",
   "No matches": "Нет совпадений",
   "Always ask": "Всегда спрашивать",
