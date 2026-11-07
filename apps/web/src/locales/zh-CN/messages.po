@@ -101,6 +101,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "{0} 连接"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr ""
+
 #. placeholder {0}: bot.name
 #: src/pages/ExternalConversationSettings.tsx
 msgid "{0} default"
@@ -140,6 +145,11 @@ msgstr "{0} KB"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr ""
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -270,6 +280,10 @@ msgstr "{name} 选项"
 #: src/lib/browser-notifications.ts
 msgid "{name} stopped"
 msgstr "{name} 已停止"
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
@@ -427,6 +441,14 @@ msgstr "@{0}"
 #: src/components/ModelCredits.tsx
 msgid "/ month"
 msgstr "/ 月"
+
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr ""
 
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
@@ -656,6 +678,10 @@ msgstr "高级"
 #: src/pages/RoutineEditor.tsx
 msgid "Advanced..."
 msgstr "高级..."
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
@@ -920,6 +946,10 @@ msgstr "询问"
 msgid "Asleep"
 msgstr "休眠中"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr ""
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1040,6 +1070,10 @@ msgstr "基本认证（{username}）"
 msgid "Bearer token"
 msgstr "Bearer token"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr ""
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr "账单"
@@ -1138,6 +1172,14 @@ msgstr "浏览 MCP 服务器"
 msgid "Built-in"
 msgstr "内置"
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr ""
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr "通话"
@@ -1196,6 +1238,10 @@ msgstr "无法读取图像"
 #: src/pages/SpaceSettingOverrides.tsx
 msgid "Cancel"
 msgstr "取消"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2162,6 +2208,7 @@ msgstr "无法运行例行任务"
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -2699,6 +2746,7 @@ msgid "Don’t have an account?"
 msgstr "还没有账户？"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -2768,6 +2816,7 @@ msgstr "编辑名称"
 msgid "Edit Profile"
 msgstr "编辑资料"
 
+#: src/components/activation.tsx
 #: src/pages/AdminAccessPage.tsx
 #: src/pages/Auth.tsx
 msgid "Email"
@@ -2972,6 +3021,10 @@ msgstr "失败。"
 msgid "Failure handling"
 msgstr "失败处理"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr ""
+
 #: src/pages/RoutineEditor.tsx
 msgid "Fields that mark a change"
 msgstr "标记变化的字段"
@@ -3040,6 +3093,14 @@ msgstr "已完成。"
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "正在完成 MCP 连接…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr ""
 
 #: src/pages/Auth.tsx
 msgid "Forgot password?"
@@ -3186,6 +3247,7 @@ msgstr "你好，这是我朗读回复时的声音。"
 msgid "Hidden"
 msgstr "隐藏"
 
+#: src/components/activation.tsx
 #: src/components/VaultSettings.tsx
 msgid "Hide"
 msgstr "隐藏"
@@ -4103,6 +4165,10 @@ msgstr ""
 msgid "No bots match"
 msgstr "没有匹配的 Bot"
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr ""
+
 #: src/components/AskCard.tsx
 msgid "No longer active"
 msgstr "已停用"
@@ -4234,6 +4300,10 @@ msgstr "ALMA 不使用"
 #: src/components/McpServerHealthLine.tsx
 msgid "Not working"
 msgstr "无法正常工作"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -4510,6 +4580,10 @@ msgstr "人设"
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
 msgstr "个人"
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
+msgstr ""
 
 #: src/components/call/VoiceChatCard.tsx
 msgid "Phone call"
@@ -5409,6 +5483,11 @@ msgstr "设置：通用"
 msgid "Settings: Usage"
 msgstr "设置：用量"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr ""
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "设置完成"
@@ -5552,6 +5631,7 @@ msgstr "技能"
 msgid "Skills join the library all your bots share."
 msgstr "技能会加入所有 Bot 共享的技能库。"
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "跳过"
@@ -5901,6 +5981,10 @@ msgstr "模型提供商返回了错误。"
 msgid "The model returned an unusable response. Try again."
 msgstr "模型返回了无法使用的回复。请重试。"
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr ""
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "提供方正在限制请求频率。"
@@ -5920,6 +6004,15 @@ msgstr "屏幕链接已过期。"
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "The selected memory provider is not available in this build."
 msgstr "所选记忆提供方在此构建中不可用。"
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr ""
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr ""
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Their own model is cleared. You can pick one again in each bot."
@@ -6309,6 +6402,7 @@ msgstr "正在更新团队电脑"
 msgid "Updating…"
 msgstr "正在更新…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 msgid "Upgrade"
 msgstr "升级"
@@ -6532,9 +6626,17 @@ msgstr "这个工作区可以使用什么？"
 msgid "What do you most want ALMA to help with?"
 msgstr "你最希望 ALMA 帮你做什么？"
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
 msgstr "你想让我先做什么？"
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
+msgstr ""
 
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "What result will you demonstrate?"
@@ -6585,6 +6687,7 @@ msgid "Won't do"
 msgstr "不做"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "工作"
 
@@ -6719,3 +6822,7 @@ msgstr "你的语音提供方额度已用完。"
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "你的语音提供方拒绝了该密钥。"
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr ""

@@ -22,18 +22,23 @@ import {
   claimCheckoutLease,
   createBillingAccount,
   creditAccount,
+  ensureAlmaTrial,
   expireModelCredits,
   hasBillingAccess,
   hasModelAccess,
   MICROS_PER_DOLLAR,
   needsBillingPortal,
+  noteTrialClock,
   organizationForMember,
   organizationSeatCount,
   ownedBillingAccounts,
+  readAlmaFlags,
   reconcileCreditPurchase,
+  recordActivationEvent,
   releaseCheckoutLease,
   replaceBillingCustomer,
   syncBillingSnapshot,
+  trialCountdown,
 } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
 import { applyAccessGrants } from "./access-grants.js";
@@ -181,6 +186,16 @@ export function createBillingService(deps: {
     return found;
   }
 
+  async function noteCheckout(actor: Actor, organizationId: string) {
+    const day = new Date().toISOString().slice(0, 10);
+    await recordActivationEvent(prisma, {
+      organizationId,
+      userId: actor.userId,
+      name: "checkout_started",
+      dedupeKey: `checkout_started:${organizationId}:${day}`,
+    }).catch((error) => getLogger().error("activation checkout", error));
+  }
+
   async function managedOrganization(actor: Actor) {
     const found = await organization(actor);
     if (!found.isOwner) throw new ORPCError("FORBIDDEN");
@@ -219,6 +234,26 @@ export function createBillingService(deps: {
     }
     const live = snapshot;
     if (live) await reportCancellation(previous, live);
+    if (live?.status === "active" && live.subscriptionId) {
+      const members = await prisma.member.findMany({
+        where: { organizationId: previous.organizationId },
+        select: { userId: true, role: true },
+      });
+      const owner = members.find((member) =>
+        member.role
+          .split(",")
+          .map((role) => role.trim())
+          .includes("owner"),
+      );
+      if (owner) {
+        await recordActivationEvent(prisma, {
+          organizationId: previous.organizationId,
+          userId: owner.userId,
+          name: "payment_completed",
+          dedupeKey: `payment_completed:${previous.organizationId}:${live.subscriptionId}`,
+        }).catch((error) => getLogger().error("activation payment", error));
+      }
+    }
     if (live && hasBillingAccess(live.status))
       await referrals.settle(previous.organizationId, live.cardFingerprint);
     if (!modelCredits || !live) return;
@@ -334,9 +369,11 @@ export function createBillingService(deps: {
   ) {
     const amountCents = byokOfferCents(interval);
     if (amountCents === null || !provider.createByokCheckout) throw new ORPCError("NOT_FOUND");
-    const [account, credits] = await Promise.all([
+    await noteCheckout(actor, organizationId);
+    const [account, credits, almaTrial] = await Promise.all([
       billingAccountFor(actor, organizationId),
       creditAccount(prisma, organizationId),
+      prisma.almaTrial.findUnique({ where: { organizationId }, select: { organizationId: true } }),
     ]);
     try {
       return await openCheckout(actor, account, true, (customerId) =>
@@ -344,7 +381,7 @@ export function createBillingService(deps: {
           customerId,
           amountCents,
           interval,
-          ...(byokTrialAvailable(account, credits) ? { trialDays: TRIAL_DAYS } : {}),
+          ...(byokTrialAvailable(account, credits) && !almaTrial ? { trialDays: TRIAL_DAYS } : {}),
           successUrl: client === "mobile" ? mobileReturnUrl : returnUrl,
           cancelUrl: client === "mobile" ? mobileCancelUrl : appUrl,
         }),
@@ -454,15 +491,50 @@ export function createBillingService(deps: {
             ? byokFreeUntil(credits)
             : null;
         const subscribed = subscribedByokPrice(account);
-        const trialAvailable =
+        const flags = readAlmaFlags();
+        if (flags.trialEnabled) {
+          await ensureAlmaTrial(prisma, { organizationId, userId: actor.userId });
+        }
+        const almaRow = flags.trialEnabled
+          ? await prisma.almaTrial.findUnique({ where: { organizationId } })
+          : null;
+        const profile =
+          flags.trialEnabled || flags.onboardingV2
+            ? await prisma.almaProfile.findUnique({
+                where: { organizationId },
+                select: { sector: true, use: true },
+              })
+            : null;
+        if (almaRow) {
+          await noteTrialClock(prisma, {
+            organizationId,
+            userId: actor.userId,
+            endsAt: almaRow.endsAt,
+            sector: profile?.sector,
+            use: profile?.use,
+          });
+        }
+        const newSubscriber =
           resolveByokMonthlyPriceCents() !== null && byokTrialAvailable(account, credits);
+        const trialAvailable = newSubscriber && !almaRow;
         const byokPromo = await byokPromoForSubscriber(
           provider,
-          trialAvailable,
+          newSubscriber,
           resolveByokMonthlyPriceCents(),
         );
         return {
-          access: hasModelAccess(credits, account?.status ?? null),
+          access: hasModelAccess(
+            credits,
+            account?.status ?? null,
+            new Date(),
+            flags.trialEnabled && almaRow
+              ? {
+                  endsAt: almaRow.endsAt,
+                  messagesUsed: almaRow.messagesUsed,
+                  messageCap: almaRow.messageCap,
+                }
+              : null,
+          ),
           funding:
             credits.mode === "byok"
               ? "byok"
@@ -495,6 +567,8 @@ export function createBillingService(deps: {
           currentPeriodEndsAt: account?.currentPeriodEndsAt?.toISOString() ?? null,
           cancelAtPeriodEnd: account?.cancelAtPeriodEnd ?? false,
           hasCustomer: Boolean(account),
+          almaTrial: flags.trialEnabled ? trialCountdown(almaRow) : null,
+          planClarity: flags.trialEnabled || flags.onboardingV2,
           computerHoursLeft: computerAllowance && sandboxHoursLeft(computerAllowance),
           referral: await referrals.status(organizationId, isOwner),
         };
@@ -523,6 +597,7 @@ export function createBillingService(deps: {
     async checkout(actor, client, interval) {
       const { organizationId } = await managedOrganization(actor);
       if (modelCredits) return byokCheckout(actor, organizationId, client, interval);
+      await noteCheckout(actor, organizationId);
       let account = await billingAccountForOrganization(prisma, organizationId);
       if (account) {
         // Decide from the provider, not a snapshot a missed webhook may have left stale.
@@ -541,7 +616,11 @@ export function createBillingService(deps: {
         customerId: await newCustomer(actor, organizationId),
       });
       const seats = await organizationSeatCount(prisma, organizationId);
-      const trial = account.subscribedAt ? {} : { trialDays: TRIAL_DAYS };
+      const almaTrial = await prisma.almaTrial.findUnique({
+        where: { organizationId },
+        select: { organizationId: true },
+      });
+      const trial = account.subscribedAt || almaTrial ? {} : { trialDays: TRIAL_DAYS };
       try {
         return await withLiveCustomer(actor, account, (customerId) =>
           provider.createCheckout({

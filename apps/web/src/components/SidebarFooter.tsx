@@ -44,6 +44,8 @@ type Props = {
   onLink?: (link: NavLink) => void;
   onArtifacts: () => void;
   onSettings: () => void;
+  onWork?: () => void;
+  onSetup?: () => void;
   onUsage: () => void;
   onInvite?: () => void;
   onLogOut: () => void;
@@ -72,6 +74,8 @@ export function SidebarFooter({
   onLink,
   onArtifacts,
   onSettings,
+  onWork,
+  onSetup,
   onUsage,
   onInvite,
   onLogOut,
@@ -163,6 +167,24 @@ export function SidebarFooter({
               <Settings className="text-muted-foreground" strokeWidth={1.75} />
               <Trans>Settings</Trans>
             </Button>
+            {onWork ? (
+              <Button
+                variant="ghost"
+                className="h-9 w-full justify-start gap-2.5 font-normal"
+                onClick={onWork}
+              >
+                <Trans>Your work</Trans>
+              </Button>
+            ) : null}
+            {onSetup ? (
+              <Button
+                variant="ghost"
+                className="h-9 w-full justify-start gap-2.5 font-normal"
+                onClick={onSetup}
+              >
+                <Trans>Setup</Trans>
+              </Button>
+            ) : null}
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-2.5 font-normal"

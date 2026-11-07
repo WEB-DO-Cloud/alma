@@ -101,6 +101,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "{0} 연결"
 
+#. placeholder {0}: trial.daysLeft
+#: src/components/activation.tsx
+msgid "{0} days left"
+msgstr ""
+
 #. placeholder {0}: bot.name
 #: src/pages/ExternalConversationSettings.tsx
 msgid "{0} default"
@@ -140,6 +145,11 @@ msgstr "{0} KB"
 #: src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: src/components/activation.tsx
+msgid "{0} messages"
+msgstr ""
 
 #. placeholder {0}: sender.name
 #: src/pages/ExternalConversationSettings.tsx
@@ -270,6 +280,10 @@ msgstr "{name} 옵션"
 #: src/lib/browser-notifications.ts
 msgid "{name} stopped"
 msgstr "{name} 중지됨"
+
+#: src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr ""
 
 #: src/components/ModelCredits.tsx
 msgid "{promo}/month for your first {months} months, then {price}/month"
@@ -427,6 +441,14 @@ msgstr "@{0}"
 #: src/components/ModelCredits.tsx
 msgid "/ month"
 msgstr "/ 월"
+
+#: src/components/activation.tsx
+msgid "1 day left"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "1 message"
+msgstr ""
 
 #: src/components/integrations/space-availability.tsx
 msgid "1 space"
@@ -656,6 +678,10 @@ msgstr "고급 설정"
 #: src/pages/RoutineEditor.tsx
 msgid "Advanced..."
 msgstr "고급..."
+
+#: src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr ""
 
 #: src/components/AccountDataSettings.tsx
 msgid "Agent from another app"
@@ -920,6 +946,10 @@ msgstr "묻기"
 msgid "Asleep"
 msgstr "절전 중"
 
+#: src/components/activation.tsx
+msgid "Assistant"
+msgstr ""
+
 #. placeholder {0}: preset.time
 #: src/lib/cron.ts
 msgid "at {0}"
@@ -1040,6 +1070,10 @@ msgstr ""
 msgid "Bearer token"
 msgstr "Bearer 토큰"
 
+#: src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr ""
+
 #: src/pages/settings-nav.ts
 msgid "Billing"
 msgstr ""
@@ -1138,6 +1172,14 @@ msgstr ""
 msgid "Built-in"
 msgstr "기본 제공"
 
+#: src/components/activation.tsx
+msgid "Calendar"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr ""
+
 #: src/pages/shell/chat-header.tsx
 msgid "Call"
 msgstr ""
@@ -1196,6 +1238,10 @@ msgstr "이미지를 읽을 수 없음"
 #: src/pages/SpaceSettingOverrides.tsx
 msgid "Cancel"
 msgstr "취소"
+
+#: src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr ""
 
 #: src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2162,6 +2208,7 @@ msgstr "루틴을 실행할 수 없습니다"
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServersOverlay.tsx
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
 #: src/pages/shell/use-space-roster.ts
@@ -2699,6 +2746,7 @@ msgid "Don’t have an account?"
 msgstr "계정이 없나요?"
 
 #: src/components/AccountDataSettings.tsx
+#: src/components/activation.tsx
 #: src/components/ToolActivityDisclosure.tsx
 #: src/lib/ticket-status.ts
 #: src/pages/ActivityList.tsx
@@ -2768,6 +2816,7 @@ msgstr "이름 편집"
 msgid "Edit Profile"
 msgstr "Bot 정보 수정"
 
+#: src/components/activation.tsx
 #: src/pages/AdminAccessPage.tsx
 #: src/pages/Auth.tsx
 msgid "Email"
@@ -2972,6 +3021,10 @@ msgstr "실패했습니다."
 msgid "Failure handling"
 msgstr "실패했을 때 처리"
 
+#: src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr ""
+
 #: src/pages/RoutineEditor.tsx
 msgid "Fields that mark a change"
 msgstr "변경을 나타내는 필드"
@@ -3040,6 +3093,14 @@ msgstr "완료되었습니다."
 #: src/pages/McpOAuthCallback.tsx
 msgid "Finishing MCP connection…"
 msgstr "MCP 연결을 마무리하는 중…"
+
+#: src/components/activation.tsx
+msgid "First file"
+msgstr ""
+
+#: src/components/activation.tsx
+msgid "First task"
+msgstr ""
 
 #: src/pages/Auth.tsx
 msgid "Forgot password?"
@@ -3186,6 +3247,7 @@ msgstr "안녕하세요. 답변을 소리 내어 읽을 때 이런 목소리로 
 msgid "Hidden"
 msgstr "숨김"
 
+#: src/components/activation.tsx
 #: src/components/VaultSettings.tsx
 msgid "Hide"
 msgstr "숨기기"
@@ -4103,6 +4165,10 @@ msgstr ""
 msgid "No bots match"
 msgstr ""
 
+#: src/components/activation.tsx
+msgid "No files yet."
+msgstr ""
+
 #: src/components/AskCard.tsx
 msgid "No longer active"
 msgstr "이미 종료된 요청입니다"
@@ -4234,6 +4300,10 @@ msgstr "ALMA에서 사용하지 않음"
 #: src/components/McpServerHealthLine.tsx
 msgid "Not working"
 msgstr "작동하지 않음"
+
+#: src/components/activation.tsx
+msgid "Nothing due today."
+msgstr ""
 
 #: src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -4509,6 +4579,10 @@ msgstr "페르소나"
 
 #: src/components/SignupSurvey.tsx
 msgid "Personal"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "Personal use"
 msgstr ""
 
 #: src/components/call/VoiceChatCard.tsx
@@ -5409,6 +5483,11 @@ msgstr "설정: 일반"
 msgid "Settings: Usage"
 msgstr "설정: 사용량"
 
+#: src/components/activation.tsx
+#: src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr ""
+
 #: src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
 msgstr "설정 완료"
@@ -5552,6 +5631,7 @@ msgstr "스킬"
 msgid "Skills join the library all your bots share."
 msgstr "스킬은 모든 봇이 공유하는 라이브러리에 추가됩니다."
 
+#: src/pages/SectorStart.tsx
 #: src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "건너뛰기"
@@ -5901,6 +5981,10 @@ msgstr "모델 제공업체에서 오류를 반환했습니다."
 msgid "The model returned an unusable response. Try again."
 msgstr "모델이 사용할 수 없는 응답을 반환했습니다. 다시 시도하세요."
 
+#: src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr ""
+
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "서비스가 요청 속도를 제한하고 있습니다."
@@ -5920,6 +6004,15 @@ msgstr "화면 링크가 만료되었습니다."
 #: src/pages/MemorySettingsOverlay.tsx
 msgid "The selected memory provider is not available in this build."
 msgstr "선택한 기억 서비스는 현재 빌드에서 사용할 수 없습니다."
+
+#: src/components/activation.tsx
+msgid "The trial ended."
+msgstr ""
+
+#: src/lib/user-error.ts
+#: src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr ""
 
 #: src/pages/model-settings/space-bots-model.tsx
 msgid "Their own model is cleared. You can pick one again in each bot."
@@ -6309,6 +6402,7 @@ msgstr ""
 msgid "Updating…"
 msgstr "업데이트 중…"
 
+#: src/components/activation.tsx
 #: src/pages/shell/shell-sidebar.tsx
 msgid "Upgrade"
 msgstr "업그레이드"
@@ -6532,8 +6626,16 @@ msgstr ""
 msgid "What do you most want ALMA to help with?"
 msgstr ""
 
+#: src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr ""
+
 #: src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
+msgstr ""
+
+#: src/pages/SectorStart.tsx
+msgid "What kind of work?"
 msgstr ""
 
 #: src/components/teach/TeachComputerOverlay.tsx
@@ -6585,6 +6687,7 @@ msgid "Won't do"
 msgstr ""
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/SectorStart.tsx
 msgid "Work"
 msgstr ""
 
@@ -6719,3 +6822,7 @@ msgstr "음성 서비스 크레딧이 모두 소진되었습니다."
 #: src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "음성 서비스에서 키를 거부했습니다."
+
+#: src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr ""

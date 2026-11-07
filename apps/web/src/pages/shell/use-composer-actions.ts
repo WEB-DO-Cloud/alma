@@ -8,7 +8,12 @@ import type {
   ThreadMessage,
   ThreadSnapshot,
 } from "@rakazo/contracts";
-import { attachmentMaxBytes, attachmentMaxCount, attachmentSizeLabel } from "@rakazo/contracts";
+import {
+  attachmentMaxBytes,
+  attachmentMaxCount,
+  attachmentSizeLabel,
+  isTrialLimitError,
+} from "@rakazo/contracts";
 import type { ComposerMention } from "@rakazo/core";
 import {
   attachmentsForThread,
@@ -19,6 +24,7 @@ import {
 } from "@rakazo/core";
 import type { RefObject } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useBilling } from "../../components/SubscriptionGate";
 import { requestBrowserNotificationPermission } from "../../lib/browser-notifications";
 import { setComposerUnsavedWork } from "../../lib/composer-draft";
 import { scheduleFocusPrompt } from "../../lib/focus-prompt";
@@ -87,6 +93,7 @@ export function useComposerActions({
   flushPendingBrowserNotifications: () => void;
 }) {
   const { t } = useLingui();
+  const { showPlans } = useBilling();
   const [pendingAttachments, setPendingAttachments] = useState<PendingAttachment[]>([]);
   usePendingAttachmentPreviewCleanup(pendingAttachments);
   const [replyTarget, setReplyTarget] = useState<ThreadMessage | null>(null);
@@ -460,6 +467,14 @@ export function useComposerActions({
         else if (botTarget) void refreshThreadRef.current(botTarget).catch(() => undefined);
         return true;
       } catch (error) {
+        if (isTrialLimitError(error)) {
+          showPlans();
+          setSendFailure({
+            message: t`The trial has reached its limit.`,
+            imageConfirmation: false,
+          });
+          return false;
+        }
         const isConfirmation = isImageInputConfirmation(error);
         // Offer the file resend only for the unchanged draft this send carried.
         const confirmation = isConfirmation && draftEdits.current === editsAtSend;

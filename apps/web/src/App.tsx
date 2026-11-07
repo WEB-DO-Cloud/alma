@@ -51,6 +51,9 @@ const PasswordResetPage = lazyComponent(() =>
 const OnboardingPage = lazyComponent(() =>
   import("./pages/Onboarding").then((module) => module.OnboardingPage),
 );
+const SectorStartPage = lazyComponent(() =>
+  import("./pages/SectorStart").then((module) => module.SectorStartPage),
+);
 const WelcomePage = lazyComponent(() =>
   import("./pages/Welcome").then((module) => module.WelcomePage),
 );
@@ -277,6 +280,7 @@ function SessionApp() {
                 <Route path="/app/g/:groupId" element={<ShellPage />} />
                 <Route path="/app/:botId" element={<ShellPage />} />
                 <Route element={<CallLayout />}>
+                  <Route path="/onboarding/sector" element={<SectorStartPage />} />
                   <Route path="/onboarding/:step?" element={<OnboardingPage />} />
                   <Route path="/app/artifacts" element={<ArtifactsPage />} />
                   <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />

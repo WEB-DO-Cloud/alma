@@ -18,6 +18,7 @@ export function ChatHeader({
   onOpenNavigation,
   onTogglePanel,
   onCall,
+  onFeedback,
 }: {
   inGroup: boolean;
   active: Bot | undefined;
@@ -31,6 +32,7 @@ export function ChatHeader({
   onOpenNavigation: () => void;
   onTogglePanel: () => void;
   onCall: (bot: Bot) => void;
+  onFeedback?: () => void;
 }) {
   const { t } = useLingui();
   const support = !inGroup && isSupportBot(active);
@@ -79,6 +81,16 @@ export function ChatHeader({
         </span>
       </Button>
       <div className="flex items-center justify-self-end gap-2">
+        {onFeedback && !support ? (
+          <Button
+            variant="floating"
+            data-testid="feedback-button"
+            className="app-no-drag"
+            onClick={onFeedback}
+          >
+            {t`Feedback`}
+          </Button>
+        ) : null}
         {phoneCallsEnabled && !inGroup && active && !support ? (
           <IconTooltip label={inCall ? t`Open call` : t`Call`}>
             <Button

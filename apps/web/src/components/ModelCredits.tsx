@@ -48,6 +48,7 @@ import {
 import { rpc } from "../lib/rpc";
 import { useSignOut } from "../lib/sign-out";
 import { AccountMenu } from "./AccountMenu";
+import { PlanClarityCopy } from "./activation";
 
 type CreditAmount = (typeof MODEL_CREDIT_AMOUNTS)[number];
 
@@ -296,6 +297,7 @@ export function CreditChoice({
                 <LaunchOfferCopy {...launch} />
               </div>
             ) : null}
+            <PlanClarityCopy status={status} />
             <p className="text-sm text-muted-foreground">
               <Trans>Works with your ChatGPT or Claude plan.</Trans>
             </p>
@@ -507,6 +509,7 @@ export function ModelCreditsSettings({
                 <LaunchOfferCopy {...launch} />
               </>
             ) : null}
+            <PlanClarityCopy status={status} />
             {freeUntil && price ? (
               <Button
                 disabled={pending}
