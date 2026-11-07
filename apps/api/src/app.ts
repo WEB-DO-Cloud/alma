@@ -95,9 +95,11 @@ import {
   createPool,
   createThreadEvents,
   describeRowSecurity,
+  holdRoutinePush,
   IsolationError,
   installAuditEventStore,
   installSecurityEventStore,
+  loadNotifyPolicy,
   parsePositiveInteger,
   pushSessionExpiresAt,
   requireMembership,
@@ -462,6 +464,8 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       jobs,
       accessToken: env.expoAccessToken,
       voip: await createApnsVoipProvider(env.apnsVoip),
+      notifyPolicyFor: (userId) => loadNotifyPolicy(prisma, userId),
+      onQuietHold: (userId) => holdRoutinePush(prisma, userId),
     });
   const userDeviceSecret = userDeviceForwardSecret(env.encryptionKey);
   const userDeviceHub = env.userDevicesEnabled
@@ -771,6 +775,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       computerSettingsEnabled: env.computerSettingsEnabled,
       mcpStdioEnabled: env.mcpStdioEnabled,
       phase2aEnabled: env.phase2aEnabled,
+      notifyPolicyEnabled: env.notifyPolicyEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });

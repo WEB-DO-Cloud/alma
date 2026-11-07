@@ -32,6 +32,47 @@ function jsonResponse(body: unknown, status = 200) {
   return Response.json(body, { status });
 }
 
+describe("notify policy redaction", () => {
+  it("replaces the lock-screen text when the flag is on", async () => {
+    const previous = process.env.ALMA_NOTIFY_POLICY;
+    process.env.ALMA_NOTIFY_POLICY = "true";
+    try {
+      const tokens = new MemoryPushTokenStore();
+      await tokens.save("user-1", "ExponentPushToken[test]");
+      const fetchMock = vi
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve(jsonResponse({ data: { status: "ok", id: "ticket" } })),
+        );
+      vi.stubGlobal("fetch", fetchMock);
+      await new ExpoPushProvider(tokens).deliver(
+        {
+          kind: "completion",
+          title: "Ada wrote",
+          body: "The contract is ready",
+          botId: "bot-1",
+          threadId: "th-1",
+          sender: { botId: "bot-1", name: "Ada" },
+        },
+        notifyContext,
+      );
+      const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      const payload = JSON.parse(String(init.body)) as {
+        title: string;
+        body: string;
+        data: Record<string, unknown>;
+      };
+      expect(payload.title).toBe("ALMA");
+      expect(payload.body).toBe("Updates");
+      expect(JSON.stringify(payload)).not.toContain("Ada");
+      expect(JSON.stringify(payload)).not.toContain("contract");
+    } finally {
+      if (previous === undefined) delete process.env.ALMA_NOTIFY_POLICY;
+      else process.env.ALMA_NOTIFY_POLICY = previous;
+    }
+  });
+});
+
 describe("expo push tickets", () => {
   it("reads a single Expo ticket and a ticket array", () => {
     expect(expoPushErrorMessage({ data: { status: "ok", id: "1" } }, 200)).toBeUndefined();

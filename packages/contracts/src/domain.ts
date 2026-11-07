@@ -1499,6 +1499,8 @@ export const MeSchema = z.object({
   onboardingV2: z.boolean().optional(),
   /** Phase 2A queue. Absent from older servers, false when the switch is off. */
   phase2aEnabled: z.boolean().optional(),
+  /** Lock-screen notification policy. Absent from older servers, false when the switch is off. */
+  notifyPolicyEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),
