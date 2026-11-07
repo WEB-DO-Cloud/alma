@@ -1,9 +1,18 @@
 # Phase 2C engagement
 
-*   **Status:** Reviewed. The resolutions in the next section override any sentence they name.
+*   **Status:** Reviewed. Owner decisions below override any earlier sentence they touch, including the review resolutions.
 *   **Date:** 2026-11-07
 *   **Author:** ALMA overlay. Upstream Rakazo files change only where this note names them.
 *   **Do not merge, deploy, or start a store build.** The owner approves each pull request.
+
+## Owner decisions, 2026-11-07
+
+The owner decided these. They are not still open.
+
+*   **Referral reward.** `ALMA_REFERRAL_REWARDS` stays off unless the value is exactly `true`. Exact `true` does not throw and does not stop startup. While it is on, the first successful payment by the referred organization grants one free month to that organization and one free month to the referrer. The grant is `extendByokFreePeriod` for `FREE_MONTH_DAYS` (30) on each organization. It runs once. A second payment does not grant again. Self-referral is refused. The same card fingerprint as the referrer is refused. The same non-public email domain as the referrer is refused. Public mailbox domains (`gmail.com`, `googlemail.com`, `outlook.com`, `hotmail.com`, `live.com`, `icloud.com`, `me.com`, `yahoo.com`, `proton.me`, `protonmail.com`) do not count as the same domain. A referrer receives at most 5 rewards in any 30-day window. While the flag is off, this grant does not run.
+*   **Daily summary channel.** Delivery is the in-app issue and one push. No email. No WhatsApp. The push body stays the fixed summary line.
+*   **Monthly report.** Three views. The signed-in user's own month. That same month broken down by each `work_contexts` row of kind `client` the user can see. An admin total across customers, available only to a verified address in `RAKAZO_ADMIN_EMAILS`, with counts and no message text. The admin view is refused for everyone else.
+*   **Undo window.** The user chooses 0, 10, 30, or 60 seconds. No stored choice means 30. The settings screen is `/app/undo`. An approved draft shows Undo and the remaining seconds in the chat and on the queue. `ALMA_UNDO_DISPATCH` is a second flag, off unless exactly `true`. While it is on, a still-approved draft whose window has elapsed is claimed once and sent through the existing email sender. Cancel or an edit before the claim does not send. An edit clears the approval.
 
 ## Review resolutions
 
@@ -82,11 +91,11 @@ Each reader returns enabled only when the value is exactly `true`. `1`, `yes`, a
 | `ALMA_SEND_UNDO` | `readSendUndoConfig` in `packages/core/src/send-undo.ts` | `sendUndoEnabled` | off |
 | `ALMA_MONTHLY_REPORT` | `readMonthlyReportConfig` in `packages/core/src/monthly-report.ts` | `monthlyReportEnabled` | off |
 | `ALMA_REFERRAL_PROMPT` | `readReferralPromptConfig` in `packages/core/src/referral-prompt.ts` | `referralPromptEnabled` | off |
-| `ALMA_REFERRAL_REWARDS` | same file | not on `me` | off, and `true` throws |
+| `ALMA_REFERRAL_REWARDS` | `readReferralRewardsConfig` in the same file | not on `me` | off. Exact `true` is on and does not throw |
 
 `loadEnv` in `apps/api/src/env.ts` and worker startup in `apps/worker/src/index.ts` (next to `readPhase2aConfig`) call every reader. A throw fails startup before serving.
 
-`ALMA_REFERRAL_REWARDS=true` throws the error `referral rewards are not approved`. Any other value is off and does not throw.
+`ALMA_REFERRAL_REWARDS` is on only when the value is exactly `true`. Any other value is off. Exact `true` does not throw. The grant it enables is the owner decision above.
 
 `ALMA_SEND_UNDO=true` while `ALMA_PHASE2A` is not exactly `true` throws the error `send undo requires phase 2a`. When send undo is off, Phase 2A is not required.
 
@@ -443,14 +452,13 @@ Migrations sort after `20261202120400`:
 
 ## Open decisions
 
-The owner decides these. The spec does not assume a yes.
+The four items in Owner decisions are closed. These remain:
 
-1. **Sender after the window.** This spec does not call the existing email or messaging sender when `dispatchAfter` passes. Attach those senders only if the owner says to. Until then, Undo cancels an unsent draft and the label stays waiting.
-2. **Unset timezone.** This spec uses `America/Santo_Domingo` when `user.timezone` is null. Confirm, or require the user to pick a zone before a summary is scheduled.
-3. **Practice marks.** Nothing in production is marked practice. Confirm that onboarding runs stay in the real totals until a later, explicit mark exists.
-4. **Store build.** Home-screen shortcuts, biometric app lock, and an Undo button inside the notification wait for a store build. This spec ships on-screen Undo, queue actions, and the `capture` routes only.
-5. **Monday summary default.** Opting into the morning summary also turns on the Monday summary. Confirm, or default Monday to off.
-6. **Referral link.** Only an organization owner gets a link. A member who owns nothing sees no prompt. Confirm.
-7. **Hours.** The method is 5 to 15 minutes per finished task, shown as minute totals. Confirm that range before the report is turned on.
+1. **Unset timezone.** The morning count uses `America/Santo_Domingo` when `user.timezone` is null or not a valid IANA name.
+2. **Practice marks.** Nothing in production is marked practice, so onboarding runs stay in the real totals until a later mark exists.
+3. **Store build.** Home-screen shortcuts, biometric app lock, and an Undo button inside the notification wait for a store build.
+4. **Monday summary.** Opting into the morning count also turns the Monday count on.
+5. **Referral link.** Only an organization owner gets a link.
+6. **Hours.** Each finished task counts as 5 to 15 minutes, shown as those minute totals.
 
 Goldfish review: `docs/designs/reviews/2026-11-07-phase2c-engagement.md`.
