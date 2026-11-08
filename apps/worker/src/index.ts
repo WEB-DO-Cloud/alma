@@ -7,6 +7,8 @@ import {
   readMonthlyReportConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
+  readReferralPromptConfig,
+  readReferralRewardsConfig,
   readSendUndoConfig,
   readUndoDispatchConfig,
   readVoiceNotesConfig,
@@ -107,6 +109,8 @@ async function main() {
   readVoiceNotesConfig();
   readDigestConfig();
   readMonthlyReportConfig();
+  readReferralPromptConfig();
+  readReferralRewardsConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");

@@ -21,7 +21,9 @@ describe("loadEnv", () => {
       voiceNotesEnabled: false,
       digestEnabled: false,
       monthlyReportEnabled: false,
+      referralPromptEnabled: false,
     });
+    expect(loadEnv({ ...base, ALMA_REFERRAL_REWARDS: "true" }).referralPromptEnabled).toBe(false);
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
     ).toMatchObject({

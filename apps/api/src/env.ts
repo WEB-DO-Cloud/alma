@@ -29,6 +29,8 @@ import {
   readMonthlyReportConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
+  readReferralPromptConfig,
+  readReferralRewardsConfig,
   readSendUndoConfig,
   readUndoDispatchConfig,
   readVoiceNotesConfig,
@@ -158,6 +160,7 @@ export interface AppEnv {
   voiceNotesEnabled: boolean;
   digestEnabled: boolean;
   monthlyReportEnabled: boolean;
+  referralPromptEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -455,6 +458,7 @@ function inboundEmailFromEnv(source: NodeJS.ProcessEnv): AppEnv["inboundEmail"] 
 function almaFlags(source: NodeJS.ProcessEnv) {
   const flags = readAlmaFlags(source);
   const phase2a = readPhase2aConfig(source);
+  readReferralRewardsConfig(source);
   return {
     almaTrialEnabled: flags.trialEnabled,
     almaTrialDays: flags.trialDays,
@@ -468,6 +472,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     voiceNotesEnabled: readVoiceNotesConfig(source).enabled,
     digestEnabled: readDigestConfig(source).enabled,
     monthlyReportEnabled: readMonthlyReportConfig(source).enabled,
+    referralPromptEnabled: readReferralPromptConfig(source).enabled,
   };
 }
 

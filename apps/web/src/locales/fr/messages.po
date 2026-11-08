@@ -2133,6 +2133,7 @@ msgstr ""
 #: src/components/vault/VaultItemDetail.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/onboarding/model-step.tsx
+#: src/pages/ReferralPage.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/message-hover-actions.tsx
 msgid "Copied"
@@ -6519,11 +6520,20 @@ msgstr ""
 
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
+#: src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr ""
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share “{title}”"
+msgstr ""
+
+#: src/pages/ReferralPage.tsx
+msgid "Share ALMA"
+msgstr ""
+
+#: src/pages/ReferralPage.tsx
+msgid "Share text"
 msgstr ""
 
 #: src/components/pages/SharePopover.tsx

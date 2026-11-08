@@ -590,6 +590,7 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["digest/update", { enabled: false, weekly: true, minuteOfDay: 450 }],
       ["monthlyReport/get", {}],
       ["monthlyReport/admin", {}],
+      ["referralShare/get"],
       ["phase2a/contexts/list"],
       ["phase2a/contexts/create", { kind: "personal", label: "Home" }],
       ["phase2a/contexts/grant", { contextId: "missing", userId: "missing", role: "reader" }],

@@ -89,6 +89,7 @@ export * from "./phase2a.js";
 export * from "./plugin-catalog.js";
 export * from "./product-analytics.js";
 export * from "./prompt-data.js";
+export * from "./referral-prompt.js";
 export * from "./refresh-coalescer.js";
 export * from "./remote-images.js";
 export * from "./response-bytes.js";

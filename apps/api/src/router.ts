@@ -56,6 +56,7 @@ import { organizationsRoutes } from "./routes/organizations.js";
 import { pagesRoutes } from "./routes/pages.js";
 import { paymentWalletRoutes } from "./routes/payment-wallet.js";
 import { phase2aRoutes } from "./routes/phase2a.js";
+import { referralShareRoutes } from "./routes/referral-share.js";
 import { routinesRoutes } from "./routes/routines.js";
 import { sendUndoRoutes } from "./routes/send-undo.js";
 import { spacesRoutes } from "./routes/spaces.js";
@@ -161,6 +162,7 @@ export interface RouterDeps {
     voiceNotesEnabled?: boolean;
     digestEnabled?: boolean;
     monthlyReportEnabled?: boolean;
+    referralPromptEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }
@@ -194,6 +196,7 @@ export function createRouter(deps: RouterDeps) {
     ...digestRoutes(ctx),
     ...monthlyReportRoutes(ctx),
     ...phase2aRoutes(ctx),
+    ...referralShareRoutes(ctx),
     ...sendUndoRoutes(ctx),
     ...spendingLimitRoutes(ctx),
   });

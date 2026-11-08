@@ -2133,6 +2133,7 @@ msgstr "Conversations"
 #: src/components/vault/VaultItemDetail.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/onboarding/model-step.tsx
+#: src/pages/ReferralPage.tsx
 #: src/pages/shell/agent-import.tsx
 #: src/pages/shell/message-hover-actions.tsx
 msgid "Copied"
@@ -6519,12 +6520,21 @@ msgstr "Shape {0}"
 
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
+#: src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr "Share"
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share “{title}”"
 msgstr "Share “{title}”"
+
+#: src/pages/ReferralPage.tsx
+msgid "Share ALMA"
+msgstr "Share ALMA"
+
+#: src/pages/ReferralPage.tsx
+msgid "Share text"
+msgstr "Share text"
 
 #: src/components/pages/SharePopover.tsx
 msgid "Share, anyone with the link can view"

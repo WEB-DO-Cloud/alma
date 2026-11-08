@@ -84,6 +84,9 @@ const DigestPage = lazyComponent(() =>
 const ReportPage = lazyComponent(() =>
   import("./pages/ReportPage").then((module) => module.ReportPage),
 );
+const ReferralPage = lazyComponent(() =>
+  import("./pages/ReferralPage").then((module) => module.ReferralPage),
+);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -245,6 +248,9 @@ function SessionApp() {
               {import.meta.env.DEV ? (
                 <Route path="/preview/report" element={<ReportPage />} />
               ) : null}
+              {import.meta.env.DEV ? (
+                <Route path="/preview/referral" element={<ReferralPage />} />
+              ) : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}
                 element={
@@ -329,6 +335,7 @@ function SessionApp() {
                   <Route path="/app/undo" element={<UndoPage />} />
                   <Route path="/app/digest" element={<DigestPage />} />
                   <Route path="/app/report" element={<ReportPage />} />
+                  <Route path="/app/referral" element={<ReferralPage />} />
                   <Route path="/app/artifacts" element={<ArtifactsPage />} />
                   <Route path="/app/artifacts/:artifactId" element={<ArtifactsPage />} />
                   {ticketBoardEnabled ? <Route path="/app/board" element={<BoardPage />} /> : null}

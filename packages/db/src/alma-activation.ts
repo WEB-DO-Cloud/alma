@@ -6,6 +6,7 @@ import {
   almaSector,
   almaText,
 } from "@rakazo/contracts";
+import { readReferralPromptConfig } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
 import { readAlmaFlags } from "./alma-flags.js";
 import { organizationForMember, spaceHasNonTrialModelAccess } from "./billing.js";
@@ -24,23 +25,39 @@ export async function recordActivationEvent(
     use?: string | null;
   },
 ): Promise<void> {
-  if (!readAlmaFlags().trialEnabled && !readAlmaFlags().onboardingV2) return;
-  try {
-    await prisma.activationEvent.create({
-      data: {
-        organizationId: input.organizationId,
-        userId: input.userId,
-        name: input.name,
-        dedupeKey: input.dedupeKey,
-        sector: input.sector ?? null,
-        use: input.use ?? null,
-      },
-    });
-  } catch (error) {
-    if (error instanceof PrismaNamespace.PrismaClientKnownRequestError && error.code === "P2002") {
-      return;
+  if (readAlmaFlags().trialEnabled || readAlmaFlags().onboardingV2) {
+    try {
+      await prisma.activationEvent.create({
+        data: {
+          organizationId: input.organizationId,
+          userId: input.userId,
+          name: input.name,
+          dedupeKey: input.dedupeKey,
+          sector: input.sector ?? null,
+          use: input.use ?? null,
+        },
+      });
+    } catch (error) {
+      if (
+        !(error instanceof PrismaNamespace.PrismaClientKnownRequestError && error.code === "P2002")
+      ) {
+        getLogger().error("activation event", error);
+      }
     }
-    getLogger().error("activation event", error);
+  }
+  if (!readReferralPromptConfig().enabled) return;
+  const stamp = new Date();
+  if (input.name === "task_completed") {
+    await prisma.referral.updateMany({
+      where: { organizationId: input.organizationId, activatedAt: null },
+      data: { activatedAt: stamp },
+    });
+  }
+  if (input.name === "payment_completed") {
+    await prisma.referral.updateMany({
+      where: { organizationId: input.organizationId, paidAt: null },
+      data: { paidAt: stamp },
+    });
   }
 }
 
