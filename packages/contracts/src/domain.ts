@@ -1509,6 +1509,8 @@ export const MeSchema = z.object({
   voiceNotesEnabled: z.boolean().optional(),
   /** Morning and Monday counts. Absent means off. */
   digestEnabled: z.boolean().optional(),
+  /** Monthly counts page. Absent means off. */
+  monthlyReportEnabled: z.boolean().optional(),
   needsSectorChoice: z.boolean().optional(),
   almaUse: z.enum(["personal", "work", "skip"]).nullable().optional(),
   almaSector: z.string().nullable().optional(),

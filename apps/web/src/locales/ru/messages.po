@@ -871,6 +871,10 @@ msgstr "Все {credit} идут на использование моделей.
 msgid "All bots"
 msgstr ""
 
+#: src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "All files"
 msgstr ""
@@ -3252,6 +3256,7 @@ msgid "Download CSV"
 msgstr "Скачать CSV"
 
 #: src/components/pages/DownloadPdfButton.tsx
+#: src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr ""
 
@@ -5514,6 +5519,10 @@ msgstr "ОТПРАВИТЬ в"
 msgid "PR reviewer"
 msgstr "PR reviewer"
 
+#: src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr ""
+
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "Предпочтения"
@@ -7239,6 +7248,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "Контекстное окно этой модели слишком мало. Выберите другую модель."
 
 #: src/pages/Artifacts.tsx
+#: src/pages/ReportPage.tsx
 msgid "This month"
 msgstr ""
 

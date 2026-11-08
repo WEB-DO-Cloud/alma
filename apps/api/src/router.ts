@@ -49,6 +49,7 @@ import { mcpRoutes } from "./routes/mcp.js";
 import { memoryRoutes } from "./routes/memory.js";
 import { messagingRoutes } from "./routes/messaging.js";
 import { modelsRoutes } from "./routes/models.js";
+import { monthlyReportRoutes } from "./routes/monthly-report.js";
 import { notifyPolicyRoutes } from "./routes/notify-policy.js";
 import { onboardingRoutes } from "./routes/onboarding.js";
 import { organizationsRoutes } from "./routes/organizations.js";
@@ -159,6 +160,7 @@ export interface RouterDeps {
     undoDispatchEnabled?: boolean;
     voiceNotesEnabled?: boolean;
     digestEnabled?: boolean;
+    monthlyReportEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }
@@ -190,6 +192,7 @@ export function createRouter(deps: RouterDeps) {
     ...paymentWalletRoutes(ctx),
     ...notifyPolicyRoutes(ctx),
     ...digestRoutes(ctx),
+    ...monthlyReportRoutes(ctx),
     ...phase2aRoutes(ctx),
     ...sendUndoRoutes(ctx),
     ...spendingLimitRoutes(ctx),

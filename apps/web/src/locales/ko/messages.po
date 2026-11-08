@@ -871,6 +871,10 @@ msgstr "{credit} 전액이 모델 사용에 쓰입니다."
 msgid "All bots"
 msgstr ""
 
+#: src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "All files"
 msgstr ""
@@ -3252,6 +3256,7 @@ msgid "Download CSV"
 msgstr "CSV 다운로드"
 
 #: src/components/pages/DownloadPdfButton.tsx
+#: src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr ""
 
@@ -5514,6 +5519,10 @@ msgstr "POST 대상"
 msgid "PR reviewer"
 msgstr "PR reviewer"
 
+#: src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr ""
+
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "환경설정"
@@ -7239,6 +7248,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "이 모델의 컨텍스트 창이 너무 작습니다. 다른 모델을 선택하세요."
 
 #: src/pages/Artifacts.tsx
+#: src/pages/ReportPage.tsx
 msgid "This month"
 msgstr ""
 

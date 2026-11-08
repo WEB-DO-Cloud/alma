@@ -26,6 +26,7 @@ import {
   attachmentCountFromEnv,
   phoneCallSettings,
   readDigestConfig,
+  readMonthlyReportConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
   readSendUndoConfig,
@@ -156,6 +157,7 @@ export interface AppEnv {
   undoDispatchEnabled: boolean;
   voiceNotesEnabled: boolean;
   digestEnabled: boolean;
+  monthlyReportEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -465,6 +467,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     undoDispatchEnabled: readUndoDispatchConfig(source).enabled,
     voiceNotesEnabled: readVoiceNotesConfig(source).enabled,
     digestEnabled: readDigestConfig(source).enabled,
+    monthlyReportEnabled: readMonthlyReportConfig(source).enabled,
   };
 }
 

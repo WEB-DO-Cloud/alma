@@ -41,6 +41,7 @@ export * from "./messaging.js";
 export * from "./model-credentials.js";
 export * from "./model-credits.js";
 export * from "./model-roles.js";
+export * from "./monthly-report-store.js";
 export * from "./notify-policy-store.js";
 export * from "./organizations.js";
 export * from "./page-shares.js";

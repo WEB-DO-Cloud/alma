@@ -74,6 +74,8 @@ export * from "./model-oauth.js";
 export * from "./model-probe.js";
 export * from "./model-providers.js";
 export * from "./model-role-settings.js";
+export * from "./monthly-report.js";
+export * from "./monthly-report-pdf.js";
 export * from "./notification-avatar.js";
 export * from "./notify-policy.js";
 export * from "./organizations.js";

@@ -111,6 +111,7 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     undoDispatchEnabled: deps.env.undoDispatchEnabled === true,
     voiceNotesEnabled: deps.env.voiceNotesEnabled === true,
     digestEnabled: deps.env.digestEnabled === true,
+    monthlyReportEnabled: deps.env.monthlyReportEnabled === true,
     ...(await almaMeFields(deps, actor)),
     paymentWalletProvider: deps.paymentWallet
       ? { id: deps.paymentWallet.describe().id, name: deps.paymentWallet.displayName }

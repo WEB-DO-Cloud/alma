@@ -780,6 +780,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       undoDispatchEnabled: env.undoDispatchEnabled,
       voiceNotesEnabled: env.voiceNotesEnabled,
       digestEnabled: env.digestEnabled,
+      monthlyReportEnabled: env.monthlyReportEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });

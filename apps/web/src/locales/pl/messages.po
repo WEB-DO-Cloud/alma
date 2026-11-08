@@ -871,6 +871,10 @@ msgstr "Cała kwota {credit} pokrywa użycie modeli."
 msgid "All bots"
 msgstr "Wszystkie boty"
 
+#: src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr "Wszyscy klienci"
+
 #: src/pages/Artifacts.tsx
 msgid "All files"
 msgstr "Wszystkie pliki"
@@ -3252,6 +3256,7 @@ msgid "Download CSV"
 msgstr "Pobierz CSV"
 
 #: src/components/pages/DownloadPdfButton.tsx
+#: src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr "Pobierz PDF"
 
@@ -5514,6 +5519,10 @@ msgstr "POST na adres"
 msgid "PR reviewer"
 msgstr "Recenzent PR"
 
+#: src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr "Ćwiczenie"
+
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "Preferencje"
@@ -7239,6 +7248,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "Okno kontekstu tego modelu jest zbyt małe. Wybierz inny model."
 
 #: src/pages/Artifacts.tsx
+#: src/pages/ReportPage.tsx
 msgid "This month"
 msgstr "Ten miesiąc"
 

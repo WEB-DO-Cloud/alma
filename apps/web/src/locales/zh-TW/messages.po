@@ -872,6 +872,10 @@ msgstr "全部 {credit} 都用於模型用量。"
 msgid "All bots"
 msgstr "所有機器人"
 
+#: src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr ""
+
 #: src/pages/Artifacts.tsx
 msgid "All files"
 msgstr ""
@@ -3253,6 +3257,7 @@ msgid "Download CSV"
 msgstr "下載 CSV"
 
 #: src/components/pages/DownloadPdfButton.tsx
+#: src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr ""
 
@@ -5515,6 +5520,10 @@ msgstr "POST 到"
 msgid "PR reviewer"
 msgstr "PR reviewer"
 
+#: src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr ""
+
 #: src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "偏好設定"
@@ -7240,6 +7249,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "此模型的上下文視窗太小。請選擇其他模型。"
 
 #: src/pages/Artifacts.tsx
+#: src/pages/ReportPage.tsx
 msgid "This month"
 msgstr "本月"
 

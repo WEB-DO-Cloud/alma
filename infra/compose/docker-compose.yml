@@ -323,6 +323,7 @@ x-app-environment: &app-environment
   ALMA_UNDO_DISPATCH:
   ALMA_VOICE_NOTES:
   ALMA_DIGEST:
+  ALMA_MONTHLY_REPORT:
 
 services:
   postgres:
@@ -483,6 +484,7 @@ services:
       ALMA_UNDO_DISPATCH:
       ALMA_VOICE_NOTES:
       ALMA_DIGEST:
+      ALMA_MONTHLY_REPORT:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:
