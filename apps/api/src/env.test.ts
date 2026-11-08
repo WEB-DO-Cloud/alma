@@ -18,6 +18,7 @@ describe("loadEnv", () => {
       notifyPolicyEnabled: false,
       sendUndoEnabled: false,
       undoDispatchEnabled: false,
+      voiceNotesEnabled: false,
     });
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),

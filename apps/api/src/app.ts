@@ -778,6 +778,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       notifyPolicyEnabled: env.notifyPolicyEnabled,
       sendUndoEnabled: env.sendUndoEnabled,
       undoDispatchEnabled: env.undoDispatchEnabled,
+      voiceNotesEnabled: env.voiceNotesEnabled,
       mcpStdioAllowedCommands: env.mcpStdioAllowedCommands,
     },
   });

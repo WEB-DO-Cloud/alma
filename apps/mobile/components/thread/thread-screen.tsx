@@ -160,6 +160,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   }>();
   const [needsModel, setNeedsModel] = useState<boolean>();
   const [managedModel, setManagedModel] = useState(false);
+  const [voiceNotes, setVoiceNotes] = useState(false);
   // Re-read on focus so returning from Models settings updates unsent missing-model messages.
   useFocusEffect(
     useCallback(() => {
@@ -170,6 +171,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
           setUploadConfig(me);
           setNeedsModel(me.needsModel);
           setManagedModel(me.managedModel === true);
+          setVoiceNotes(me.voiceNotesEnabled === true);
         })
         .catch(() => undefined);
       return () => {
@@ -682,6 +684,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
               stop={composer.stop}
               supportChat={supportChat}
               startVoiceCall={startVoiceCall}
+              voiceNotes={voiceNotes}
               onSlashAction={composer.runSlashAction}
               onEmptied={composer.composerEmptied}
             />

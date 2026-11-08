@@ -38,6 +38,7 @@ import {
 } from "react-native";
 import type { ComposerDraftScope } from "../lib/composer-draft";
 import { readComposerDraft, writeComposerDraft } from "../lib/composer-draft";
+import { listen, stop as stopDictation } from "../lib/dictation";
 import { useI18n } from "../lib/i18n";
 import { useMobileTokens, useResolvedAppearance } from "../lib/native";
 import type { ComposerSnapshot } from "../lib/thread-feedback";
@@ -91,6 +92,8 @@ type ThreadComposerProps = {
   stop: () => Promise<void>;
   supportChat?: boolean;
   startVoiceCall: () => Promise<void>;
+  /** Existing dictation. Shown only when voice notes are on. */
+  voiceNotes?: boolean;
   onSlashAction: (action: SlashActionId) => void;
   /** The composer holds no text: the last of it was deleted or sent. */
   onEmptied?: () => void;
@@ -117,6 +120,7 @@ export function ThreadComposer({
   stop,
   supportChat,
   startVoiceCall,
+  voiceNotes = false,
   onSlashAction,
   onEmptied,
 }: ThreadComposerProps) {
@@ -131,6 +135,7 @@ export function ThreadComposer({
   const textScale = Math.min(fontScale, MAX_FONT_SCALE);
   const colorScheme = useResolvedAppearance();
   const { t } = useI18n();
+  const [recording, setRecording] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const [saved] = useState(() => readComposerDraft(draftScope));
   const [draft, setDraft] = useState(saved.text);
@@ -743,6 +748,35 @@ export function ThreadComposer({
               </TextInput>
             </Pressable>
           </View>
+          {voiceNotes ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={recording ? t("Recording") : t("Record")}
+              hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+              onPress={() => {
+                if (recording) {
+                  stopDictation();
+                  setRecording(false);
+                  return;
+                }
+                setRecording(true);
+                void listen({
+                  onFinal: (text) => {
+                    const current = draftRef.current;
+                    draftRef.current = current.trim() ? `${current.trimEnd()} ${text}` : text;
+                    setDraft(draftRef.current);
+                    setRecording(false);
+                  },
+                  onGiveUp: () => setRecording(false),
+                }).catch(() => setRecording(false));
+              }}
+              style={{ marginBottom: 8 }}
+            >
+              <Text style={{ color: tokens.foreground }}>
+                {recording ? t("Recording") : t("Record")}
+              </Text>
+            </Pressable>
+          ) : null}
           {!canSend && botId && !onCall && !supportChat ? (
             <Pressable
               accessibilityRole="button"

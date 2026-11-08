@@ -93,6 +93,12 @@ export const ENCRYPTED_MODELS: Record<string, ModelSpec> = {
     space: { column: "spaceId" },
     ownerRelation: "createdBy",
   },
+  VoiceTranscript: {
+    table: "voice_transcripts",
+    fields: { text: {}, noteTitle: {}, noteBody: {} },
+    space: { column: "spaceId" },
+    ownerRelation: "user",
+  },
 };
 
 /** Rows whose id → space mapping the ring learns from results, for child writes. */

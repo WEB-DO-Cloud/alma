@@ -330,6 +330,7 @@ x-app-environment: &app-environment
   ALMA_NOTIFY_POLICY:
   ALMA_SEND_UNDO:
   ALMA_UNDO_DISPATCH:
+  ALMA_VOICE_NOTES:
 
 services:
   postgres:
@@ -532,6 +533,7 @@ services:
       ALMA_NOTIFY_POLICY:
       ALMA_SEND_UNDO:
       ALMA_UNDO_DISPATCH:
+      ALMA_VOICE_NOTES:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:

@@ -5662,6 +5662,14 @@ msgstr "OAuth 다시 연결"
 msgid "Reconnecting"
 msgstr "다시 연결 중"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "녹화가 시작됐을 수 있지만 화면을 새로고침하지 못했습니다"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "스페이스"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "읽기"
 

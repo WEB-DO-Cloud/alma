@@ -5662,6 +5662,14 @@ msgstr "חיבור OAuth מחדש"
 msgid "Reconnecting"
 msgstr "מתחבר מחדש"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "ייתכן שההקלטה התחילה, אבל לא ניתן היה לרענן את התצוגה"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "מרחבים"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "הקראה"
 

@@ -5662,6 +5662,14 @@ msgstr "OAuth पुनः कनेक्ट करें"
 msgid "Reconnecting"
 msgstr "पुनः कनेक्ट हो रहा है"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr ""
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "कार्यस्थान"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "बोलें"
 

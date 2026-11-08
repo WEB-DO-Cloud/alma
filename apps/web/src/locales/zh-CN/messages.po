@@ -5662,6 +5662,14 @@ msgstr "重新连接 OAuth"
 msgid "Reconnecting"
 msgstr "正在重新连接"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "录制可能已经开始，但画面没有刷新"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "工作区"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "朗读"
 

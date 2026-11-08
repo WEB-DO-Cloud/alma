@@ -20,7 +20,8 @@ interface TableSpec {
     | "memoryRevision"
     | "thread"
     | "workRecord"
-    | "outboundDraft";
+    | "outboundDraft"
+    | "voiceTranscript";
   column: string;
   json: boolean;
   /** Preserve @updatedAt so a migration does not reorder recently edited documents. */
@@ -120,6 +121,42 @@ const TABLES: TableSpec[] = [
       WHERE id > ${cursor} ORDER BY id LIMIT ${limit}`,
     writePlaintext: (id, value) =>
       Prisma.sql`UPDATE outbound_drafts SET body = ${value as string} WHERE id = ${id}`,
+  },
+  {
+    model: "VoiceTranscript",
+    delegate: "voiceTranscript",
+    column: "text",
+    json: false,
+    updatedAt: true,
+    scan: (cursor, limit) => Prisma.sql`
+      SELECT id, text AS value, "spaceId", "userId" AS owner FROM voice_transcripts
+      WHERE id > ${cursor} ORDER BY id LIMIT ${limit}`,
+    writePlaintext: (id, value) =>
+      Prisma.sql`UPDATE voice_transcripts SET text = ${value as string} WHERE id = ${id}`,
+  },
+  {
+    model: "VoiceTranscript",
+    delegate: "voiceTranscript",
+    column: "noteTitle",
+    json: false,
+    updatedAt: true,
+    scan: (cursor, limit) => Prisma.sql`
+      SELECT id, "noteTitle" AS value, "spaceId", "userId" AS owner FROM voice_transcripts
+      WHERE id > ${cursor} AND "noteTitle" IS NOT NULL ORDER BY id LIMIT ${limit}`,
+    writePlaintext: (id, value) =>
+      Prisma.sql`UPDATE voice_transcripts SET "noteTitle" = ${value as string} WHERE id = ${id}`,
+  },
+  {
+    model: "VoiceTranscript",
+    delegate: "voiceTranscript",
+    column: "noteBody",
+    json: false,
+    updatedAt: true,
+    scan: (cursor, limit) => Prisma.sql`
+      SELECT id, "noteBody" AS value, "spaceId", "userId" AS owner FROM voice_transcripts
+      WHERE id > ${cursor} AND "noteBody" IS NOT NULL ORDER BY id LIMIT ${limit}`,
+    writePlaintext: (id, value) =>
+      Prisma.sql`UPDATE voice_transcripts SET "noteBody" = ${value as string} WHERE id = ${id}`,
   },
 ];
 
@@ -345,6 +382,11 @@ export async function contentEncryptionStatus(
     UNION ALL
     SELECT 'outbound_drafts', count(*),
       count(*) FILTER (WHERE body NOT LIKE 'rkz1:%') FROM outbound_drafts
+    UNION ALL
+    SELECT 'voice_transcripts', count(*),
+      count(*) FILTER (WHERE text NOT LIKE 'rkz1:%'
+        OR ("noteTitle" IS NOT NULL AND "noteTitle" NOT LIKE 'rkz1:%')
+        OR ("noteBody" IS NOT NULL AND "noteBody" NOT LIKE 'rkz1:%')) FROM voice_transcripts
   `;
   const keys = await prisma.spaceKey.groupBy({ by: ["masterKeyId"], _count: { _all: true } });
   return {

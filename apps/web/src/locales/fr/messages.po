@@ -5662,6 +5662,14 @@ msgstr "Reconnecter OAuth"
 msgid "Reconnecting"
 msgstr "Reconnexion en cours"
 
+#: src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
+
 #: src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
 msgstr "L'enregistrement a peut-être démarré, mais la vue n'a pas pu être actualisée"
@@ -6717,6 +6725,7 @@ msgid "Spaces"
 msgstr "Espaces"
 
 #: src/pages/shell/message-view.tsx
+#: src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "Parler"
 

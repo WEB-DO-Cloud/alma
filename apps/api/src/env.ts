@@ -29,6 +29,7 @@ import {
   readPhase2aConfig,
   readSendUndoConfig,
   readUndoDispatchConfig,
+  readVoiceNotesConfig,
   resolveAuthSecret,
   resolveContentEncryption,
   resolveEncryptionKey,
@@ -152,6 +153,7 @@ export interface AppEnv {
   notifyPolicyEnabled: boolean;
   sendUndoEnabled: boolean;
   undoDispatchEnabled: boolean;
+  voiceNotesEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -459,6 +461,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     notifyPolicyEnabled: readNotifyPolicyConfig(source).enabled,
     sendUndoEnabled: readSendUndoConfig(source).enabled,
     undoDispatchEnabled: readUndoDispatchConfig(source).enabled,
+    voiceNotesEnabled: readVoiceNotesConfig(source).enabled,
   };
 }
 

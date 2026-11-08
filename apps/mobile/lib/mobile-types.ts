@@ -68,6 +68,7 @@ export type MobileMe = Pick<
   | "notifyPolicyEnabled"
   | "sendUndoEnabled"
   | "undoDispatchEnabled"
+  | "voiceNotesEnabled"
 >;
 export type MobileModel = ModelCatalogEntry;
 /** Shared DTO includes headerNames only; header values remain in the server secret. */

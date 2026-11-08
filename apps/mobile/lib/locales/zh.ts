@@ -1,4 +1,6 @@
 export const ZH_MESSAGES: Record<string, string> = {
+  Record: "录音",
+  Recording: "正在录音",
   Support: "支持",
   "No matches": "没有匹配项",
   "Always ask": "始终询问",
