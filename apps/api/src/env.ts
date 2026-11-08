@@ -25,8 +25,8 @@ import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
 import {
   attachmentCountFromEnv,
   phoneCallSettings,
-  readNotifyPolicyConfig,
   readDigestConfig,
+  readNotifyPolicyConfig,
   readPhase2aConfig,
   readSendUndoConfig,
   readUndoDispatchConfig,
