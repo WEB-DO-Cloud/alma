@@ -3938,6 +3938,10 @@ msgstr "審查中"
 msgid "In the app"
 msgstr ""
 
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr ""
+
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
 msgstr ""
@@ -4621,6 +4625,10 @@ msgstr "模型清單正常。{modelCount, plural, one {# 個模型} other {# 個
 msgid "Monday"
 msgstr "週一"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr "月"
@@ -4657,6 +4665,10 @@ msgstr "更多電腦操作"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5090,8 +5102,16 @@ msgstr "OAuth 客戶端金鑰（選填）"
 msgid "OAuth connection failed"
 msgstr "OAuth 連線失敗"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
+msgstr ""
+
+#: src/pages/DigestPage.tsx
+msgid "On"
 msgstr ""
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
@@ -6179,6 +6199,7 @@ msgstr "週六"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7293,6 +7314,10 @@ msgstr "本週"
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "週四"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

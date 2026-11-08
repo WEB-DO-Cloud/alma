@@ -25,6 +25,7 @@ import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
 import {
   attachmentCountFromEnv,
   phoneCallSettings,
+  readDigestConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
   readSendUndoConfig,
@@ -154,6 +155,7 @@ export interface AppEnv {
   sendUndoEnabled: boolean;
   undoDispatchEnabled: boolean;
   voiceNotesEnabled: boolean;
+  digestEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -462,6 +464,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     sendUndoEnabled: readSendUndoConfig(source).enabled,
     undoDispatchEnabled: readUndoDispatchConfig(source).enabled,
     voiceNotesEnabled: readVoiceNotesConfig(source).enabled,
+    digestEnabled: readDigestConfig(source).enabled,
   };
 }
 

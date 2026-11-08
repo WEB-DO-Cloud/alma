@@ -2,6 +2,8 @@ import { setTimeout as sleep } from "node:timers/promises";
 import type { JobPublisher, JobWorkerHost } from "@rakazo/adapter-kit";
 import { unwrapEnvFromKeyManager } from "@rakazo/adapters";
 import {
+  digestPushBody,
+  readDigestConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
   readSendUndoConfig,
@@ -86,6 +88,7 @@ import {
   readAlmaFlags,
   rowSecurityWarning,
   runAsSystem,
+  scanDigests,
   verifyContentKeys,
 } from "@rakazo/db";
 import { SERVICE_NAMES } from "@rakazo/logging";
@@ -101,6 +104,7 @@ async function main() {
   readSendUndoConfig();
   readUndoDispatchConfig();
   readVoiceNotesConfig();
+  readDigestConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");
@@ -291,6 +295,31 @@ async function main() {
     );
   }, 5_000);
   undoDispatch.unref();
+  const digestScan = setInterval(() => {
+    void scanDigests(prisma).then((pushes) =>
+      Promise.all(
+        pushes.map((push) =>
+          notifications.send(
+            {
+              kind: "completion",
+              title: "ALMA",
+              body: digestPushBody(push.kind, null),
+              botId: "digest",
+              threadId: "digest",
+            },
+            {
+              operationId: "digest",
+              traceId: "digest",
+              spaceId: "",
+              userId: push.userId,
+              signal: shutdown.signal,
+            },
+          ),
+        ),
+      ),
+    );
+  }, 60_000);
+  digestScan.unref();
   let stopHealth: (() => Promise<void>) | undefined;
   let stopping = false;
   let stopped: Promise<void> | undefined;
@@ -301,6 +330,7 @@ async function main() {
       shutdown.abort();
       clearInterval(notifyFlush);
       clearInterval(undoDispatch);
+      clearInterval(digestScan);
       stopStallWatch();
       try {
         await stopHealth?.();

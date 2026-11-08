@@ -3937,6 +3937,10 @@ msgstr "En revisión"
 msgid "In the app"
 msgstr "En la app"
 
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr "En la app y como aviso"
+
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
 msgstr "En este bot"
@@ -4620,6 +4624,10 @@ msgstr "Lista de modelos correcta. {modelCount, plural, one {# modelo disponible
 msgid "Monday"
 msgstr "lunes"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr "Resumen del lunes"
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr "mes"
@@ -4656,6 +4664,10 @@ msgstr "Más acciones de computadora"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr "Resumen de la mañana"
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,9 +5101,17 @@ msgstr "Secreto de cliente OAuth (opcional)"
 msgid "OAuth connection failed"
 msgstr "Falló la conexión OAuth"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr "Desactivado"
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
 msgstr "Sin conexión"
+
+#: src/pages/DigestPage.tsx
+msgid "On"
+msgstr "Activado"
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
 msgid "On a schedule"
@@ -6178,6 +6198,7 @@ msgstr "sábado"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7313,10 @@ msgstr "Esta semana"
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "jueves"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr "Hora"
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"

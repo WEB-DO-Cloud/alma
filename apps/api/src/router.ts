@@ -44,6 +44,7 @@ import { computerProviderRoutes } from "./routes/computer-provider.js";
 import { connectionsRoutes } from "./routes/connections.js";
 import { contentRoutes } from "./routes/content.js";
 import { createRouterContext } from "./routes/context.js";
+import { digestRoutes } from "./routes/digest.js";
 import { mcpRoutes } from "./routes/mcp.js";
 import { memoryRoutes } from "./routes/memory.js";
 import { messagingRoutes } from "./routes/messaging.js";
@@ -157,6 +158,7 @@ export interface RouterDeps {
     sendUndoEnabled?: boolean;
     undoDispatchEnabled?: boolean;
     voiceNotesEnabled?: boolean;
+    digestEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }
@@ -187,6 +189,7 @@ export function createRouter(deps: RouterDeps) {
     ...pagesRoutes(ctx),
     ...paymentWalletRoutes(ctx),
     ...notifyPolicyRoutes(ctx),
+    ...digestRoutes(ctx),
     ...phase2aRoutes(ctx),
     ...sendUndoRoutes(ctx),
     ...spendingLimitRoutes(ctx),

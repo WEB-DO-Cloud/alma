@@ -3937,6 +3937,10 @@ msgstr ""
 msgid "In the app"
 msgstr ""
 
+#: src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr ""
+
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
 msgstr ""
@@ -4620,6 +4624,10 @@ msgstr "Список моделей в порядке. {modelCount, plural, one 
 msgid "Monday"
 msgstr "понедельник"
 
+#: src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: src/lib/billing.ts
 msgid "month"
 msgstr ""
@@ -4656,6 +4664,10 @@ msgstr "Больше действий с компьютером"
 #: src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Morning briefing"
+
+#: src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: src/pages/ModelRoleSettings.tsx
 msgid "Move down"
@@ -5089,8 +5101,16 @@ msgstr "Секрет клиента OAuth (необязательно)"
 msgid "OAuth connection failed"
 msgstr "Соединение OAuth не удалось"
 
+#: src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
+msgstr ""
+
+#: src/pages/DigestPage.tsx
+msgid "On"
 msgstr ""
 
 #: src/pages/routine-editor/add-trigger-menu.tsx
@@ -6178,6 +6198,7 @@ msgstr "суббота"
 #: src/components/vault/VaultItemEditor.tsx
 #: src/pages/AccountSettingsOverlay.tsx
 #: src/pages/Board.tsx
+#: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
@@ -7292,6 +7313,10 @@ msgstr ""
 #: src/lib/cron.ts
 msgid "Thursday"
 msgstr "четверг"
+
+#: src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: src/pages/RoutineSchedule.tsx
 msgid "Time of day"
