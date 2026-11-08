@@ -3936,6 +3936,7 @@ msgstr "En revisión"
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
 msgstr "En la app"
+
 #: src/pages/DigestPage.tsx
 msgid "In the app and push"
 msgstr "En la app y como aviso"

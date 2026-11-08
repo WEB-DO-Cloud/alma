@@ -3936,6 +3936,8 @@ msgstr "審查中"
 
 #: src/pages/QuietHoursPage.tsx
 msgid "In the app"
+msgstr ""
+
 #: src/pages/DigestPage.tsx
 msgid "In the app and push"
 msgstr ""
