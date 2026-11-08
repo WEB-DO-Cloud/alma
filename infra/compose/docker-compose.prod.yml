@@ -336,6 +336,8 @@ x-app-environment: &app-environment
   ALMA_REFERRAL_PROMPT:
   ALMA_REFERRAL_REWARDS:
   ALMA_MOBILE_ACTIONS:
+  # Organization Google client. Off unless set to the exact string true.
+  ALMA_GOOGLE_BYO_OAUTH:
 
 services:
   postgres:
@@ -544,6 +546,7 @@ services:
       ALMA_REFERRAL_PROMPT:
       ALMA_REFERRAL_REWARDS:
       ALMA_MOBILE_ACTIONS:
+      ALMA_GOOGLE_OAUTH_CLIENT_ID:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:
