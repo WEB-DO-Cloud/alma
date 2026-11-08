@@ -1288,6 +1288,7 @@ function SpaceShell() {
               computerOpen={computerOpen}
               embeddedScreenUrl={computerControls.embeddedScreenUrl}
               screenFrameKey={computerState.screenFrameKey}
+              heldScreen={computerState.heldScreen}
               screenFrameRef={computerState.setScreenFrame}
               computerScreenError={computerControls.computerScreenError}
               computerBooting={computerControls.computerBooting}
@@ -1438,6 +1439,7 @@ function SpaceShell() {
           sendError={sendError}
           embeddedScreenUrl={computerControls.embeddedScreenUrl}
           screenFrameKey={computerState.screenFrameKey}
+          heldScreen={computerState.heldScreen}
           screenFrameRef={computerState.setScreenFrame}
           computerScreenError={computerControls.computerScreenError}
           computerBooting={computerControls.computerBooting}
