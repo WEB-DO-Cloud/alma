@@ -6524,8 +6524,8 @@ msgstr "形状 {0}"
 
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
-#: src/pages/ReferralPage.tsx
 #: src/components/QuickActions.tsx
+#: src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr ""
 
