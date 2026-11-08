@@ -144,7 +144,7 @@ space or owner mismatch that keeps the server's tools from that bot.
 
 ## Apps and connectors
 
-Plugins use [Composio](https://composio.dev) when `COMPOSIO_API_KEY` is set. Pipedream is an
+Plugins use [Composio](https://composio.dev) when `COMPOSIO_API_KEY` is set. `ALMA_GOOGLE_BYO_OAUTH=true` lets an organization owner or admin save that organization's own Google OAuth client, and shows how to mark ALMA's client as Trusted. `ALMA_GOOGLE_OAUTH_CLIENT_ID` is that client ID. Leave both unset and Google sign-in stays as it is. Pipedream is an
 alternative managed connector provider: set `PIPEDREAM_CLIENT_ID`, `PIPEDREAM_CLIENT_SECRET`,
 `PIPEDREAM_PROJECT_ID` and `PIPEDREAM_ENVIRONMENT` (`development` or `production`). Set them on the
 API and worker.

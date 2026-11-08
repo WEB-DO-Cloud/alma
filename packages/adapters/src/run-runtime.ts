@@ -1,5 +1,6 @@
 import { hostname } from "node:os";
 import type {
+  AdapterContext,
   ArtifactStore,
   ConnectorProvider,
   ManagedConnectorProvider,
@@ -21,6 +22,7 @@ import { deploymentModelUsageLookup, resolveDeploymentModel } from "./deployment
 import { createRunExecutor } from "./executor.js";
 import type { ExecutorDeps } from "./executor-deps.js";
 import { ExpoPushProvider } from "./expo-push.js";
+import { googleRunAuthConfigs } from "./google-oauth.js";
 import type { RemoteConnectorDependencies } from "./installed-connectors.js";
 import { InstalledConnectorProvider } from "./installed-connectors.js";
 import { IntegrationProviderSettings } from "./integration-provider-settings.js";
@@ -49,6 +51,8 @@ import { createWebProvider } from "./web-provider-factory.js";
 export interface RunRuntimeEnv extends PipedreamEnvironmentValues {
   dataDir: string;
   composioApiKey: string | undefined;
+  /** ALMA_GOOGLE_BYO_OAUTH is exactly true. Off leaves Google sign-in unchanged. */
+  googleByoOauth?: boolean;
   cursorApiKey: string | undefined;
   deploymentModelKey: string | undefined;
   deploymentModelConfigured: boolean;
@@ -74,6 +78,7 @@ export function runRuntimeEnvFromProcess(source: NodeJS.ProcessEnv): RunRuntimeE
     dataDir: source.DATA_DIR ?? "./data",
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
+    googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: deploymentModel.key,
     deploymentModelConfigured: deploymentModel.configured,
@@ -143,14 +148,25 @@ export function createConnectorRuntime(
     network,
     env.mcpAllowPrivateEndpoint,
   );
-  const integrationSettings = new IntegrationProviderSettings(prisma, secrets, env.encryptionKey, {
-    composio:
-      composio ??
-      (isComposioEnabled(env.composioApiKey)
-        ? new ComposioConnector({ apiKey: env.composioApiKey })
-        : undefined),
-    pipedream,
-  });
+  const authConfigIdsFor = env.googleByoOauth
+    ? (context: AdapterContext, toolkits: string[]) =>
+        googleRunAuthConfigs(prisma, secrets, context, toolkits)
+    : undefined;
+  const integrationSettings = new IntegrationProviderSettings(
+    prisma,
+    secrets,
+    env.encryptionKey,
+    {
+      composio:
+        composio ??
+        (isComposioEnabled(env.composioApiKey)
+          ? new ComposioConnector({ apiKey: env.composioApiKey, authConfigIdsFor })
+          : undefined),
+      pipedream,
+    },
+    undefined,
+    authConfigIdsFor,
+  );
   const stack = createConnectorStack(composio, [
     installed,
     ...integrationSettings

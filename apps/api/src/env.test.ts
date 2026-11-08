@@ -23,8 +23,20 @@ describe("loadEnv", () => {
       monthlyReportEnabled: false,
       referralPromptEnabled: false,
       mobileActionsEnabled: false,
+      googleByoOauth: false,
     });
     expect(loadEnv({ ...base, ALMA_REFERRAL_REWARDS: "true" }).referralPromptEnabled).toBe(false);
+    expect(loadEnv({ ...base, ALMA_GOOGLE_BYO_OAUTH: "yes" }).googleByoOauth).toBe(false);
+    expect(loadEnv({ ...base, ALMA_GOOGLE_BYO_OAUTH: "true" }).googleByoOauth).toBe(true);
+    expect(
+      loadEnv({
+        ...base,
+        ALMA_GOOGLE_OAUTH_CLIENT_ID: "100-abc.apps.googleusercontent.com",
+      }).googleOAuthClientId,
+    ).toBe("100-abc.apps.googleusercontent.com");
+    expect(
+      loadEnv({ ...base, ALMA_GOOGLE_OAUTH_CLIENT_ID: "not-a-client" }).googleOAuthClientId,
+    ).toBeUndefined();
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
     ).toMatchObject({

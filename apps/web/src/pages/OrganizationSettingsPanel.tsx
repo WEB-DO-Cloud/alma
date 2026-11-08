@@ -10,6 +10,7 @@ import { organizationsQuery, useOrganizations } from "../lib/organizations";
 import { queryClient, useQueryUserId } from "../lib/query";
 import { clearSpaceSelection, rpc, selectSpace } from "../lib/rpc";
 import { errorText } from "../lib/user-error";
+import { GoogleWorkspaceSettings } from "./GoogleWorkspaceSettings";
 
 /** The organization the app is showing: its name, and, for its owner, renaming and deletion. */
 export function OrganizationSettingsPanel({
@@ -136,6 +137,7 @@ function OrganizationSettings({
           </Button>
         ) : null}
       </div>
+      <GoogleWorkspaceSettings organizationId={organization.id} />
       <CreateOrganizationDialog open={creating} onOpenChange={setCreating} />
       {confirmingDelete ? (
         <DeleteOrganizationDialog

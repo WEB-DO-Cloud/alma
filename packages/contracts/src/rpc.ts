@@ -158,6 +158,7 @@ import {
   VoiceStatusSchema,
 } from "./domain.js";
 import { ComputerCommandSchema, ProductEventSchema } from "./events.js";
+import { GoogleOAuthViewSchema } from "./google-oauth.js";
 import { Id, IsoDate, ThinkingLevelSchema } from "./ids.js";
 import {
   IntegrationProviderConfigSchema,
@@ -453,6 +454,20 @@ export const appContract = {
       /** Owner only. Every unused link stops working, for one that went to the wrong place. */
       cancel: oc.input(z.object({ spaceId: Id })).output(z.object({ ok: z.literal(true) })),
     },
+  },
+  googleOAuth: {
+    get: oc.output(GoogleOAuthViewSchema),
+    save: oc
+      .input(
+        z.object({
+          organizationId: Id,
+          clientId: z.string().max(300),
+          clientSecret: z.string().max(4000),
+        }),
+      )
+      .output(GoogleOAuthViewSchema),
+    remove: oc.input(z.object({ organizationId: Id })).output(GoogleOAuthViewSchema),
+    test: oc.input(z.object({ organizationId: Id })).output(z.object({ ok: z.literal(true) })),
   },
   organizations: {
     list: oc.output(OrganizationListSchema),

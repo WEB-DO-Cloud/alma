@@ -5,6 +5,9 @@ describe("ALMA phase 1 flags", () => {
   it("stays off unless the value is exactly true", () => {
     expect(readAlmaFlags({}).trialEnabled).toBe(false);
     expect(readAlmaFlags({}).onboardingV2).toBe(false);
+    expect(readAlmaFlags({}).googleByoOauth).toBe(false);
+    expect(readAlmaFlags({ ALMA_GOOGLE_BYO_OAUTH: "1" }).googleByoOauth).toBe(false);
+    expect(readAlmaFlags({ ALMA_GOOGLE_BYO_OAUTH: "true" }).googleByoOauth).toBe(true);
     expect(readAlmaFlags({ ALMA_TRIAL_ENABLED: "1" }).trialEnabled).toBe(false);
     expect(readAlmaFlags({ ALMA_TRIAL_ENABLED: "yes" }).trialEnabled).toBe(false);
     expect(readAlmaFlags({ ALMA_ONBOARDING_V2: "TRUE" }).onboardingV2).toBe(false);

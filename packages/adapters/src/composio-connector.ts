@@ -23,6 +23,16 @@ import {
   mergeCatalogWithConnected,
 } from "./composio-catalog-cache.js";
 import { collectPages, filterCatalog } from "./connector-catalog.js";
+import type { GoogleOAuthRemote } from "./google-oauth.js";
+import { isGoogleToolkit } from "./google-oauth.js";
+import type { GoogleAuthRemoteClient } from "./google-oauth-remote.js";
+import {
+  credentialsFor,
+  deleteGoogleAuthConfig,
+  scopesFromToolkit,
+  testGoogleAuthorization,
+  upsertGoogleAuthConfig,
+} from "./google-oauth-remote.js";
 import { isVitestRuntime } from "./test-runtime.js";
 
 type SdkSession = Awaited<ReturnType<Composio["create"]>>;
@@ -123,6 +133,15 @@ export interface ComposioProvider extends ManagedConnectorProvider {
 
 function composioSlugKey(slug: string): string {
   return slug.trim().toLowerCase();
+}
+
+function catalogSessionKey(userId: string, authConfigIds?: Record<string, string>): string {
+  if (!authConfigIds || Object.keys(authConfigIds).length === 0) return userId;
+  const suffix = Object.entries(authConfigIds)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([toolkit, id]) => `${toolkit}:${id}`)
+    .join(",");
+  return `${userId}|${suffix}`;
 }
 
 export function executeSessionKey(
@@ -347,12 +366,26 @@ export function planLiveConnectionSync(
 export class ComposioConnector implements ComposioProvider {
   private client: ComposioClient | undefined;
   private readonly apiKey: string | undefined;
+  private readonly authConfigIdsFor?: (
+    context: AdapterContext,
+    toolkits: string[],
+  ) => Promise<Record<string, string> | undefined>;
   /** An injected client has its own catalog, so it must not share the process-wide cache. */
   private readonly directoryCache: typeof composioToolkitDirectory;
 
-  constructor(options: { apiKey?: string; client?: ComposioClient } = {}) {
+  constructor(
+    options: {
+      apiKey?: string;
+      client?: ComposioClient;
+      authConfigIdsFor?: (
+        context: AdapterContext,
+        toolkits: string[],
+      ) => Promise<Record<string, string> | undefined>;
+    } = {},
+  ) {
     this.apiKey = options.apiKey;
     this.client = options.client;
+    this.authConfigIdsFor = options.authConfigIdsFor;
     this.directoryCache = options.client ? createToolkitDirectoryCache() : composioToolkitDirectory;
   }
   private readonly catalogSessions = new Map<string, string>();
@@ -367,21 +400,28 @@ export class ComposioConnector implements ComposioProvider {
     };
   }
 
-  async sessionFor(userId: string): Promise<ComposioSession> {
+  async sessionFor(
+    userId: string,
+    authConfigIds?: Record<string, string>,
+  ): Promise<ComposioSession> {
     const composio = await this.sdk();
-    const existing = this.catalogSessions.get(userId);
+    const cacheKey = catalogSessionKey(userId, authConfigIds);
+    const existing = this.catalogSessions.get(cacheKey);
     if (existing) {
       try {
         return await composio.sessions.use(existing);
       } catch {
-        this.catalogSessions.delete(userId);
+        this.catalogSessions.delete(cacheKey);
       }
     }
     const session = await composio.create(userId, {
       manageConnections: false,
       sandbox: { enable: false },
+      ...(authConfigIds && Object.keys(authConfigIds).length > 0
+        ? { authConfigs: authConfigIds }
+        : {}),
     });
-    this.catalogSessions.set(userId, session.sessionId);
+    this.catalogSessions.set(cacheKey, session.sessionId);
     return session;
   }
 
@@ -393,6 +433,7 @@ export class ComposioConnector implements ComposioProvider {
   private async sessionForExecute(
     userId: string,
     connections: ConnectedConnector[],
+    context?: AdapterContext,
   ): Promise<{
     session?: ComposioSession;
     reconnect: string[];
@@ -428,7 +469,18 @@ export class ComposioConnector implements ComposioProvider {
       connectedAccounts[toolkit] = [...ids].sort();
     }
     if (toolkits.length === 0) return { reconnect, connectedAccounts };
-    const key = executeSessionKey(toolkits, connectedAccounts);
+    const authConfigs =
+      context && this.authConfigIdsFor ? await this.authConfigIdsFor(context, toolkits) : undefined;
+    const authKey =
+      authConfigs && Object.keys(authConfigs).length > 0
+        ? Object.entries(authConfigs)
+            .sort(([left], [right]) => left.localeCompare(right))
+            .map(([toolkit, id]) => `${toolkit}:${id}`)
+            .join(",")
+        : "";
+    const key = authKey
+      ? `${executeSessionKey(toolkits, connectedAccounts)}|${authKey}`
+      : executeSessionKey(toolkits, connectedAccounts);
     const composio = await this.sdk();
     const existing = this.executeSessions.get(userId);
     if (existing?.key === key) {
@@ -450,6 +502,7 @@ export class ComposioConnector implements ComposioProvider {
       manageConnections: false,
       sandbox: { enable: false },
       toolkits,
+      ...(authConfigs && authKey ? { authConfigs } : {}),
       ...(Object.keys(connectedAccounts).length > 0 ? { connectedAccounts } : {}),
       ...(needsMultiAccount
         ? {
@@ -529,7 +582,7 @@ export class ComposioConnector implements ComposioProvider {
   async discoverTools(context: AdapterContext): Promise<ConnectorTool[]> {
     const connections = connectedComposioConnections(context);
     if (connections.length === 0) return [];
-    const { session } = await this.sessionForExecute(context.userId, connections);
+    const { session } = await this.sessionForExecute(context.userId, connections, context);
     if (!session) return [];
     return asConnectorTools(await session.tools());
   }
@@ -540,6 +593,7 @@ export class ComposioConnector implements ComposioProvider {
       const { session, reconnect, connectedAccounts } = await this.sessionForExecute(
         context.userId,
         connectedComposioConnections(context),
+        context,
       );
       const stale = reconnect.find((toolkit) => callUsesToolkit(call, toolkit));
       if (stale) {
@@ -609,10 +663,10 @@ export class ComposioConnector implements ComposioProvider {
   }
 
   async begin(
-    request: { provider: string; redirectUrl: string },
+    request: { provider: string; redirectUrl: string; authConfigIds?: Record<string, string> },
     context: AdapterContext,
   ): Promise<{ authorizationUrl: string | null; state: string }> {
-    const session = await this.sessionFor(context.userId);
+    const session = await this.sessionFor(context.userId, request.authConfigIds);
     try {
       const connectionRequest = await session.authorize(request.provider, {
         callbackUrl: request.redirectUrl,
@@ -814,6 +868,30 @@ export class ComposioConnector implements ComposioProvider {
   }
 
   /** The SDK loads on first use, so deployments without Composio never load it. */
+  /** Catalog calls for an organization's Google client. Absent from the session path. */
+  async googleOAuthRemote(): Promise<GoogleOAuthRemote> {
+    const client = (await this.sdk()) as unknown as GoogleAuthRemoteClient;
+    return {
+      googleToolkits: async () => {
+        const directory = await this.directory();
+        return directory
+          .filter((entry) => isGoogleToolkit(entry.slug))
+          .map((entry) => ({ slug: entry.slug, name: entry.name }))
+          .sort((left, right) => left.name.localeCompare(right.name));
+      },
+      scopes: async (slug) => scopesFromToolkit(await client.toolkits.get(slug)),
+      upsert: (input) => upsertGoogleAuthConfig(client, input),
+      deleteConfig: (id) => deleteGoogleAuthConfig(client, id),
+      restoreCredentials: async (id, clientId, clientSecret) => {
+        await client.authConfigs.update(id, {
+          type: "custom",
+          credentials: credentialsFor(clientId, clientSecret),
+        });
+      },
+      testGmail: (input) => testGoogleAuthorization(client, input),
+    };
+  }
+
   private async sdk(): Promise<ComposioClient> {
     if (!this.client) {
       const { Composio } = await import("@composio/core");

@@ -8,6 +8,7 @@ import {
   apnsVoipConfig,
   boatApiKeyFromEnv,
   boatApiUrlFromEnv,
+  deploymentGoogleClientId,
   deploymentMemoryPublic,
   mcpStdioOptionsFromEnv,
   parseMcpOAuthPresetClients,
@@ -163,6 +164,10 @@ export interface AppEnv {
   monthlyReportEnabled: boolean;
   referralPromptEnabled: boolean;
   mobileActionsEnabled: boolean;
+  /** Exactly ALMA_GOOGLE_BYO_OAUTH=true. */
+  googleByoOauth: boolean;
+  /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client ID. Otherwise absent. */
+  googleOAuthClientId?: string;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -476,6 +481,8 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     monthlyReportEnabled: readMonthlyReportConfig(source).enabled,
     referralPromptEnabled: readReferralPromptConfig(source).enabled,
     mobileActionsEnabled: readMobileActionsConfig(source).enabled,
+    googleByoOauth: flags.googleByoOauth,
+    googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
   };
 }
 

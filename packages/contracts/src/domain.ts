@@ -1499,6 +1499,8 @@ export const MeSchema = z.object({
   onboardingV2: z.boolean().optional(),
   /** Phase 2A queue. Absent from older servers, false when the switch is off. */
   phase2aEnabled: z.boolean().optional(),
+  /** Organization Google client settings. Present only for an owner or admin when that switch is on. */
+  googleByoOauth: z.boolean().optional(),
   /** Lock-screen notification policy. Absent from older servers, false when the switch is off. */
   notifyPolicyEnabled: z.boolean().optional(),
   /** Cancel window before an external send. Absent means off. */

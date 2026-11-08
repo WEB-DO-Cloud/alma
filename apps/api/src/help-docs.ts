@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { deploymentGoogleClientId } from "@rakazo/adapters";
 
 /** Pages the in-app help skill may fetch. Self-host guides are not included. */
 export const HELP_DOC_NAMES = [
@@ -26,7 +27,21 @@ export const HELP_DOC_NAMES = [
   "build-a-plugin",
 ] as const;
 
+const GOOGLE_WORKSPACE_DOC = "google-workspace";
+const CLIENT_ID_TOKEN = "{{ALMA_GOOGLE_OAUTH_CLIENT_ID}}";
+const CLIENT_ID_UNSET = "The client ID is not set on this server.";
+
 const DOC_NAME = /^[a-z0-9-]+$/;
+
+function helpDocNames(env: NodeJS.ProcessEnv = process.env): readonly string[] {
+  if (env.ALMA_GOOGLE_BYO_OAUTH !== "true") return HELP_DOC_NAMES;
+  return [...HELP_DOC_NAMES, GOOGLE_WORKSPACE_DOC];
+}
+
+function withClientId(markdown: string, env: NodeJS.ProcessEnv): string {
+  const clientId = deploymentGoogleClientId(env.ALMA_GOOGLE_OAUTH_CLIENT_ID);
+  return markdown.replaceAll(CLIENT_ID_TOKEN, clientId ?? CLIENT_ID_UNSET);
+}
 
 function docsDir(): string | null {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -57,20 +72,22 @@ export function helpMarkdown(markdown: string): string {
   return lines.join("\n");
 }
 
-export function readHelpDoc(name: string): { title: string; markdown: string } | null {
-  if (!DOC_NAME.test(name) || !HELP_DOC_NAMES.includes(name as (typeof HELP_DOC_NAMES)[number]))
-    return null;
+export function readHelpDoc(
+  name: string,
+  env: NodeJS.ProcessEnv = process.env,
+): { title: string; markdown: string } | null {
+  if (!DOC_NAME.test(name) || !helpDocNames(env).includes(name)) return null;
   const dir = docsDir();
   if (!dir) return null;
   const file = join(dir, `${name}.md`);
   if (!existsSync(file)) return null;
-  const markdown = helpMarkdown(readFileSync(file, "utf8"));
+  const markdown = withClientId(helpMarkdown(readFileSync(file, "utf8")), env);
   return { title: titleOf(markdown, name), markdown };
 }
 
-export function helpIndexMarkdown(): string {
-  const pages = HELP_DOC_NAMES.flatMap((name) => {
-    const page = readHelpDoc(name);
+export function helpIndexMarkdown(env: NodeJS.ProcessEnv = process.env): string {
+  const pages = helpDocNames(env).flatMap((name) => {
+    const page = readHelpDoc(name, env);
     return page ? [`- ${page.title}: /docs/${name}.md`] : [];
   });
   return `# Documentación de ALMA
@@ -81,9 +98,9 @@ ${pages.join("\n")}
 `;
 }
 
-export function helpIndexHtml(): string {
-  const items = HELP_DOC_NAMES.flatMap((name) => {
-    const page = readHelpDoc(name);
+export function helpIndexHtml(env: NodeJS.ProcessEnv = process.env): string {
+  const items = helpDocNames(env).flatMap((name) => {
+    const page = readHelpDoc(name, env);
     return page ? [`<li><a href="/docs/${name}.md">${escapeHtml(page.title)}</a></li>`] : [];
   });
   return `<!doctype html>

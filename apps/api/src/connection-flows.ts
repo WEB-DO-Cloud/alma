@@ -1,8 +1,13 @@
 import { ORPCError } from "@orpc/server";
 import type { AdapterContext } from "@rakazo/adapter-kit";
 import { ConnectorAuthUnavailableError } from "@rakazo/adapter-kit";
+import type { GoogleOAuthRemote } from "@rakazo/adapters";
 import {
   advisoryLock,
+  createGoogleOAuthStore,
+  GoogleOAuthService,
+  isGoogleToolkit,
+  ORGANIZATION_GOOGLE_CLIENT,
   pickReusableConnection,
   prepareManagedConnectorForTransaction,
   sanitizeIntegrationError,
@@ -139,6 +144,37 @@ export function connectionContext(
   };
 }
 
+function googleOAuthRemoteOf(connector: object): (() => Promise<GoogleOAuthRemote>) | undefined {
+  if (!("googleOAuthRemote" in connector) || typeof connector.googleOAuthRemote !== "function") {
+    return undefined;
+  }
+  return () => (connector.googleOAuthRemote as () => Promise<GoogleOAuthRemote>)();
+}
+
+async function organizationGoogleAuthConfigs(
+  deps: RouterDeps,
+  connector: object,
+  context: { actor: Actor },
+  provider: string,
+): Promise<Record<string, string> | undefined> {
+  const googleOAuthRemote = googleOAuthRemoteOf(connector);
+  if (!deps.env.googleByoOauth || !isGoogleToolkit(provider) || !googleOAuthRemote) {
+    return undefined;
+  }
+  const service = new GoogleOAuthService({
+    enabled: true,
+    trustedClientId: null,
+    store: createGoogleOAuthStore(deps.prisma),
+    remote: await googleOAuthRemote(),
+    secrets: deps.secrets,
+    callbackUrl: `${deps.env.webOrigin}/integrations/callback`,
+  });
+  return service.authConfigsForBegin(
+    { userId: context.actor.userId, spaceId: context.actor.spaceId },
+    provider,
+  );
+}
+
 export async function beginConnection(
   deps: RouterDeps,
   context: { actor: Actor; signal?: AbortSignal },
@@ -196,10 +232,17 @@ export async function beginConnection(
     },
   );
   try {
+    const authConfigIds = await organizationGoogleAuthConfigs(
+      deps,
+      connector,
+      context,
+      input.provider,
+    );
     const auth = await connector.begin(
       {
         provider: input.provider,
         redirectUrl: `${deps.env.webOrigin}/integrations/callback`,
+        ...(authConfigIds ? { authConfigIds } : {}),
       },
       connectionContext(context.actor, "connections.begin", context.signal),
     );
@@ -221,7 +264,10 @@ export async function beginConnection(
           data: {
             status: auth.authorizationUrl ? "pending" : "connected",
             providerRef: auth.state || null,
-            metadata: { state: auth.state },
+            metadata: {
+              state: auth.state,
+              ...(authConfigIds ? { [ORGANIZATION_GOOGLE_CLIENT]: true } : {}),
+            },
           },
         });
         return updated.count > 0;
