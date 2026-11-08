@@ -6,17 +6,6 @@ export function readDigestConfig(source: NodeJS.ProcessEnv = process.env): Diges
   return { enabled: source.ALMA_DIGEST === "true" };
 }
 
-export function scheduleZone(timezone: string | null | undefined): string {
-  const trimmed = timezone?.trim();
-  if (!trimmed) return "America/Santo_Domingo";
-  try {
-    new Intl.DateTimeFormat("en-US", { timeZone: trimmed }).format(new Date());
-    return trimmed;
-  } catch {
-    return "America/Santo_Domingo";
-  }
-}
-
 export function localParts(
   now: Date,
   timeZone: string,

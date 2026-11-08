@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildDigest,
-  digestPushBody,
-  dueDigestKinds,
-  readDigestConfig,
-  scheduleZone,
-} from "./digest.js";
+import { buildDigest, digestPushBody, dueDigestKinds, readDigestConfig } from "./digest.js";
+import { scheduleZone } from "./notify-policy.js";
 
 const opted = { enabled: true, weekly: true, minuteOfDay: 450, email: false };
 
