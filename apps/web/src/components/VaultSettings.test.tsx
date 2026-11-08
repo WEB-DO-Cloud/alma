@@ -318,6 +318,20 @@ describe("VaultSettings new items", () => {
     expect(editor()).toBeNull();
   });
 
+  it("offers a saved card on the card fields and not on the note", async () => {
+    await render();
+    await startNew("card");
+    expect(editor()!.querySelector("form")!.getAttribute("autocomplete")).toBe("on");
+    expect(field("Card number").getAttribute("autocomplete")).toBe("cc-number");
+    expect(field("Expiry").getAttribute("autocomplete")).toBe("cc-exp");
+    const code = field("Security code");
+    expect(code.getAttribute("autocomplete")).toBe("cc-csc");
+    expect(code.getAttribute("type")).toBe("password");
+    expect(field("Name on card").getAttribute("autocomplete")).toBe("cc-name");
+    await click(buttonIn(editor(), "Add a note")!);
+    expect(field("When to use").getAttribute("autocomplete")).toBe("off");
+  });
+
   it("saves a contact under its label, with a note added on request", async () => {
     await render();
     await startNew("contact");
@@ -488,6 +502,8 @@ describe("VaultSettings item details", () => {
     await click("vault-item-edit");
     expect(detail()).toBeNull();
     expect((field("Expiry") as HTMLInputElement).value).toBe("08/30");
+    expect(field("Name").getAttribute("autocomplete")).toBe("off");
+    expect(field("When to use").getAttribute("autocomplete")).toBe("off");
     await type(field("Name"), "Travel card");
     await click(buttonIn(editor(), "Save")!);
     expect(vault.put).toHaveBeenCalledWith({
