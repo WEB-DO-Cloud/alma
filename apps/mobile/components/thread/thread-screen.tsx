@@ -11,13 +11,14 @@ import {
   newClientId,
   newestPageCards,
   otherAuthor,
+  quickActionTarget,
   displayName as safeDisplayName,
   workingRoutineName,
 } from "@rakazo/core";
 import { useFocusEffect, useIsFocused, useLocalSearchParams, useRouter } from "expo-router";
 import { useHeaderHeight } from "expo-router/react-navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { I18nManager, Platform, Text, View } from "react-native";
+import { I18nManager, Platform, Pressable, Text, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { readableGutters } from "../../lib/adaptive-layout";
@@ -28,6 +29,7 @@ import type { MobileArtifactTarget } from "../../lib/artifact-open";
 import { useCallSession } from "../../lib/call-session";
 import { composerDraftScope } from "../../lib/composer-draft";
 import { cronLabels } from "../../lib/cron";
+import { listen, stop as stopDictation } from "../../lib/dictation";
 import { useI18n } from "../../lib/i18n";
 import { useThemedStyles } from "../../lib/native";
 import { useChatOnScreen } from "../../lib/page-card-detail";
@@ -161,6 +163,8 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   const [needsModel, setNeedsModel] = useState<boolean>();
   const [managedModel, setManagedModel] = useState(false);
   const [voiceNotes, setVoiceNotes] = useState(false);
+  const [mobileActions, setMobileActions] = useState(false);
+  const [recording, setRecording] = useState(false);
   // Re-read on focus so returning from Models settings updates unsent missing-model messages.
   useFocusEffect(
     useCallback(() => {
@@ -172,6 +176,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
           setNeedsModel(me.needsModel);
           setManagedModel(me.managedModel === true);
           setVoiceNotes(me.voiceNotesEnabled === true);
+          setMobileActions(me.mobileActionsEnabled === true);
         })
         .catch(() => undefined);
       return () => {
@@ -658,6 +663,59 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                     "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.",
                   )}
                 </Text>
+              </View>
+            ) : null}
+            {mobileActions ? (
+              <View
+                style={{ flexDirection: "row", gap: 12, paddingHorizontal: 16, paddingBottom: 8 }}
+              >
+                {quickActionTarget({
+                  enabled: true,
+                  name: "camera",
+                  phase2aEnabled: false,
+                  voiceNotesEnabled: true,
+                  threadId: threadKey ?? null,
+                }) ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => attachments.attachFrom("camera")}
+                  >
+                    <Text style={{ color: tokens.foreground }}>{t("Camera")}</Text>
+                  </Pressable>
+                ) : null}
+                <Pressable accessibilityRole="button" onPress={() => router.push("/share")}>
+                  <Text style={{ color: tokens.foreground }}>{t("Share")}</Text>
+                </Pressable>
+                {quickActionTarget({
+                  enabled: true,
+                  name: "voice",
+                  phase2aEnabled: false,
+                  voiceNotesEnabled: true,
+                  threadId: threadKey ?? null,
+                }) ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => {
+                      if (recording) {
+                        stopDictation();
+                        setRecording(false);
+                        return;
+                      }
+                      setRecording(true);
+                      void listen({
+                        onFinal: (text) => {
+                          composer.composerRef.current?.insert(text);
+                          setRecording(false);
+                        },
+                        onGiveUp: () => setRecording(false),
+                      }).catch(() => setRecording(false));
+                    }}
+                  >
+                    <Text style={{ color: tokens.foreground }}>
+                      {recording ? t("Recording") : t("Voice note")}
+                    </Text>
+                  </Pressable>
+                ) : null}
               </View>
             ) : null}
             <ThreadComposer

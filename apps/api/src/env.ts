@@ -26,6 +26,7 @@ import {
   attachmentCountFromEnv,
   phoneCallSettings,
   readDigestConfig,
+  readMobileActionsConfig,
   readMonthlyReportConfig,
   readNotifyPolicyConfig,
   readPhase2aConfig,
@@ -161,6 +162,7 @@ export interface AppEnv {
   digestEnabled: boolean;
   monthlyReportEnabled: boolean;
   referralPromptEnabled: boolean;
+  mobileActionsEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -473,6 +475,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     digestEnabled: readDigestConfig(source).enabled,
     monthlyReportEnabled: readMonthlyReportConfig(source).enabled,
     referralPromptEnabled: readReferralPromptConfig(source).enabled,
+    mobileActionsEnabled: readMobileActionsConfig(source).enabled,
   };
 }
 

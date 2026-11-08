@@ -163,6 +163,7 @@ export interface RouterDeps {
     digestEnabled?: boolean;
     monthlyReportEnabled?: boolean;
     referralPromptEnabled?: boolean;
+    mobileActionsEnabled?: boolean;
     mcpStdioAllowedCommands?: string[];
   };
 }

@@ -1,6 +1,7 @@
 export const JA_MESSAGES: Record<string, string> = {
   Record: "録音",
   Recording: "録音中",
+  "Voice note": "ボイスメモ",
   Support: "サポート",
   "No matches": "一致するものはありません",
   "Always ask": "常に確認",
