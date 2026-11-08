@@ -1651,6 +1651,24 @@ export const appContract = {
       .input(z.object({ botId: Id, name: StoredBotSecretName }))
       .output(z.object({ ok: z.literal(true) })),
   },
+  notifyPolicy: {
+    get: oc.output(
+      z.object({
+        channel: z.enum(["push", "in_app", "both"]),
+        quietStartMinute: z.number().int().nullable(),
+        quietEndMinute: z.number().int().nullable(),
+      }),
+    ),
+    update: oc
+      .input(
+        z.object({
+          channel: z.enum(["push", "in_app", "both"]),
+          quietStartMinute: z.number().int().min(0).max(1439).nullable(),
+          quietEndMinute: z.number().int().min(0).max(1439).nullable(),
+        }),
+      )
+      .output(z.object({ ok: z.literal(true) })),
+  },
   phase2a: {
     contexts: {
       list: oc.output(z.array(WorkContextSchema)),

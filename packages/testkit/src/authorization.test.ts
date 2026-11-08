@@ -582,6 +582,8 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["botSecrets/list"],
       ["botSecrets/put"],
       ["botSecrets/remove"],
+      ["notifyPolicy/get"],
+      ["notifyPolicy/update", { channel: "both", quietStartMinute: null, quietEndMinute: null }],
       ["phase2a/contexts/list"],
       ["phase2a/contexts/create", { kind: "personal", label: "Home" }],
       ["phase2a/contexts/grant", { contextId: "missing", userId: "missing", role: "reader" }],

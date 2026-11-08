@@ -100,6 +100,8 @@ model User {
   outboundDrafts              OutboundDraft[]          @relation("OutboundDraftAuthor")
   approvedOutboundDrafts      OutboundDraft[]          @relation("OutboundDraftApprover")
   workApprovalEvents          WorkApprovalEvent[]
+  notificationPolicy          UserNotificationPolicy?
+  notificationBatches         NotificationBatch[]
 
   @@unique([email])
   @@map("user")
@@ -2937,4 +2939,30 @@ model WorkApprovalEvent {
 
   @@index([draftId])
   @@map("work_approval_events")
+}
+
+/// Quiet hours and push channel. Empty while ALMA_NOTIFY_POLICY is off.
+model UserNotificationPolicy {
+  userId            String  @id
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel           String  @default("both")
+  quietStartMinute  Int?
+  quietEndMinute    Int?
+  updatedAt         DateTime @updatedAt
+
+  @@map("user_notification_policies")
+}
+
+/// A routine push held for quiet hours. No title and no body.
+model NotificationBatch {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind        String
+  createdAt   DateTime  @default(now())
+  flushingAt  DateTime?
+  sentAt      DateTime?
+
+  @@index([userId, sentAt])
+  @@map("notification_batches")
 }

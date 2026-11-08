@@ -25,6 +25,7 @@ import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
 import {
   attachmentCountFromEnv,
   phoneCallSettings,
+  readNotifyPolicyConfig,
   readPhase2aConfig,
   resolveAuthSecret,
   resolveContentEncryption,
@@ -146,6 +147,7 @@ export interface AppEnv {
   almaOnboardingV2: boolean;
   phase2aEnabled: boolean;
   phase2aDispatchDelaySeconds: number;
+  notifyPolicyEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -450,6 +452,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     almaOnboardingV2: flags.onboardingV2,
     phase2aEnabled: phase2a.enabled,
     phase2aDispatchDelaySeconds: phase2a.dispatchDelaySeconds,
+    notifyPolicyEnabled: readNotifyPolicyConfig(source).enabled,
   };
 }
 

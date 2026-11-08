@@ -8,6 +8,7 @@ import type {
   NotificationProvider,
 } from "@rakazo/adapter-kit";
 import { pushReceiptJob } from "@rakazo/adapter-kit";
+import { decidePush, minuteInZone, readNotifyPolicyConfig, scheduleZone } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
 import type { IncomingCallPush, VoipPushProvider } from "./apns-voip.js";
 import { combineSignals } from "./connector-safety.js";
@@ -157,6 +158,16 @@ export type ExpoPushOptions = {
   sessionExpiresAt?: PushSessionExpiresAt;
   /** Schedules the receipt check; without it receipts are not read. */
   jobs?: JobPublisher;
+  /** Quiet-hours hold. The row stores no title and no body. */
+  onQuietHold?: (userId: string) => Promise<void>;
+  /** User zone and policy used when the notify flag is on. Absent means both channels and no quiet hours. */
+  notifyPolicyFor?: (userId: string) => Promise<{
+    timezone: string | null;
+    locale: string | null;
+    channel: "push" | "in_app" | "both";
+    quietStartMinute: number | null;
+    quietEndMinute: number | null;
+  } | null>;
   /** Sent as a bearer token when the Expo project enforces enhanced push security. */
   accessToken?: string;
   retryDelaysMs?: readonly number[];
@@ -166,6 +177,8 @@ export class ExpoPushProvider implements NotificationProvider {
   private readonly voip?: VoipPushProvider;
   private readonly sessionExpiresAt?: PushSessionExpiresAt;
   private readonly jobs?: JobPublisher;
+  private readonly onQuietHold?: (userId: string) => Promise<void>;
+  private readonly notifyPolicyFor?: ExpoPushOptions["notifyPolicyFor"];
   private readonly accessToken?: string;
   private readonly retryDelaysMs: readonly number[];
 
@@ -176,6 +189,8 @@ export class ExpoPushProvider implements NotificationProvider {
     this.voip = options.voip;
     this.sessionExpiresAt = options.sessionExpiresAt;
     this.jobs = options.jobs;
+    this.onQuietHold = options.onQuietHold;
+    this.notifyPolicyFor = options.notifyPolicyFor;
     this.accessToken = options.accessToken?.trim() || undefined;
     this.retryDelaysMs = options.retryDelaysMs ?? EXPO_PUSH_RETRY_DELAYS_MS;
   }
@@ -293,10 +308,33 @@ export class ExpoPushProvider implements NotificationProvider {
     const registration = await this.deliverableToken(context.userId);
     if (!registration) return "undeliverable";
     const token = registration.token;
-    const title = capped(message.title, MAX_PUSH_TITLE_CHARS);
+    let title = capped(message.title, MAX_PUSH_TITLE_CHARS);
     let bodyChars = MAX_PUSH_BODY_CHARS;
     let text = capped(message.body, bodyChars);
-    const data = expoPushData(message, context.spaceId, randomUUID());
+    let data: Record<string, unknown> = expoPushData(message, context.spaceId, randomUUID());
+    if (readNotifyPolicyConfig().enabled) {
+      const stored = this.notifyPolicyFor ? await this.notifyPolicyFor(context.userId) : null;
+      const zone = scheduleZone(stored?.timezone);
+      const decision = decidePush({
+        kind: message.kind,
+        minute: minuteInZone(new Date(), zone),
+        policy: {
+          channel: stored?.channel ?? "both",
+          quietStartMinute: stored?.quietStartMinute ?? null,
+          quietEndMinute: stored?.quietEndMinute ?? null,
+        },
+        locale: stored?.locale,
+        data,
+      });
+      if (!decision.deliver) {
+        if (decision.hold) await this.onQuietHold?.(context.userId);
+        return "undeliverable";
+      }
+      title = decision.title;
+      text = decision.body;
+      data = decision.data;
+    }
+    const visibleBody = text;
     const shared = {
       to: token,
       collapseId: message.threadId,
@@ -322,13 +360,15 @@ export class ExpoPushProvider implements NotificationProvider {
             title,
             body: text,
             data,
-            ...(message.sender ? { mutableContent: true } : {}),
+            ...(message.sender && !readNotifyPolicyConfig().enabled
+              ? { mutableContent: true }
+              : {}),
             ...(urgent ? { priority: "high" } : {}),
           };
     let payload = build();
     while (Buffer.byteLength(JSON.stringify(payload)) > MAX_PUSH_PAYLOAD_BYTES && bodyChars > 1) {
       bodyChars = Math.floor(bodyChars / 2);
-      text = capped(message.body, bodyChars);
+      text = capped(visibleBody, bodyChars);
       payload = build();
     }
     const { status, body } = await this.postWithBackoff(EXPO_PUSH_URL, payload, context.signal);

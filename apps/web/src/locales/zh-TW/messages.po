@@ -1369,6 +1369,7 @@ msgid "Bot's model"
 msgstr "機器人的模型"
 
 #: src/components/SignupSurvey.tsx
+#: src/pages/QuietHoursPage.tsx
 msgid "Both"
 msgstr "兩者都有"
 
@@ -3326,6 +3327,10 @@ msgstr "需要驗證電子信箱"
 msgid "Enable {0}"
 msgstr "啟用 {0}"
 
+#: src/pages/QuietHoursPage.tsx
+msgid "End"
+msgstr ""
+
 #: src/components/ComputerProviderSettings.tsx
 msgid "End user ID"
 msgstr ""
@@ -3924,6 +3929,10 @@ msgstr "進行中"
 #: src/lib/ticket-status.ts
 msgid "In review"
 msgstr "審查中"
+
+#: src/pages/QuietHoursPage.tsx
+msgid "In the app"
+msgstr ""
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -5550,6 +5559,10 @@ msgstr "供應商"
 msgid "Pull request"
 msgstr "Pull request"
 
+#: src/pages/QuietHoursPage.tsx
+msgid "Push"
+msgstr ""
+
 #: src/components/SidebarFooter.tsx
 #: src/pages/QueuePage.tsx
 msgid "Queue"
@@ -5558,6 +5571,10 @@ msgstr ""
 #: src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "排隊中"
+
+#: src/pages/QuietHoursPage.tsx
+msgid "Quiet hours"
+msgstr ""
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -6154,6 +6171,7 @@ msgstr "週六"
 #: src/pages/model-settings/providers-section.tsx
 #: src/pages/ModelSettingsOverlay.tsx
 #: src/pages/QueuePage.tsx
+#: src/pages/QuietHoursPage.tsx
 #: src/pages/RoutineEditor.tsx
 #: src/pages/shell/bot-panel.tsx
 #: src/pages/shell/dialogs.tsx
@@ -6719,6 +6737,7 @@ msgstr ""
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO 暫時不可用，請重試。"
 
+#: src/pages/QuietHoursPage.tsx
 #: src/pages/shell/computer-overlay.tsx
 msgid "Start"
 msgstr "啟動"

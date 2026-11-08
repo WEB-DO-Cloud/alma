@@ -1,7 +1,7 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import type { JobPublisher, JobWorkerHost } from "@rakazo/adapter-kit";
 import { unwrapEnvFromKeyManager } from "@rakazo/adapters";
-import { readPhase2aConfig } from "@rakazo/core";
+import { readNotifyPolicyConfig, readPhase2aConfig } from "@rakazo/core";
 import { loadRootEnv } from "@rakazo/core/node/load-root-env";
 import { stopOnShutdownSignals } from "@rakazo/core/node/shutdown-signals";
 import { startWorkerHealth, watchEventLoopStalls } from "./health.js";
@@ -36,6 +36,7 @@ import {
   createTicketChangeNotifier,
   databaseCapacityBackoffMs,
   ExpoPushProvider,
+  flushNotificationBatches,
   GraphileJobPublisher,
   homeStorageSweeper,
   InMemoryJobQueue,
@@ -66,10 +67,12 @@ import {
   createDb,
   createThreadEvents,
   describeRowSecurity,
+  holdRoutinePush,
   installAuditEventStore,
   installSecurityEventStore,
   isPoolCheckoutTimeout,
   isTooManyDatabaseConnections,
+  loadNotifyPolicy,
   parsePositiveInteger,
   pushSessionExpiresAt,
   readAlmaFlags,
@@ -86,6 +89,7 @@ const logger = await createRootLogger(SERVICE_NAMES.worker);
 async function main() {
   readAlmaFlags();
   readPhase2aConfig();
+  readNotifyPolicyConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");
@@ -192,6 +196,8 @@ async function main() {
     jobs,
     accessToken: process.env.EXPO_ACCESS_TOKEN,
     voip: await createApnsVoipProvider(apnsVoipConfig(process.env)),
+    notifyPolicyFor: (userId) => loadNotifyPolicy(prisma, userId),
+    onQuietHold: (userId) => holdRoutinePush(prisma, userId),
   });
   const email = configuredEmailProvider({
     provider: process.env.EMAIL_PROVIDER?.trim() || undefined,
@@ -254,6 +260,17 @@ async function main() {
       reconcileDeadJobs: inMemoryJobs ? undefined : createDeadJobPruner(pool),
     },
   );
+  const notifyFlush = setInterval(() => {
+    void flushNotificationBatches(prisma, notifications, (userId) => ({
+      operationId: "notify-flush",
+      traceId: "notify-flush",
+      spaceId: "",
+      userId,
+      botId: "notify",
+      signal: shutdown.signal,
+    }));
+  }, 30 * 60_000);
+  notifyFlush.unref();
   let stopHealth: (() => Promise<void>) | undefined;
   let stopping = false;
   let stopped: Promise<void> | undefined;
@@ -262,6 +279,7 @@ async function main() {
     (stopped ??= (async () => {
       stopping = true;
       shutdown.abort();
+      clearInterval(notifyFlush);
       stopStallWatch();
       try {
         await stopHealth?.();

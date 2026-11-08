@@ -328,6 +328,7 @@ x-app-environment: &app-environment
   # Phase 2A foundation. Off unless set to the exact string true.
   ALMA_PHASE2A:
   ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
+  ALMA_NOTIFY_POLICY:
 
 services:
   postgres:
@@ -508,6 +509,7 @@ services:
       ALMA_ONBOARDING_V2:
       ALMA_PHASE2A:
       ALMA_PHASE2A_DISPATCH_DELAY_SECONDS:
+      ALMA_NOTIFY_POLICY:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:
