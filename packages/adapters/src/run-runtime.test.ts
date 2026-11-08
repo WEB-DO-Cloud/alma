@@ -12,6 +12,7 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     dataDir: source.DATA_DIR ?? "./data",
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
+    googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: key,
     deploymentModelConfigured: configured,
@@ -60,6 +61,8 @@ describe("runRuntimeEnvFromProcess", () => {
       INBOUND_EMAIL_DOMAIN: " Bots.Example.Test ",
     },
     { NODE_ENV: "test", INBOUND_EMAIL_DOMAIN: "  ", PIPEDREAM_ENVIRONMENT: "staging" },
+    { NODE_ENV: "test", ALMA_GOOGLE_BYO_OAUTH: "yes" },
+    { NODE_ENV: "test", ALMA_GOOGLE_BYO_OAUTH: "true" },
   ])("reads the values the worker read before (%#)", (source) => {
     expect(runRuntimeEnvFromProcess(source)).toEqual(previousWorkerValues(source));
   });
