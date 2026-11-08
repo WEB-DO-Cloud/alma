@@ -272,6 +272,17 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["spaces/invites/preview", { token: "missing-token" }],
       ["spaces/invites/accept", { token: "missing-token" }],
       ["spaces/invites/cancel", { spaceId: "missing-space" }],
+      ["googleOAuth/get"],
+      [
+        "googleOAuth/save",
+        {
+          organizationId: "missing-organization",
+          clientId: "100-abc.apps.googleusercontent.com",
+          clientSecret: "not-a-real-secret",
+        },
+      ],
+      ["googleOAuth/remove", { organizationId: "missing-organization" }],
+      ["googleOAuth/test", { organizationId: "missing-organization" }],
       ["organizations/list"],
       ["organizations/create", { name: "Nope" }],
       ["organizations/rename", { organizationId: "missing-organization", name: "Nope" }],
