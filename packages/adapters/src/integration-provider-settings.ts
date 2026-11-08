@@ -29,6 +29,10 @@ export class IntegrationProviderSettings {
       Record<IntegrationProviderId, ManagedConnectorProvider>
     > = {},
     private readonly factory?: (config: IntegrationProviderConfig) => ManagedConnectorProvider,
+    private readonly authConfigIdsFor?: (
+      context: AdapterContext,
+      toolkits: string[],
+    ) => Promise<Record<string, string> | undefined>,
   ) {
     this.secrets.onChange?.((ref) => {
       for (const [id, entry] of this.cache) if (entry.ciphertext === ref) this.cache.delete(id);
@@ -38,7 +42,7 @@ export class IntegrationProviderSettings {
   private create(config: IntegrationProviderConfig): ManagedConnectorProvider {
     if (this.factory) return this.factory(config);
     return config.provider === "composio"
-      ? new ComposioConnector({ apiKey: config.apiKey })
+      ? new ComposioConnector({ apiKey: config.apiKey, authConfigIdsFor: this.authConfigIdsFor })
       : new PipedreamConnector({ ...config, identitySecret: this.identitySecret });
   }
 

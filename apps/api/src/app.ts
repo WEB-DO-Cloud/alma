@@ -775,6 +775,8 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       computerSettingsEnabled: env.computerSettingsEnabled,
       mcpStdioEnabled: env.mcpStdioEnabled,
       phase2aEnabled: env.phase2aEnabled,
+      googleByoOauth: env.googleByoOauth,
+      googleOAuthClientId: env.googleOAuthClientId,
       notifyPolicyEnabled: env.notifyPolicyEnabled,
       sendUndoEnabled: env.sendUndoEnabled,
       undoDispatchEnabled: env.undoDispatchEnabled,

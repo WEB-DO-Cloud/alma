@@ -276,7 +276,7 @@ export interface ConnectorProvider {
 export interface ConnectionAuthProvider {
   describe(): AdapterDescriptor<{ oauth: boolean }>;
   begin(
-    request: { provider: string; redirectUrl: string },
+    request: { provider: string; redirectUrl: string; authConfigIds?: Record<string, string> },
     context: AdapterContext,
   ): Promise<{ authorizationUrl: string | null; state: string }>;
   complete(

@@ -4,6 +4,7 @@ import {
   findConnectedModelCredential,
   hasHostedModelCredits,
   hostCredentialSource,
+  isOrganizationAdminRole,
   managedChatModel,
   managedModelActive,
   mcpStdioAvailable,
@@ -106,6 +107,7 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
     // Only billing deployments ask; self-hosted installs never see the survey.
     needsSignupSurvey: Boolean(deps.billing) && !user.signupSurvey,
     phase2aEnabled: deps.env.phase2aEnabled === true,
+    ...(await googleByoOauthField(deps, actor)),
     notifyPolicyEnabled: deps.env.notifyPolicyEnabled === true,
     sendUndoEnabled: deps.env.sendUndoEnabled === true,
     undoDispatchEnabled: deps.env.undoDispatchEnabled === true,
@@ -119,6 +121,24 @@ export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
       ? { id: deps.paymentWallet.describe().id, name: deps.paymentWallet.displayName }
       : null,
   };
+}
+
+/** Present only for an owner or admin, and only when the switch is exactly on. */
+async function googleByoOauthField(
+  deps: RouterDeps,
+  actor: Actor,
+): Promise<{ googleByoOauth: true } | Record<string, never>> {
+  if (deps.env.googleByoOauth !== true) return {};
+  const space = await deps.prisma.space.findUnique({
+    where: { id: actor.spaceId },
+    select: { organizationId: true },
+  });
+  if (!space) return {};
+  const member = await deps.prisma.member.findFirst({
+    where: { organizationId: space.organizationId, userId: actor.userId },
+    select: { role: true },
+  });
+  return member && isOrganizationAdminRole(member.role) ? { googleByoOauth: true } : {};
 }
 
 function computerHostFor(

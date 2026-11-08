@@ -747,6 +747,10 @@ msgstr "Agregar créditos"
 msgid "Add custom"
 msgstr "Agregar personalizada"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add every scope listed here."
+msgstr "Añade todos los permisos que aparecen aquí."
+
 #: src/pages/ModelRoleSettings.tsx
 msgid "Add fallback"
 msgstr "Añadir alternativo"
@@ -796,6 +800,10 @@ msgstr "Agregar URL del servidor"
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "Add skills"
 msgstr "Agregar habilidades"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add the redirect URI shown here as an authorized redirect URI."
+msgstr "Añade el URI de redirección que aparece aquí como URI de redirección autorizado."
 
 #: src/components/teach/SkillDraftCard.tsx
 msgid "Add to routine"
@@ -1700,6 +1708,10 @@ msgstr "Elegir carpeta"
 msgid "Choose how to use ALMA"
 msgstr "Elige cómo usar ALMA"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Choose Test connection."
+msgstr "Elige Probar conexión."
+
 #: src/components/vault/VaultItemEditor.tsx
 msgid "City"
 msgstr ""
@@ -1743,7 +1755,21 @@ msgstr ""
 msgid "Clearing…"
 msgstr "Borrando…"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID"
+msgstr "ID de cliente"
+
+#. placeholder {0}: view.clientIdLast4
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID ending in {0}. Secret saved."
+msgstr "ID de cliente que termina en {0}. Secreto guardado."
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client secret"
+msgstr "Secreto de cliente"
+
 #: src/components/ErrorBoundary.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/MessagingSettingsPanel.tsx
 #: src/pages/ModelSettingsOverlay.tsx
@@ -2135,6 +2161,7 @@ msgstr "Conversaciones"
 #: src/components/pages/SharePopover.tsx
 #: src/components/vault/BotEmailAddresses.tsx
 #: src/components/vault/VaultItemDetail.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/model-settings/connection-controls.tsx
 #: src/pages/onboarding/model-step.tsx
 #: src/pages/ReferralPage.tsx
@@ -2154,6 +2181,10 @@ msgstr "Copiar"
 #: src/components/vault/BotEmailAddresses.tsx
 msgid "Copy {address}"
 msgstr ""
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy client ID"
+msgstr "Copiar ID de cliente"
 
 #: src/components/markdown-copy.tsx
 msgid "Copy code"
@@ -2176,6 +2207,10 @@ msgstr ""
 #: src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "Copiar prompt"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy redirect URI"
+msgstr "Copiar URI de redirección"
 
 #: src/components/markdown-copy.tsx
 msgid "Copy rows"
@@ -2832,6 +2867,10 @@ msgstr "Crea una sección y mueve {0} a ella."
 #: src/pages/Auth.tsx
 msgid "Create account"
 msgstr "Crear cuenta"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Create an OAuth client ID of type Web application."
+msgstr "Crea un ID de cliente de OAuth de tipo Aplicación web."
 
 #: src/components/bot-templates/bot-templates-dialog.tsx
 msgid "Create bot"
@@ -3700,6 +3739,10 @@ msgstr "Desde GitHub"
 msgid "Full name"
 msgstr ""
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Full steps"
+msgstr "Pasos completos"
+
 #: src/pages/WindowChrome.tsx
 msgid "Fullscreen"
 msgstr "Pantalla completa"
@@ -3751,6 +3794,14 @@ msgstr "Ir al inicio"
 #: src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Go to bot"
 msgstr ""
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google apps connected with it may need to be connected again."
+msgstr "Las apps de Google conectadas con él pueden tener que conectarse de nuevo."
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google Workspace"
+msgstr "Google Workspace"
 
 #: src/pages/AdminAccessPage.tsx
 msgid "Grant"
@@ -3935,6 +3986,10 @@ msgstr "Importar un agente"
 msgid "Import data"
 msgstr "Importar datos"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "In Google Cloud, open the OAuth consent screen for your Workspace project and set the user type to Internal."
+msgstr "En Google Cloud, abre la pantalla de consentimiento de OAuth del proyecto de tu Workspace y establece el tipo de usuario en Interno."
+
 #: src/lib/ticket-status.ts
 msgid "In progress"
 msgstr "En curso"
@@ -3950,6 +4005,10 @@ msgstr "En la app"
 #: src/pages/DigestPage.tsx
 msgid "In the app and push"
 msgstr "En la app y como aviso"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "In the Google Admin console, open Security, Access and data control, API controls, Manage third-party app access, then Configure new app."
+msgstr "En la consola de administración de Google, abre Seguridad, Acceso y control de datos, Controles de API, Gestionar el acceso de aplicaciones de terceros y, luego, Configurar aplicación nueva."
 
 #: src/components/integrations/plugin-marketplace.tsx
 msgid "In this bot"
@@ -5399,6 +5458,10 @@ msgstr "Pago vencido"
 msgid "Paste a replacement key"
 msgstr "Pega una clave de reemplazo"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Paste the client ID and client secret, then save."
+msgstr "Pega el ID de cliente y el secreto de cliente, y guarda."
+
 #: src/pages/model-settings/compatible-model-fields.tsx
 msgid "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed."
 msgstr "Pega la dirección compatible con OpenAI de tu servidor. ALMA agrega /v1 si es necesario."
@@ -5764,6 +5827,7 @@ msgstr "Recreando la computadora"
 msgid "Recruiting & HR"
 msgstr "Reclutamiento y RR. HH."
 
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/McpServerForm.tsx
 msgid "Redirect URI"
 msgstr "URI de redirección"
@@ -5826,6 +5890,7 @@ msgstr "Recargar"
 #: src/components/TrustedLinkSitesSettings.tsx
 #: src/components/vault/LoginFieldsInput.tsx
 #: src/components/vault/VaultItemDetail.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/McpServerForm.tsx
 #: src/pages/ModelRoleSettings.tsx
 #: src/pages/plugins/connector-detail.tsx
@@ -5902,6 +5967,10 @@ msgstr "Quitar habilidad {0}"
 msgid "Remove skills"
 msgstr "Quitar habilidades"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Remove this Google client?"
+msgstr "¿Quitar este cliente de Google?"
+
 #: src/pages/routine-editor/trigger-cards.tsx
 msgid "Remove webhook"
 msgstr "Quitar webhook"
@@ -5909,6 +5978,10 @@ msgstr "Quitar webhook"
 #: src/pages/ScratchpadSection.tsx
 msgid "Removed, but list refresh failed"
 msgstr "Eliminado, pero falló la actualización de la lista"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Removing the client uses ALMA's Google sign-in again. Google apps already connected with this client may need to be connected again."
+msgstr "Si quitas el cliente, se vuelve a usar el inicio de sesión de Google de ALMA. Las apps de Google ya conectadas con este cliente pueden tener que conectarse de nuevo."
 
 #: src/components/integrations/plugin-marketplace.tsx
 #: src/pages/plugins/connector-detail.tsx
@@ -6214,6 +6287,7 @@ msgstr "sábado"
 #: src/pages/Board.tsx
 #: src/pages/DigestPage.tsx
 #: src/pages/ExternalConversationSettings.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/GroupPanel.tsx
 #: src/pages/KnowledgeSection.tsx
 #: src/pages/McpServerForm.tsx
@@ -6288,6 +6362,10 @@ msgstr ""
 msgid "Scheduled routines"
 msgstr "Rutinas programadas"
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Scopes"
+msgstr "Permisos"
+
 #: src/pages/McpServerForm.tsx
 msgid "Scopes (optional)"
 msgstr "Ámbitos (opcional)"
@@ -6338,6 +6416,10 @@ msgstr "Buscar bots, acciones y configuración"
 #: src/pages/plugins/domain-search.tsx
 msgid "Search by domain"
 msgstr "Buscar por dominio"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Search for this client ID and set access to Trusted."
+msgstr "Busca este ID de cliente y establece el acceso en De confianza."
 
 #: src/components/integrations/IntegrationSetup.tsx
 msgid "Search integrations.sh"
@@ -6857,6 +6939,7 @@ msgid "Status"
 msgstr "Estado"
 
 #: src/components/teach/SkillDraftCard.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 msgid "Steps"
 msgstr "Pasos"
 
@@ -7040,6 +7123,7 @@ msgid "Test API key"
 msgstr "Probar clave de API"
 
 #: src/components/ModelConnectionPreflightNotice.tsx
+#: src/pages/GoogleWorkspaceSettings.tsx
 #: src/pages/McpServersOverlay.tsx
 msgid "Test connection"
 msgstr "Probar conexión"
@@ -7071,6 +7155,10 @@ msgstr ""
 #: src/lib/dictation.ts
 msgid "The browser keeps dropping the microphone. Start dictation again to retry."
 msgstr "El navegador pierde el micrófono una y otra vez. Vuelve a iniciar el dictado para intentarlo de nuevo."
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "The client ID is not set on this server."
+msgstr "El ID de cliente no está configurado en este servidor."
 
 #: src/pages/settings-nav.ts
 msgid "The computer your bots work on."
@@ -7106,6 +7194,10 @@ msgstr "El plan se renueva cada mes hasta que lo canceles."
 #: src/lib/model-connection-preflight.ts
 msgid "The provider is rate-limiting requests."
 msgstr "El proveedor está limitando la frecuencia de las solicitudes."
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "The scope list could not be loaded."
+msgstr "No se pudo cargar la lista de permisos."
 
 #: src/lib/computer-screen.ts
 msgid "The screen connection closed."
@@ -7459,6 +7551,10 @@ msgstr "Las pruebas tienen menos horas para evitar abusos."
 msgid "Troubleshoot"
 msgstr ""
 
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Trusted app"
+msgstr "Aplicación de confianza"
+
 #: src/components/TrustedLinkSitesSettings.tsx
 msgid "Trusted sites"
 msgstr "Sitios de confianza"
@@ -7685,6 +7781,10 @@ msgstr "Usa Entrada protegida para las contraseñas."
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Use up to 512 letters, digits, _ or -."
 msgstr "Usa hasta 512 letras, dígitos, _ o -."
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Use your own Google client"
+msgstr "Usar tu propio cliente de Google"
 
 #: src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "User peer"
@@ -8052,6 +8152,10 @@ msgstr "Tus predeterminados"
 #: src/pages/Auth.tsx
 msgid "Your email address"
 msgstr "Tu dirección de correo"
+
+#: src/pages/GoogleWorkspaceSettings.tsx
+msgid "Your Google client"
+msgstr "Tu cliente de Google"
 
 #. js-lingui-explicit-id
 #: src/lib/run-error.ts

@@ -435,7 +435,8 @@ model Organization {
   billing      BillingAccount?
   modelCredits ModelCreditAccount?
   almaTrial    AlmaTrial?
-  almaProfile  AlmaProfile?
+  almaProfile       AlmaProfile?
+  googleOAuthClient OrganizationGoogleOAuthClient?
   activationEvents ActivationEvent[]
   workContexts WorkContext[]
   referralCode ReferralCode?
@@ -2523,6 +2524,20 @@ model AlmaTrial {
   updatedAt      DateTime     @updatedAt
 
   @@map("alma_trials")
+}
+
+/// An organization's own Google OAuth client. The ciphertext is the only copy of the secret.
+model OrganizationGoogleOAuthClient {
+  organizationId      String       @id
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clientId            String
+  secretCiphertext    String
+  remoteAuthConfigIds Json         @default("{}")
+  updatedByUserId     String
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  @@map("organization_google_oauth_clients")
 }
 
 /// Personal-or-sector choice for the starter assistant. One row per organization.

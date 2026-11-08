@@ -7,6 +7,8 @@ export type AlmaFlags = {
   /** Used only when `trialEnabled` is on. */
   trialMessageCap: number;
   onboardingV2: boolean;
+  /** Own Google OAuth client per organization. Off unless the value is exactly `true`. */
+  googleByoOauth: boolean;
 };
 
 const DEFAULT_TRIAL_DAYS = 14;
@@ -30,6 +32,7 @@ export function readAlmaFlags(source: NodeJS.ProcessEnv = process.env): AlmaFlag
         )
       : DEFAULT_TRIAL_MESSAGE_CAP,
     onboardingV2,
+    googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
   };
 }
 
