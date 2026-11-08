@@ -177,6 +177,7 @@ overlay apps/mobile/components/thread/thread-header.tsx
 overlay apps/mobile/components/thread/thread-rows.tsx
 overlay apps/mobile/components/thread/thread-run-error.ts
 overlay apps/mobile/components/thread/thread-screen.tsx
+overlay apps/mobile/components/vault-item-editor.tsx
 overlay apps/mobile/e2e/README.md
 overlay apps/mobile/e2e/ios-screenshots/flows/auth.yaml
 overlay apps/mobile/e2e/ios-screenshots/flows/compose.yaml
@@ -222,6 +223,8 @@ overlay apps/mobile/lib/billing-auth.ts
 overlay apps/mobile/lib/billing.test.ts
 overlay apps/mobile/lib/billing.ts
 overlay apps/mobile/lib/bot-settings-voice.test.tsx
+overlay apps/mobile/lib/card-autofill.test.ts
+overlay apps/mobile/lib/card-autofill.ts
 overlay apps/mobile/lib/call-service-contract.test.ts
 overlay apps/mobile/lib/chat-header-title.test.tsx
 overlay apps/mobile/lib/client-update.test.ts
@@ -334,6 +337,8 @@ overlay apps/web/src/components/SidebarFooter.tsx
 overlay apps/web/src/components/SignupSurvey.tsx
 overlay apps/web/src/components/SubscriptionGate.test.tsx
 overlay apps/web/src/components/SubscriptionGate.tsx
+overlay apps/web/src/components/VaultSettings.test.tsx
+overlay apps/web/src/components/vault/VaultItemEditor.tsx
 overlay apps/web/src/components/activation.test.tsx
 overlay apps/web/src/components/activation.tsx
 overlay apps/web/src/components/pages/PublicPageShell.tsx
@@ -568,6 +573,7 @@ overlay docs/designs/reviews/2026-10-26-alma-rebrand.md
 overlay docs/designs/reviews/2026-10-27-alma-managed-voice-calls.md
 overlay docs/designs/reviews/2026-11-03-alma-batch.md
 overlay docs/designs/support-bot-chatwoot.md
+overlay docs/designs/vault-card-autofill.md
 overlay docs/desktop-app.md
 overlay docs/desktop-release.md
 overlay docs/getting-started.md
@@ -593,6 +599,8 @@ overlay docs/self-host-secrets.md
 overlay docs/self-host-upgrading.md
 overlay docs/self-host.md
 overlay docs/upstream-issues/android-keyboard-composer.md
+overlay docs/upstream-issues/vault-card-autofill.md
+overlay docs/upstream-issues/vault-card-autofill.patch
 overlay infra/compose/.env.images.example
 overlay infra/compose/Dockerfile
 overlay infra/compose/backup-prod.sh

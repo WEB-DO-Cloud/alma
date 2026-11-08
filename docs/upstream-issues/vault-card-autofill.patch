@@ -1,0 +1,245 @@
+diff --git a/apps/mobile/components/vault-item-editor.tsx b/apps/mobile/components/vault-item-editor.tsx
+index b8289438f..678dcbabe 100644
+--- a/apps/mobile/components/vault-item-editor.tsx
++++ b/apps/mobile/components/vault-item-editor.tsx
+@@ -6,6 +6,7 @@ import type { TextInputProps } from "react-native";
+ import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+ import { useSafeAreaInsets } from "react-native-safe-area-context";
+ import { mobileTokens } from "../lib/appearance";
++import { cardAutofillTraits, noAutofillTraits } from "../lib/card-autofill";
+ import { useI18n } from "../lib/i18n";
+ import { useThemedStyles } from "../lib/native";
+ import { useSecretSheetClose } from "../lib/secret-sheet-close";
+@@ -236,8 +237,7 @@ export function VaultItemEditor({
+                 slot: 0,
+                 placeholder: item?.preview?.card ? `•••• ${item.preview.card.last4}` : undefined,
+                 keyboardType: "number-pad",
+-                textContentType: "creditCardNumber",
+-                autoComplete: "cc-number",
++                ...cardAutofillTraits("number", Platform.OS),
+               })}
+               {brand ? <Text style={styles.brand}>{brand}</Text> : null}
+               <View style={styles.separator} />
+@@ -245,21 +245,19 @@ export function VaultItemEditor({
+                 field(t("Expiry"), draft.expiry, (expiry) => update({ expiry }), {
+                   placeholder: "MM/YY",
+                   keyboardType: "numbers-and-punctuation",
+-                  autoComplete: "cc-exp",
++                  ...cardAutofillTraits("expiry", Platform.OS),
+                 }),
+                 field(t("Security code"), draft.cvc, (cvc) => update({ cvc }), {
+                   slot: 1,
+                   secureTextEntry: true,
+                   keyboardType: "number-pad",
+-                  autoComplete: "cc-csc",
+-                  textContentType: "none",
++                  ...cardAutofillTraits("cvc", Platform.OS),
+                 }),
+               )}
+               <View style={styles.separator} />
+               {field(t("Name on card"), draft.cardName, (cardName) => update({ cardName }), {
+                 autoCapitalize: "words",
+-                autoComplete: "cc-name",
+-                textContentType: "name",
++                ...cardAutofillTraits("name", Platform.OS),
+               })}
+               {contacts.length ? (
+                 <>
+@@ -408,11 +406,13 @@ export function VaultItemEditor({
+                 {
+                   placeholder: kind === "contact" ? t("Home") : item?.title,
+                   autoCapitalize: "sentences",
++                  ...noAutofillTraits(),
+                 },
+               )}
+               <View style={styles.separator} />
+               {field(t("When to use"), draft.note, (note) => update({ note }), {
+                 autoCapitalize: "sentences",
++                ...noAutofillTraits(),
+               })}
+             </View>
+           )}
+diff --git a/apps/mobile/lib/card-autofill.test.ts b/apps/mobile/lib/card-autofill.test.ts
+new file mode 100644
+index 000000000..dd358876a
+--- /dev/null
++++ b/apps/mobile/lib/card-autofill.test.ts
+@@ -0,0 +1,43 @@
++import { describe, expect, it } from "vitest";
++import { cardAutofillTraits, noAutofillTraits } from "./card-autofill";
++
++describe("card autofill traits", () => {
++  it("marks each card field important and names the card content type", () => {
++    expect(cardAutofillTraits("number", "ios")).toEqual({
++      importantForAutofill: "yes",
++      autoComplete: "cc-number",
++      textContentType: "creditCardNumber",
++    });
++    expect(cardAutofillTraits("expiry", "ios")).toEqual({
++      importantForAutofill: "yes",
++      autoComplete: "cc-exp",
++      textContentType: "creditCardExpiration",
++    });
++    expect(cardAutofillTraits("cvc", "ios")).toEqual({
++      importantForAutofill: "yes",
++      autoComplete: "cc-csc",
++      textContentType: "creditCardSecurityCode",
++    });
++    expect(cardAutofillTraits("name", "ios")).toEqual({
++      importantForAutofill: "yes",
++      autoComplete: "cc-name",
++      textContentType: "creditCardName",
++    });
++  });
++
++  it("uses the Android name hint React Native maps, and leaves the other tokens alone", () => {
++    expect(cardAutofillTraits("name", "android").autoComplete).toBe("name");
++    expect(cardAutofillTraits("number", "android").autoComplete).toBe("cc-number");
++    expect(cardAutofillTraits("expiry", "android").autoComplete).toBe("cc-exp");
++    expect(cardAutofillTraits("cvc", "android").autoComplete).toBe("cc-csc");
++    expect(cardAutofillTraits("name", "android").importantForAutofill).toBe("yes");
++  });
++
++  it("keeps a title and a note out of autofill", () => {
++    expect(noAutofillTraits()).toEqual({
++      importantForAutofill: "no",
++      autoComplete: "off",
++      textContentType: "none",
++    });
++  });
++});
+diff --git a/apps/mobile/lib/card-autofill.ts b/apps/mobile/lib/card-autofill.ts
+new file mode 100644
+index 000000000..1d31d2106
+--- /dev/null
++++ b/apps/mobile/lib/card-autofill.ts
+@@ -0,0 +1,49 @@
++import type { TextInputProps } from "react-native";
++
++/** A card field the system or a password manager can fill. Title and notes are not one of these. */
++export type CardAutofillField = "number" | "expiry" | "cvc" | "name";
++
++export type CardAutofillTraits = Required<
++  Pick<TextInputProps, "autoComplete" | "textContentType" | "importantForAutofill">
++>;
++
++/**
++ * Hints for one card field. Android drops a token it does not know and sets
++ * `importantForAutofill` to `no`; `cc-name` is not a token it knows, `name` is. A known token
++ * does not mark the field important, so each field says yes. iOS reads `textContentType`, and
++ * that wins when both are set.
++ */
++export function cardAutofillTraits(field: CardAutofillField, os: string): CardAutofillTraits {
++  const importantForAutofill = "yes" as const;
++  switch (field) {
++    case "number":
++      return {
++        importantForAutofill,
++        autoComplete: "cc-number",
++        textContentType: "creditCardNumber",
++      };
++    case "expiry":
++      return {
++        importantForAutofill,
++        autoComplete: "cc-exp",
++        textContentType: "creditCardExpiration",
++      };
++    case "cvc":
++      return {
++        importantForAutofill,
++        autoComplete: "cc-csc",
++        textContentType: "creditCardSecurityCode",
++      };
++    case "name":
++      return {
++        importantForAutofill,
++        autoComplete: os === "android" ? "name" : "cc-name",
++        textContentType: "creditCardName",
++      };
++  }
++}
++
++/** A title, a label, or a note. Not card data, so autofill stays off. */
++export function noAutofillTraits(): CardAutofillTraits {
++  return { importantForAutofill: "no", autoComplete: "off", textContentType: "none" };
++}
+diff --git a/apps/web/src/components/VaultSettings.test.tsx b/apps/web/src/components/VaultSettings.test.tsx
+index 0c270ecd9..dcbfe8323 100644
+--- a/apps/web/src/components/VaultSettings.test.tsx
++++ b/apps/web/src/components/VaultSettings.test.tsx
+@@ -318,6 +318,20 @@ describe("VaultSettings new items", () => {
+     expect(editor()).toBeNull();
+   });
+ 
++  it("offers a saved card on the card fields and not on the note", async () => {
++    await render();
++    await startNew("card");
++    expect(editor()!.querySelector("form")!.getAttribute("autocomplete")).toBe("on");
++    expect(field("Card number").getAttribute("autocomplete")).toBe("cc-number");
++    expect(field("Expiry").getAttribute("autocomplete")).toBe("cc-exp");
++    const code = field("Security code");
++    expect(code.getAttribute("autocomplete")).toBe("cc-csc");
++    expect(code.getAttribute("type")).toBe("password");
++    expect(field("Name on card").getAttribute("autocomplete")).toBe("cc-name");
++    await click(buttonIn(editor(), "Add a note")!);
++    expect(field("When to use").getAttribute("autocomplete")).toBe("off");
++  });
++
+   it("saves a contact under its label, with a note added on request", async () => {
+     await render();
+     await startNew("contact");
+@@ -488,6 +502,8 @@ describe("VaultSettings item details", () => {
+     await click("vault-item-edit");
+     expect(detail()).toBeNull();
+     expect((field("Expiry") as HTMLInputElement).value).toBe("08/30");
++    expect(field("Name").getAttribute("autocomplete")).toBe("off");
++    expect(field("When to use").getAttribute("autocomplete")).toBe("off");
+     await type(field("Name"), "Travel card");
+     await click(buttonIn(editor(), "Save")!);
+     expect(vault.put).toHaveBeenCalledWith({
+diff --git a/apps/web/src/components/vault/VaultItemEditor.tsx b/apps/web/src/components/vault/VaultItemEditor.tsx
+index 5122c8cdf..6150dadef 100644
+--- a/apps/web/src/components/vault/VaultItemEditor.tsx
++++ b/apps/web/src/components/vault/VaultItemEditor.tsx
+@@ -431,6 +431,7 @@ function EditorForm({
+   return (
+     <form
+       className="flex flex-col gap-4"
++      autoComplete="on"
+       onSubmit={(event) => {
+         event.preventDefault();
+         void submit();
+@@ -466,7 +467,7 @@ function EditorForm({
+               <Input
+                 id={id("number")}
+                 inputMode="numeric"
+-                autoComplete="off"
++                autoComplete="cc-number"
+                 spellCheck={false}
+                 disabled={busy}
+                 value={groupedCardNumber(cardDigits)}
+@@ -493,21 +494,21 @@ function EditorForm({
+                 const digits = digitsOf(next, 6);
+                 setExpiry(digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits);
+               },
+-              { inputMode: "numeric", placeholder: "MM/YY" },
++              { inputMode: "numeric", placeholder: "MM/YY", autoComplete: "cc-exp" },
+             )}
+             <FormField id={id("cvc")} label={t`Security code`}>
+               <Input
+                 id={id("cvc")}
+                 type="password"
+                 inputMode="numeric"
+-                autoComplete="new-password"
++                autoComplete="cc-csc"
+                 disabled={busy}
+                 value={cvc}
+                 onChange={(event) => setCvc(digitsOf(event.target.value, 4))}
+               />
+             </FormField>
+           </div>
+-          {text("card-name", t`Name on card`, cardName, setCardName)}
++          {text("card-name", t`Name on card`, cardName, setCardName, { autoComplete: "cc-name" })}
+           {contacts?.length ? (
+             <FormField id={id("billing")} label={t`Billing address`}>
+               <NativeSelect
