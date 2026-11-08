@@ -163,6 +163,10 @@ msgstr "{botCount, plural, other {{name} ve # botu silinsin mi?}}"
 msgid "{botName}’s computer"
 msgstr "{botName} adlı botun bilgisayarı"
 
+#: src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr ""
+
 #: src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
 msgstr "{commandVariable} ayrılmıştır ve komut değişkeni olarak kullanılamaz. Başka bir ad seçin."
@@ -5031,6 +5035,10 @@ msgstr ""
 msgid "Not now"
 msgstr "Şimdi değil"
 
+#: src/components/SendUndoBar.tsx
+msgid "Not sent"
+msgstr ""
+
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/import-status.ts
 msgid "Not supported in ALMA"
@@ -7444,8 +7452,15 @@ msgid "Unassigned"
 msgstr "Atanmamış"
 
 #: src/components/AskCard.tsx
+#: src/components/SendUndoBar.tsx
+#: src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "Geri al"
+
+#: src/pages/QueuePage.tsx
+#: src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr ""
 
 #: src/pages/plugins/connector-detail.tsx
 msgid "Uninstall"

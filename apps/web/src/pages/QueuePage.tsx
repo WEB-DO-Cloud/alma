@@ -1,8 +1,9 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { OutboundDraft, WorkContext } from "@rakazo/contracts";
-import { queueDraftActions } from "@rakazo/core";
+import { queueDraftActions, undoCountdown } from "@rakazo/core";
 import { Button } from "@rakazo/ui-web";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { rpc } from "../lib/rpc";
 
 const channels = ["email", "whatsapp", "other"] as const;
@@ -11,6 +12,8 @@ const channels = ["email", "whatsapp", "other"] as const;
 export function QueuePage() {
   const { t } = useLingui();
   const [actorUserId, setActorUserId] = useState("");
+  const [sendUndo, setSendUndo] = useState(false);
+  const [now, setNow] = useState(() => new Date());
   const [contexts, setContexts] = useState<WorkContext[]>([]);
   const [contextId, setContextId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<OutboundDraft[]>([]);
@@ -27,8 +30,13 @@ export function QueuePage() {
   }
 
   useEffect(() => {
-    void rpc.me().then((me) => setActorUserId(me.userId));
+    void rpc.me().then((me) => {
+      setActorUserId(me.userId);
+      setSendUndo(me.sendUndoEnabled === true);
+    });
     void loadContexts().catch((err: unknown) => setError(messageOf(err)));
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -62,6 +70,11 @@ export function QueuePage() {
       <h1 className="text-heading3 font-medium text-foreground">
         <Trans>Queue</Trans>
       </h1>
+      {sendUndo ? (
+        <Link className="text-body-sm text-foreground underline" to="/app/undo">
+          <Trans>Undo send</Trans>
+        </Link>
+      ) : null}
       <div className="flex flex-wrap gap-2">
         <input
           aria-label={t`Name`}
@@ -217,7 +230,17 @@ export function QueuePage() {
                         })
                       }
                     >
-                      <Trans>Cancel</Trans>
+                      {sendUndo && draft.status === "approved" ? (
+                        <>
+                          <Trans>Undo</Trans>
+                          {(() => {
+                            const seconds = undoCountdown(draft.dispatchAfter, now);
+                            return seconds !== null && seconds > 0 ? ` ${seconds}s` : null;
+                          })()}
+                        </>
+                      ) : (
+                        <Trans>Cancel</Trans>
+                      )}
                     </Button>
                   ) : null}
                 </li>

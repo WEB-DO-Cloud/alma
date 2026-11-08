@@ -1669,6 +1669,16 @@ export const appContract = {
       )
       .output(z.object({ ok: z.literal(true) })),
   },
+  sendUndo: {
+    get: oc.output(
+      z.object({ seconds: z.union([z.literal(0), z.literal(10), z.literal(30), z.literal(60)]) }),
+    ),
+    update: oc
+      .input(
+        z.object({ seconds: z.union([z.literal(0), z.literal(10), z.literal(30), z.literal(60)]) }),
+      )
+      .output(z.object({ ok: z.literal(true) })),
+  },
   phase2a: {
     contexts: {
       list: oc.output(z.array(WorkContextSchema)),

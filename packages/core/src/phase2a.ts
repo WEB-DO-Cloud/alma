@@ -281,7 +281,9 @@ export function externalSendHold(input: {
   viaConnector: boolean;
   connectorKind: string;
   tools: ReadonlyArray<{ name: string; readOnly?: boolean }>;
-}): { code: "phase2a_refused" } | null {
+  /** When true, email and messaging sends wait on a draft instead of running. */
+  undo?: boolean;
+}): { code: "phase2a_refused" | "phase2a_external_hold" } | null {
   if (!input.enabled) return null;
   for (const tool of input.tools) {
     if (
@@ -297,6 +299,14 @@ export function externalSendHold(input: {
     input.viaConnector &&
     input.tools.some((tool) => connectorToolRequiresApproval(tool.name, tool.readOnly));
   if (mutating && PAYMENT_CONNECTORS.has(input.connectorKind)) return { code: "phase2a_refused" };
+  if (input.undo) {
+    for (const tool of input.tools) {
+      const namedSend = tool.name === "send_email" || tool.name.includes("send");
+      if (namedSend && tool.readOnly !== true && !PAYMENT_CONNECTORS.has(input.connectorKind)) {
+        return { code: "phase2a_external_hold" };
+      }
+    }
+  }
   return null;
 }
 

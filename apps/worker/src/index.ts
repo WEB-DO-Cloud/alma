@@ -1,7 +1,12 @@
 import { setTimeout as sleep } from "node:timers/promises";
 import type { JobPublisher, JobWorkerHost } from "@rakazo/adapter-kit";
 import { unwrapEnvFromKeyManager } from "@rakazo/adapters";
-import { readNotifyPolicyConfig, readPhase2aConfig } from "@rakazo/core";
+import {
+  readNotifyPolicyConfig,
+  readPhase2aConfig,
+  readSendUndoConfig,
+  readUndoDispatchConfig,
+} from "@rakazo/core";
 import { loadRootEnv } from "@rakazo/core/node/load-root-env";
 import { stopOnShutdownSignals } from "@rakazo/core/node/shutdown-signals";
 import { startWorkerHealth, watchEventLoopStalls } from "./health.js";
@@ -55,6 +60,7 @@ import {
   runRuntimeEnvFromProcess,
   sandboxProviderOptionsFromEnv,
   selectChatRuntime,
+  sendApprovedEmailDraft,
   shutdownPiTelemetry,
   UserDevices,
   userDeviceForwardSecret,
@@ -67,6 +73,7 @@ import {
   createDb,
   createThreadEvents,
   describeRowSecurity,
+  dispatchDueDrafts,
   holdRoutinePush,
   installAuditEventStore,
   installSecurityEventStore,
@@ -90,6 +97,8 @@ async function main() {
   readAlmaFlags();
   readPhase2aConfig();
   readNotifyPolicyConfig();
+  readSendUndoConfig();
+  readUndoDispatchConfig();
   const stopStallWatch = watchEventLoopStalls();
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error("DATABASE_URL is required");
@@ -271,6 +280,15 @@ async function main() {
     }));
   }, 30 * 60_000);
   notifyFlush.unref();
+  const undoDispatch = setInterval(() => {
+    void dispatchDueDrafts(prisma, (draft) =>
+      sendApprovedEmailDraft(
+        { prisma, email: email ?? null, domain: process.env.INBOUND_EMAIL_DOMAIN?.trim() },
+        draft,
+      ),
+    );
+  }, 5_000);
+  undoDispatch.unref();
   let stopHealth: (() => Promise<void>) | undefined;
   let stopping = false;
   let stopped: Promise<void> | undefined;
@@ -280,6 +298,7 @@ async function main() {
       stopping = true;
       shutdown.abort();
       clearInterval(notifyFlush);
+      clearInterval(undoDispatch);
       stopStallWatch();
       try {
         await stopHealth?.();

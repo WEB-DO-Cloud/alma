@@ -54,6 +54,7 @@ export * from "./run-turn-checkpoint.js";
 export * from "./sandbox-allowance.js";
 export * from "./scope.js";
 export * from "./security-events.js";
+export * from "./send-undo-store.js";
 export * from "./sessions.js";
 export * from "./space-members.js";
 export * from "./space-settings.js";

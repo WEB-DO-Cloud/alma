@@ -1,5 +1,5 @@
 import type { OutboundDraft, WorkContext } from "@rakazo/contracts";
-import { queueDraftActions } from "@rakazo/core";
+import { queueDraftActions, undoCountdown } from "@rakazo/core";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { useI18n } from "./i18n";
@@ -17,6 +17,7 @@ export function ApprovalQueue({
   onSubmit,
   onApprove,
   onCancel,
+  sendUndo = false,
 }: {
   actorUserId: string;
   contexts: WorkContext[];
@@ -32,6 +33,7 @@ export function ApprovalQueue({
   onSubmit: (id: string) => void;
   onApprove: (id: string) => void;
   onCancel: (id: string) => void;
+  sendUndo?: boolean;
 }) {
   const { t } = useI18n();
   const [name, setName] = useState("");
@@ -134,7 +136,14 @@ export function ApprovalQueue({
                 ) : null}
                 {actions.cancel ? (
                   <Pressable accessibilityRole="button" onPress={() => onCancel(draft.id)}>
-                    <Text>{t("Cancel")}</Text>
+                    <Text>
+                      {sendUndo && draft.status === "approved"
+                        ? `${t("Undo")}${(() => {
+                            const seconds = undoCountdown(draft.dispatchAfter, new Date());
+                            return seconds !== null && seconds > 0 ? ` ${seconds}s` : "";
+                          })()}`
+                        : t("Cancel")}
+                    </Text>
                   </Pressable>
                 ) : null}
               </View>

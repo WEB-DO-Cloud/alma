@@ -28,6 +28,7 @@ import {
 import { createPortal } from "react-dom";
 import { HoldToTalkStrip, useHoldToTalk } from "../../components/composer/HoldToTalk";
 import { recordMessageSent } from "../../components/GitHubStarPrompt";
+import { SendUndoBar } from "../../components/SendUndoBar";
 import type { ArtifactTarget } from "../../lib/artifact-open";
 import { attachmentPickerAccept } from "../../lib/attachment-picker-accept";
 import { useCallSession } from "../../lib/call-session";
@@ -675,6 +676,7 @@ const ComposerBody = memo(function Composer({
           onAction={runSlashAction}
         />
       ) : null}
+      <SendUndoBar />
       <div
         ref={composerBarRef}
         data-testid="composer-bar"

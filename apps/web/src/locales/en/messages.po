@@ -163,6 +163,10 @@ msgstr "{botCount, plural, one {Delete {name} and its # bot?} other {Delete {nam
 msgid "{botName}’s computer"
 msgstr "{botName}’s computer"
 
+#: src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr "{choice} seconds"
+
 #: src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
 msgstr "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
@@ -5031,6 +5035,10 @@ msgstr "Not in the plugin catalog"
 msgid "Not now"
 msgstr "Not now"
 
+#: src/components/SendUndoBar.tsx
+msgid "Not sent"
+msgstr "Not sent"
+
 #: src/pages/shell/agent-import-plan.tsx
 #: src/pages/shell/import-status.ts
 msgid "Not supported in ALMA"
@@ -7444,8 +7452,15 @@ msgid "Unassigned"
 msgstr "Unassigned"
 
 #: src/components/AskCard.tsx
+#: src/components/SendUndoBar.tsx
+#: src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "Undo"
+
+#: src/pages/QueuePage.tsx
+#: src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr "Undo send"
 
 #: src/pages/plugins/connector-detail.tsx
 msgid "Uninstall"

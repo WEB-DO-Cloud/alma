@@ -27,6 +27,8 @@ import {
   phoneCallSettings,
   readNotifyPolicyConfig,
   readPhase2aConfig,
+  readSendUndoConfig,
+  readUndoDispatchConfig,
   resolveAuthSecret,
   resolveContentEncryption,
   resolveEncryptionKey,
@@ -148,6 +150,8 @@ export interface AppEnv {
   phase2aEnabled: boolean;
   phase2aDispatchDelaySeconds: number;
   notifyPolicyEnabled: boolean;
+  sendUndoEnabled: boolean;
+  undoDispatchEnabled: boolean;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -453,6 +457,8 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     phase2aEnabled: phase2a.enabled,
     phase2aDispatchDelaySeconds: phase2a.dispatchDelaySeconds,
     notifyPolicyEnabled: readNotifyPolicyConfig(source).enabled,
+    sendUndoEnabled: readSendUndoConfig(source).enabled,
+    undoDispatchEnabled: readUndoDispatchConfig(source).enabled,
   };
 }
 
