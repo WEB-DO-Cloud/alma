@@ -28,7 +28,6 @@ import {
 import { createPortal } from "react-dom";
 import { HoldToTalkStrip, useHoldToTalk } from "../../components/composer/HoldToTalk";
 import { recordMessageSent } from "../../components/GitHubStarPrompt";
-import { QuickActions } from "../../components/QuickActions";
 import { SendUndoBar } from "../../components/SendUndoBar";
 import type { ArtifactTarget } from "../../lib/artifact-open";
 import { attachmentPickerAccept } from "../../lib/attachment-picker-accept";
@@ -678,15 +677,6 @@ const ComposerBody = memo(function Composer({
         />
       ) : null}
       <SendUndoBar />
-      <QuickActions
-        onCamera={() => {
-          const input = fileInputRef.current;
-          if (!input) return;
-          input.setAttribute("capture", "environment");
-          input.click();
-        }}
-        onVoice={() => talk.startHandsFree()}
-      />
       <div
         ref={composerBarRef}
         data-testid="composer-bar"
