@@ -5309,7 +5309,11 @@ msgid "Get notified when this Bot finishes or needs input"
 msgstr "在此機器人完成或需要輸入時收到通知"
 
 #: apps/web/src/components/SidebarFooter.tsx
-msgid "Get the mobile app"
+msgid "Download desktop app"
+msgstr ""
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Download mobile app"
 msgstr "下載手機應用程式"
 
 #: apps/mobile/components/computer-update-progress.tsx

@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
 
 import type { DesktopUpdateState } from "@rakazo/contracts";
-import { ANDROID_APP_STORE_URL, IOS_APP_STORE_URL } from "@rakazo/contracts";
+import { ANDROID_APP_STORE_URL, DESKTOP_DOWNLOADS, IOS_APP_STORE_URL } from "@rakazo/contracts";
 import { Toaster } from "@rakazo/ui-web";
 import type { ReactNode } from "react";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { DesktopUpdatesProvider } from "./DesktopUpdates";
-import { SidebarFooter, sidebarMarkCount } from "./SidebarFooter";
+import { appDownloadFor, SidebarFooter, sidebarMarkCount } from "./SidebarFooter";
 
 vi.mock("@lingui/react/macro", () => ({
   useLingui: () => ({
@@ -148,13 +148,14 @@ it("opens integrations and keeps the existing account actions and links", async 
     "Artifacts",
     "Board",
     "Usage",
-    "Get the mobile app",
+    "Download desktop app",
     "Docs",
     "Log out",
   ]);
   expect(
-    [...menu.querySelectorAll("a")].find((link) => link.textContent === "Get the mobile app")?.href,
-  ).toBe(IOS_APP_STORE_URL);
+    [...menu.querySelectorAll("a")].find((link) => link.textContent === "Download desktop app")
+      ?.href,
+  ).toBe(DESKTOP_DOWNLOADS.linux);
   expect([...menu.querySelectorAll("a")].find((link) => link.textContent === "Docs")?.href).toBe(
     "https://app.alma.com.do/docs",
   );
@@ -230,10 +231,37 @@ it("offers Google Play on Android", async () => {
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue("Android");
   await render();
   const mobile = [...document.querySelectorAll("a")].find(
-    (link) => link.textContent === "Get the mobile app",
+    (link) => link.textContent === "Download mobile app",
   )!;
   expect(mobile.href).toBe(ANDROID_APP_STORE_URL);
   expect(document.body.innerHTML).not.toContain("github.com/elie222/rakazo");
+});
+
+it("offers the app that fits the device", () => {
+  const mac =
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+  const windows =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+  const iphone =
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148";
+  expect(appDownloadFor(mac, 0, false)).toEqual({ kind: "desktop", href: DESKTOP_DOWNLOADS.mac });
+  expect(appDownloadFor(windows, 0, false)).toEqual({
+    kind: "desktop",
+    href: DESKTOP_DOWNLOADS.windows,
+  });
+  expect(appDownloadFor("Mozilla/5.0 (X11; Linux x86_64)", 0, false)).toEqual({
+    kind: "desktop",
+    href: DESKTOP_DOWNLOADS.linux,
+  });
+  expect(appDownloadFor(iphone, 5, false)).toEqual({ kind: "mobile", href: IOS_APP_STORE_URL });
+  // iPadOS reports a Mac user agent with a touch screen.
+  expect(appDownloadFor(mac, 5, false)).toEqual({ kind: "mobile", href: IOS_APP_STORE_URL });
+  expect(appDownloadFor("Mozilla/5.0 (Linux; Android 15; Pixel 9) Mobile", 5, false)).toEqual({
+    kind: "mobile",
+    href: ANDROID_APP_STORE_URL,
+  });
+  // The desktop app never offers itself.
+  expect(appDownloadFor(mac, 0, true)).toEqual({ kind: "mobile", href: IOS_APP_STORE_URL });
 });
 
 it("falls back when app artwork fails and accepts replacement artwork", async () => {

@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { NavLink } from "@rakazo/contracts";
-import { ANDROID_APP_STORE_URL, IOS_APP_STORE_URL } from "@rakazo/contracts";
+import { ANDROID_APP_STORE_URL, DESKTOP_DOWNLOADS, IOS_APP_STORE_URL } from "@rakazo/contracts";
 import {
   AppMarkStack,
   Button,
@@ -19,6 +19,7 @@ import {
   Link2,
   ListChecks,
   LogOut,
+  Monitor,
   Plug,
   ScrollText,
   Settings,
@@ -28,9 +29,37 @@ import {
   UserRound,
 } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
+import { desktopBridge } from "../lib/desktop";
 import type { Organization } from "../lib/organizations";
 import { useSidebarUpdate } from "./DesktopUpdates";
 import { IconTooltip } from "./IconTooltip";
+
+type AppDownload = { kind: "desktop" | "mobile"; href: string };
+
+/**
+ * Which app the account menu offers. Phones and tablets get their store listing. Desktop browsers
+ * get the desktop installer for their system. The desktop app itself offers the mobile app.
+ */
+export function appDownloadFor(
+  userAgent: string,
+  maxTouchPoints: number,
+  inDesktopApp: boolean,
+): AppDownload {
+  const android = /Android/i.test(userAgent);
+  // iPadOS reports a Mac user agent, so a touch screen on "Macintosh" means an iPad.
+  const ios =
+    /iPhone|iPad|iPod/i.test(userAgent) || (/Macintosh/i.test(userAgent) && maxTouchPoints > 1);
+  const phone =
+    android || ios || /Mobi|Silk|Kindle|BlackBerry|Opera Mini|IEMobile/i.test(userAgent);
+  if (inDesktopApp || phone) {
+    return { kind: "mobile", href: android ? ANDROID_APP_STORE_URL : IOS_APP_STORE_URL };
+  }
+  if (/Mac OS X|Macintosh/i.test(userAgent))
+    return { kind: "desktop", href: DESKTOP_DOWNLOADS.mac };
+  if (/Windows/i.test(userAgent)) return { kind: "desktop", href: DESKTOP_DOWNLOADS.windows };
+  if (/Linux|X11|CrOS/i.test(userAgent)) return { kind: "desktop", href: DESKTOP_DOWNLOADS.linux };
+  return { kind: "desktop", href: DESKTOP_DOWNLOADS.mac };
+}
 
 type Props = {
   mini?: boolean;
@@ -96,6 +125,11 @@ export function SidebarFooter({
 }: Props) {
   const { t } = useLingui();
   const update = useSidebarUpdate();
+  const appDownload = appDownloadFor(
+    navigator.userAgent,
+    navigator.maxTouchPoints ?? 0,
+    Boolean(desktopBridge()),
+  );
   const [failedImage, setFailedImage] = useState<string | null>(null);
   const pillRef = useRef<HTMLButtonElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -276,14 +310,21 @@ export function SidebarFooter({
             <div className="my-1 border-t border-border" />
             <a
               className={`${buttonVariants({ variant: "ghost" })} h-9 w-full justify-start gap-2.5 font-normal`}
-              href={
-                /Android/i.test(navigator.userAgent) ? ANDROID_APP_STORE_URL : IOS_APP_STORE_URL
-              }
+              href={appDownload.href}
               target="_blank"
               rel="noreferrer"
             >
-              <Smartphone className="text-muted-foreground" strokeWidth={1.75} />
-              <Trans>Get the mobile app</Trans>
+              {appDownload.kind === "desktop" ? (
+                <>
+                  <Monitor className="text-muted-foreground" strokeWidth={1.75} />
+                  <Trans>Download desktop app</Trans>
+                </>
+              ) : (
+                <>
+                  <Smartphone className="text-muted-foreground" strokeWidth={1.75} />
+                  <Trans>Download mobile app</Trans>
+                </>
+              )}
             </a>
             {onInvite ? (
               <Button
