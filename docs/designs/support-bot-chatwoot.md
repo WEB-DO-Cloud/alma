@@ -110,8 +110,8 @@ Marketing and store claim, replacing "data processed in the DR only":
 
 In-app note under the support empty-chat hint, key `support.privacyNote`:
 
-- ES: "Los mensajes de Soporte se gestionan con Chatwoot, fuera de RD. No incluyas datos confidenciales de casos."
-- EN: "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
+- ES: "No incluyas datos confidenciales."
+- EN: "Don't include confidential details."
 
 The account-deletion and data-export flows (`apps/api/src/account-deletion.ts`, `account-export.ts`) must also delete the Chatwoot contact and its conversations. Export includes the support thread from ALMA's own copy.
 

@@ -656,7 +656,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                     marginTop: 4,
                   }}
                 >
-                  {t`Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.`}
+                  {t`Don't include confidential details.`}
                 </Text>
               </View>
             ) : null}
