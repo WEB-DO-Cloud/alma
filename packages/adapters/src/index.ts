@@ -118,7 +118,6 @@ export * from "./keyless-http-web.js";
 export * from "./kubernetes-sandbox.js";
 export * from "./macos-voice.js";
 export * from "./managed-model.js";
-export * from "./managed-voice.js";
 export * from "./mcp-connector.js";
 export * from "./mcp-emulator.js";
 export * from "./mcp-oauth.js";

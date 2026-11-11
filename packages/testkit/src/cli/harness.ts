@@ -83,10 +83,10 @@ async function main() {
     process.env.WAKEUP_DRIVER = "memory";
     process.env.SANDBOX_PROVIDER = sandboxProvider;
     process.env.AGENT_RUNTIME = agentRuntime;
-    // The managed model and voice switches default on for a deployment. These
-    // suites still exercise the model and voice screens, so they stay off here.
+    // The managed model defaults on, and a deployment xAI key speaks for every
+    // account. These suites still exercise the model and voice screens, so both stay off.
     process.env.ALMA_MANAGED_MODEL = "0";
-    delete process.env.ALMA_VOICE_PROVIDER;
+    delete process.env.XAI_API_KEY;
     process.env.RAKAZO_LIVE_MODEL_CATALOG = "off";
     if (!integration) {
       process.env.TICKET_BOARD_ENABLED = "true";

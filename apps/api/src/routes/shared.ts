@@ -8,7 +8,6 @@ import {
   managedChatModel,
   managedModelActive,
   mcpStdioAvailable,
-  resolveManagedVoice,
   resolveMemberMainModel,
   selectConfiguredModel,
 } from "@rakazo/adapters";
@@ -24,6 +23,7 @@ import { isAdmin } from "../admins.js";
 import { almaMeFields } from "../alma-onboarding.js";
 import { effectiveSandboxProvider } from "../computer-provider-config.js";
 import type { RouterDeps } from "../router.js";
+import { managedVoiceEnabled } from "../voice.js";
 
 export { createAdapterContext as computerContext } from "@rakazo/adapter-kit";
 
@@ -35,7 +35,7 @@ function hostCredentials(active: boolean, provider: string) {
 
 export async function meDto(deps: RouterDeps, actor: Actor): Promise<Me> {
   const managedModel = managedModelActive();
-  const managedVoice = resolveManagedVoice().enabled;
+  const managedVoice = managedVoiceEnabled();
   const operatorModel = managedModel ? managedChatModel() : undefined;
   const [user, setup, admin] = await Promise.all([
     deps.prisma.user.findUniqueOrThrow({

@@ -206,7 +206,7 @@ describe("consent grants", () => {
   it("treats operator voice and Honcho memory as allowed without a stored grant", async () => {
     vi.stubEnv("ALMA_MANAGED_MODEL", "1");
     vi.stubEnv("AGENT_RUNTIME", "pi");
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "test-xai-key");
     const { deps, actor } = setup();
     deps.env.deploymentMemory = { defaultScope: "isolated" };
     vi.mocked(deps.prisma.userVoicePreference.findMany).mockResolvedValue([
@@ -236,7 +236,7 @@ describe("consent grants", () => {
   it("still asks for voice and memory when the operator model is off", async () => {
     vi.stubEnv("ALMA_MANAGED_MODEL", "0");
     vi.stubEnv("AGENT_RUNTIME", "pi");
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+    vi.stubEnv("XAI_API_KEY", "test-xai-key");
     const { deps, actor } = setup();
     deps.env.deploymentMemory = { defaultScope: "isolated" };
     vi.mocked(deps.prisma.userVoicePreference.findMany).mockResolvedValue([

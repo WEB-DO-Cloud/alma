@@ -1334,7 +1334,6 @@ describe("managed xAI transcription", () => {
   });
 
   it("transcribes through the operator key without a user credential", async () => {
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
     vi.stubEnv("XAI_API_KEY", "xai-test-key");
     const fetchMock = vi.fn(async (url: string, init: RequestInit) => {
       expect(String(url)).toBe("https://api.x.ai/v1/stt");
@@ -1365,25 +1364,34 @@ describe("managed xAI transcription", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
-  it("answers in Spanish when the operator key is missing", async () => {
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
+  it("does not call xAI when the deployment key is unset", async () => {
     vi.stubEnv("XAI_API_KEY", "");
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     const app = new Hono();
-    mountVoiceHttpRoutes(app, {} as VoiceDeps, async () => actor);
+    mountVoiceHttpRoutes(
+      app,
+      {
+        prisma: {
+          spaceSettingOverride: { findUnique: vi.fn().mockResolvedValue(null) },
+          userVoicePreference: { findFirst: vi.fn().mockResolvedValue(null) },
+        },
+      } as unknown as VoiceDeps,
+      async () => actor,
+    );
     const response = await app.request("/api/voice/transcribe", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ audioBase64: Buffer.from([1]).toString("base64") }),
     });
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({ error: "No se pudo transcribir." });
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      error: "Add a voice provider key in Voice settings to turn on speaking.",
+    });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("refuses a voice connection and hides the saved provider", async () => {
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
     vi.stubEnv("XAI_API_KEY", "xai-test-key");
     await expect(
       persistVoiceCredential({} as VoiceDeps, actor, {
@@ -1401,7 +1409,6 @@ describe("managed xAI transcription", () => {
   });
 
   it("speaks through the operator voice without a user credential", async () => {
-    vi.stubEnv("ALMA_VOICE_PROVIDER", "xai");
     vi.stubEnv("XAI_API_KEY", "xai-test-key");
     const fetchMock = vi.fn(async (url: string, init: RequestInit) => {
       expect(String(url)).toBe("https://api.x.ai/v1/tts");

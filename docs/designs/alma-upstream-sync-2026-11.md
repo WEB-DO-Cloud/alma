@@ -97,7 +97,7 @@ The About credits sentences that named Rakazo were removed with the phone About 
 
 ### 3. Model and voice
 
-`ALMA_MANAGED_MODEL` unset means on. `0`, `false`, `no`, and `off` turn it off. `ALMA_VOICE_PROVIDER` unset means off. Only the value `xai` turns operator voice on. Managed model does not change `ALMA_VOICE_PROVIDER`.
+`ALMA_MANAGED_MODEL` unset means on. `0`, `false`, `no`, and `off` turn it off. Operator speech has no separate switch. When `XAI_API_KEY` is set, voice notes and calls speak and transcribe through upstream's xAI provider (`createVoiceProvider("xai")`) for every account, with voice id `eve`. `me.managedVoice` is true in that case. When the key is unset, speech follows upstream: a member connects xAI in Voice settings, or a model connection supplies the key. Do not restore `ALMA_VOICE_PROVIDER` or `packages/adapters/src/managed-voice.ts`.
 
 Restore these files from ALMA `HEAD` (they are absent on upstream):
 
@@ -105,16 +105,13 @@ Restore these files from ALMA `HEAD` (they are absent on upstream):
 -   `packages/adapters/src/grok-build-runtime.test.ts`
 -   `packages/adapters/src/managed-model.ts`
 -   `packages/adapters/src/managed-model.test.ts`
--   `packages/adapters/src/managed-voice.ts`
 -   `packages/adapters/src/create-managed-runtime.ts`
 -   `packages/adapters/src/unavailable-managed-runtime.ts`
--   `packages/adapters/src/xai-voice.ts`
--   `packages/adapters/src/xai-voice.test.ts`
 -   `packages/core/src/alma-unavailable.ts`
 
-On the upstream `packages/adapters/src/executor.ts`, `packages/adapters/src/voice-factory.ts`, `packages/adapters/src/index.ts`, and `apps/api/src/voice.ts`, re-attach those modules the way ALMA `HEAD` calls them. The Models and Voice settings entries are removed on web and on the phone. Deep links to those screens return to Account. The server chooses the model and the voice. Members do not pick a provider. The Read replies aloud switch stays; it is the spoken-summary control, not a provider picker.
+`packages/adapters/src/xai-voice.ts` and `voice-factory.ts` stay on upstream's xAI speech path. On `apps/api/src/voice.ts`, keep the deployment-key branch that calls that provider when `XAI_API_KEY` is set, and keep voice writes closed while it is. The Models and Voice settings entries are removed on web and on the phone. Deep links to those screens return to Account. The server chooses the model and the voice. Members do not pick a provider. The Read replies aloud switch stays; it is the spoken-summary control, not a provider picker.
 
-The web Call button and the existing mobile call waveform stay on upstream's composer. They use the xAI speak path when operator voice is on. Upstream's spoken-summary control (`readAloud` / `autoSpeak`, `apps/web/src/pages/shell/use-read-aloud.ts`) stays. Its playback call uses the voice factory. When `ALMA_VOICE_PROVIDER=xai`, that factory returns xAI, so summaries and Call share one speaker. Do not add a second speak button.
+The web Call button and the existing mobile call waveform stay on upstream's composer. They use the xAI speak path when `XAI_API_KEY` is set. Upstream's spoken-summary control (`readAloud` / `autoSpeak`, `apps/web/src/pages/shell/use-read-aloud.ts`) stays. Its playback call uses the same provider. Do not add a second speak button.
 
 Web Hold to talk is visible when `PHONE_CALLS_ENABLED` is on, or `voice/status.transcribe` is true, or `me.managedVoice` is true. The phone composer has no Dictate / Dictar control.
 
@@ -204,7 +201,7 @@ Do not add a migration that drops those tables or their rows. A later deploy can
 
 On upstream's compose files, add the env passthrough next to the existing `XAI_API_KEY` entry:
 
-`ALMA_MANAGED_MODEL`, `ALMA_MODEL_RUNTIME`, `ALMA_MODEL_PROVIDER`, `ALMA_MODEL_ID`, `ALMA_MODEL_BASE_URL`, `ALMA_MODEL_API_KEY`, `ALMA_VOICE_PROVIDER`, `ALMA_GROK_SCRATCH`, `GROK_BIN`, `GROK_HOME`.
+`ALMA_MANAGED_MODEL`, `ALMA_MODEL_RUNTIME`, `ALMA_MODEL_PROVIDER`, `ALMA_MODEL_ID`, `ALMA_MODEL_BASE_URL`, `ALMA_MODEL_API_KEY`, `ALMA_GROK_SCRATCH`, `GROK_BIN`, `GROK_HOME`. Speech uses `XAI_API_KEY`, which is already passed through. Do not add `ALMA_VOICE_PROVIDER`.
 
 Files: `infra/compose/docker-compose.yml`, `infra/compose/docker-compose.prod.yml`, `infra/compose/docker-compose.images.yml`.
 

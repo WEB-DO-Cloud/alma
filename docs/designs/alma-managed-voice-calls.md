@@ -1,8 +1,10 @@
 # ALMA managed voice calls
 
 -   **Author:** WEB-DO-Cloud/alma
--   **Status:** In Review
+-   **Status:** Superseded
 -   **Date:** 2026-10-27
+
+Speech now uses upstream's xAI provider. `XAI_API_KEY` turns it on for every account and the voice id stays `eve`. `ALMA_VOICE_PROVIDER` is not read. `ALMA_VOICE_NOTES` is unchanged. The sections below describe the October 2026 switch and are kept as history.
 
 ---
 

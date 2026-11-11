@@ -196,7 +196,6 @@ x-app-environment: &app-environment # Runtime
   ALMA_MODEL_ID:
   ALMA_MODEL_BASE_URL:
   ALMA_MODEL_API_KEY:
-  ALMA_VOICE_PROVIDER:
   ALMA_GROK_SCRATCH:
   GROK_BIN:
   GROK_HOME:

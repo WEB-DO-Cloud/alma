@@ -10,15 +10,13 @@ import {
   MAX_SPEAK_CHARS,
   MAX_TRANSCRIBE_BYTES,
   MODEL_CONNECTION_VOICE_SECRET,
-  managedVoiceStatus,
   NoVoiceConfigured,
   OPENAI_COMPATIBLE_VOICE_PROVIDER_ID,
   openAiCompatibleVoiceServer,
-  resolveManagedVoice,
   resolveVoiceKey,
   serializeOpenAiCompatibleVoiceSecret,
   voiceCatalogEntry,
-  XaiVoiceProvider,
+  XAI_VOICE_PROVIDER_ID,
 } from "@rakazo/adapters";
 import type {
   Actor,
@@ -76,9 +74,33 @@ export async function voiceProviderFor(deps: VoiceDeps, provider: string) {
   });
 }
 
+/** Voice id upstream's xAI speech uses when the deployment key speaks for every account. */
+const DEPLOYMENT_XAI_VOICE_ID = "eve";
+
+export function deploymentXaiSpeechKey(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  const key = env.XAI_API_KEY?.trim();
+  return key || undefined;
+}
+
+function deploymentXaiSpeech(env: NodeJS.ProcessEnv = process.env): VoiceStatus | null {
+  if (!deploymentXaiSpeechKey(env)) return null;
+  return {
+    configured: true,
+    ready: true,
+    transcribe: true,
+    provider: null,
+    voiceId: DEPLOYMENT_XAI_VOICE_ID,
+  };
+}
+
+/** True when the deployment key speaks and transcribes through upstream's xAI provider. */
+export function managedVoiceEnabled(env: NodeJS.ProcessEnv = process.env) {
+  return deploymentXaiSpeech(env) !== null;
+}
+
 /** The catalog as this account sees it: `modelConnection` stays only where it has one. */
 export async function accountVoiceCatalog(deps: VoiceDeps, actor: Pick<Actor, "userId">) {
-  if (resolveManagedVoice().enabled) return [];
+  if (managedVoiceEnabled()) return [];
   const catalog = listVoiceCatalog({ allowPrivateEndpoint: deps.env?.mcpAllowPrivateEndpoint });
   return Promise.all(
     catalog.map(async ({ modelConnection, ...entry }) =>
@@ -87,10 +109,6 @@ export async function accountVoiceCatalog(deps: VoiceDeps, actor: Pick<Actor, "u
         : entry,
     ),
   );
-}
-
-export function managedVoiceEnabled() {
-  return resolveManagedVoice().enabled;
 }
 
 const SPEAK_TIMEOUT_MS = 60_000;
@@ -117,21 +135,16 @@ export function catalogEntry(provider: string) {
 export const MANAGED_VOICE_CLOSED = "Esta opción no está disponible.";
 
 export function assertVoiceWritable(): void {
-  if (resolveManagedVoice().enabled) {
+  if (managedVoiceEnabled()) {
     throw new ORPCError("BAD_REQUEST", { message: MANAGED_VOICE_CLOSED });
   }
 }
 
-/** Saved credential, unless the operator voice replaces it for every organization. */
+/** Saved credential, unless the deployment xAI key speaks for every organization. */
 export function currentVoiceStatus(
   cred: { provider: string; voiceId: string } | null,
 ): VoiceStatus {
-  const managed = managedVoiceStatus();
-  if (!managed) return toVoiceStatus(cred);
-  if (!managed.transcribe) {
-    getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
-  }
-  return managed;
+  return deploymentXaiSpeech() ?? toVoiceStatus(cred);
 }
 
 export function toVoiceStatus(cred: { provider: string; voiceId: string } | null): VoiceStatus {
@@ -641,14 +654,7 @@ export async function prepareVoice(
     signal?: AbortSignal;
   },
 ) {
-  const managed = resolveManagedVoice();
-  if (managed.enabled) {
-    if (!managed.apiKey) {
-      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
-      return { ready: false, utterances: [] as string[] };
-    }
-    return { ready: true, utterances: toUtterances(input.text) };
-  }
+  if (managedVoiceEnabled()) return { ready: true, utterances: toUtterances(input.text) };
   try {
     await resolveVoiceTarget(deps, actor, input);
   } catch (error) {
@@ -688,30 +694,26 @@ export async function synthesizeVoice(
     signal?: AbortSignal;
   },
 ) {
-  const managed = resolveManagedVoice();
-  if (managed.enabled) {
+  const deploymentKey = deploymentXaiSpeechKey();
+  if (deploymentKey) {
     const text = input.text.trim();
     if (!text) throw new ORPCError("BAD_REQUEST", { message: "Nothing to speak." });
     if (text.length > MAX_SPEAK_CHARS) {
       throw new ORPCError("BAD_REQUEST", { message: "That utterance is too long to speak." });
     }
-    if (!managed.apiKey) {
-      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
-      throw new ORPCError("BAD_REQUEST", { message: MANAGED_SPEAK_FAILED });
-    }
     try {
-      return await new XaiVoiceProvider().synthesize(
+      return await createVoiceProvider(XAI_VOICE_PROVIDER_ID).synthesize(
         {
           text,
-          voiceId: managedVoiceStatus()?.voiceId ?? "",
-          apiKey: managed.apiKey,
+          voiceId: DEPLOYMENT_XAI_VOICE_ID,
+          apiKey: deploymentKey,
           language: input.language,
           signal: input.signal,
         },
         voiceContext(actor, input.signal),
       );
     } catch (error) {
-      getLogger().error("alma.managed-voice.request-failed", {
+      getLogger().error("voice.xai.request-failed", {
         reason: error instanceof Error ? error.name : "failed",
       });
       throw new ORPCError("BAD_REQUEST", { message: MANAGED_SPEAK_FAILED });
@@ -743,28 +745,28 @@ export async function transcribeVoice(
   actor: Actor,
   input: { audio: Uint8Array; mimeType: string; language?: string; signal?: AbortSignal },
 ) {
-  const managed = resolveManagedVoice();
-  if (managed.enabled) {
-    if (!managed.apiKey) {
-      getLogger().error("alma.managed-voice.auth-missing", { reason: "no-key" });
-      throw new ORPCError("BAD_REQUEST", { message: "No se pudo transcribir." });
-    }
+  const deploymentKey = deploymentXaiSpeechKey();
+  if (deploymentKey) {
     if (input.audio.byteLength === 0 || input.audio.byteLength > MAX_TRANSCRIBE_BYTES) {
       throw new ORPCError("BAD_REQUEST", { message: "That recording is empty or too large." });
     }
     try {
-      return await new XaiVoiceProvider().transcribe(
+      const provider = createVoiceProvider(XAI_VOICE_PROVIDER_ID);
+      if (!provider.transcribe) {
+        throw new ORPCError("BAD_REQUEST", { message: "Voice request failed. Try again." });
+      }
+      return await provider.transcribe(
         {
           audio: input.audio,
           mimeType: input.mimeType || "audio/webm",
           language: input.language,
-          apiKey: managed.apiKey,
+          apiKey: deploymentKey,
           signal: input.signal,
         },
         voiceContext(actor, input.signal),
       );
     } catch (error) {
-      getLogger().error("alma.managed-voice.request-failed", {
+      getLogger().error("voice.xai.request-failed", {
         reason: error instanceof Error ? error.name : "failed",
       });
       throw new ORPCError("BAD_REQUEST", { message: "Voice request failed. Try again." });

@@ -744,7 +744,6 @@ overlay packages/adapters/src/kubernetes-sandbox.ts
 overlay packages/adapters/src/linux-desktop.ts
 overlay packages/adapters/src/managed-model.test.ts
 overlay packages/adapters/src/managed-model.ts
-overlay packages/adapters/src/managed-voice.ts
 overlay packages/adapters/src/mcp-connector.ts
 overlay packages/adapters/src/mcp-oauth-presets.test.ts
 overlay packages/adapters/src/mcp-oauth-presets.ts
