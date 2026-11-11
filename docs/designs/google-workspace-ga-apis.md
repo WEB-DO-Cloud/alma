@@ -28,7 +28,7 @@ Goldfish review: `docs/designs/reviews/2026-11-11-google-workspace-ga-apis.md`.
 
 ## Problem
 
-Gmail, Google Calendar, and Google Drive are reached through Google's hosted MCP servers (`gmailmcp.googleapis.com`, `calendarmcp.googleapis.com`, `drivemcp.googleapis.com`). Those servers are in the Workspace Developer Preview. Calls fail because Cloud project `101531130294` (`alma-play-513308`) is not enrolled. The Gmail API, Calendar API, and Drive API are already enabled on that project and do not need the preview.
+Gmail, Google Calendar, and Google Drive are reached through Google's hosted MCP servers (`gmailmcp.googleapis.com`, `calendarmcp.googleapis.com`, `drivemcp.googleapis.com`). Those servers are in the Workspace Developer Preview. Calls fail because the Cloud project behind the existing OAuth client is not enrolled. The Gmail API, Calendar API, and Drive API are already enabled on that project and do not need the preview.
 
 The sign-in that exists today uses the web OAuth client in `ALMA_GOOGLE_OAUTH_CLIENT_ID` and the redirect `https://app.alma.com.do/mcp/oauth/callback`. People connect from the card a bot posts in the chat.
 
