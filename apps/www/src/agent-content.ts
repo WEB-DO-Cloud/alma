@@ -127,7 +127,7 @@ export const DOWNLOAD_MARKDOWN = `# Download ALMA
 - [macOS](${DESKTOP_DOWNLOADS.mac})
 - [Windows](${DESKTOP_DOWNLOADS.windows})
 - [Linux](${DESKTOP_DOWNLOADS.linux})
-- [iPhone](${IOS_APP_URL})
+- [iPhone, iPhone Duo, and iPad](${IOS_APP_URL})
 - [Android](${ANDROID_APP_STORE_URL})
 - [Web](${APP_URL})
 
@@ -151,7 +151,7 @@ ALMA processes account details, user-provided bot content, connection informatio
 
 Before submitting content or starting AI work, the ALMA mobile app names the configured recipients, explains the data and purpose, and asks permission. Messages, relevant history, instructions, memories, attachments, screenshots, and connected-app content may be sent to model services for responses and tasks, including scheduled tasks. Recorded audio may be sent for transcription and text for speech generation. When this server's operator voice is [xAI](https://x.ai/legal/privacy-policy), recorded audio and text chosen for speech are sent to xAI. Conversation summaries, memories, queries, and bot and Space identifiers may be sent to a configured memory service.
 
-Supported connections include OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, Cursor, custom model servers, ElevenLabs, Cartesia, Fish Audio, and Supermemory. The mobile disclosure identifies the configured services. Gateways forward requests to model providers according to their routing settings and provider agreements. The mobile permission flow does not modify provider routing or promise zero retention.
+Supported connections include OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, Cursor, custom model servers, ElevenLabs, Cartesia, Fish Audio, xAI, and Supermemory. The mobile disclosure identifies the configured services. Gateways forward requests to model providers according to their routing settings and provider agreements. The mobile permission flow does not modify provider routing or promise zero retention.
 
 Permission records include the recipient, Space, disclosure version, and time. Choose Not now to decline, or withdraw permission in Account → AI data sharing for new mobile actions. Stop existing runs and disable routines separately. Withdrawal cannot recall data already sent. Web, desktop, and self-hosted server workflows do not use this mobile permission flow.
 
@@ -223,7 +223,7 @@ ALMA Cloud at https://app.alma.com.do is in beta. Self-hosting is also available
 - [Integrations](https://alma.com.do/integrations/): every app a bot can connect to. [Markdown list](https://alma.com.do/integrations.md); each app page has a Markdown version with its actions.
 - [Sandboxes for AI agents](https://alma.com.do/sandboxes/): where bot computers can run, compared, with a page per provider. Each page has a Markdown version.
 - [Integration platforms for AI agents](https://alma.com.do/integration-platforms/): Composio, Pipedream, MCP servers and API connectors compared, with a page for each. Each page has a Markdown version.
-- [Voice providers for AI agents](https://alma.com.do/voice-providers/): ElevenLabs, OpenAI, Cartesia, Fish Audio, self-hosted speech servers and macOS voices compared, with a page for each. Each page has a Markdown version.
+- [Voice providers for AI agents](https://alma.com.do/voice-providers/): ElevenLabs, OpenAI, Cartesia, Fish Audio, xAI, self-hosted speech servers and macOS voices compared, most with a page of their own. Each page has a Markdown version.
 - [Submit a plugin](https://alma.com.do/plugins/submit/): list a plugin in the ALMA marketplace. [Markdown with the API](https://alma.com.do/plugins/submit.md).
 - [Blog](https://alma.com.do/blog/)
 - [Releases](https://github.com/WEB-DO-Cloud/alma/releases)

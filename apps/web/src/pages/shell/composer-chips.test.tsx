@@ -76,6 +76,7 @@ it("keeps Attach file and does not show Camera, Share, or Voice note", () => {
     sendError: null,
     onOpenModels: () => {},
     onOpenConnections: () => {},
+    onOpenBilling: () => {},
     runError: null,
     runErrorId: null,
     onRunErrorPresented: () => {},

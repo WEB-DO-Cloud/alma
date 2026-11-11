@@ -1,5 +1,11 @@
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { BillingStatus, ByokInterval, ByokTier } from "@rakazo/contracts";
+import type {
+  BillingStatus,
+  ByokInterval,
+  ByokTier,
+  HeldCreditAmount,
+  MODEL_CREDIT_AMOUNTS,
+} from "@rakazo/contracts";
 import {
   ByokIntervalSchema,
   ByokTierSchema,
@@ -7,9 +13,10 @@ import {
   byokYearlySavingsPercent,
   byokYearlySwitchSavings,
   COMPUTER_SIZE_SPECS,
+  creditAmountChoices,
   DEFAULT_MONTHLY_CREDIT_AMOUNT,
+  HeldCreditAmountSchema,
   isCancelledTrial,
-  MODEL_CREDIT_AMOUNTS,
   ModelCreditAmountSchema,
 } from "@rakazo/contracts";
 import {
@@ -244,12 +251,12 @@ export function CreditAmountSelect({
   onChange,
   monthly = false,
 }: {
-  value: CreditAmount;
-  onChange: (amount: CreditAmount) => void;
+  value: HeldCreditAmount;
+  onChange: (amount: HeldCreditAmount) => void;
   monthly?: boolean;
 }) {
   const { t, i18n } = useLingui();
-  const items = MODEL_CREDIT_AMOUNTS.map((amount) => ({
+  const items = creditAmountChoices(value).map((amount) => ({
     value: amount,
     label: monthly
       ? formatMonthlyUsd(amount, i18n.locale)
@@ -259,7 +266,7 @@ export function CreditAmountSelect({
     <Select
       value={value}
       onValueChange={(next) => {
-        if (next !== null) onChange(ModelCreditAmountSchema.parse(next));
+        if (next !== null) onChange(HeldCreditAmountSchema.parse(next));
       }}
       items={items}
     >
@@ -440,7 +447,11 @@ export function CreditChoice({
             </h2>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-4">
-            <CreditAmountSelect monthly value={amount} onChange={setAmount} />
+            <CreditAmountSelect
+              monthly
+              value={amount}
+              onChange={(next) => setAmount(ModelCreditAmountSchema.parse(next))}
+            />
             <p className="text-body text-muted-foreground">
               <Trans>All {credit} goes to model usage.</Trans>
             </p>
@@ -485,9 +496,15 @@ export function ModelCreditsSettings({
   client: RpcClient;
 }) {
   const { t, i18n } = useLingui();
-  const [amount, setAmount] = useState<CreditAmount>(
-    ModelCreditAmountSchema.catch(DEFAULT_MONTHLY_CREDIT_AMOUNT).parse(status.monthlyAmountCents),
-  );
+  const recurring =
+    status.monthlyAmountCents && !["canceled", "none", "incomplete"].includes(status.state);
+  const [chosenAmount, setChosenAmount] = useState<CreditAmount | null>(null);
+  // Follows the plan until the owner picks an offered amount; only a live plan keeps a retired one.
+  const amount: HeldCreditAmount =
+    chosenAmount ??
+    (recurring ? HeldCreditAmountSchema : ModelCreditAmountSchema)
+      .catch(DEFAULT_MONTHLY_CREDIT_AMOUNT)
+      .parse(status.monthlyAmountCents);
   const [topupAmount, setTopupAmount] = useState<CreditAmount>(1000);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [interval, setByokInterval] = useState<ByokInterval>("month");
@@ -516,8 +533,6 @@ export function ModelCreditsSettings({
       setPending(false);
     }
   }
-  const recurring =
-    status.monthlyAmountCents && !["canceled", "none", "incomplete"].includes(status.state);
   const freeUntil = status.byokFreeUntil
     ? formatBillingDate(status.byokFreeUntil, i18n.locale || "en")
     : null;
@@ -839,7 +854,13 @@ export function ModelCreditsSettings({
             <Trans>Monthly credits</Trans>
           </h3>
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <CreditAmountSelect monthly value={amount} onChange={setAmount} />
+            <CreditAmountSelect
+              monthly
+              value={amount}
+              onChange={(next) =>
+                setChosenAmount(ModelCreditAmountSchema.safeParse(next).data ?? null)
+              }
+            />
             <Button
               variant="secondary"
               disabled={
@@ -850,11 +871,13 @@ export function ModelCreditsSettings({
               onClick={() =>
                 void action(async () => {
                   if (recurring) {
-                    await client.billing.setMonthlyCredits({ amountCents: amount });
+                    await client.billing.setMonthlyCredits({
+                      amountCents: ModelCreditAmountSchema.parse(amount),
+                    });
                     await refresh();
                   } else {
                     const { url } = await client.billing.purchaseCredits({
-                      amountCents: amount,
+                      amountCents: ModelCreditAmountSchema.parse(amount),
                       monthly: true,
                     });
                     window.location.assign(url);
@@ -935,7 +958,10 @@ export function ModelCreditsSettings({
               <Trans>One-time purchase. Credits do not expire.</Trans>
             </DialogDescription>
           </DialogHeader>
-          <CreditAmountSelect value={topupAmount} onChange={setTopupAmount} />
+          <CreditAmountSelect
+            value={topupAmount}
+            onChange={(next) => setTopupAmount(ModelCreditAmountSchema.parse(next))}
+          />
           <Button
             disabled={pending}
             onClick={() =>

@@ -1,10 +1,10 @@
 # Sync ALMA onto upstream Rakazo
 
-*   **Status:** Implementing
-*   **Date:** 2026-11-02
-*   **Upstream:** `elie222/rakazo` `main` at `e28f4d4e` (2026-11-02)
-*   **ALMA:** `WEB-DO-Cloud/alma` `main` at `de786890`
-*   **Fork point:** `05c5d241` (2026-10-25)
+-   **Status:** Implementing
+-   **Date:** 2026-11-02
+-   **Upstream:** `elie222/rakazo` `main` at `e28f4d4e` (2026-11-02)
+-   **ALMA:** `WEB-DO-Cloud/alma` `main` at `de786890`
+-   **Fork point:** `05c5d241` (2026-10-25)
 
 Upstream `main` is 660 commits ahead of the fork point. ALMA `main` is 47 commits ahead of the same point. After this change, upstream is the tree, and ALMA is a listed overlay on top of it. One pull request merges into ALMA `main`. That pull request is not merged, deployed, or submitted to a store from this work.
 
@@ -27,35 +27,35 @@ Then apply the overlay in three sets:
 
 1. **Restore.** A path ALMA added, or a path ALMA edited whose blob on `upstream/main` equals its blob at `05c5d241`. Copy it from `HEAD`. Upstream did not change these, so the ALMA file is the overlay.
 2. **Delete.** Remove these four paths even if upstream still has them. They are the Rakazo download, star card, and mark:
-   *   `apps/www/api/download.ts`
-   *   `apps/www/public/brand/rakazo-mark.png`
-   *   `apps/www/src/components/RepoCard.astro`
-   *   `apps/www/src/github.ts`
+   -   `apps/www/api/download.ts`
+   -   `apps/www/public/brand/rakazo-mark.png`
+   -   `apps/www/src/components/RepoCard.astro`
+   -   `apps/www/src/github.ts`
 3. **Surgical.** A path both sides changed after `05c5d241`. Leave the upstream bytes in place. Re-apply only the rule in the matching section below. Do not copy the ALMA file over the upstream file.
 
 `whole` means set 1 (the path is absent on `upstream/main`, or upstream's blob equals the fork-point blob). `surgical` means set 3. A path that exists on both sides is never `whole`.
 
 `scripts/alma-overlay-manifest.txt` is written after the overlay, one path per line, prefixed `restore`, `delete`, or `surgical`. It is the path list. This document is the rule list. A path may differ from `upstream/main` only when it is in that manifest, or it matches one of these globs:
 
-*   `apps/web/src/locales/**`
-*   `apps/web/scripts/translations-*.json`
-*   `apps/mobile/lib/locales/**`
-*   `pnpm-lock.yaml`
-*   `docs/designs/alma-upstream-sync-2026-11.md`
-*   `docs/designs/reviews/2026-11-02-alma-upstream-sync.md`
-*   `scripts/sync-upstream.sh`
-*   `scripts/alma-overlay-manifest.txt`
-*   `scripts/check-alma-overlay.sh`
+-   `apps/web/src/locales/**`
+-   `apps/web/scripts/translations-*.json`
+-   `apps/mobile/lib/locales/**`
+-   `pnpm-lock.yaml`
+-   `docs/designs/alma-upstream-sync-2026-11.md`
+-   `docs/designs/reviews/2026-11-02-alma-upstream-sync.md`
+-   `scripts/sync-upstream.sh`
+-   `scripts/alma-overlay-manifest.txt`
+-   `scripts/check-alma-overlay.sh`
 
 Finish the merge only when `git status` shows no unmerged paths. `git add -A` includes the restored files. The commit's first parent is the previous ALMA tip and its second parent is `upstream/main`.
 
 `scripts/sync-upstream.sh` repeats these steps against a later `upstream/main`. `scripts/check-alma-overlay.sh` fails the tree when any of these are true. Comparisons are numeric, not lexicographic.
 
-*   `packages/contracts/src/domain.ts` does not set `BYOK_MONTHLY_PRICE_CENTS` to `5900`.
-*   `apps/mobile/app.json` `expo.version` is below `1.0.12`, `expo.ios.buildNumber` is below `66`, or `expo.android.versionCode` is below `14`.
-*   The phone composer source contains a Dictate or Dictar control, or a sample-data mode is referenced from the phone home screen. The check looks at `apps/mobile/app/thread.tsx` and `apps/mobile/app/_layout.tsx`, not the whole repo.
-*   `git diff --name-only upstream/main` lists a tracked path outside the manifest and outside the globs above.
-*   A rendered product string in `apps/web/src`, `apps/mobile/app`, `apps/mobile/lib/locales`, `apps/www/src`, or `README.md` says `Rakazo` and the line is not an allowlisted identifier from section 2.
+-   `packages/contracts/src/domain.ts` does not set `BYOK_MONTHLY_PRICE_CENTS` to `5900`.
+-   `apps/mobile/app.json` `expo.version` is below `1.0.12`, `expo.ios.buildNumber` is below `66`, or `expo.android.versionCode` is below `14`.
+-   The phone composer source contains a Dictate or Dictar control, or a sample-data mode is referenced from the phone home screen. The check looks at `apps/mobile/app/thread.tsx` and `apps/mobile/app/_layout.tsx`, not the whole repo.
+-   `git diff --name-only upstream/main` lists a tracked path outside the manifest and outside the globs above.
+-   A rendered product string in `apps/web/src`, `apps/mobile/app`, `apps/mobile/lib/locales`, `apps/www/src`, or `README.md` says `Rakazo` and the line is not an allowlisted identifier from section 2.
 
 ## Overlay rules
 
@@ -63,14 +63,14 @@ Finish the merge only when `git status` shows no unmerged paths. `git add -A` in
 
 On surgical files, replace the visible product token only.
 
-| Slot | Text |
-| --- | --- |
-| `expo.name`, PWA `name`, desktop `productName`, a title whose whole text is the product name | `ALMA` |
-| `expo.slug` | `alma` |
-| iOS `bundleIdentifier` and Android `applicationId` | `do.alma.app` |
-| Store listing title (`apps/mobile/fastlane/metadata/**/name.txt` and `title.txt`) | `ALMA Asistente IA` |
-| Sign-in title | `Sign in to ALMA`. Spanish catalog: `Inicia sesión en ALMA`. |
-| Splash `backgroundColor` in `apps/mobile/app.json` | `#002D62` |
+| Slot                                                                                         | Text                                                         |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `expo.name`, PWA `name`, desktop `productName`, a title whose whole text is the product name | `ALMA`                                                       |
+| `expo.slug`                                                                                  | `alma`                                                       |
+| iOS `bundleIdentifier` and Android `applicationId`                                           | `do.alma.app`                                                |
+| Store listing title (`apps/mobile/fastlane/metadata/**/name.txt` and `title.txt`)            | `ALMA Asistente IA`                                          |
+| Sign-in title                                                                                | `Sign in to ALMA`. Spanish catalog: `Inicia sesión en ALMA`. |
+| Splash `backgroundColor` in `apps/mobile/app.json`                                           | `#002D62`                                                    |
 
 `apps/mobile/app.json` `scheme` is `["alma", "rakazo"]`. Icons point at the ALMA rasters already used on ALMA `main`.
 
@@ -86,8 +86,8 @@ No user-facing link to the Rakazo GitHub repository, the Rakazo Android APK, or 
 
 Store hrefs, from `packages/contracts/src/client-build.ts`:
 
-*   iOS: `https://apps.apple.com/app/id6829162072`
-*   Android: `https://play.google.com/store/apps/details?id=do.alma.app`
+-   iOS: `https://apps.apple.com/app/id6829162072`
+-   Android: `https://play.google.com/store/apps/details?id=do.alma.app`
 
 Hosted app origin: `https://app.alma.com.do` (`apps/www/src/site.ts` `APP_URL`, desktop setup cloud URL).
 
@@ -97,24 +97,21 @@ The About credits sentences that named Rakazo were removed with the phone About 
 
 ### 3. Model and voice
 
-`ALMA_MANAGED_MODEL` unset means on. `0`, `false`, `no`, and `off` turn it off. `ALMA_VOICE_PROVIDER` unset means off. Only the value `xai` turns operator voice on. Managed model does not change `ALMA_VOICE_PROVIDER`.
+`ALMA_MANAGED_MODEL` unset means on. `0`, `false`, `no`, and `off` turn it off. Operator speech has no separate switch. When `XAI_API_KEY` is set, voice notes and calls speak and transcribe through upstream's xAI provider (`createVoiceProvider("xai")`) for every account, with voice id `eve`. `me.managedVoice` is true in that case. When the key is unset, speech follows upstream: a member connects xAI in Voice settings, or a model connection supplies the key. Do not restore `ALMA_VOICE_PROVIDER` or `packages/adapters/src/managed-voice.ts`.
 
 Restore these files from ALMA `HEAD` (they are absent on upstream):
 
-*   `packages/adapters/src/grok-build-runtime.ts`
-*   `packages/adapters/src/grok-build-runtime.test.ts`
-*   `packages/adapters/src/managed-model.ts`
-*   `packages/adapters/src/managed-model.test.ts`
-*   `packages/adapters/src/managed-voice.ts`
-*   `packages/adapters/src/create-managed-runtime.ts`
-*   `packages/adapters/src/unavailable-managed-runtime.ts`
-*   `packages/adapters/src/xai-voice.ts`
-*   `packages/adapters/src/xai-voice.test.ts`
-*   `packages/core/src/alma-unavailable.ts`
+-   `packages/adapters/src/grok-build-runtime.ts`
+-   `packages/adapters/src/grok-build-runtime.test.ts`
+-   `packages/adapters/src/managed-model.ts`
+-   `packages/adapters/src/managed-model.test.ts`
+-   `packages/adapters/src/create-managed-runtime.ts`
+-   `packages/adapters/src/unavailable-managed-runtime.ts`
+-   `packages/core/src/alma-unavailable.ts`
 
-On the upstream `packages/adapters/src/executor.ts`, `packages/adapters/src/voice-factory.ts`, `packages/adapters/src/index.ts`, and `apps/api/src/voice.ts`, re-attach those modules the way ALMA `HEAD` calls them. The Models and Voice settings entries are removed on web and on the phone. Deep links to those screens return to Account. The server chooses the model and the voice. Members do not pick a provider. The Read replies aloud switch stays; it is the spoken-summary control, not a provider picker.
+`packages/adapters/src/xai-voice.ts` and `voice-factory.ts` stay on upstream's xAI speech path. On `apps/api/src/voice.ts`, keep the deployment-key branch that calls that provider when `XAI_API_KEY` is set, and keep voice writes closed while it is. The Models and Voice settings entries are removed on web and on the phone. Deep links to those screens return to Account. The server chooses the model and the voice. Members do not pick a provider. The Read replies aloud switch stays; it is the spoken-summary control, not a provider picker.
 
-The web Call button and the existing mobile call waveform stay on upstream's composer. They use the xAI speak path when operator voice is on. Upstream's spoken-summary control (`readAloud` / `autoSpeak`, `apps/web/src/pages/shell/use-read-aloud.ts`) stays. Its playback call uses the voice factory. When `ALMA_VOICE_PROVIDER=xai`, that factory returns xAI, so summaries and Call share one speaker. Do not add a second speak button.
+The web Call button and the existing mobile call waveform stay on upstream's composer. They use the xAI speak path when `XAI_API_KEY` is set. Upstream's spoken-summary control (`readAloud` / `autoSpeak`, `apps/web/src/pages/shell/use-read-aloud.ts`) stays. Its playback call uses the same provider. Do not add a second speak button.
 
 Web Hold to talk is visible when `PHONE_CALLS_ENABLED` is on, or `voice/status.transcribe` is true, or `me.managedVoice` is true. The phone composer has no Dictate / Dictar control.
 
@@ -126,8 +123,8 @@ Account → Integrations, and the chat entry that opens the same screen, use ups
 
 Official behavior, followed as written:
 
-*   `docs/integrations.md`, “Connect from Integrations” and “Add your own tools”: Integrations is the connectors screen. **Browse MCP servers** searches a public directory.
-*   `docs/self-host-integrations.md`, “Apps and connectors”: `INTEGRATIONS_CATALOG_URL` is an integrations.sh catalog. The server appends `api/search`. Upstream's Browse MCP screen calls `capabilities.catalogSearch` with `usePublicCatalog`, which uses `https://integrations.sh` when no catalog URL is set.
+-   `docs/integrations.md`, “Connect from Integrations” and “Add your own tools”: Integrations is the connectors screen. **Browse MCP servers** searches a public directory.
+-   `docs/self-host-integrations.md`, “Apps and connectors”: `INTEGRATIONS_CATALOG_URL` is an integrations.sh catalog. The server appends `api/search`. Upstream's Browse MCP screen calls `capabilities.catalogSearch` with `usePublicCatalog`, which uses `https://integrations.sh` when no catalog URL is set.
 
 The marketing catalog stays the committed snapshot. It is not the in-app connection catalog. The in-app grid reads `connections.catalog` from the configured connector provider. Logos in `apps/www/public/integrations/catalog.json` stay on `https://alma.com.do`. `CATALOG_URL` still overrides that file. Do not point either catalog at a Rakazo host.
 
@@ -151,30 +148,30 @@ Link the name xAI to `https://x.ai/legal/privacy-policy`.
 
 Restore from ALMA `HEAD` (absent on upstream):
 
-*   `bitrise.yml`
-*   `apps/mobile/fastlane/**`
-*   `apps/mobile/Gemfile`
-*   `apps/mobile/Gemfile.lock`
-*   `apps/mobile/plugins/with-strip-foreground-services.js`
-*   `apps/mobile/plugins/with-strip-foreground-services.test.js`
-*   `apps/mobile/scripts/fix-android-namespace.mjs`
-*   `apps/mobile/scripts/bump-native.mjs`
-*   `apps/mobile/scripts/generate-mark.mjs`
-*   `apps/mobile/node-module-shim.js`
-*   `apps/mobile/lib/sentry-policy.ts`
-*   `apps/mobile/lib/sentry-upload.cjs`
-*   `apps/mobile/lib/store-release.test.ts`
-*   `apps/mobile/lib/android-namespace.test.ts`
-*   `apps/mobile/lib/node-module-shim.test.ts`
+-   `bitrise.yml`
+-   `apps/mobile/fastlane/**`
+-   `apps/mobile/Gemfile`
+-   `apps/mobile/Gemfile.lock`
+-   `apps/mobile/plugins/with-strip-foreground-services.js`
+-   `apps/mobile/plugins/with-strip-foreground-services.test.js`
+-   `apps/mobile/scripts/fix-android-namespace.mjs`
+-   `apps/mobile/scripts/bump-native.mjs`
+-   `apps/mobile/scripts/generate-mark.mjs`
+-   `apps/mobile/node-module-shim.js`
+-   `apps/mobile/lib/sentry-policy.ts`
+-   `apps/mobile/lib/sentry-upload.cjs`
+-   `apps/mobile/lib/store-release.test.ts`
+-   `apps/mobile/lib/android-namespace.test.ts`
+-   `apps/mobile/lib/node-module-shim.test.ts`
 
 `apps/mobile/metro.config.js` and `apps/mobile/app.json` are surgical. On the upstream metro config, keep the `node:module` → `node-module-shim.js` alias. On the upstream `app.json`, set identity from section 1 and these version fields:
 
-| Field | Value |
-| --- | --- |
-| `expo.version` | `1.0.12` |
-| `expo.ios.buildNumber` | `66` (above the published store build `64`) |
-| `expo.ios.supportsTablet` | `true`, matching upstream. ALMA ships on iPad as well as iPhone. App Store iPad support cannot be removed later. |
-| `expo.android.versionCode` | `14` (above the published store build `13`) |
+| Field                      | Value                                                                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `expo.version`             | `1.0.12`                                                                                                         |
+| `expo.ios.buildNumber`     | `66` (above the published store build `64`)                                                                      |
+| `expo.ios.supportsTablet`  | `true`, matching upstream. ALMA ships on iPad as well as iPhone. App Store iPad support cannot be removed later. |
+| `expo.android.versionCode` | `14` (above the published store build `13`)                                                                      |
 
 The native `apps/mobile/ios` project is not checked in. Prebuild reads `supportsTablet: true` and includes iPad in `UIDeviceFamily` and `TARGETED_DEVICE_FAMILY`.
 
@@ -194,9 +191,9 @@ The phone menu (sample data, a separate drafts list, a separate chat, a separate
 
 The migrations that already created those tables stay in the tree, so a database that applied them can still run `migrate deploy`:
 
-*   `packages/db/prisma/migrations/20261026120000_organization_settings/**`
-*   `packages/db/prisma/migrations/20261026140000_draft_approval/**`
-*   `packages/db/prisma/migrations/20261031120000_message_reports/**`
+-   `packages/db/prisma/migrations/20261026120000_organization_settings/**`
+-   `packages/db/prisma/migrations/20261026140000_draft_approval/**`
+-   `packages/db/prisma/migrations/20261031120000_message_reports/**`
 
 Do not add a migration that drops those tables or their rows. A later deploy can drop the organization and draft tables once nothing in production still reads them. Until then those two tables sit unused, with row-level security still on. `message_reports` is in use again.
 
@@ -204,7 +201,7 @@ Do not add a migration that drops those tables or their rows. A later deploy can
 
 On upstream's compose files, add the env passthrough next to the existing `XAI_API_KEY` entry:
 
-`ALMA_MANAGED_MODEL`, `ALMA_MODEL_RUNTIME`, `ALMA_MODEL_PROVIDER`, `ALMA_MODEL_ID`, `ALMA_MODEL_BASE_URL`, `ALMA_MODEL_API_KEY`, `ALMA_VOICE_PROVIDER`, `ALMA_GROK_SCRATCH`, `GROK_BIN`, `GROK_HOME`.
+`ALMA_MANAGED_MODEL`, `ALMA_MODEL_RUNTIME`, `ALMA_MODEL_PROVIDER`, `ALMA_MODEL_ID`, `ALMA_MODEL_BASE_URL`, `ALMA_MODEL_API_KEY`, `ALMA_GROK_SCRATCH`, `GROK_BIN`, `GROK_HOME`. Speech uses `XAI_API_KEY`, which is already passed through. Do not add `ALMA_VOICE_PROVIDER`.
 
 Files: `infra/compose/docker-compose.yml`, `infra/compose/docker-compose.prod.yml`, `infra/compose/docker-compose.images.yml`.
 
@@ -220,9 +217,9 @@ Do not change DNS, Cloudflare, or a live host.
 
 The server reads `BYOK_MONTHLY_PRICE_CENTS` from the environment in `apps/api/src/billing.ts` before using the constant:
 
-*   Unset: `5900`.
-*   A positive integer: that many cents.
-*   `0`: the own-key plan is free (`null`).
+-   Unset: `5900`.
+-   A positive integer: that many cents.
+-   `0`: the own-key plan is free (`null`).
 
 Own-key Checkout keeps using Stripe `price_data` and sets `unit_amount` to that resolved value only. It does not also send `1500`, and it does not add `STRIPE_PRICE_ID` on that checkout. `STRIPE_PRICE_ID` stays the legacy seat price.
 
@@ -246,20 +243,20 @@ ALMA's old version name `1.0.9` is not kept. The version name is `1.0.12`.
 
 These commands pass:
 
-*   `pnpm lint`
-*   `pnpm check`
-*   `pnpm test`
-*   `scripts/check-alma-overlay.sh`
+-   `pnpm lint`
+-   `pnpm check`
+-   `pnpm test`
+-   `scripts/check-alma-overlay.sh`
 
 Web e2e for sign-in, chat, the connectors grid, the Call button, and billing runs when the local harness starts. If the harness cannot start, the pull request says which screens were shot another way, and the unit checks above still pass. Desktop Electron e2e is not run locally.
 
 Screenshots, as pull-request artifacts:
 
-*   Sign-in, with the title `Sign in to ALMA` or `Inicia sesión en ALMA`.
-*   A chat thread.
-*   The connectors screen: search, category chips, the top row of Gmail, Google Calendar, Google Drive, Slack, and Notion, Recommended, and the per-category sections.
-*   The Call button on the composer.
-*   Billing or upgrade with the own-key line `US$59 / mes` at locale `es`.
+-   Sign-in, with the title `Sign in to ALMA` or `Inicia sesión en ALMA`.
+-   A chat thread.
+-   The connectors screen: search, category chips, the top row of Gmail, Google Calendar, Google Drive, Slack, and Notion, Recommended, and the per-category sections.
+-   The Call button on the composer.
+-   Billing or upgrade with the own-key line `US$59 / mes` at locale `es`.
 
 ## Out of scope
 

@@ -20,7 +20,7 @@ const databaseUrl = process.env.DATABASE_URL;
 const migrationUrl = process.env.DATABASE_MIGRATION_URL;
 const describePostgres =
   process.env.VERIFY_DATABASE && databaseUrl && migrationUrl && databaseUrl !== migrationUrl
-    ? describe.sequential
+    ? describe
     : describe.skip;
 
 describePostgres("phase 2A context isolation", () => {

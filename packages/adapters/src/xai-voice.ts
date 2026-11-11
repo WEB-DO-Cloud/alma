@@ -9,166 +9,89 @@ import type {
   VoiceTranscribeRequest,
   VoiceVerifyResult,
 } from "@rakazo/adapter-kit";
+import { VoiceAccountError } from "@rakazo/adapter-kit";
 import {
   readVoiceAudio,
   readVoiceJson,
   speechUploadName,
   voiceDeadline,
+  voiceErrorDetail,
+  voiceLanguageHint,
   voiceRequestError,
+  voiceUnreachable,
 } from "./voice-http.js";
 
-export const XAI_STT_URL = "https://api.x.ai/v1/stt";
-export const XAI_STT_MODEL = "grok-voice-transcribe-2.0";
-export const XAI_TTS_URL = "https://api.x.ai/v1/tts";
-/** One operator voice. Lawyers do not pick it. */
-export const XAI_TTS_VOICE = "eve";
+export const XAI_VOICE_PROVIDER_ID = "xai";
+const API = "https://api.x.ai/v1";
+const PROVIDER = "xAI";
 
-const LANGUAGES = new Set([
-  "ar",
-  "bg",
-  "bs",
-  "ca",
-  "cs",
-  "da",
-  "de",
-  "el",
-  "en",
-  "es",
-  "es-es",
-  "fa",
-  "fi",
-  "fil",
-  "fr",
-  "hi",
-  "hr",
-  "hu",
-  "id",
-  "it",
-  "ja",
-  "ko",
-  "mk",
-  "ms",
-  "nb",
-  "nl",
-  "pl",
-  "pt",
-  "pt-pt",
-  "ro",
-  "ru",
-  "sk",
-  "sv",
-  "th",
-  "tr",
-  "uk",
-  "ur",
-  "vi",
-  "yue",
-  "zh",
-  "ar-ae",
-  "ar-sa",
-]);
-
-/** Legal terms the transcriber should prefer. Each stays under the 50-character keyterm limit. */
-export const XAI_LEGAL_KEYTERMS = [
-  "contrato",
-  "demanda",
-  "sentencia",
-  "poder",
-  "notario",
-  "hipoteca",
-  "arrendamiento",
-  "cláusula",
-  "demandante",
-  "demandado",
-] as const;
-
-/** A locale tag becomes a supported language code. Anything else is Spanish. */
-export function voiceLanguage(locale: string | undefined): string {
-  const raw = (locale ?? "").trim().toLowerCase().replace(/_/g, "-");
-  if (!raw) return "es";
-  if (LANGUAGES.has(raw)) return raw;
-  const base = raw.split("-")[0] ?? "";
-  if (LANGUAGES.has(base)) return base;
-  return "es";
-}
-
-const TTS_LANGUAGES = new Set([
-  "en",
-  "ar-eg",
-  "ar-sa",
-  "ar-ae",
-  "bn",
-  "zh",
-  "fr",
-  "de",
-  "hi",
-  "id",
-  "it",
-  "ja",
-  "ko",
-  "pt-br",
-  "pt-pt",
-  "ru",
-  "es-mx",
-  "es-es",
-  "tr",
-  "vi",
-]);
-
-/** Speech synthesis wants a regional tag. Spanish that is not Mexican becomes es-ES. */
-export function ttsLanguage(locale: string | undefined): string {
-  const raw = (locale ?? "").trim().toLowerCase().replace(/_/g, "-");
-  if (raw === "es-mx") return "es-MX";
-  if (raw === "pt-br") return "pt-BR";
-  if (raw === "pt-pt" || raw === "pt") return "pt-PT";
-  if (raw.startsWith("es")) return "es-ES";
-  if (TTS_LANGUAGES.has(raw)) return raw === "zh" ? "zh" : raw;
-  const base = raw.split("-")[0] ?? "";
-  if (base === "pt") return "pt-PT";
-  if (TTS_LANGUAGES.has(base)) return base;
-  return "es-ES";
-}
-
+/**
+ * Speech and transcription through xAI. The bearer is either an xAI API key or the access token
+ * of a SuperGrok or X Premium sign-in; both reach the same endpoints.
+ */
 export class XaiVoiceProvider implements VoiceProvider {
   describe(): AdapterDescriptor<VoiceCapabilities> {
     return {
-      id: "xai",
+      id: XAI_VOICE_PROVIDER_ID,
       contractVersion: "1",
       adapterVersion: "0.1.0",
-      capabilities: { catalog: false, synthesize: true, transcribe: true },
+      capabilities: { catalog: true, synthesize: true, transcribe: true },
     };
   }
 
   async verify(apiKey: string, context: AdapterContext): Promise<VoiceVerifyResult> {
-    if (apiKey.trim().length < 8) return { ok: false, message: "Missing key" };
-    void context;
-    return { ok: true };
+    try {
+      const res = await fetch(`${API}/tts/voices`, {
+        headers: { authorization: `Bearer ${apiKey}` },
+        signal: voiceDeadline(context.signal, 20_000),
+      });
+      if (res.ok) return { ok: true };
+      const error = xaiRequestError(res.status, "checking that key", await readVoiceJson(res));
+      return {
+        ok: false,
+        message: error.message,
+        code: error instanceof VoiceAccountError ? error.code : undefined,
+      };
+    } catch {
+      return { ok: false, message: voiceUnreachable(PROVIDER) };
+    }
   }
 
-  async listVoices(_apiKey: string, _context: AdapterContext): Promise<VoiceInfo[]> {
-    return [];
+  async listVoices(apiKey: string, context: AdapterContext): Promise<VoiceInfo[]> {
+    const res = await fetch(`${API}/tts/voices`, {
+      headers: { authorization: `Bearer ${apiKey}` },
+      signal: voiceDeadline(context.signal, 20_000),
+    });
+    if (!res.ok) throw xaiRequestError(res.status, "listing voices", await readVoiceJson(res));
+    const body = await readVoiceJson(res, { requireValid: true });
+    const listed =
+      body && typeof body === "object" && "voices" in body && Array.isArray(body.voices)
+        ? body.voices
+        : [];
+    const voices: VoiceInfo[] = [];
+    for (const voice of listed) {
+      if (!voice || typeof voice !== "object" || !("voice_id" in voice)) continue;
+      const id = voice.voice_id;
+      if (typeof id !== "string" || !id.trim()) continue;
+      const name = "name" in voice && typeof voice.name === "string" ? voice.name.trim() : "";
+      voices.push({ id, label: name || id });
+    }
+    return voices.sort((a, b) => a.label.localeCompare(b.label));
   }
 
   async synthesize(request: VoiceSynthesizeRequest, context: AdapterContext): Promise<SpeechClip> {
     const signal = voiceDeadline(request.signal ?? context.signal, 60_000);
-    const res = await fetch(XAI_TTS_URL, {
+    const res = await fetch(`${API}/tts`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${request.apiKey}`,
         "content-type": "application/json",
-        accept: "audio/mpeg",
       },
-      body: JSON.stringify({
-        text: request.text,
-        voice_id: request.voiceId || XAI_TTS_VOICE,
-        language: ttsLanguage(request.language),
-        text_normalization: true,
-      }),
+      // MP3 at 24 kHz is the default output; replies can be in any language.
+      body: JSON.stringify({ text: request.text, voice_id: request.voiceId, language: "auto" }),
       signal,
     });
-    if (!res.ok) {
-      throw voiceRequestError(res.status, "xAI", "speaking", await readVoiceJson(res));
-    }
+    if (!res.ok) throw xaiRequestError(res.status, "speaking", await readVoiceJson(res));
     return { bytes: await readVoiceAudio(res, signal), mimeType: "audio/mpeg" };
   }
 
@@ -177,23 +100,39 @@ export class XaiVoiceProvider implements VoiceProvider {
     context: AdapterContext,
   ): Promise<{ text: string }> {
     const form = new FormData();
-    form.append("model", XAI_STT_MODEL);
-    form.append("format", "true");
-    form.append("language", voiceLanguage(request.language));
-    for (const term of XAI_LEGAL_KEYTERMS) form.append("keyterm", term);
-    form.append(
+    const language = voiceLanguageHint(request.language);
+    if (language) {
+      form.set("language", language);
+      // Writes spoken numbers, prices and units as a person would type them.
+      form.set("format", "true");
+    }
+    // xAI reads fields only up to the file, so it goes last.
+    form.set(
       "file",
       new Blob([new Uint8Array(request.audio)], { type: request.mimeType || "audio/webm" }),
       speechUploadName(request.mimeType),
     );
-    const res = await fetch(XAI_STT_URL, {
+    const res = await fetch(`${API}/stt`, {
       method: "POST",
       headers: { authorization: `Bearer ${request.apiKey}` },
       body: form,
       signal: voiceDeadline(request.signal ?? context.signal, 60_000),
     });
     const body = await readVoiceJson(res, { requireValid: res.ok });
-    if (!res.ok) throw voiceRequestError(res.status, "xAI", "transcribing", body);
-    return { text: String((body as { text?: unknown } | null)?.text ?? "").trim() };
+    if (!res.ok) throw xaiRequestError(res.status, "transcribing", body);
+    const text = body && typeof body === "object" && "text" in body ? body.text : undefined;
+    return { text: typeof text === "string" ? text.trim() : "" };
   }
+}
+
+/** Normalize xAI's account statuses only at its adapter boundary. */
+function xaiRequestError(status: number, what: string, body: unknown): Error {
+  const message = voiceErrorDetail(body);
+  if (status === 400 && /\b(?:incorrect|invalid) api key\b/i.test(message)) status = 401;
+  if (
+    status === 403 &&
+    /\bcredits?\b|billing|paid subscription|account is not active/i.test(message)
+  )
+    status = 402;
+  return voiceRequestError(status, PROVIDER, what, body);
 }

@@ -1,8 +1,8 @@
 # Drift check: ALMA rebrand
 
-*   **Document:** `docs/designs/alma-rebrand.md`
-*   **Date:** 2026-10-26
-*   **Tree:** the implementation commit on `cursor/alma-rebrand`
+-   **Document:** `docs/designs/alma-rebrand.md`
+-   **Date:** 2026-10-26
+-   **Tree:** the implementation commit on `cursor/alma-rebrand`
 
 Compared the naming table, the logo file list, and the What stays table with the tree. No miss blocks the pull request. The notes below are the places the tree is more specific than the design, or where a sentence was adjusted so the design's own rules still hold.
 
@@ -10,14 +10,14 @@ Compared the naming table, the logo file list, and the What stays table with the
 
 The slots in the naming table match the tree:
 
-*   Icon label, PWA `name` and `short_name`, desktop `productName`, and the web `<title>` are `ALMA`.
-*   The sign-in title is `Sign in to ALMA`. The Spanish catalog is `Inicia sesión en ALMA`.
-*   The English one-line description is `ALMA AI prepares drafts for review.` on the web meta description, the PWA description, `SITE_DESCRIPTION`, the About opening, and the English README opening. The web manifest has that one English description.
-*   Korean, Chinese, and Japanese home meta descriptions, and the Japanese and Chinese README openings, keep their sentences. The product token in those descriptive sentences is `ALMA AI`.
-*   Email subjects use `ALMA` (`Verify your ALMA email`). The desktop microphone string is the sentence in the naming table.
-*   The footer, terms, privacy, and About copyright lines use `© 2026 ALMA INTELIGENCIA, S.R.L.` The store copyright file is `2026 ALMA INTELIGENCIA, S.R.L.` with no © sign.
-*   A longer sentence that tells the reader what the product is uses `ALMA AI` (`ALMA AI is in beta`, the About maintenance sentence, the locale descriptions above). A button, a window title, an email, a permission string, or an instruction that names the product (`Sign in to ALMA`, `Change ALMA Server…`, `starts ALMA`) keeps `ALMA`.
-*   English `a Rakazo` became `an ALMA` so the article matches the vowel. Spanish and Portuguese `a ALMA` (`Volver a ALMA`, `Escriba a ALMA`, `Retorno a ALMA`) stay, because `a` is a preposition there.
+-   Icon label, PWA `name` and `short_name`, desktop `productName`, and the web `<title>` are `ALMA`.
+-   The sign-in title is `Sign in to ALMA`. The Spanish catalog is `Inicia sesión en ALMA`.
+-   The English one-line description is `ALMA AI prepares drafts for review.` on the web meta description, the PWA description, `SITE_DESCRIPTION`, the About opening, and the English README opening. The web manifest has that one English description.
+-   Korean, Chinese, and Japanese home meta descriptions, and the Japanese and Chinese README openings, keep their sentences. The product token in those descriptive sentences is `ALMA AI`.
+-   Email subjects use `ALMA` (`Verify your ALMA email`). The desktop microphone string is the sentence in the naming table.
+-   The footer, terms, privacy, and About copyright lines use `© 2026 ALMA INTELIGENCIA, S.R.L.` The store copyright file is `2026 ALMA INTELIGENCIA, S.R.L.` with no © sign.
+-   A longer sentence that tells the reader what the product is uses `ALMA AI` (`ALMA AI is in beta`, the About maintenance sentence, the locale descriptions above). A button, a window title, an email, a permission string, or an instruction that names the product (`Sign in to ALMA`, `Change ALMA Server…`, `starts ALMA`) keeps `ALMA`.
+-   English `a Rakazo` became `an ALMA` so the article matches the vowel. Spanish and Portuguese `a ALMA` (`Volver a ALMA`, `Escriba a ALMA`, `Retorno a ALMA`) stay, because `a` is a preposition there.
 
 There is no Spanish marketing page. The Spanish one-line sentence is not a second web manifest. Phone copy that already said ALMA was left as it was, including `ALMA prepara borradores para revisión` in the About and store text.
 

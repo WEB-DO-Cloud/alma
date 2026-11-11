@@ -7,7 +7,7 @@ describeFast("pnpm test emulator pin", () => {
   it("forces scripted runtime, fake sandbox, and in-memory wakeup", () => {
     expect(process.env.AGENT_RUNTIME).toBe("scripted");
     expect(process.env.ALMA_MANAGED_MODEL).toBe("0");
-    expect(process.env.ALMA_VOICE_PROVIDER).toBeUndefined();
+    expect(process.env.XAI_API_KEY).toBeUndefined();
     expect(process.env.RAKAZO_LIVE_MODEL_CATALOG).toBe("off");
     expect(process.env.SANDBOX_PROVIDER).toBe("fake");
     expect(process.env.WAKEUP_DRIVER).toBe("memory");
@@ -16,6 +16,11 @@ describeFast("pnpm test emulator pin", () => {
   it("never enables billed media generation through inherited configuration", () => {
     expect(process.env.MEDIA_GENERATION_PROVIDER).toBe("disabled");
     expect(process.env.MEDIA_GENERATION_API_KEY).toBeUndefined();
+  });
+
+  it("never enables billed paid services through inherited configuration", () => {
+    expect(process.env.PAID_SERVICES_PROVIDER).toBe("disabled");
+    expect(process.env.PAID_SERVICES_API_KEY).toBeUndefined();
   });
 
   it("does not keep a live Composio key in the test process", () => {

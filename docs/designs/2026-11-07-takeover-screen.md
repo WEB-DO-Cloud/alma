@@ -1,9 +1,9 @@
 # Takeover must mount the control screen
 
-*   **Status:** Implementing
-*   **Date:** 2026-11-07
-*   **Upstream:** [elie222/rakazo#3948](https://github.com/elie222/rakazo/pull/3948) merged as `72c5a0ad` (2026-11-07). Not in ALMA `c52ad609`.
-*   **Out of scope:** reconnect backoff ([#3442](https://github.com/elie222/rakazo/pull/3442), already here), [#3268](https://github.com/elie222/rakazo/issues/3268), [#3208](https://github.com/elie222/rakazo/pull/3208).
+-   **Status:** Implementing
+-   **Date:** 2026-11-07
+-   **Upstream:** [elie222/rakazo#3948](https://github.com/elie222/rakazo/pull/3948) merged as `72c5a0ad` (2026-11-07). Not in ALMA `c52ad609`.
+-   **Out of scope:** reconnect backoff ([#3442](https://github.com/elie222/rakazo/pull/3442), already here), [#3268](https://github.com/elie222/rakazo/issues/3268), [#3208](https://github.com/elie222/rakazo/pull/3208).
 
 ## Problem
 
@@ -23,10 +23,10 @@ The control process on the computer is started by that screen read. Nothing atta
 
 Port #3948. Do not invent a second switch path.
 
-*   A new proxied screen for the same bot loads in a new iframe. The iframe it replaces stays mounted, inert, and hidden from assistive technology until the new one reports past loading, or 15 seconds pass, or an error shows.
-*   Only the live iframe's window is listened to. The retiring watch page's `disconnected` cannot clear the control page.
-*   Release shows the bot's last watch address immediately when that capability has more than a minute left. The watch address is the one issued as `view`. It is not rewritten into a control capability. If release fails, the control address is put back.
-*   Mobile keeps its own screen view.
+-   A new proxied screen for the same bot loads in a new iframe. The iframe it replaces stays mounted, inert, and hidden from assistive technology until the new one reports past loading, or 15 seconds pass, or an error shows.
+-   Only the live iframe's window is listened to. The retiring watch page's `disconnected` cannot clear the control page.
+-   Release shows the bot's last watch address immediately when that capability has more than a minute left. The watch address is the one issued as `view`. It is not rewritten into a control capability. If release fails, the control address is put back.
+-   Mobile keeps its own screen view.
 
 View and control stay different capabilities. The watch link is never made writable.
 

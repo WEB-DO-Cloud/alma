@@ -1,4 +1,5 @@
 import { getLogger, monitoringUserId } from "@rakazo/logging";
+import { markExpectedFailure } from "@rakazo/logging/hono";
 import type { MonitoringConfig } from "@rakazo/logging/monitoring";
 import { isVendorSentryHost } from "@rakazo/logging/monitoring";
 import { Hono } from "hono";
@@ -119,13 +120,16 @@ async function forwardEnvelope(
       const value = upstream.headers.get(name);
       if (value) headers.set(name, value);
     }
-    if (!upstream.ok)
+    if (!upstream.ok) {
       getLogger().warn("client error report forwarding rejected", {
         "http.status": upstream.status,
       });
+      markExpectedFailure();
+    }
     return new Response(null, { status: upstream.status, headers });
   } catch {
     getLogger().warn("client error report forwarding failed");
+    markExpectedFailure();
     return new Response(null, { status: 502 });
   }
 }

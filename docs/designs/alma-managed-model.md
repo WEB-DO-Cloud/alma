@@ -1,10 +1,10 @@
 # ALMA managed model
 
-*   **Author:** WEB-DO-Cloud/alma
-*   **Status:** In Review
-*   **Date:** 2026-10-26
+-   **Author:** WEB-DO-Cloud/alma
+-   **Status:** In Review
+-   **Date:** 2026-10-26
 
---------------------------------------------------------------------------------
+---
 
 ## Overview
 
@@ -20,69 +20,69 @@ The operator, not the lawyer, decides which model runs. That model is Grok throu
 
 ## Goals
 
-*   One server switch, `ALMA_MANAGED_MODEL`, defaults on. After trim and lowercasing, `0`, `false`, `no`, and `off` restore the previous bring-your-own-key path. Any other set value, and an unset value, are on.
-*   While the switch is on, web, mobile, and desktop show no model, provider, or model-key setup. Desktop hosts the web UI, so the web change is the desktop change.
-*   Every organization and every bot uses the operator runtime. Per-user credentials are not read and cannot be saved.
-*   `ALMA_MODEL_RUNTIME=grok-build` is the runtime that ships. The API and the worker spawn `grok` with `shell: false`. Streaming output becomes the existing thread text events.
-*   Grok's built-in tools are off. The process runs in an empty scratch directory that is not inside a git checkout. It does not receive the server's environment.
-*   The operator signs in with `grok login --device-auth`. The session file is `GROK_HOME/auth.json` on a persistent volume. `XAI_API_KEY` is a fallback only, passed through to the child process and never written to the repo or to logs.
-*   A missing or rejected session logs an operator error and shows the Spanish sentence above. The sentence does not mention keys, providers, or models.
-*   Provider, model id, and base URL are operator environment variables so a later runtime can point at another host without a new user-facing setting.
-*   New draft rows store that operator provider and model id. The lawyer does not type them. The approval hash is the draft text, so these fields do not change it. Screens hide them. The CSV keeps them.
+-   One server switch, `ALMA_MANAGED_MODEL`, defaults on. After trim and lowercasing, `0`, `false`, `no`, and `off` restore the previous bring-your-own-key path. Any other set value, and an unset value, are on.
+-   While the switch is on, web, mobile, and desktop show no model, provider, or model-key setup. Desktop hosts the web UI, so the web change is the desktop change.
+-   Every organization and every bot uses the operator runtime. Per-user credentials are not read and cannot be saved.
+-   `ALMA_MODEL_RUNTIME=grok-build` is the runtime that ships. The API and the worker spawn `grok` with `shell: false`. Streaming output becomes the existing thread text events.
+-   Grok's built-in tools are off. The process runs in an empty scratch directory that is not inside a git checkout. It does not receive the server's environment.
+-   The operator signs in with `grok login --device-auth`. The session file is `GROK_HOME/auth.json` on a persistent volume. `XAI_API_KEY` is a fallback only, passed through to the child process and never written to the repo or to logs.
+-   A missing or rejected session logs an operator error and shows the Spanish sentence above. The sentence does not mention keys, providers, or models.
+-   Provider, model id, and base URL are operator environment variables so a later runtime can point at another host without a new user-facing setting.
+-   New draft rows store that operator provider and model id. The lawyer does not type them. The approval hash is the draft text, so these fields do not change it. Screens hide them. The CSV keeps them.
 
 ## Non-Goals
 
-*   No Agent Client Protocol client. `packages/adapters` has no session type for that protocol. Grok's tool lockdown flags apply to headless runs. The command in the architecture section is the one that ships.
-*   No Dominican Republic model runtime. The registry has a slot for it. An unknown `ALMA_MODEL_RUNTIME` still lets the process boot. Its health check fails, runs yield the Spanish sentence, and the operator log is `alma.managed-model.runtime-failed` with the runtime id.
-*   No change to draft approval, the review clock, lawyer identity, hashes, or the diff. The approval hash is the draft text. The record still stores a model and a model version. Screens do not show those two fields. The CSV still contains them.
-*   No case routing and no outcome billing.
-*   The marketing site in `apps/www` is out of scope. The in-scope apps are web, mobile, and desktop.
-*   Memory and integration connectors stay. Those screens can still say "API key". That residue is an accepted limit of this change, recorded under Open Questions.
-*   Text-to-speech is not part of the managed voice. The xAI adapter transcribes only. Phone-call speech stays on the device path when no speak voice is stored.
-*   User credential rows are not deleted. Dropping them would break the previous release during a side-by-side deploy, and it would block rollback of the switch.
+-   No Agent Client Protocol client. `packages/adapters` has no session type for that protocol. Grok's tool lockdown flags apply to headless runs. The command in the architecture section is the one that ships.
+-   No Dominican Republic model runtime. The registry has a slot for it. An unknown `ALMA_MODEL_RUNTIME` still lets the process boot. Its health check fails, runs yield the Spanish sentence, and the operator log is `alma.managed-model.runtime-failed` with the runtime id.
+-   No change to draft approval, the review clock, lawyer identity, hashes, or the diff. The approval hash is the draft text. The record still stores a model and a model version. Screens do not show those two fields. The CSV still contains them.
+-   No case routing and no outcome billing.
+-   The marketing site in `apps/www` is out of scope. The in-scope apps are web, mobile, and desktop.
+-   Memory and integration connectors stay. Those screens can still say "API key". That residue is an accepted limit of this change, recorded under Open Questions.
+-   Text-to-speech is not part of the managed voice. The xAI adapter transcribes only. Phone-call speech stays on the device path when no speak voice is stored.
+-   User credential rows are not deleted. Dropping them would break the previous release during a side-by-side deploy, and it would block rollback of the switch.
 
 ## Open Questions
 
-*   **Memory and integration key screens.** They remain reachable and can show the words "API key". Removing them is a separate product cut. Voice-provider screens are removed while the operator model or the operator voice is on. The microphone stays.
-*   **Grok installer pin.** The image install is optional and uses the upstream install script. The script does not document a version pin. The container also passes `--no-auto-update` at run time. A digest pin is a follow-up once the operator has a release to pin. Running that script is an accepted supply-chain risk, and the default image does not run it.
+-   **Memory and integration key screens.** They remain reachable and can show the words "API key". Removing them is a separate product cut. Voice-provider screens are removed while the operator model or the operator voice is on. The microphone stays.
+-   **Grok installer pin.** The image install is optional and uses the upstream install script. The script does not document a version pin. The container also passes `--no-auto-update` at run time. A digest pin is a follow-up once the operator has a release to pin. Running that script is an accepted supply-chain risk, and the default image does not run it.
 
 ## Critical User Journeys (CUJs)
 
 ### CUJ 1: A lawyer chats
 
-*   **Given**: `ALMA_MANAGED_MODEL` is on, `ALMA_MODEL_RUNTIME=grok-build`, and `GROK_HOME/auth.json` parses as a JSON object with at least one property.
-*   **When**: The lawyer sends a message.
-*   **Then**: Onboarding never asked them to connect a model. Settings has no Models row. The thread has no model picker. The API and the worker spawn `grok` and stream `text` events into the thread. The lawyer does not see a provider name or a model id.
+-   **Given**: `ALMA_MANAGED_MODEL` is on, `ALMA_MODEL_RUNTIME=grok-build`, and `GROK_HOME/auth.json` parses as a JSON object with at least one property.
+-   **When**: The lawyer sends a message.
+-   **Then**: Onboarding never asked them to connect a model. Settings has no Models row. The thread has no model picker. The API and the worker spawn `grok` and stream `text` events into the thread. The lawyer does not see a provider name or a model id.
 
 ### CUJ 2: The operator session is missing or rejected
 
-*   **Given**: The switch is on. A usable session file is a JSON object with at least one property. `{}`, a missing file, and a non-object are not usable. `XAI_API_KEY` is unset, or `grok` has already exited with an authentication failure.
-*   **When**: The lawyer sends a message.
-*   **Then**: The user-visible text is exactly `ALMA no está disponible en este momento`. No text from `grok` is included. If the process was not spawned, the log is `alma.managed-model.auth-missing` and has no exit code. If `grok` exited, the log is `alma.managed-model.auth-rejected` and includes the exit code. The log does not include a key value or the auth file body. The user message does not name a provider.
+-   **Given**: The switch is on. A usable session file is a JSON object with at least one property. `{}`, a missing file, and a non-object are not usable. `XAI_API_KEY` is unset, or `grok` has already exited with an authentication failure.
+-   **When**: The lawyer sends a message.
+-   **Then**: The user-visible text is exactly `ALMA no está disponible en este momento`. No text from `grok` is included. If the process was not spawned, the log is `alma.managed-model.auth-missing` and has no exit code. If `grok` exited, the log is `alma.managed-model.auth-rejected` and includes the exit code. The log does not include a key value or the auth file body. The user message does not name a provider.
 
 ### CUJ 3: A client still tries to save a key
 
-*   **Given**: The switch is on. An old client calls `models.connect` or a bot-model write.
-*   **When**: The handler runs.
-*   **Then**: The write is rejected. Nothing is stored. The error message is the same Spanish sentence. It does not say "key" or name a provider.
+-   **Given**: The switch is on. An old client calls `models.connect` or a bot-model write.
+-   **When**: The handler runs.
+-   **Then**: The write is rejected. Nothing is stored. The error message is the same Spanish sentence. It does not say "key" or name a provider.
 
 ### CUJ 5: A lawyer dictates
 
-*   **Given**: `ALMA_VOICE_PROVIDER=xai` and `XAI_API_KEY` is set. The lawyer's locale is Spanish, or unset.
-*   **When**: The lawyer holds the microphone on the web, or taps it on mobile.
-*   **Then**: The API posts the audio to `https://api.x.ai/v1/stt` as multipart form data. `model` is `grok-voice-transcribe-2.0`, `format` is true, `language` is `es` unless the locale's base code is one Grok Voice accepts, and `file` is the last field. Repeated `keyterm` fields bias legal words. The transcript is the JSON `text` field. Settings has no voice-provider screen. The status is `ready: true` and `transcribe: true` with `provider: null`, and no user credential is read.
+-   **Given**: `ALMA_VOICE_PROVIDER=xai` and `XAI_API_KEY` is set. The lawyer's locale is Spanish, or unset.
+-   **When**: The lawyer holds the microphone on the web, or taps it on mobile.
+-   **Then**: The API posts the audio to `https://api.x.ai/v1/stt` as multipart form data. `model` is `grok-voice-transcribe-2.0`, `format` is true, `language` is `es` unless the locale's base code is one Grok Voice accepts, and `file` is the last field. Repeated `keyterm` fields bias legal words. The transcript is the JSON `text` field. Settings has no voice-provider screen. The status is `ready: true` and `transcribe: true` with `provider: null`, and no user credential is read.
 
 ### CUJ 6: The voice key is missing
 
-*   **Given**: `ALMA_VOICE_PROVIDER=xai` and `XAI_API_KEY` is unset.
-*   **When**: The lawyer dictates.
-*   **Then**: The user sees `No se pudo transcribir.` The log is `alma.managed-voice.auth-missing` and does not include a key. Mobile falls back to the on-device recognizer. Web hold-to-talk keeps its browser recognizer because `transcribe` is false. Voice-provider settings stay hidden when the operator model is on.
+-   **Given**: `ALMA_VOICE_PROVIDER=xai` and `XAI_API_KEY` is unset.
+-   **When**: The lawyer dictates.
+-   **Then**: The user sees `No se pudo transcribir.` The log is `alma.managed-voice.auth-missing` and does not include a key. Mobile falls back to the on-device recognizer. Web hold-to-talk keeps its browser recognizer because `transcribe` is false. Voice-provider settings stay hidden when the operator model is on.
 
 ### CUJ 4: The switch is off
 
-*   **Given**: `ALMA_MANAGED_MODEL=0`.
-*   **When**: A user opens onboarding and settings.
-*   **Then**: The previous model connection screens and the Pi runtime behave as they do today. Tests in the default suite set this value.
+-   **Given**: `ALMA_MANAGED_MODEL=0`.
+-   **When**: A user opens onboarding and settings.
+-   **Then**: The previous model connection screens and the Pi runtime behave as they do today. Tests in the default suite set this value.
 
 ## Technical Plan (Architecture)
 
@@ -109,18 +109,18 @@ thread stream                                 v
 
 ### Operator environment
 
-| Variable | Meaning |
-| --- | --- |
-| `ALMA_MANAGED_MODEL` | Trimmed and lowercased. Unset, empty, or anything other than `0`, `false`, `no`, `off` enables the mode. |
-| `ALMA_MODEL_RUNTIME` | Runtime id. Default `grok-build`. |
-| `ALMA_MODEL_PROVIDER` | Stored on draft rows. Default `xai`. Not shown on screens. |
-| `ALMA_MODEL_ID` | Model id. See the command section for when `-m` is passed. |
-| `ALMA_MODEL_BASE_URL` | When set, the runtime writes the `alma` table below and passes `-m alma`. |
-| `ALMA_MODEL_API_KEY` | Secret value for a later host. The file records the name `ALMA_MODEL_API_KEY`. The value is copied into the child environment only when it is non-empty. |
-| `GROK_BIN` | Executable. Default `grok`. |
-| `GROK_HOME` | Config and `auth.json`. Required for the subscription session. |
-| `ALMA_GROK_SCRATCH` | Parent of per-thread scratch directories. When unset, the default is `<DATA_DIR>/alma-grok` if that directory is writable, then `/data/alma-grok` if `DATA_DIR` is unset and `/data` is writable, otherwise the system temp directory. |
-| `XAI_API_KEY` | Fallback secret. Forwarded to the child when set. Never logged. |
+| Variable              | Meaning                                                                                                                                                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ALMA_MANAGED_MODEL`  | Trimmed and lowercased. Unset, empty, or anything other than `0`, `false`, `no`, `off` enables the mode.                                                                                                                               |
+| `ALMA_MODEL_RUNTIME`  | Runtime id. Default `grok-build`.                                                                                                                                                                                                      |
+| `ALMA_MODEL_PROVIDER` | Stored on draft rows. Default `xai`. Not shown on screens.                                                                                                                                                                             |
+| `ALMA_MODEL_ID`       | Model id. See the command section for when `-m` is passed.                                                                                                                                                                             |
+| `ALMA_MODEL_BASE_URL` | When set, the runtime writes the `alma` table below and passes `-m alma`.                                                                                                                                                              |
+| `ALMA_MODEL_API_KEY`  | Secret value for a later host. The file records the name `ALMA_MODEL_API_KEY`. The value is copied into the child environment only when it is non-empty.                                                                               |
+| `GROK_BIN`            | Executable. Default `grok`.                                                                                                                                                                                                            |
+| `GROK_HOME`           | Config and `auth.json`. Required for the subscription session.                                                                                                                                                                         |
+| `ALMA_GROK_SCRATCH`   | Parent of per-thread scratch directories. When unset, the default is `<DATA_DIR>/alma-grok` if that directory is writable, then `/data/alma-grok` if `DATA_DIR` is unset and `/data` is writable, otherwise the system temp directory. |
+| `XAI_API_KEY`         | Fallback secret. Forwarded to the child when set. Never logged.                                                                                                                                                                        |
 
 `resolveManagedModel` in `packages/adapters` is the only reader of these names. `apps/api/src/env.ts` and the worker call it. Vendor names do not move into `packages/core`.
 
@@ -197,14 +197,14 @@ Grok's own tools are denied with the flags above. ALMA connector tools are not p
 
 ### Stream mapping
 
-| `grok` event `type` | Runtime event |
-| --- | --- |
-| `text` | `{ type: "text", text }` from string field `data`. A missing or non-string `data` is ignored. |
-| `thought` | ignored |
-| any other known or unknown type except `error`, `end`, `tool_call`, `max_turns_reached` | ignored |
-| `end` | `{ type: "done" }` |
-| `error`, non-zero exit, `max_turns_reached` | the Spanish sentence only when no `text` event was yielded, then `done`. Authentication wording uses `auth-rejected`. Anything else uses `runtime-failed`. |
-| `tool_call` | as in the scratch section |
+| `grok` event `type`                                                                     | Runtime event                                                                                                                                              |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text`                                                                                  | `{ type: "text", text }` from string field `data`. A missing or non-string `data` is ignored.                                                              |
+| `thought`                                                                               | ignored                                                                                                                                                    |
+| any other known or unknown type except `error`, `end`, `tool_call`, `max_turns_reached` | ignored                                                                                                                                                    |
+| `end`                                                                                   | `{ type: "done" }`                                                                                                                                         |
+| `error`, non-zero exit, `max_turns_reached`                                             | the Spanish sentence only when no `text` event was yielded, then `done`. Authentication wording uses `auth-rejected`. Anything else uses `runtime-failed`. |
+| `tool_call`                                                                             | as in the scratch section                                                                                                                                  |
 
 Usage lines are not forwarded. They carry a model id, and the thread must not render one. Server accounting for this runtime is the operator's Grok subscription, not a per-user ledger.
 
@@ -216,42 +216,42 @@ Today `resolveDeploymentModel` in `packages/adapters/src/deployment-model.ts` pi
 
 While the managed switch is on:
 
-*   `modelSetup` reports `needsModel: false` for every actor, including when `grok` is not signed in. The send path does not answer `Connect a model to start a run.`
-*   Member credentials and deployment Pi keys are not consulted for the run.
-*   `me` adds `managedModel: true`. `defaultProvider`, `defaultModel`, `hostCredentialProvider`, and `hostCredentialSource` are null, so clients have no model id to render.
-*   `apps/api/src/app.ts` and `apps/worker/src/index.ts` construct `GrokBuildAgentRuntime` instead of `PiAgentRuntime`.
+-   `modelSetup` reports `needsModel: false` for every actor, including when `grok` is not signed in. The send path does not answer `Connect a model to start a run.`
+-   Member credentials and deployment Pi keys are not consulted for the run.
+-   `me` adds `managedModel: true`. `defaultProvider`, `defaultModel`, `hostCredentialProvider`, and `hostCredentialSource` are null, so clients have no model id to render.
+-   `apps/api/src/app.ts` and `apps/worker/src/index.ts` construct `GrokBuildAgentRuntime` instead of `PiAgentRuntime`.
 
 `apps/api/src/model-credentials.ts` still encrypts a credential when the switch is off. When the switch is on, `connectModelCredential` and the other model writes return before `prepareModelCredential`.
 
 ### API
 
-*   `MeSchema` gains `managedModel`, optional, default false. Older servers omit it. Clients treat only `true` as managed.
-*   These writes reject with the Spanish sentence and store nothing. The handlers live in `apps/api/src/routes/models.ts` and `apps/api/src/model-credentials.ts`: `models.connect`, disconnect, preference, model role, bot model change, and imported model keys.
-*   `models.list` returns an empty catalog while managed, so a stale client has no provider rows to draw.
-*   `drafts.create` still requires `model` and `modelVersion` on the contract so the previous release's client keeps parsing. While managed, `apps/api/src/drafts.ts` ignores the submitted strings and stores `ALMA_MODEL_PROVIDER` and, for the version, `ALMA_MODEL_ID` or `subscription-default` when the id is unset. The approval log still persists those values. The web form does not ask for them, and the on-screen approval table does not show them. The CSV still contains them.
+-   `MeSchema` gains `managedModel`, optional, default false. Older servers omit it. Clients treat only `true` as managed.
+-   These writes reject with the Spanish sentence and store nothing. The handlers live in `apps/api/src/routes/models.ts` and `apps/api/src/model-credentials.ts`: `models.connect`, disconnect, preference, model role, bot model change, and imported model keys.
+-   `models.list` returns an empty catalog while managed, so a stale client has no provider rows to draw.
+-   `drafts.create` still requires `model` and `modelVersion` on the contract so the previous release's client keeps parsing. While managed, `apps/api/src/drafts.ts` ignores the submitted strings and stores `ALMA_MODEL_PROVIDER` and, for the version, `ALMA_MODEL_ID` or `subscription-default` when the id is unset. The approval log still persists those values. The web form does not ask for them, and the on-screen approval table does not show them. The CSV still contains them.
 
 ### User-facing surfaces hidden while `managedModel` is true
 
 Web (`apps/web`), which is also the desktop UI:
 
-*   Onboarding model step in `apps/web/src/pages/Onboarding.tsx`, including a direct open of `/onboarding/model`. The signup survey stays. The next step is the existing bot-creation step. The heading `Connect a model` is not rendered.
-*   Settings nav item `Models` and `ModelSettingsOverlay` in `apps/web/src/pages/SettingsOverlay.tsx`. A deep link to the models section opens General.
-*   `ChatModelPicker` in `apps/web/src/pages/shell/bot-panel.tsx`.
-*   Model and model-version fields on the record-draft form in `apps/web/src/pages/DraftReview.tsx`.
-*   The Model column in `apps/web/src/pages/DraftApprovalLog.tsx`.
-*   The agent-import control `Include API keys` in `apps/web/src/pages/shell/agent-import.tsx`.
+-   Onboarding model step in `apps/web/src/pages/Onboarding.tsx`, including a direct open of `/onboarding/model`. The signup survey stays. The next step is the existing bot-creation step. The heading `Connect a model` is not rendered.
+-   Settings nav item `Models` and `ModelSettingsOverlay` in `apps/web/src/pages/SettingsOverlay.tsx`. A deep link to the models section opens General.
+-   `ChatModelPicker` in `apps/web/src/pages/shell/bot-panel.tsx`.
+-   Model and model-version fields on the record-draft form in `apps/web/src/pages/DraftReview.tsx`.
+-   The Model column in `apps/web/src/pages/DraftApprovalLog.tsx`.
+-   The agent-import control `Include API keys` in `apps/web/src/pages/shell/agent-import.tsx`.
 
 Mobile (`apps/mobile`):
 
-*   Account rows `Models` and `AI data sharing` in `apps/mobile/app/(settings)/account.tsx`.
-*   Screens `models`, `model-connection`, `model-picker`, `bot-model`, and `ai-data-sharing`. Opening one returns to Account.
-*   The model consent sheet in `apps/mobile/lib/ai-consent.ts`. It is not shown. Chat is not blocked on that consent while managed.
-*   The failed-send affordance that tells the user to connect a model (`apps/mobile/components/failed-send-bubble.tsx`). The Spanish sentence, when the server sends it, is shown as the send error and is not rewritten into a connect-a-model action.
-*   The billing control in `apps/mobile/app/(settings)/billing.tsx` that navigates to `/models`. That control is omitted.
+-   Account rows `Models` and `AI data sharing` in `apps/mobile/app/(settings)/account.tsx`.
+-   Screens `models`, `model-connection`, `model-picker`, `bot-model`, and `ai-data-sharing`. Opening one returns to Account.
+-   The model consent sheet in `apps/mobile/lib/ai-consent.ts`. It is not shown. Chat is not blocked on that consent while managed.
+-   The failed-send affordance that tells the user to connect a model (`apps/mobile/components/failed-send-bubble.tsx`). The Spanish sentence, when the server sends it, is shown as the send error and is not rewritten into a connect-a-model action.
+-   The billing control in `apps/mobile/app/(settings)/billing.tsx` that navigates to `/models`. That control is omitted.
 
 Desktop (`apps/desktop`):
 
-*   No separate model screen. `apps/desktop/src/app-document-state.ts` treats a model field as one of several signals that a page is ready. Managed onboarding does not need that signal. The script stays, because the email form and the shell mark are enough, and the switch-off path still has the model field.
+-   No separate model screen. `apps/desktop/src/app-document-state.ts` treats a model field as one of several signals that a page is ready. Managed onboarding does not need that signal. The script stays, because the email form and the shell mark are enough, and the switch-off path still has the model field.
 
 Copy that is not rendered is left in the source and in locale catalogs. Deleting unused translation entries is not part of this change.
 
@@ -261,11 +261,11 @@ The user-facing string lives in `packages/core` as `ALMA_UNAVAILABLE_MESSAGE` wi
 
 Operator logs use these event names and no secret material:
 
-*   `alma.managed-model.auth-missing`
-*   `alma.managed-model.auth-rejected`
-*   `alma.managed-model.scratch-rejected`
-*   `alma.managed-model.tool-blocked`
-*   `alma.managed-model.runtime-failed`
+-   `alma.managed-model.auth-missing`
+-   `alma.managed-model.auth-rejected`
+-   `alma.managed-model.scratch-rejected`
+-   `alma.managed-model.tool-blocked`
+-   `alma.managed-model.runtime-failed`
 
 ### Migration
 
@@ -287,43 +287,43 @@ The command prints a device code and a URL, and it waits. The operator opens the
 
 ### Tests
 
-*   `packages/testkit/src/pin-test-env.ts` sets `ALMA_MANAGED_MODEL=0` so the existing suite stays on the scripted runtime and the previous model UI.
-*   `packages/adapters/src/grok-build-runtime.test.ts` points `GROK_BIN` at a fake executable. The fake reads `mode` from a file in `GROK_HOME` and writes `argv.json` there. It does not read the parent environment for its mode, because the child environment is an allowlist.
-*   Mode `stream` prints a `text` line then an `end` line. The test expects a `text` event whose text is the fixture chunk, then `done`, and expects `argv.json` to contain `--tools`, `""`, `--disallowed-tools`, `--max-turns`, `1`, `-s`, and the scratch path. It expects the recorded spawn options to use `shell: false`.
-*   Mode `auth` prints `{"type":"error","message":"authentication expired"}` and exits 1. With `XAI_API_KEY=xai-test-fixture` set in the parent and a usable `auth.json`, the user-visible text is only the Spanish sentence. The log name is `alma.managed-model.auth-rejected`. The log record has no field equal to `xai-test-fixture`.
-*   Mode `tool` prints a `tool_call` for `run_terminal_cmd` and no `text`. The user-visible text is the Spanish sentence and does not contain `run_terminal_cmd`. The log name is `alma.managed-model.tool-blocked`.
-*   A scratch parent that contains `.git` does not create `argv.json`. The log name is `alma.managed-model.scratch-rejected`. The user-visible text is the Spanish sentence.
-*   API tests with the switch on: `me.managedModel` is true, `needsModel` is false, `defaultModel` is null, and `models.connect` does not write a credential. Its message is the Spanish sentence.
-*   A web test renders onboarding and settings with `managedModel: true` and asserts that `Connect a model` and the Models nav item are absent. A mobile test renders the account screen with `managedModel: true` and asserts that `Models` and `AI data sharing` are absent.
-*   No test uses a real key. The only key string is `xai-test-fixture`.
+-   `packages/testkit/src/pin-test-env.ts` sets `ALMA_MANAGED_MODEL=0` so the existing suite stays on the scripted runtime and the previous model UI.
+-   `packages/adapters/src/grok-build-runtime.test.ts` points `GROK_BIN` at a fake executable. The fake reads `mode` from a file in `GROK_HOME` and writes `argv.json` there. It does not read the parent environment for its mode, because the child environment is an allowlist.
+-   Mode `stream` prints a `text` line then an `end` line. The test expects a `text` event whose text is the fixture chunk, then `done`, and expects `argv.json` to contain `--tools`, `""`, `--disallowed-tools`, `--max-turns`, `1`, `-s`, and the scratch path. It expects the recorded spawn options to use `shell: false`.
+-   Mode `auth` prints `{"type":"error","message":"authentication expired"}` and exits 1. With `XAI_API_KEY=xai-test-fixture` set in the parent and a usable `auth.json`, the user-visible text is only the Spanish sentence. The log name is `alma.managed-model.auth-rejected`. The log record has no field equal to `xai-test-fixture`.
+-   Mode `tool` prints a `tool_call` for `run_terminal_cmd` and no `text`. The user-visible text is the Spanish sentence and does not contain `run_terminal_cmd`. The log name is `alma.managed-model.tool-blocked`.
+-   A scratch parent that contains `.git` does not create `argv.json`. The log name is `alma.managed-model.scratch-rejected`. The user-visible text is the Spanish sentence.
+-   API tests with the switch on: `me.managedModel` is true, `needsModel` is false, `defaultModel` is null, and `models.connect` does not write a credential. Its message is the Spanish sentence.
+-   A web test renders onboarding and settings with `managedModel: true` and asserts that `Connect a model` and the Models nav item are absent. A mobile test renders the account screen with `managedModel: true` and asserts that `Models` and `AI data sharing` are absent.
+-   No test uses a real key. The only key string is `xai-test-fixture`.
 
 ### Rollout and rollback
 
 The switch defaults on in this fork. Rollback is `ALMA_MANAGED_MODEL=0` and a process restart. No migration runs, so the previous process still understands the database. The optional `grok` install is a build arg. An image built without it still boots. Runs then take the missing-binary path and show the Spanish sentence, and the operator log says the binary could not be spawned.
 
---------------------------------------------------------------------------------
+---
 
 ## Alternatives
 
 ### Alternative A: Call the xAI HTTP API with `XAI_API_KEY`
 
-*   **Pros**: Reuses `PiAgentRuntime` and the existing `xai` provider.
-*   **Cons**: The operator asked for the Grok Build subscription session, not a direct API key.
-*   **Reason for Rejection**: The key is a fallback only.
+-   **Pros**: Reuses `PiAgentRuntime` and the existing `xai` provider.
+-   **Cons**: The operator asked for the Grok Build subscription session, not a direct API key.
+-   **Reason for Rejection**: The key is a fallback only.
 
 ### Alternative B: Speak Agent Client Protocol (`grok agent stdio`)
 
-*   **Pros**: One long-lived process and a JSON-RPC session.
-*   **Cons**: There is no client for that protocol in the adapters. The tool flags this design relies on apply to headless runs.
-*   **Reason for Rejection**: Headless `streaming-json` maps onto `AgentRuntimeEvent` with a smaller change.
+-   **Pros**: One long-lived process and a JSON-RPC session.
+-   **Cons**: There is no client for that protocol in the adapters. The tool flags this design relies on apply to headless runs.
+-   **Reason for Rejection**: Headless `streaming-json` maps onto `AgentRuntimeEvent` with a smaller change.
 
 ### Alternative C: Hide the screens and still run Pi against a deployment key
 
-*   **Pros**: No process spawn.
-*   **Cons**: It is the direct API path again, and Pi still has the model's tools.
-*   **Reason for Rejection**: The runtime has to be `grok`, with tools denied.
+-   **Pros**: No process spawn.
+-   **Cons**: It is the direct API path again, and Pi still has the model's tools.
+-   **Reason for Rejection**: The runtime has to be `grok`, with tools denied.
 
---------------------------------------------------------------------------------
+---
 
 ## Non-Functional Requirements
 
@@ -345,25 +345,25 @@ One `grok` process per run. `--max-turns 1` caps that process. Session resume se
 
 Described above. The previous and new API can run together: no column is added or dropped.
 
---------------------------------------------------------------------------------
+---
 
 ### Additional Resources
 
-*   `packages/adapters/src/deployment-model.ts` — current deployment key resolution, unused for runs while the switch is on.
-*   `apps/api/src/model-credentials.ts` — credential writes, rejected while the switch is on.
-*   `apps/api/src/routes/shared.ts` — `modelSetup` and `me`.
-*   `packages/adapter-kit/src/interfaces.ts` — `AgentRuntime`.
-*   [Grok Build overview](https://docs.x.ai/build/overview)
-*   [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) — review method for this document.
+-   `packages/adapters/src/deployment-model.ts` — current deployment key resolution, unused for runs while the switch is on.
+-   `apps/api/src/model-credentials.ts` — credential writes, rejected while the switch is on.
+-   `apps/api/src/routes/shared.ts` — `modelSetup` and `me`.
+-   `packages/adapter-kit/src/interfaces.ts` — `AgentRuntime`.
+-   [Grok Build overview](https://docs.x.ai/build/overview)
+-   [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) — review method for this document.
 
 ## Future Improvements
 
-*   A second runtime id for a model hosted in the Dominican Republic, using `ALMA_MODEL_BASE_URL`.
-*   A pinned `grok` binary digest.
-*   Whether memory and integration key screens should leave the apps.
-*   xAI text-to-speech, if a later change needs spoken replies without a user voice provider.
+-   A second runtime id for a model hosted in the Dominican Republic, using `ALMA_MODEL_BASE_URL`.
+-   A pinned `grok` binary digest.
+-   Whether memory and integration key screens should leave the apps.
+-   xAI text-to-speech, if a later change needs spoken replies without a user voice provider.
 
---------------------------------------------------------------------------------
+---
 
 ## Detailed Implementation Plan
 
@@ -371,40 +371,40 @@ Described above. The previous and new API can run together: no column is added o
 
 #### 1. `packages/core/src/alma-unavailable.ts` (Create)
 
-*   **Type / Scope**: Shared constant.
-*   **Proposed Changes**: Export `ALMA_UNAVAILABLE_MESSAGE`.
+-   **Type / Scope**: Shared constant.
+-   **Proposed Changes**: Export `ALMA_UNAVAILABLE_MESSAGE`.
 
 #### 2. `packages/adapters/src/managed-model.ts` and `grok-build-runtime.ts` (Create)
 
-*   **Type / Scope**: Operator config and `AgentRuntime`.
-*   **Proposed Changes**: `resolveManagedModel`, `managedModelEnabled`, and `GrokBuildAgentRuntime` as specified above. A `ManagedModelRuntime` registry maps `grok-build` to that class. Any other id fails health.
+-   **Type / Scope**: Operator config and `AgentRuntime`.
+-   **Proposed Changes**: `resolveManagedModel`, `managedModelEnabled`, and `GrokBuildAgentRuntime` as specified above. A `ManagedModelRuntime` registry maps `grok-build` to that class. Any other id fails health.
 
 #### 3. `apps/api/src/env.ts`, `apps/api/src/app.ts`, `apps/api/src/routes/shared.ts`, `apps/api/src/model-credentials.ts`, `apps/worker/src/index.ts` (Modify)
 
-*   **Type / Scope**: Switch, `me`, write rejection, runtime selection.
-*   **Proposed Changes**: Load the resolver. `me.managedModel`. Null model fields when on. `needsModel` false when on. Reject model writes. Construct the grok runtime when the switch is on and `AGENT_RUNTIME` is not `scripted`.
+-   **Type / Scope**: Switch, `me`, write rejection, runtime selection.
+-   **Proposed Changes**: Load the resolver. `me.managedModel`. Null model fields when on. `needsModel` false when on. Reject model writes. Construct the grok runtime when the switch is on and `AGENT_RUNTIME` is not `scripted`.
 
 #### 4. `packages/contracts/src/domain.ts` and draft create handling in `apps/api/src/drafts.ts` (Modify)
 
-*   **Type / Scope**: Contract and stored model.
-*   **Proposed Changes**: Optional `managedModel` on `Me`. Server-side overwrite of draft model fields while managed, so the approval record keeps the operator identity without a field on the form. This is the Goals bullet for draft rows.
+-   **Type / Scope**: Contract and stored model.
+-   **Proposed Changes**: Optional `managedModel` on `Me`. Server-side overwrite of draft model fields while managed, so the approval record keeps the operator identity without a field on the form. This is the Goals bullet for draft rows.
 
 #### 5. Web and mobile surfaces listed in the architecture section (Modify)
 
-*   **Type / Scope**: Conditional render on `me.managedModel === true`.
-*   **Proposed Changes**: Hide the listed controls. Do not delete the screens' modules. Direct routes redirect or render nothing that names a model, a provider, or a key.
+-   **Type / Scope**: Conditional render on `me.managedModel === true`.
+-   **Proposed Changes**: Hide the listed controls. Do not delete the screens' modules. Direct routes redirect or render nothing that names a model, a provider, or a key.
 
 #### 6. `infra/compose/Dockerfile`, `infra/compose/docker-compose.yml`, `infra/compose/docker-compose.prod.yml`, `infra/compose/docker-compose.images.yml`, `.env.example` (Modify)
 
-*   **Type / Scope**: Optional binary and operator variables.
-*   **Proposed Changes**: Build arg and the environment table. Comments state the device-login command and that `XAI_API_KEY` is a fallback.
+-   **Type / Scope**: Optional binary and operator variables.
+-   **Proposed Changes**: Build arg and the environment table. Comments state the device-login command and that `XAI_API_KEY` is a fallback.
 
 #### 7. Tests (Create and modify)
 
-*   **Type / Scope**: Fake `grok`, API switch, UI absence.
-*   **Proposed Changes**: As in the Tests section. `pin-test-env.ts` forces the switch off.
+-   **Type / Scope**: Fake `grok`, API switch, UI absence.
+-   **Proposed Changes**: As in the Tests section. `pin-test-env.ts` forces the switch off.
 
---------------------------------------------------------------------------------
+---
 
 ## Managed voice
 

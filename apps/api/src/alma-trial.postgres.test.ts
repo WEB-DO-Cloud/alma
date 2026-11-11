@@ -5,8 +5,7 @@ import { admitUserRun, asSystem, createDb, spaceHasModelAccess } from "@rakazo/d
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createBillingService } from "./billing.js";
 
-const dbTests =
-  process.env.VERIFY_DATABASE && process.env.DATABASE_URL ? describe.sequential : describe.skip;
+const dbTests = process.env.VERIFY_DATABASE && process.env.DATABASE_URL ? describe : describe.skip;
 
 const previousFlags = {
   ALMA_TRIAL_ENABLED: process.env.ALMA_TRIAL_ENABLED,

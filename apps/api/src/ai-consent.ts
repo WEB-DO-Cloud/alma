@@ -6,7 +6,6 @@ import {
   managedChatModel,
   managedModelActive,
   parseModelSecret,
-  resolveManagedVoice,
   resolveMemberMainModel,
   selectConfiguredModel,
   toStringRecord,
@@ -31,7 +30,7 @@ import {
 } from "@rakazo/db";
 import type { RouterDeps } from "./router.js";
 import { resolveThreadTarget } from "./thread-target.js";
-import { voiceCredentialServer } from "./voice.js";
+import { managedVoiceEnabled, voiceCredentialServer } from "./voice.js";
 
 /**
  * The operator already chose these services for every account. Mobile asks
@@ -51,8 +50,7 @@ function operatorAcceptedModel(provider: string, modelId: string | null | undefi
 
 function operatorAcceptedVoice(provider: string): boolean {
   if (!managedModelActive()) return false;
-  const voice = resolveManagedVoice();
-  return voice.enabled && provider.trim().toLowerCase() === voice.provider;
+  return managedVoiceEnabled() && provider.trim().toLowerCase() === "xai";
 }
 
 function operatorAcceptedMemory(

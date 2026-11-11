@@ -20,12 +20,6 @@ const base: McpServerHealth = {
   toolCount: null,
   checkedAt: null,
 };
-/** The words a reader sees, with each element's text as its own word. */
-const visibleText = (html: string) =>
-  html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
 const render = (health: Partial<McpServerHealth>) =>
   renderToStaticMarkup(<McpServerHealthLine health={{ ...base, ...health }} />);
 
@@ -81,7 +75,7 @@ describe("McpServerHealthLine", () => {
     const html = renderToStaticMarkup(
       <McpServerHealthLine health={{ ...base, ...health }} presetClient />,
     );
-    expect(visibleText(html)).toContain("Not checked yet");
+    expect(html.replace(/<[^>]+>/g, "")).toContain("Not checked yet");
     expect(html).not.toContain("Needs an OAuth client ID");
     expect(html).not.toContain("does not support dynamic client registration");
   });

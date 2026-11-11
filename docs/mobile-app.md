@@ -4,7 +4,7 @@ Chat with your bots, answer their questions, watch their computers and take call
 
 ## Install
 
-- iPhone: [App Store](https://apps.apple.com/app/id6829162072).
+- iPhone, iPhone Duo and iPad: [App Store](https://apps.apple.com/app/id6829162072).
 - Android: [Google Play](https://play.google.com/store/apps/details?id=do.alma.app).
 
 You can also choose **Get the mobile app** from the account menu in the web or desktop app.
@@ -25,6 +25,8 @@ the sign-in screen and enter its address.
 
 The first time you send something, the app asks permission to share it with the AI services your
 server uses. Review or withdraw it later in **AI data sharing** in Settings.
+
+On an iPad, an unfolded iPhone Duo or an Android tablet, the chat list stays beside the open chat.
 
 Turn off **Haptics** in Settings if you don't want touch feedback.
 

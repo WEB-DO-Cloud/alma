@@ -84,31 +84,26 @@ describe("thinking signatures bound to a different conversation", () => {
     expect(withoutThinkingFrom(plain, 0)).toBe(plain);
   });
 
-  it("keeps DeepSeek reasoning_content so a rebuild can echo it", () => {
-    const message = {
-      role: "assistant",
-      content: [
-        {
-          type: "thinking",
-          thinking: "Check the statute.",
-          thinkingSignature: "reasoning_content",
-        },
-        { type: "thinking", thinking: "bound", thinkingSignature: "sig" },
-        { type: "toolCall", id: "call", name: "lookup", arguments: {} },
-      ],
-      timestamp: 0,
-    } as unknown as TranscriptContext["messages"][number];
-    const [kept] = withoutThinkingFrom([message], 0);
-    expect(kept).toMatchObject({
-      content: [
-        {
-          type: "thinking",
-          thinking: "Check the statute.",
-          thinkingSignature: "reasoning_content",
-        },
-        { type: "toolCall", id: "call" },
-      ],
-    });
-    expect(JSON.stringify(kept)).not.toContain("bound");
+  it("keeps thinking that carries no signature", () => {
+    const assistant = (...thinking: object[]) =>
+      ({
+        role: "assistant",
+        content: [...thinking, { type: "text", text: "reply" }],
+        timestamp: 0,
+      }) as unknown as TranscriptContext["messages"][number];
+    const messages = [
+      assistant({ type: "thinking", thinking: "bare" }),
+      assistant({ type: "thinking", thinking: "field", thinkingSignature: "reasoning_content" }),
+      assistant({ type: "thinking", thinking: "signed", thinkingSignature: "EqQBCkYI" }),
+      assistant({ type: "thinking", thinking: "", thinkingSignature: "x", redacted: true }),
+    ];
+    const kept = withoutThinkingFrom(messages, 0).map((message) =>
+      message.role === "assistant"
+        ? message.content.filter((part) => part.type === "thinking").map((part) => part.thinking)
+        : [],
+    );
+    expect(kept).toEqual([["bare"], ["field"], [], []]);
+    const unsigned = messages.slice(0, 2);
+    expect(withoutThinkingFrom(unsigned, 0)).toBe(unsigned);
   });
 });
