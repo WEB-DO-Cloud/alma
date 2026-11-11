@@ -642,6 +642,7 @@ model Space {
   mcpServers                  McpServer[]
   mcpOAuthSessions            McpOAuthSession[]
   modelOAuthSessions          ModelOAuthSession[]
+  googleWorkspaceGrants       GoogleWorkspaceGrant[]
   purchases                   Purchase[]
   feedbackReports             FeedbackReport[]
   botMcpServers              BotMcpServer[]
@@ -2159,6 +2160,23 @@ model McpOAuthSession {
 
   @@index([spaceId, userId, createdAt])
   @@map("mcp_oauth_sessions")
+}
+
+/// A Google sign-in for Gmail, Calendar, or Drive. The ciphertext is the verifier
+/// while pending, then the access token, refresh token, and expiry. Additive.
+model GoogleWorkspaceGrant {
+  id         String   @id
+  spaceId    String
+  space      Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId     String
+  provider   String
+  status     String
+  ciphertext String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([spaceId, userId, provider])
+  @@map("google_workspace_grants")
 }
 
 /// A subscription sign-in waiting for its pasted code, so whichever API process

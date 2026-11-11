@@ -37,6 +37,7 @@ import {
   sanitizeConnectorError,
 } from "./connector-safety.js";
 import { credentialDigest } from "./credential-digest.js";
+import { isWorkspacePreviewHost, WORKSPACE_PREVIEW_MESSAGE } from "./google-workspace.js";
 import {
   CATALOG_EXECUTE,
   catalogEntries,
@@ -234,6 +235,8 @@ export type McpConnectorOptions = {
   credentialTempRoot?: string;
   /** How long a run waits for one server's tool list; 0 waits for the transport's own timeouts. */
   discoveryTimeoutMs?: number;
+  /** Do not dial the Workspace Developer Preview MCP hosts. */
+  blockWorkspacePreview?: boolean;
 };
 
 function positiveInteger(value: string | undefined, allowZero = false): number | undefined {
@@ -475,6 +478,8 @@ export class McpConnector implements ConnectorProvider {
         // A server that just failed is not retried on every turn; a live session, a new
         // revision (the user changed it), or a later successful check recorded by any
         // process (e.g. Test connection in the API) ends the wait early.
+        if (this.options.blockWorkspacePreview && isWorkspacePreviewHost(server.endpoint))
+          return [];
         const backoff = this.discoveryBackoff.get(key);
         if (
           !live &&
@@ -685,6 +690,10 @@ export class McpConnector implements ConnectorProvider {
         !(assignment.allowedTools as unknown[]).includes(call.route.toolName))
     ) {
       yield { type: "error", message: "MCP tool is not assigned to this bot" };
+      return;
+    }
+    if (this.options.blockWorkspacePreview && isWorkspacePreviewHost(assignment.server.endpoint)) {
+      yield { type: "error", message: WORKSPACE_PREVIEW_MESSAGE };
       return;
     }
     // Capture material before callTool so a concurrent eviction/replace cannot

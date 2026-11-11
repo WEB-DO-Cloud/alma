@@ -33,6 +33,7 @@ import {
   testGoogleAuthorization,
   upsertGoogleAuthConfig,
 } from "./google-oauth-remote.js";
+import { omitWorkspaceCatalogItem } from "./google-workspace.js";
 import { isVitestRuntime } from "./test-runtime.js";
 
 type SdkSession = Awaited<ReturnType<Composio["create"]>>;
@@ -370,6 +371,8 @@ export class ComposioConnector implements ComposioProvider {
     context: AdapterContext,
     toolkits: string[],
   ) => Promise<Record<string, string> | undefined>;
+  /** Drop Gmail, Calendar, and Drive from catalog search. Stored connections still run. */
+  private readonly omitWorkspaceCatalog: boolean;
   /** An injected client has its own catalog, so it must not share the process-wide cache. */
   private readonly directoryCache: typeof composioToolkitDirectory;
 
@@ -381,11 +384,13 @@ export class ComposioConnector implements ComposioProvider {
         context: AdapterContext,
         toolkits: string[],
       ) => Promise<Record<string, string> | undefined>;
+      omitWorkspaceCatalog?: boolean;
     } = {},
   ) {
     this.apiKey = options.apiKey;
     this.client = options.client;
     this.authConfigIdsFor = options.authConfigIdsFor;
+    this.omitWorkspaceCatalog = options.omitWorkspaceCatalog === true;
     this.directoryCache = options.client ? createToolkitDirectoryCache() : composioToolkitDirectory;
   }
   private readonly catalogSessions = new Map<string, string>();
@@ -523,9 +528,11 @@ export class ComposioConnector implements ComposioProvider {
       this.directory(),
       this.listConnectedSlugs(context.userId),
     ]);
-    return filterCatalog(mergeCatalogWithConnected(directory, connected), query ?? "").map(
-      (item) => ({ ...item, connectorId: "composio" }),
-    );
+    return filterCatalog(mergeCatalogWithConnected(directory, connected), query ?? "")
+      .filter(
+        (item) => !this.omitWorkspaceCatalog || !omitWorkspaceCatalogItem(item.slug, item.name),
+      )
+      .map((item) => ({ ...item, connectorId: "composio" }));
   }
 
   async warmDirectory(): Promise<void> {

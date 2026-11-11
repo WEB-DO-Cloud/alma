@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { runContinueJob } from "@rakazo/adapter-kit";
 import {
+  GoogleWorkspaceConnector,
   lockMcpOAuthMaterial,
   McpOAuthClientRequiredError,
   persistPreparedSecret,
@@ -620,6 +621,17 @@ export function mcpRoutes(ctx: RouterContext) {
         }),
         complete: authed.mcp.oauth.complete.handler(async ({ context, input }) => {
           try {
+            const google = deps.connectors.managed("google");
+            if (google instanceof GoogleWorkspaceConnector) {
+              const finished = await google.finishCallback({
+                state: input.state,
+                code: input.code,
+                spaceId: context.actor.spaceId,
+                userId: context.actor.userId,
+                signal: context.signal ?? new AbortController().signal,
+              });
+              if (finished) return { ok: true as const };
+            }
             const { serverId, revision } = await mcpOAuth.complete({
               ...input,
               spaceId: context.actor.spaceId,
