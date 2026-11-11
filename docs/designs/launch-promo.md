@@ -1,7 +1,7 @@
 # Launch promo
 
-*   **Status:** In review
-*   **Date:** 2026-11-04
+-   **Status:** In review
+-   **Date:** 2026-11-04
 
 ## Overview
 

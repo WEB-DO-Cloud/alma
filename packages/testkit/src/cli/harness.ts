@@ -28,8 +28,10 @@ const agentRuntime = runtimeArg?.slice("--runtime=".length) ?? "scripted";
 if (Number(integration) + Number(e2e) !== 1) {
   throw new Error("Pass exactly one of --integration or --e2e");
 }
-if (!["fake", "e2b", "novita", "daytona", "boat", "boxd"].includes(sandboxProvider)) {
-  throw new Error('Sandbox must be "fake", "e2b", "novita", "daytona", "boat", or "boxd"');
+if (!["fake", "e2b", "novita", "daytona", "boat", "boxd", "instabox"].includes(sandboxProvider)) {
+  throw new Error(
+    'Sandbox must be "fake", "e2b", "novita", "daytona", "boat", "boxd", or "instabox"',
+  );
 }
 if (integration && sandboxProvider !== "fake") {
   throw new Error("Integration tests only support the fake sandbox");
@@ -51,6 +53,9 @@ if (sandboxProvider === "boat" && !process.env.BOAT_API_KEY) {
 }
 if (sandboxProvider === "boxd" && !process.env.BOXD_API_KEY) {
   throw new Error("BOXD_API_KEY is required when --sandbox=boxd");
+}
+if (sandboxProvider === "instabox" && !process.env.INSTABOX_API_KEY) {
+  throw new Error("INSTABOX_API_KEY is required when --sandbox=instabox");
 }
 
 async function main() {
@@ -78,10 +83,10 @@ async function main() {
     process.env.WAKEUP_DRIVER = "memory";
     process.env.SANDBOX_PROVIDER = sandboxProvider;
     process.env.AGENT_RUNTIME = agentRuntime;
-    // The managed model and voice switches default on for a deployment. These
-    // suites still exercise the model and voice screens, so they stay off here.
+    // The managed model defaults on, and a deployment xAI key speaks for every
+    // account. These suites still exercise the model and voice screens, so both stay off.
     process.env.ALMA_MANAGED_MODEL = "0";
-    delete process.env.ALMA_VOICE_PROVIDER;
+    delete process.env.XAI_API_KEY;
     process.env.RAKAZO_LIVE_MODEL_CATALOG = "off";
     if (!integration) {
       process.env.TICKET_BOARD_ENABLED = "true";
@@ -305,7 +310,7 @@ async function main() {
               {
                 id: computer.providerRef!,
                 botId: computer.homeKey,
-                kind: computer.kind as "e2b" | "novita" | "daytona" | "boat" | "boxd",
+                kind: computer.kind as "e2b" | "novita" | "daytona" | "boat" | "boxd" | "instabox",
                 providerRef: computer.providerRef!,
               },
               {
@@ -337,7 +342,8 @@ async function main() {
 type AppHandles = Awaited<ReturnType<typeof createApp>>;
 
 async function managedComputers(handles: AppHandles, runAsSystem: typeof RunAsSystem) {
-  if (!["e2b", "novita", "daytona", "boat", "boxd"].includes(sandboxProvider)) return [];
+  if (!["e2b", "novita", "daytona", "boat", "boxd", "instabox"].includes(sandboxProvider))
+    return [];
   // Outside a tenant or system context the runtime login reads no rows, and nothing is destroyed.
   return runAsSystem("e2e cleanup of real test sandboxes", () =>
     handles.prisma.computer.findMany({

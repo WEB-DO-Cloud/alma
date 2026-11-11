@@ -43,8 +43,10 @@ init_database() {
   pwfile=$(mktemp)
   printf '%s\n' "$PG_OWNER_PASSWORD" > "$pwfile"
   chown postgres "$pwfile"
+  # The image sets no locale, so name one: initdb would otherwise pick SQL_ASCII, which rejects
+  # characters outside ASCII that migrations and user text rely on.
   as_postgres "$PG_BIN/initdb" -D "$PGDATA" -U rakazo --auth=scram-sha-256 --pwfile="$pwfile" \
-    > /dev/null
+    --encoding=UTF8 --locale=C.UTF-8 > /dev/null
   rm -f "$pwfile"
 }
 
@@ -86,9 +88,16 @@ SELECT EXISTS (SELECT 1 FROM "user" WHERE email = :'owner_email' AND "emailVerif
 SQL
 }
 
+background_pids=()
+remember_background() { background_pids+=("$!"); }
+
 shutdown() {
-  kill $(jobs -pr) 2> /dev/null || true
-  wait || true
+  local pid
+  # Kill by the pids this script started. `jobs` is empty in some trap runs, and
+  # `wait` can then sit on a sleeper until the test's stop timeout.
+  for pid in "${background_pids[@]}" $(jobs -pr 2> /dev/null); do
+    kill -KILL "$pid" 2> /dev/null || true
+  done
   stop_database
 }
 trap shutdown EXIT
@@ -103,6 +112,7 @@ gosu node node -e '
   }).listen(Number(process.argv[1]), "0.0.0.0");
 ' "$PORT" &
 waiting=$!
+remember_background
 
 [[ -f "$PGDATA/PG_VERSION" ]] || init_database
 start_database
@@ -132,7 +142,9 @@ if [[ -n $setup_required ]] || ! demo_account_exists; then
 fi
 
 gosu node bash -c 'cd "$1/apps/api" && exec node --enable-source-maps dist/index.js' _ "$ROOT" &
+remember_background
 gosu node bash -c 'cd "$1/apps/worker" && exec node --enable-source-maps dist/index.js' _ "$ROOT" &
+remember_background
 ready=
 for _ in $(seq 1 120); do
   curl -sf -o /dev/null --max-time 2 http://127.0.0.1:3100/ready && { ready=1; break; }
@@ -148,6 +160,7 @@ wait "$waiting" 2> /dev/null || true
     -u PG_APP_PASSWORD gosu node node_modules/.bin/vite preview --host 0.0.0.0 --port "$PORT" \
     --strictPort
 ) &
+remember_background
 log "Ready at https://$HOST"
 wait -n
 exit 1

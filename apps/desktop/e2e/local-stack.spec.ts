@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, realpath, rm, stat, writeFile } from "node:fs/promises";
 import type { RequestListener, Server } from "node:http";
 import { createServer } from "node:http";
@@ -135,6 +136,8 @@ async function launch(mode: FakeDockerMode | "missing") {
   const env: NodeJS.ProcessEnv = { ...process.env, RAKAZO_PERFORMANCE_USER_DATA: userData };
   // A stale RAKAZO_WEB_URL from the developer's shell would bypass setup entirely.
   delete env.RAKAZO_WEB_URL;
+  // A first launch opens Rakazo Cloud; these specs stay offline and start in setup instead.
+  if (!existsSync(path.join(userData, "setup.json"))) env.RAKAZO_FORCE_SETUP = "1";
   return electron.launch({
     args: ["."],
     cwd: path.resolve(import.meta.dirname, ".."),
@@ -260,11 +263,23 @@ test("switching to Existing instance while the stack starts keeps that choice", 
   await expect(setup.getByRole("button", { name: "Continue" })).toBeEnabled();
   await expect(setup.getByRole("button", { name: "Check connection" })).toBeVisible();
 
-  // Main process still finishes the install; setup.json must stay untouched.
+  // Main process still finishes the install; setup.json must stay untouched. Wait for the
+  // stack to be ready, not for a fixed time: a health probe that misses once retries later.
+  // How the window handles readiness after the switch is pinned in setup.test.ts.
   await expect
-    .poll(async () => (await readLog()).some((line) => line.includes(" up -d")), AFTER_PULL)
-    .toBe(true);
-  await new Promise((resolve) => setTimeout(resolve, 2500));
+    .poll(
+      () =>
+        setup.evaluate(async () => {
+          const { stack } = (
+            window as unknown as {
+              rakazoSetup: { stack: { state: () => Promise<{ phase: string } | null> } };
+            }
+          ).rakazoSetup;
+          return (await stack.state())?.phase;
+        }),
+      AFTER_PULL,
+    )
+    .toBe("ready");
   expect(await savedSetup()).toBeNull();
   expect(app.windows()).toHaveLength(1);
 

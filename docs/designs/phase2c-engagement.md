@@ -1,43 +1,43 @@
 # Phase 2C engagement
 
-*   **Status:** Reviewed. Owner decisions below override any earlier sentence they touch, including the review resolutions.
-*   **Date:** 2026-11-07
-*   **Author:** ALMA overlay. Upstream Rakazo files change only where this note names them.
-*   **Do not merge, deploy, or start a store build.** The owner approves each pull request.
+-   **Status:** Reviewed. Owner decisions below override any earlier sentence they touch, including the review resolutions.
+-   **Date:** 2026-11-07
+-   **Author:** ALMA overlay. Upstream Rakazo files change only where this note names them.
+-   **Do not merge, deploy, or start a store build.** The owner approves each pull request.
 
 ## Owner decisions, 2026-11-07
 
 The owner decided these. They are not still open.
 
-*   **Referral reward.** `ALMA_REFERRAL_REWARDS` stays off unless the value is exactly `true`. Exact `true` does not throw and does not stop startup. While it is on, the first successful payment by the referred organization grants one free month to that organization and one free month to the referrer. The grant is `extendByokFreePeriod` for `FREE_MONTH_DAYS` (30) on each organization. It runs once. A second payment does not grant again. Self-referral is refused. The same card fingerprint as the referrer is refused. The same non-public email domain as the referrer is refused. Public mailbox domains (`gmail.com`, `googlemail.com`, `outlook.com`, `hotmail.com`, `live.com`, `icloud.com`, `me.com`, `yahoo.com`, `proton.me`, `protonmail.com`) do not count as the same domain. A referrer receives at most 5 rewards in any 30-day window. While the flag is off, this grant does not run.
-*   **Daily summary channel.** Delivery is the in-app issue and one push. No email. No WhatsApp. The push body stays the fixed summary line.
-*   **Monthly report.** Three views. The signed-in user's own month. That same month broken down by each `work_contexts` row of kind `client` the user can see. An admin total across customers, available only to a verified address in `RAKAZO_ADMIN_EMAILS`, with counts and no message text. The admin view is refused for everyone else.
-*   **Undo window.** The user chooses 0, 10, 30, or 60 seconds. No stored choice means 30. The settings screen is `/app/undo`. An approved draft shows Undo and the remaining seconds in the chat and on the queue. `ALMA_UNDO_DISPATCH` is a second flag, off unless exactly `true`. While it is on, a still-approved draft whose window has elapsed is claimed once and sent through the existing email sender. Cancel or an edit before the claim does not send. An edit clears the approval.
+-   **Referral reward.** `ALMA_REFERRAL_REWARDS` stays off unless the value is exactly `true`. Exact `true` does not throw and does not stop startup. While it is on, the first successful payment by the referred organization grants one free month to that organization and one free month to the referrer. The grant is `extendByokFreePeriod` for `FREE_MONTH_DAYS` (30) on each organization. It runs once. A second payment does not grant again. Self-referral is refused. The same card fingerprint as the referrer is refused. The same non-public email domain as the referrer is refused. Public mailbox domains (`gmail.com`, `googlemail.com`, `outlook.com`, `hotmail.com`, `live.com`, `icloud.com`, `me.com`, `yahoo.com`, `proton.me`, `protonmail.com`) do not count as the same domain. A referrer receives at most 5 rewards in any 30-day window. While the flag is off, this grant does not run.
+-   **Daily summary channel.** Delivery is the in-app issue and one push. No email. No WhatsApp. The push body stays the fixed summary line.
+-   **Monthly report.** Three views. The signed-in user's own month. That same month broken down by each `work_contexts` row of kind `client` the user can see. An admin total across customers, available only to a verified address in `RAKAZO_ADMIN_EMAILS`, with counts and no message text. The admin view is refused for everyone else.
+-   **Undo window.** The user chooses 0, 10, 30, or 60 seconds. No stored choice means 30. The settings screen is `/app/undo`. An approved draft shows Undo and the remaining seconds in the chat and on the queue. `ALMA_UNDO_DISPATCH` is a second flag, off unless exactly `true`. While it is on, a still-approved draft whose window has elapsed is claimed once and sent through the existing email sender. Cancel or an edit before the claim does not send. An edit clears the approval.
 
 ## Review resolutions
 
 A zero-context review read only this note. These sentences override any earlier sentence they touch. They do not add a feature.
 
-*   **Flag off.** `FORBIDDEN` and the `*_disabled` code apply only to RPCs added for that flag. `gateToolCall` and `ExpoPushProvider.deliver` stay as they are today when their flag is off.
-*   **Rewards flag.** The reader is `readReferralRewardsConfig` in `packages/core/src/referral-prompt.ts`. Exact `true` throws `referral rewards are not approved` and never returns enabled. Any other value is off and does not throw. The new function `blockedReferralReward` returns before any provider call. It is the only new reward code. Stripe is not called.
-*   **Existing grants.** With the prompt flag off, `createReferrals` is unchanged. With the prompt flag on and the existing reward switch false, `claim` inserts one `referrals` row and calls neither `grantBalanceCredit` nor `extendByokFreePeriod`. With the prompt flag on and that switch true, today's claim and settle run once, including today's grant. This note does not add a second grant. `paidAt` is set only when today's settle grants or declines. When the prompt flag is on, the reward switch is false, and `recordActivationEvent` writes `payment_completed` for the referred organization, set `paidAt` if it is null and do not grant.
-*   **Activation.** `activatedAt` is set once, on the first `task_completed` whose `organizationId` is the referred organization's id. Another user's event in a different organization does not set it.
-*   **Hold list.** `phase2a_external_hold` applies to `send_email`, to `mirrorMessagingOutbound`, and to a connector tool whose name contains the substring `send`, whose `readOnly` is not true, and whose connector kind is outside the Phase 2A payment set. `send_email` stores channel `email`, recipient `to[0]`, body `text`. `mirrorMessagingOutbound` stores channel `whatsapp` and is not given a draft by this pull request: the mirror returns without sending and without a draft, because it has no recipient argument. A connector hold stores channel `other`, recipient argument `to` when it is a string, otherwise the hold creates no draft. Body is argument `text` when it is a string, otherwise argument `body` when it is a string. Missing recipient or body creates no draft. In every hold case the tool function is not called.
-*   **No sender.** This pull request does not call `claimDraft` and does not add a caller. `dispatchAfter` passing leaves status `approved`. Cancel of `approved` sets `cancelled`. Cancel of `dispatching` returns `phase2a_in_flight`. Cancel of `sent`, `failed`, or `unknown` returns `phase2a_already_sent`. The screen string for that code is `undo.alreadySent`, which names the draft status and does not say the recipient got a message. This slice's own drafts show `undo.notSent` while they are `approved`. The push body for a new approval is `undo.notSent`. Tap opens the queue. No notification action is registered. When notify policy is also on, `decidePush` replaces that body with `notify.needsYou`.
-*   **Notify wins.** When `ALMA_NOTIFY_POLICY` is on, `ExpoPushProvider.deliver` sends only the `decidePush` result. A digest body becomes `notify.updates`. `kind` is kept only when it is `approval_waiting`, `deadline`, `failure`, or `digest`.
-*   **Digest job.** Only the worker runs `scanDigests`, once a minute. It selects subscriptions with `enabled` true. It runs `buildDigest` first. `{ empty: true }` inserts nothing and pushes nothing. Otherwise it inserts, and the worker that loses the unique key does not push or email. Push and email run only after that insert commits. Email stays, because the backlog asks for optional email, default off. Subject is `digest.pushDaily` or `digest.pushWeekly`. The body is the two counts and the two link strings. No retry. A missing provider, a missing `user.email`, or a send error leaves the issue and shows no error.
-*   **Quiet hours.** If either minute is null, or the minutes are equal, quiet hours are off. If start is less than end, a minute matches from start inclusive to end exclusive. If start is greater than end, a minute matches when it is greater than or equal to start or less than end. Channel `in_app` does not call Expo. Channel `push` or `both` calls Expo for urgent pushes, and for routine pushes outside the window. No row means `both`.
-*   **Batch.** At most one row per user with `sentAt` null. A second routine push updates nothing. The row stores `userId` and `kind` `routine` only. Flush claims with `flushingAt` null or older than 5 minutes, sends one `notify.updates` push, sets `sentAt`, and does not delete the row.
-*   **Practice marks.** `report_run_marks` has `userId` and `spaceId` copied from the run. The shared tenant rule applies. The report reads marks for the signed-in user only.
-*   **Seal.** Seal `voice_transcripts.text`, `noteTitle`, and `noteBody`, and `referral_share_texts.body`. Owner column `userId`. Space column `spaceId` on the transcript. The share-text table has no `spaceId`; its policy is `userId` only.
-*   **Transcript row.** Unique `(userId, artifactId)`. Insert the row first. Only the insert winner calls `transcribeVoice`. A second call updates `text` and leaves `status`, `noteTitle`, and `noteBody` as they are.
-*   **Personal context.** The `work_contexts` row in that space with `kind` `personal` and `ownerUserId` equal to the user, oldest `createdAt` if several. No row means no `work_records` insert and no outbound draft. The tool is still not called.
-*   **Schedule zone.** A non-empty valid IANA name on `user.timezone` is used. Null, empty, and any other string use `America/Santo_Domingo`.
-*   **Monday.** The implemented default is on. Open decision 5 is a confirmation before the flag is set in production, not a choice the pull request leaves open.
-*   **One-hand.** The phone queue screen shows the existing Approve, Save, and Cancel actions at 44 points. It adds no command. When send undo is on, the approved-row Cancel label is `undo.button`.
-*   **Hours.** The line shows `count * 5` minutes and `count * 15` minutes, plus `report.hours`. It does not convert to hours.
-*   **Share sentence.** The default is the copy-table value. It does not say that ALMA sends.
-*   **Compose.** The eight names are copied the same way `ALMA_PHASE2A` is copied, including the `x-app-environment` anchor. Grants use role `rakazo_app`.
+-   **Flag off.** `FORBIDDEN` and the `*_disabled` code apply only to RPCs added for that flag. `gateToolCall` and `ExpoPushProvider.deliver` stay as they are today when their flag is off.
+-   **Rewards flag.** The reader is `readReferralRewardsConfig` in `packages/core/src/referral-prompt.ts`. Exact `true` throws `referral rewards are not approved` and never returns enabled. Any other value is off and does not throw. The new function `blockedReferralReward` returns before any provider call. It is the only new reward code. Stripe is not called.
+-   **Existing grants.** With the prompt flag off, `createReferrals` is unchanged. With the prompt flag on and the existing reward switch false, `claim` inserts one `referrals` row and calls neither `grantBalanceCredit` nor `extendByokFreePeriod`. With the prompt flag on and that switch true, today's claim and settle run once, including today's grant. This note does not add a second grant. `paidAt` is set only when today's settle grants or declines. When the prompt flag is on, the reward switch is false, and `recordActivationEvent` writes `payment_completed` for the referred organization, set `paidAt` if it is null and do not grant.
+-   **Activation.** `activatedAt` is set once, on the first `task_completed` whose `organizationId` is the referred organization's id. Another user's event in a different organization does not set it.
+-   **Hold list.** `phase2a_external_hold` applies to `send_email`, to `mirrorMessagingOutbound`, and to a connector tool whose name contains the substring `send`, whose `readOnly` is not true, and whose connector kind is outside the Phase 2A payment set. `send_email` stores channel `email`, recipient `to[0]`, body `text`. `mirrorMessagingOutbound` stores channel `whatsapp` and is not given a draft by this pull request: the mirror returns without sending and without a draft, because it has no recipient argument. A connector hold stores channel `other`, recipient argument `to` when it is a string, otherwise the hold creates no draft. Body is argument `text` when it is a string, otherwise argument `body` when it is a string. Missing recipient or body creates no draft. In every hold case the tool function is not called.
+-   **No sender.** This pull request does not call `claimDraft` and does not add a caller. `dispatchAfter` passing leaves status `approved`. Cancel of `approved` sets `cancelled`. Cancel of `dispatching` returns `phase2a_in_flight`. Cancel of `sent`, `failed`, or `unknown` returns `phase2a_already_sent`. The screen string for that code is `undo.alreadySent`, which names the draft status and does not say the recipient got a message. This slice's own drafts show `undo.notSent` while they are `approved`. The push body for a new approval is `undo.notSent`. Tap opens the queue. No notification action is registered. When notify policy is also on, `decidePush` replaces that body with `notify.needsYou`.
+-   **Notify wins.** When `ALMA_NOTIFY_POLICY` is on, `ExpoPushProvider.deliver` sends only the `decidePush` result. A digest body becomes `notify.updates`. `kind` is kept only when it is `approval_waiting`, `deadline`, `failure`, or `digest`.
+-   **Digest job.** Only the worker runs `scanDigests`, once a minute. It selects subscriptions with `enabled` true. It runs `buildDigest` first. `{ empty: true }` inserts nothing and pushes nothing. Otherwise it inserts, and the worker that loses the unique key does not push or email. Push and email run only after that insert commits. Email stays, because the backlog asks for optional email, default off. Subject is `digest.pushDaily` or `digest.pushWeekly`. The body is the two counts and the two link strings. No retry. A missing provider, a missing `user.email`, or a send error leaves the issue and shows no error.
+-   **Quiet hours.** If either minute is null, or the minutes are equal, quiet hours are off. If start is less than end, a minute matches from start inclusive to end exclusive. If start is greater than end, a minute matches when it is greater than or equal to start or less than end. Channel `in_app` does not call Expo. Channel `push` or `both` calls Expo for urgent pushes, and for routine pushes outside the window. No row means `both`.
+-   **Batch.** At most one row per user with `sentAt` null. A second routine push updates nothing. The row stores `userId` and `kind` `routine` only. Flush claims with `flushingAt` null or older than 5 minutes, sends one `notify.updates` push, sets `sentAt`, and does not delete the row.
+-   **Practice marks.** `report_run_marks` has `userId` and `spaceId` copied from the run. The shared tenant rule applies. The report reads marks for the signed-in user only.
+-   **Seal.** Seal `voice_transcripts.text`, `noteTitle`, and `noteBody`, and `referral_share_texts.body`. Owner column `userId`. Space column `spaceId` on the transcript. The share-text table has no `spaceId`; its policy is `userId` only.
+-   **Transcript row.** Unique `(userId, artifactId)`. Insert the row first. Only the insert winner calls `transcribeVoice`. A second call updates `text` and leaves `status`, `noteTitle`, and `noteBody` as they are.
+-   **Personal context.** The `work_contexts` row in that space with `kind` `personal` and `ownerUserId` equal to the user, oldest `createdAt` if several. No row means no `work_records` insert and no outbound draft. The tool is still not called.
+-   **Schedule zone.** A non-empty valid IANA name on `user.timezone` is used. Null, empty, and any other string use `America/Santo_Domingo`.
+-   **Monday.** The implemented default is on. Open decision 5 is a confirmation before the flag is set in production, not a choice the pull request leaves open.
+-   **One-hand.** The phone queue screen shows the existing Approve, Save, and Cancel actions at 44 points. It adds no command. When send undo is on, the approved-row Cancel label is `undo.button`.
+-   **Hours.** The line shows `count * 5` minutes and `count * 15` minutes, plus `report.hours`. It does not convert to hours.
+-   **Share sentence.** The default is the copy-table value. It does not say that ALMA sends.
+-   **Compose.** The eight names are copied the same way `ALMA_PHASE2A` is copied, including the `x-app-environment` anchor. Grants use role `rakazo_app`.
 
 The feedback backlog lists seven items. This note is the one design for all seven. Each item ships in its own pull request, behind its own flag, default off. ND01 and ND02 stay two flags. They are not one feature.
 
@@ -45,12 +45,12 @@ The feedback backlog lists seven items. This note is the one design for all seve
 
 These alternatives were rejected:
 
-*   A new speech vendor, a Dominican-accent model, or an `es-DO` voice id. The server already transcribes and speaks through the managed voice path. This work does not add a provider, a voice id, or a language code.
-*   A model-written summary of a voice note. A model can add facts that were not in the audio. The note is the transcript, split into a title and a body, and the user edits both before saving.
-*   Calling a mailbox or a calendar to fill the morning summary. This product has no first-party mail store and no first-party calendar store. Sections without a row are omitted.
-*   Attaching the email or messaging sender at the end of the undo window. Phase 2A approves text and does not call a provider. This slice keeps that rule. Turning the undo flag on stops the immediate send. It does not start a new send.
-*   A home-screen shortcut, a biometric module, or a notification action that edits `app.json`, an entitlement, or a version number. Those wait for a store build the owner approves. This slice ships the pure routing and the on-screen controls.
-*   Granting a reward before the new user's first payment, or granting it while `ALMA_REFERRAL_REWARDS` is off.
+-   A new speech vendor, a Dominican-accent model, or an `es-DO` voice id. The server already transcribes and speaks through the managed voice path. This work does not add a provider, a voice id, or a language code.
+-   A model-written summary of a voice note. A model can add facts that were not in the audio. The note is the transcript, split into a title and a body, and the user edits both before saving.
+-   Calling a mailbox or a calendar to fill the morning summary. This product has no first-party mail store and no first-party calendar store. Sections without a row are omitted.
+-   Attaching the email or messaging sender at the end of the undo window. Phase 2A approves text and does not call a provider. This slice keeps that rule. Turning the undo flag on stops the immediate send. It does not start a new send.
+-   A home-screen shortcut, a biometric module, or a notification action that edits `app.json`, an entitlement, or a version number. Those wait for a store build the owner approves. This slice ships the pure routing and the on-screen controls.
+-   Granting a reward before the new user's first payment, or granting it while `ALMA_REFERRAL_REWARDS` is off.
 
 ## Problem
 
@@ -72,26 +72,26 @@ With a flag on, only that flag's behavior changes. Two flags interact only where
 
 ## Non-goals
 
-*   No new paid provider, no new mailbox, no new calendar connector, no new speech vendor.
-*   No provider call after the undo window. No status and no label means sent or delivered. The words "recall", "recalled", and "unsend" do not appear in copy or error text.
-*   No Stripe coupon, no new balance credit, no change to the existing referral grant.
-*   No edit to `apps/mobile/app.json`, `app.config.ts` permission strings, entitlements, `expo.version`, iOS `buildNumber`, or Android `versionCode`.
-*   No merge, no deploy, no store build.
+-   No new paid provider, no new mailbox, no new calendar connector, no new speech vendor.
+-   No provider call after the undo window. No status and no label means sent or delivered. The words "recall", "recalled", and "unsend" do not appear in copy or error text.
+-   No Stripe coupon, no new balance credit, no change to the existing referral grant.
+-   No edit to `apps/mobile/app.json`, `app.config.ts` permission strings, entitlements, `expo.version`, iOS `buildNumber`, or Android `versionCode`.
+-   No merge, no deploy, no store build.
 
 ## Flags
 
 Each reader returns enabled only when the value is exactly `true`. `1`, `yes`, and `TRUE` are off. An empty value is off. Readers do not read each other's names, except `readSendUndoConfig`, which requires Phase 2A as stated in Undo.
 
-| Env | Reader | On `me` | Default |
-| --- | --- | --- | --- |
-| `ALMA_VOICE_NOTES` | `readVoiceNotesConfig` in `packages/core/src/voice-notes.ts` | `voiceNotesEnabled` | off |
-| `ALMA_MOBILE_ACTIONS` | `readMobileActionsConfig` in `packages/core/src/mobile-actions.ts` | `mobileActionsEnabled` | off |
-| `ALMA_DIGEST` | `readDigestConfig` in `packages/core/src/digest.ts` | `digestEnabled` | off |
-| `ALMA_NOTIFY_POLICY` | `readNotifyPolicyConfig` in `packages/core/src/notify-policy.ts` | `notifyPolicyEnabled` | off |
-| `ALMA_SEND_UNDO` | `readSendUndoConfig` in `packages/core/src/send-undo.ts` | `sendUndoEnabled` | off |
-| `ALMA_MONTHLY_REPORT` | `readMonthlyReportConfig` in `packages/core/src/monthly-report.ts` | `monthlyReportEnabled` | off |
-| `ALMA_REFERRAL_PROMPT` | `readReferralPromptConfig` in `packages/core/src/referral-prompt.ts` | `referralPromptEnabled` | off |
-| `ALMA_REFERRAL_REWARDS` | `readReferralRewardsConfig` in the same file | not on `me` | off. Exact `true` is on and does not throw |
+| Env                     | Reader                                                               | On `me`                 | Default                                    |
+| ----------------------- | -------------------------------------------------------------------- | ----------------------- | ------------------------------------------ |
+| `ALMA_VOICE_NOTES`      | `readVoiceNotesConfig` in `packages/core/src/voice-notes.ts`         | `voiceNotesEnabled`     | off                                        |
+| `ALMA_MOBILE_ACTIONS`   | `readMobileActionsConfig` in `packages/core/src/mobile-actions.ts`   | `mobileActionsEnabled`  | off                                        |
+| `ALMA_DIGEST`           | `readDigestConfig` in `packages/core/src/digest.ts`                  | `digestEnabled`         | off                                        |
+| `ALMA_NOTIFY_POLICY`    | `readNotifyPolicyConfig` in `packages/core/src/notify-policy.ts`     | `notifyPolicyEnabled`   | off                                        |
+| `ALMA_SEND_UNDO`        | `readSendUndoConfig` in `packages/core/src/send-undo.ts`             | `sendUndoEnabled`       | off                                        |
+| `ALMA_MONTHLY_REPORT`   | `readMonthlyReportConfig` in `packages/core/src/monthly-report.ts`   | `monthlyReportEnabled`  | off                                        |
+| `ALMA_REFERRAL_PROMPT`  | `readReferralPromptConfig` in `packages/core/src/referral-prompt.ts` | `referralPromptEnabled` | off                                        |
+| `ALMA_REFERRAL_REWARDS` | `readReferralRewardsConfig` in the same file                         | not on `me`             | off. Exact `true` is on and does not throw |
 
 `loadEnv` in `apps/api/src/env.ts` and worker startup in `apps/worker/src/index.ts` (next to `readPhase2aConfig`) call every reader. A throw fails startup before serving.
 
@@ -101,9 +101,9 @@ Each reader returns enabled only when the value is exactly `true`. `1`, `yes`, a
 
 Add the eight names to `x-app-environment` in:
 
-*   `infra/compose/docker-compose.yml`
-*   `infra/compose/docker-compose.images.yml`
-*   `infra/compose/docker-compose.prod.yml`
+-   `infra/compose/docker-compose.yml`
+-   `infra/compose/docker-compose.images.yml`
+-   `infra/compose/docker-compose.prod.yml`
 
 Duplicate them on the api service where `ALMA_PHASE2A` is duplicated. The worker inherits the anchor. Empty values pass the host value through only when it is set. The phone and the web app do not read the env names. They read the `me` booleans.
 
@@ -123,54 +123,54 @@ Push text that this note creates uses the fixed strings in the copy table. A pus
 
 Deep links:
 
-| Target | Web | Phone |
-| --- | --- | --- |
-| Queue | `/app/queue` | the existing queue screen |
-| Thread | `/app` with that thread open | the existing thread route |
-| Report | `/app/report` | the report screen added in the report pull request |
-| Digest | `/app/digest` | the digest screen added in the digest pull request |
+| Target | Web                          | Phone                                              |
+| ------ | ---------------------------- | -------------------------------------------------- |
+| Queue  | `/app/queue`                 | the existing queue screen                          |
+| Thread | `/app` with that thread open | the existing thread route                          |
+| Report | `/app/report`                | the report screen added in the report pull request |
+| Digest | `/app/digest`                | the digest screen added in the digest pull request |
 
 ## Copy
 
 English is the source string. Spanish is the `es` catalog string. No other new sentences.
 
-| Key | English | Spanish |
-| --- | --- | --- |
-| `voice.recording` | Recording | Grabando |
-| `voice.transcribing` | Transcribing | Transcribiendo |
-| `voice.transcript` | Transcript | Transcripción |
-| `voice.play` | Play | Reproducir |
-| `voice.saveNote` | Save note | Guardar nota |
-| `voice.noWords` | No words | Sin palabras |
-| `digest.optIn` | Morning summary | Resumen de la mañana |
-| `digest.weekly` | Monday summary | Resumen del lunes |
-| `digest.email` | Email the summary | Enviar el resumen por correo |
-| `digest.pushDaily` | Morning summary | Resumen de la mañana |
-| `digest.pushWeekly` | Monday summary | Resumen del lunes |
-| `digest.review` | Review drafts | Revisar borradores |
-| `digest.reminders` | Open reminders | Abrir recordatorios |
-| `notify.needsYou` | Needs you | Te necesita |
-| `notify.updates` | Updates | Novedades |
-| `undo.button` | Undo | Deshacer |
-| `undo.notSent` | Not sent | No enviado |
-| `undo.alreadySent` | Already sent. | Ya se envió. |
-| `undo.setting` | Undo send | Deshacer envío |
-| `report.title` | This month | Este mes |
-| `report.noData` | No data | Sin datos |
-| `report.practice` | Practice | Práctica |
-| `report.tasks` | Tasks finished | Tareas terminadas |
-| `report.draftsWritten` | Drafts written | Borradores escritos |
-| `report.draftsApproved` | Drafts approved | Borradores aprobados |
-| `report.emails` | Marked sent | Marcados como enviados |
-| `report.reminders` | Reminders | Recordatorios |
-| `report.meetings` | Meetings | Reuniones |
-| `report.minutes` | {min} to {max} minutes | {min} a {max} minutos |
-| `report.hours` | Each finished task counts as 5 to 15 minutes. | Cada tarea terminada cuenta de 5 a 15 minutos. |
-| `notify.quiet` | Quiet hours | Horas en silencio |
-| `notify.channel` | Alerts | Avisos |
-| `notify.both` | Both | Ambos |
-| `referral.share` | Share ALMA | Compartir ALMA |
-| `referral.defaultText` | I use ALMA for drafts I review on screen. | Uso ALMA para borradores que reviso en pantalla. |
+| Key                     | English                                       | Spanish                                          |
+| ----------------------- | --------------------------------------------- | ------------------------------------------------ |
+| `voice.recording`       | Recording                                     | Grabando                                         |
+| `voice.transcribing`    | Transcribing                                  | Transcribiendo                                   |
+| `voice.transcript`      | Transcript                                    | Transcripción                                    |
+| `voice.play`            | Play                                          | Reproducir                                       |
+| `voice.saveNote`        | Save note                                     | Guardar nota                                     |
+| `voice.noWords`         | No words                                      | Sin palabras                                     |
+| `digest.optIn`          | Morning summary                               | Resumen de la mañana                             |
+| `digest.weekly`         | Monday summary                                | Resumen del lunes                                |
+| `digest.email`          | Email the summary                             | Enviar el resumen por correo                     |
+| `digest.pushDaily`      | Morning summary                               | Resumen de la mañana                             |
+| `digest.pushWeekly`     | Monday summary                                | Resumen del lunes                                |
+| `digest.review`         | Review drafts                                 | Revisar borradores                               |
+| `digest.reminders`      | Open reminders                                | Abrir recordatorios                              |
+| `notify.needsYou`       | Needs you                                     | Te necesita                                      |
+| `notify.updates`        | Updates                                       | Novedades                                        |
+| `undo.button`           | Undo                                          | Deshacer                                         |
+| `undo.notSent`          | Not sent                                      | No enviado                                       |
+| `undo.alreadySent`      | Already sent.                                 | Ya se envió.                                     |
+| `undo.setting`          | Undo send                                     | Deshacer envío                                   |
+| `report.title`          | This month                                    | Este mes                                         |
+| `report.noData`         | No data                                       | Sin datos                                        |
+| `report.practice`       | Practice                                      | Práctica                                         |
+| `report.tasks`          | Tasks finished                                | Tareas terminadas                                |
+| `report.draftsWritten`  | Drafts written                                | Borradores escritos                              |
+| `report.draftsApproved` | Drafts approved                               | Borradores aprobados                             |
+| `report.emails`         | Marked sent                                   | Marcados como enviados                           |
+| `report.reminders`      | Reminders                                     | Recordatorios                                    |
+| `report.meetings`       | Meetings                                      | Reuniones                                        |
+| `report.minutes`        | {min} to {max} minutes                        | {min} a {max} minutos                            |
+| `report.hours`          | Each finished task counts as 5 to 15 minutes. | Cada tarea terminada cuenta de 5 a 15 minutos.   |
+| `notify.quiet`          | Quiet hours                                   | Horas en silencio                                |
+| `notify.channel`        | Alerts                                        | Avisos                                           |
+| `notify.both`           | Both                                          | Ambos                                            |
+| `referral.share`        | Share ALMA                                    | Compartir ALMA                                   |
+| `referral.defaultText`  | I use ALMA for drafts I review on screen.     | Uso ALMA para borradores que reviso en pantalla. |
 
 Push title for every new push is `ALMA`. The visible body is one of `digest.pushDaily`, `digest.pushWeekly`, `notify.needsYou`, `notify.updates`, or `undo.button`.
 
@@ -202,13 +202,13 @@ Seal `text` and `noteBody` in `ENCRYPTED_MODELS` (`packages/db/src/content-encry
 
 ### Tests
 
-*   Flag values other than `true` are off and write nothing.
-*   `splitTranscript` splits the first line and the rest, and caps the title at 80 characters.
-*   An existing attachment transcript is stored and `transcribeVoice` is not called.
-*   A second transcribe of the same artifact updates the row in place.
-*   Edit changes `text`. Save note sets `saved` and, with Phase 2A and a personal context, one `work_records` note. Without Phase 2A, no `work_records` row.
-*   Speak is not requested when `transcribe` is false.
-*   Copy keys match the table. The strings do not name a vendor.
+-   Flag values other than `true` are off and write nothing.
+-   `splitTranscript` splits the first line and the rest, and caps the title at 80 characters.
+-   An existing attachment transcript is stored and `transcribeVoice` is not called.
+-   A second transcribe of the same artifact updates the row in place.
+-   Edit changes `text`. Save note sets `saved` and, with Phase 2A and a personal context, one `work_records` note. Without Phase 2A, no `work_records` row.
+-   Speak is not requested when `transcribe` is false.
+-   Copy keys match the table. The strings do not name a vendor.
 
 ## 2. Mobile quick actions (MO01)
 
@@ -218,12 +218,12 @@ When `mobileActionsEnabled` is off, routes and the queue screen are unchanged.
 
 When it is on, `quickActionTarget` in `packages/core/src/mobile-actions.ts` maps a name to a screen:
 
-| Name | Target | Absent when |
-| --- | --- | --- |
-| `review` | queue | `phase2aEnabled` is false |
-| `camera` | current thread with `capture=camera` | there is no open thread id |
-| `share` | the existing `/share` route | never, while the flag is on |
-| `voice` | current thread with `capture=voice` | `voiceNotesEnabled` is false or there is no open thread id |
+| Name     | Target                               | Absent when                                                |
+| -------- | ------------------------------------ | ---------------------------------------------------------- |
+| `review` | queue                                | `phase2aEnabled` is false                                  |
+| `camera` | current thread with `capture=camera` | there is no open thread id                                 |
+| `share`  | the existing `/share` route          | never, while the flag is on                                |
+| `voice`  | current thread with `capture=voice`  | `voiceNotesEnabled` is false or there is no open thread id |
 
 The thread screen, only when the flag is on, reads `capture`. `camera` calls the existing `launchCameraAsync` path in `apps/mobile/lib/pick-attachments.ts` and attaches the file to that thread. `voice` starts the voice-notes recording control. The param is consumed once. Unknown names return null and open nothing.
 
@@ -235,11 +235,11 @@ This pull request does not register a home-screen shortcut and does not add a no
 
 ### Tests
 
-*   Each name maps as the table says, including the absent cases.
-*   An unknown name is null.
-*   Flag off: `quickActionTarget` is not consulted by the screen tests, and `capture` is ignored.
-*   `lockAvailability` is `unavailable`.
-*   The pull request diff does not change `app.json`, `app.config.ts`, or version fields.
+-   Each name maps as the table says, including the absent cases.
+-   An unknown name is null.
+-   Flag off: `quickActionTarget` is not consulted by the screen tests, and `capture` is ignored.
+-   `lockAvailability` is `unavailable`.
+-   The pull request diff does not change `app.json`, `app.config.ts`, or version fields.
 
 ## 3. Morning and Monday summary (ND01)
 
@@ -255,8 +255,8 @@ A job runs once a minute. It inserts a `digest_issues` row for a subscription wh
 
 Suggestions, at most two, and only from those rows:
 
-*   One or more waiting drafts: `digest.review`, link queue.
-*   One or more reminders: `digest.reminders`, link the first reminder's thread when `threadId` is set, otherwise no link.
+-   One or more waiting drafts: `digest.review`, link queue.
+-   One or more reminders: `digest.reminders`, link the first reminder's thread when `threadId` is set, otherwise no link.
 
 The in-app screen `/app/digest` lists the latest issue's counts and those links. Routine names are loaded when the screen opens. They are not stored on the issue.
 
@@ -274,13 +274,13 @@ Quiet hours are not read here. The notify-policy flag, when on, treats `data.kin
 
 ### Tests
 
-*   Flag off writes nothing.
-*   Null timezone uses `America/Santo_Domingo`. A set timezone is used as given.
-*   An empty input does not insert.
-*   Drafts and reminders produce the two suggestions and no third.
-*   A duplicate insert for the same local day does not create a second issue or a second push.
-*   Email stays unsent when the toggle is off, and when the toggle is on but no provider is configured.
-*   The push body is the fixed string, not a count and not a name.
+-   Flag off writes nothing.
+-   Null timezone uses `America/Santo_Domingo`. A set timezone is used as given.
+-   An empty input does not insert.
+-   Drafts and reminders produce the two suggestions and no third.
+-   A duplicate insert for the same local day does not create a second issue or a second push.
+-   Email stays unsent when the toggle is off, and when the toggle is on but no provider is configured.
+-   The push body is the fixed string, not a count and not a name.
 
 ## 4. Notification policy (ND02)
 
@@ -290,13 +290,13 @@ When the flag is off, `ExpoPushProvider.deliver` in `packages/adapters/src/expo-
 
 When the flag is on, `decidePush` runs before a push is handed to Expo:
 
-*   Urgent kinds are `approval_waiting`, `deadline`, and `failure`. Everything else is routine, including `digest` and run completion.
-*   Visible title is `ALMA`. Urgent body is `notify.needsYou`. Routine body is `notify.updates`.
-*   `data` keeps `spaceId`, `threadId`, `botId`, `draftId`, `issueId`, and `kind` when those keys were present. Every other data key is dropped, including `body`, `title`, `name`, `text`, `email`, and `notificationBody`.
-*   Channel `in_app` sends no push. Channel `push` and channel `both` may push. The default channel when no row exists is `both`.
-*   Quiet hours are optional start and end minutes in the same schedule zone as the digest. A start equal to the end means quiet hours are off. A window that crosses midnight still matches. Routine pushes inside the window are held. Urgent pushes inside the window are sent, redacted.
-*   Held routine pushes become one `notification_batches` row per user. A flush job every 30 minutes sends one push per user who has a held row, body `notify.updates`, then deletes the held rows. Two flushers claim with `UPDATE ... WHERE sentAt IS NULL` and a lease column `flushingAt`. A row claimed by one flusher is not sent twice.
-*   In-app chat alerts are unchanged. This flag does not suppress them and does not add a second inbox.
+-   Urgent kinds are `approval_waiting`, `deadline`, and `failure`. Everything else is routine, including `digest` and run completion.
+-   Visible title is `ALMA`. Urgent body is `notify.needsYou`. Routine body is `notify.updates`.
+-   `data` keeps `spaceId`, `threadId`, `botId`, `draftId`, `issueId`, and `kind` when those keys were present. Every other data key is dropped, including `body`, `title`, `name`, `text`, `email`, and `notificationBody`.
+-   Channel `in_app` sends no push. Channel `push` and channel `both` may push. The default channel when no row exists is `both`.
+-   Quiet hours are optional start and end minutes in the same schedule zone as the digest. A start equal to the end means quiet hours are off. A window that crosses midnight still matches. Routine pushes inside the window are held. Urgent pushes inside the window are sent, redacted.
+-   Held routine pushes become one `notification_batches` row per user. A flush job every 30 minutes sends one push per user who has a held row, body `notify.updates`, then deletes the held rows. Two flushers claim with `UPDATE ... WHERE sentAt IS NULL` and a lease column `flushingAt`. A row claimed by one flusher is not sent twice.
+-   In-app chat alerts are unchanged. This flag does not suppress them and does not add a second inbox.
 
 A deadline is urgent when the caller passes kind `deadline`. This slice does not invent a deadline from a routine. The approval queue, when it notifies, passes `approval_waiting`. Run failure already uses the failure path in `expo-push.ts` and passes `failure`.
 
@@ -308,12 +308,12 @@ A deadline is urgent when the caller passes kind `deadline`. This slice does not
 
 ### Tests
 
-*   Flag off does not call `decidePush`.
-*   A payload that contains a subject and a person name comes out with the fixed body and without those strings in `data`.
-*   Quiet hours hold a routine push and do not hold an urgent push.
-*   A window crossing midnight matches a time after the start and a time before the end.
-*   Channel `in_app` sends no push.
-*   Two flush claims send one push.
+-   Flag off does not call `decidePush`.
+-   A payload that contains a subject and a person name comes out with the fixed body and without those strings in `data`.
+-   Quiet hours hold a routine push and do not hold an urgent push.
+-   A window crossing midnight matches a time after the start and a time before the end.
+-   Channel `in_app` sends no push.
+-   Two flush claims send one push.
 
 ## 5. Undo before send
 
@@ -341,13 +341,13 @@ No new column on `outbound_drafts`.
 
 ### Tests
 
-*   Send undo on without Phase 2A throws at read time.
-*   0, 10, 30, and 60 are accepted. 15 is rejected.
-*   `send_email` with the flag on does not call the mail function. It creates one draft when a personal context exists, and no draft when it does not.
-*   Approve with 30 stores `dispatchAfter` 30 seconds ahead. Approve with 0 stores now.
-*   Cancel before and after `dispatchAfter` sets `cancelled` and does not say recall.
-*   Edit after approve returns the draft to `draft` and clears the hash, the approver, and `dispatchAfter`.
-*   `claimDraft` is not called by the worker or the API in this pull request.
+-   Send undo on without Phase 2A throws at read time.
+-   0, 10, 30, and 60 are accepted. 15 is rejected.
+-   `send_email` with the flag on does not call the mail function. It creates one draft when a personal context exists, and no draft when it does not.
+-   Approve with 30 stores `dispatchAfter` 30 seconds ahead. Approve with 0 stores now.
+-   Cancel before and after `dispatchAfter` sets `cancelled` and does not say recall.
+-   Edit after approve returns the draft to `draft` and clears the hash, the approver, and `dispatchAfter`.
+-   `claimDraft` is not called by the worker or the API in this pull request.
 
 ## 6. Monthly report (RV01)
 
@@ -357,15 +357,15 @@ No new column on `outbound_drafts`.
 
 Counts, each scoped to the signed-in user:
 
-| Line | Source | Empty line |
-| --- | --- | --- |
-| Tasks finished | `runs` with `status` completed, `trigger` `user`, `createdAt` in the month, and no practice mark | `report.noData` |
-| Drafts written | `outbound_drafts` created in the month | `report.noData` |
-| Drafts approved | `outbound_drafts` with `approvedAt` in the month | `report.noData` |
-| Emails | `outbound_drafts` with `channel` `email` and `status` `sent` and `updatedAt` in the month | `report.noData` |
-| Reminders | `runs` with `trigger` `routine` and `status` completed in the month | `report.noData` |
-| Meetings | no source | `report.noData` always |
-| Hours | from tasks finished, using `report.hours` | `report.noData` when tasks are absent |
+| Line            | Source                                                                                           | Empty line                            |
+| --------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------- |
+| Tasks finished  | `runs` with `status` completed, `trigger` `user`, `createdAt` in the month, and no practice mark | `report.noData`                       |
+| Drafts written  | `outbound_drafts` created in the month                                                           | `report.noData`                       |
+| Drafts approved | `outbound_drafts` with `approvedAt` in the month                                                 | `report.noData`                       |
+| Emails          | `outbound_drafts` with `channel` `email` and `status` `sent` and `updatedAt` in the month        | `report.noData`                       |
+| Reminders       | `runs` with `trigger` `routine` and `status` completed in the month                              | `report.noData`                       |
+| Meetings        | no source                                                                                        | `report.noData` always                |
+| Hours           | from tasks finished, using `report.hours`                                                        | `report.noData` when tasks are absent |
 
 A zero count is `report.noData`, not the digit 0. Hours, when tasks exist, are `count * 5` through `count * 15` minutes, shown as those two minute totals. The method sentence `report.hours` is on the page and in the PDF. The sentence is the whole method.
 
@@ -383,12 +383,12 @@ Demo and real are the practice split above. There is no other demo flag.
 
 ### Tests
 
-*   Flag off rejects the RPC and writes nothing.
-*   A month with no rows is "No data" on every line, and hours are "No data".
-*   Three finished tasks render 15 to 45 minutes and the method sentence.
-*   A practice run is excluded from tasks and listed under practice.
-*   A client block appears only when a client context is in the input.
-*   The PDF bytes contain the title and do not contain a count that was "No data" as `0`.
+-   Flag off rejects the RPC and writes nothing.
+-   A month with no rows is "No data" on every line, and hours are "No data".
+-   Three finished tasks render 15 to 45 minutes and the method sentence.
+-   A practice run is excluded from tasks and listed under practice.
+-   A client block appears only when a client context is in the input.
+-   The PDF bytes contain the title and do not contain a count that was "No data" as `0`.
 
 ## 7. Referral prompt (RG01)
 
@@ -398,14 +398,14 @@ The existing `createReferrals` in `apps/api/src/referrals.ts` is unchanged when 
 
 When the prompt flag is on:
 
-*   An organization owner gets a code from the existing `referral_codes` table. `shareLink` creates the code if needed and does not grant a reward. A user who owns no organization gets no link and no prompt.
-*   The link is `{webOrigin}/sign-up?ref={code}`, the same shape `createReferrals.status` already returns.
-*   Signup claim: when the prompt flag is on, `claim` inserts the `referrals` row even if the existing reward `enabled` value is false. It still refuses a self-referral and a claim after `subscribedAt`. It does not call `grantBalanceCredit` or `extendByokFreePeriod`.
-*   When the existing reward `enabled` value is true, claim and settle keep today's grant behavior. This note does not add a second grant. `paidAt` is set when settle decides an outcome other than skipping the row.
-*   `activatedAt` is set once, when `recordActivationEvent` writes `task_completed` for a user in the referred organization. No other event name sets it.
-*   The share sentence defaults to `referral.defaultText`. The owner can edit it, up to 280 characters. It is stored in `referral_share_texts`. The client shows the stored sentence. The server does not send it.
-*   A prompt is allowed when `referralPromptAllowed` is true. Inputs: the latest result was `success`, the user owns an organization, prompts recorded for that user in the last 7 days by the clock are fewer than 3, and the win is verified. A verified win is `task_completed` for that user, or an `outbound_drafts` row that user approved, in the last 24 hours. A result of `error`, a failed run, or a missing win returns false and records nothing.
-*   The client shows `referral.share` and the sentence only when the RPC returns allowed. The share action is the device share sheet or copy. There is no server send.
+-   An organization owner gets a code from the existing `referral_codes` table. `shareLink` creates the code if needed and does not grant a reward. A user who owns no organization gets no link and no prompt.
+-   The link is `{webOrigin}/sign-up?ref={code}`, the same shape `createReferrals.status` already returns.
+-   Signup claim: when the prompt flag is on, `claim` inserts the `referrals` row even if the existing reward `enabled` value is false. It still refuses a self-referral and a claim after `subscribedAt`. It does not call `grantBalanceCredit` or `extendByokFreePeriod`.
+-   When the existing reward `enabled` value is true, claim and settle keep today's grant behavior. This note does not add a second grant. `paidAt` is set when settle decides an outcome other than skipping the row.
+-   `activatedAt` is set once, when `recordActivationEvent` writes `task_completed` for a user in the referred organization. No other event name sets it.
+-   The share sentence defaults to `referral.defaultText`. The owner can edit it, up to 280 characters. It is stored in `referral_share_texts`. The client shows the stored sentence. The server does not send it.
+-   A prompt is allowed when `referralPromptAllowed` is true. Inputs: the latest result was `success`, the user owns an organization, prompts recorded for that user in the last 7 days by the clock are fewer than 3, and the win is verified. A verified win is `task_completed` for that user, or an `outbound_drafts` row that user approved, in the last 24 hours. A result of `error`, a failed run, or a missing win returns false and records nothing.
+-   The client shows `referral.share` and the sentence only when the RPC returns allowed. The share action is the device share sheet or copy. There is no server send.
 
 `ALMA_REFERRAL_REWARDS` grants the free month in the owner decision only when it is exactly `true`. It does not throw.
 
@@ -419,36 +419,36 @@ Add nullable `activatedAt` and `paidAt` on `referrals`. Existing rows stay null.
 
 ### Tests
 
-*   Flag off: `createReferrals` tests that already pass still pass, and the new claim path is not used.
-*   Prompt flag on and reward `enabled` false: claim inserts a row and does not call `grantBalanceCredit` or `extendByokFreePeriod`.
-*   A fourth prompt in seven days is refused. An error result records nothing.
-*   `ALMA_REFERRAL_REWARDS=true` does not throw. The grant runs only after the first successful payment and the anti-abuse checks.
-*   The default sentence matches the copy table. The server has no send function for it.
+-   Flag off: `createReferrals` tests that already pass still pass, and the new claim path is not used.
+-   Prompt flag on and reward `enabled` false: claim inserts a row and does not call `grantBalanceCredit` or `extendByokFreePeriod`.
+-   A fourth prompt in seven days is refused. An error result records nothing.
+-   `ALMA_REFERRAL_REWARDS=true` does not throw. The grant runs only after the first successful payment and the anti-abuse checks.
+-   The default sentence matches the copy table. The server has no send function for it.
 
 ## Pull requests
 
 Each branch starts from `main`. Each is one item. Do not merge.
 
-| PR | Branch | Flag |
-| --- | --- | --- |
-| Design | `cursor/phase2c-engagement-design-9daa` | none |
-| Voice notes | `cursor/phase2c-voice-notes-9daa` | `ALMA_VOICE_NOTES` |
-| Mobile actions | `cursor/phase2c-mobile-actions-9daa` | `ALMA_MOBILE_ACTIONS` |
-| Digest | `cursor/phase2c-digest-9daa` | `ALMA_DIGEST` |
-| Notify policy | `cursor/phase2c-notify-policy-9daa` | `ALMA_NOTIFY_POLICY` |
-| Undo | `cursor/phase2c-send-undo-9daa` | `ALMA_SEND_UNDO` |
-| Monthly report | `cursor/phase2c-monthly-report-9daa` | `ALMA_MONTHLY_REPORT` |
-| Referral prompt | `cursor/phase2c-referral-prompt-9daa` | `ALMA_REFERRAL_PROMPT` |
+| PR              | Branch                                  | Flag                   |
+| --------------- | --------------------------------------- | ---------------------- |
+| Design          | `cursor/phase2c-engagement-design-9daa` | none                   |
+| Voice notes     | `cursor/phase2c-voice-notes-9daa`       | `ALMA_VOICE_NOTES`     |
+| Mobile actions  | `cursor/phase2c-mobile-actions-9daa`    | `ALMA_MOBILE_ACTIONS`  |
+| Digest          | `cursor/phase2c-digest-9daa`            | `ALMA_DIGEST`          |
+| Notify policy   | `cursor/phase2c-notify-policy-9daa`     | `ALMA_NOTIFY_POLICY`   |
+| Undo            | `cursor/phase2c-send-undo-9daa`         | `ALMA_SEND_UNDO`       |
+| Monthly report  | `cursor/phase2c-monthly-report-9daa`    | `ALMA_MONTHLY_REPORT`  |
+| Referral prompt | `cursor/phase2c-referral-prompt-9daa`   | `ALMA_REFERRAL_PROMPT` |
 
 Migrations sort after `20261202120400`:
 
-*   `20261208120000_voice_notes`
-*   `20261208120100_mobile_actions` is not created. That item has no table.
-*   `20261208120200_digest`
-*   `20261208120300_notify_policy`
-*   `20261208120400_send_undo`
-*   `20261208120500_monthly_report`
-*   `20261208120600_referral_prompt`
+-   `20261208120000_voice_notes`
+-   `20261208120100_mobile_actions` is not created. That item has no table.
+-   `20261208120200_digest`
+-   `20261208120300_notify_policy`
+-   `20261208120400_send_undo`
+-   `20261208120500_monthly_report`
+-   `20261208120600_referral_prompt`
 
 ## Open decisions
 

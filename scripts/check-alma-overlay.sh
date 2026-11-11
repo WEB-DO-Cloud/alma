@@ -165,6 +165,7 @@ globs=(
   'apps/web/src/locales/'
   'apps/web/scripts/translations-'
   'apps/mobile/lib/locales/'
+  'packages/i18n/locales/'
   'pnpm-lock.yaml'
   'docs/designs/alma-upstream-sync-2026-11.md'
   'docs/designs/reviews/2026-11-02-alma-upstream-sync.md'

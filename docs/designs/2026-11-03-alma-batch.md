@@ -17,10 +17,10 @@ Do not `git reset`, `git merge --abort`, or check out the branch name before the
 
 After the worktree matches upstream, put the overlay back:
 
-*   A path upstream did not change since `e28f4d4e` is copied from the ALMA parent.
-*   A path only ALMA has is copied from the ALMA parent.
-*   A path both sides changed is a three-way merge. Keep upstream behavior and re-apply the ALMA rule that file already carried.
-*   `scripts/sync-integrations-catalog.py` refreshes the marketing catalog onto `alma.com.do`. Logos stay self-hosted.
+-   A path upstream did not change since `e28f4d4e` is copied from the ALMA parent.
+-   A path only ALMA has is copied from the ALMA parent.
+-   A path both sides changed is a three-way merge. Keep upstream behavior and re-apply the ALMA rule that file already carried.
+-   `scripts/sync-integrations-catalog.py` refreshes the marketing catalog onto `alma.com.do`. Logos stay self-hosted.
 
 Call controls from upstream `#2853` stay on every signed-in page. The Call button keeps using the existing Grok Voice path (`ALMA_VOICE_PROVIDER=xai`). Do not add a second speak button. Hold to talk stays.
 
@@ -38,8 +38,8 @@ New account email copy upstream added is ALMA, not Rakazo. Spanish (`packages/au
 
 `alma.com.do` is WordPress and does not serve the markdown docs. The API serves them on the app origin:
 
-*   `GET /docs` HTML index, Spanish first, then English.
-*   `GET /docs.md` and `GET /docs/<name>.md` markdown.
+-   `GET /docs` HTML index, Spanish first, then English.
+-   `GET /docs.md` and `GET /docs/<name>.md` markdown.
 
 Pages are the existing `docs/*.md` set minus every `self-host*` page. Copy is ALMA. No Rakazo host, no self-host guide. The help skill in `packages/adapters/src/builtin-skills.ts` uses `https://app.alma.com.do/docs.md` and `https://app.alma.com.do/docs/<name>.md`. The sidebar Docs link in `SidebarFooter.tsx` is `https://app.alma.com.do/docs`.
 

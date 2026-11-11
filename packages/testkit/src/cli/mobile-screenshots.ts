@@ -338,6 +338,7 @@ export function configureEnvironment() {
     SANDBOX_PROVIDER: "fake",
     AGENT_RUNTIME: "scripted",
     ALMA_MANAGED_MODEL: "0",
+    XAI_API_KEY: "",
     COMPOSIO_API_KEY: "",
     BETTER_AUTH_SECRET: "mobile-screenshot-auth-secret-32chars",
     ENCRYPTION_KEY: "mobile-screenshot-encryption-key-32chars",
@@ -354,7 +355,6 @@ export function configureEnvironment() {
     PHONE_CALLS_ENABLED: "true",
     CI: "1",
   });
-  delete process.env.ALMA_VOICE_PROVIDER;
 }
 
 async function seedFixture(app: App, prisma: PrismaClient) {

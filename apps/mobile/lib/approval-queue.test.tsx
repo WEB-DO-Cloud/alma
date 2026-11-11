@@ -13,7 +13,6 @@ vi.mock("react-native", () => ({
   Pressable: ({ children, onPress }: { children?: ReactNode; onPress?: () => void }) =>
     createElement("button", { type: "button", onClick: onPress }, children),
 }));
-vi.mock("./i18n", () => ({ useI18n: () => ({ t: (id: string) => id }) }));
 
 import { ApprovalQueue, showApprovalQueue } from "./approval-queue";
 
