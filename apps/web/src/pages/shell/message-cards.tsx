@@ -156,6 +156,19 @@ export function AppConnectCard({
   const status = block.status === "connected" ? "connected" : localStatus;
   useEffect(() => () => connectionAttempt.current?.abort(), []);
 
+  async function chooseFile() {
+    setBusy(true);
+    setError(null);
+    try {
+      const started = await rpc.connections.drivePicker();
+      window.open(started.url, "rakazo-drive-picker", "popup,width=960,height=720,noopener");
+    } catch (caught) {
+      setError(errorText(caught, "No se pudo abrir el selector. Could not open the file chooser."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function authorize() {
     connectionAttempt.current?.abort();
     const controller = new AbortController();
@@ -196,12 +209,16 @@ export function AppConnectCard({
       }
     }
   }
+  const notice = status === "pending" ? block.notice : undefined;
   return (
     <BuiCard
       role="group"
       aria-label={t`${block.name} connection`}
       className="w-full max-w-[440px] px-4 py-3.5"
     >
+      {notice ? (
+        <p className="mb-3 whitespace-pre-line text-body-sm text-muted-foreground">{notice}</p>
+      ) : null}
       <div className="flex items-center gap-3.5">
         {block.logo ? (
           <img
@@ -228,6 +245,16 @@ export function AppConnectCard({
           </Button>
         )}
       </div>
+      {status === "connected" && block.filePicker ? (
+        <Button
+          className="mt-3"
+          aria-label="Elegir archivo. Choose a file."
+          disabled={busy}
+          onClick={() => void chooseFile()}
+        >
+          Elegir archivo
+        </Button>
+      ) : null}
       {error ? <p className="mt-2 text-label text-destructive">{error}</p> : null}
     </BuiCard>
   );

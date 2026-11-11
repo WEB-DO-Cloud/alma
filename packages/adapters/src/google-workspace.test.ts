@@ -4,10 +4,17 @@ import type { PrismaClient } from "@rakazo/db";
 import { describe, expect, it } from "vitest";
 import { ComposioConnector } from "./composio-connector.js";
 import { FakeComposioClient } from "./composio-fake.js";
+import { GOOGLE_SCOPES, readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import {
+  GOOGLE_RECONNECT_MESSAGE,
+  GOOGLE_TOOL_HIDDEN_MESSAGE,
   GoogleWorkspaceConnector,
+  googleAppNotice,
+  googleAppScopes,
   googleWorkspaceClient,
+  grantUsable,
   isWorkspacePreviewHost,
+  toolVisible,
   WORKSPACE_PREVIEW_MESSAGE,
 } from "./google-workspace.js";
 import { EncryptedSecretStore } from "./secrets.js";
@@ -246,7 +253,7 @@ describe("Google Workspace REST", () => {
       store.db,
       new EncryptedSecretStore("test-only-encryption-key"),
       { clientId: CLIENT_ID, clientSecret: SECRET, webOrigin: "https://app.alma.com.do" },
-      fetchImpl,
+      { fetchImpl, mode: "restricted", signingKey: "test-only-encryption-key" },
     );
     const actor = context();
     const started = await connector.begin(
@@ -254,6 +261,8 @@ describe("Google Workspace REST", () => {
       actor,
     );
     expect(started.authorizationUrl).toContain("https://accounts.google.com/o/oauth2/v2/auth");
+    const granted = new URL(started.authorizationUrl!).searchParams.get("scope");
+    expect(granted?.split(" ").sort()).toEqual([...googleAppScopes("restricted", "gmail")].sort());
     expect(started.authorizationUrl).toContain(
       "redirect_uri=https%3A%2F%2Fapp.alma.com.do%2Fmcp%2Foauth%2Fcallback",
     );
@@ -327,6 +336,225 @@ describe("Google Workspace REST", () => {
       body: "Hello",
     });
     expect(WORKSPACE_PREVIEW_MESSAGE).toBe("This Google app connects from the card in the chat.");
+  });
+});
+
+describe("scope mode", () => {
+  it("is limited unless the value is exactly restricted", () => {
+    expect(readGoogleScopeMode({})).toBe("limited");
+    expect(readGoogleScopeMode({ ALMA_GOOGLE_SCOPE_MODE: "limited" })).toBe("limited");
+    expect(readGoogleScopeMode({ ALMA_GOOGLE_SCOPE_MODE: "yes" })).toBe("limited");
+    expect(readGoogleScopeMode({ ALMA_GOOGLE_SCOPE_MODE: " restricted " })).toBe("restricted");
+    expect(googleAppScopes("limited", "gmail")).toEqual([GOOGLE_SCOPES.gmailSend]);
+    expect(googleAppScopes("restricted", "gmail")).toEqual([
+      GOOGLE_SCOPES.gmailReadonly,
+      GOOGLE_SCOPES.gmailCompose,
+    ]);
+    expect(googleAppScopes("limited", "googledrive")).toEqual([GOOGLE_SCOPES.driveFile]);
+    expect(googleAppScopes("restricted", "googledrive")).toEqual([GOOGLE_SCOPES.driveReadonly]);
+    expect(googleAppScopes("limited", "googlecalendar")).toEqual(
+      googleAppScopes("restricted", "googlecalendar"),
+    );
+    for (const name of [
+      "gmail_list_labels",
+      "gmail_search_threads",
+      "gmail_read_thread",
+      "gmail_create_draft",
+      "drive_search_files",
+    ]) {
+      expect(toolVisible("limited", name)).toBe(false);
+      expect(toolVisible("restricted", name)).toBe(true);
+    }
+    expect(toolVisible("limited", "gmail_send")).toBe(true);
+    expect(toolVisible("limited", "drive_read_file")).toBe(true);
+    expect(toolVisible("restricted", "drive_read_file")).toBe(false);
+    expect(grantUsable("limited", "googlecalendar", undefined)).toBe(true);
+    expect(grantUsable("limited", "gmail", undefined)).toBe(false);
+    expect(grantUsable("limited", "googledrive", undefined)).toBe(false);
+    expect(grantUsable("restricted", "gmail", undefined)).toBe(true);
+    expect(readGooglePickerEnv({})).toBeNull();
+    expect(() =>
+      readGooglePickerEnv({ ALMA_GOOGLE_PICKER_API_KEY: "AIzaSyExampleKeyExampleKey12" }),
+    ).toThrow("ALMA_GOOGLE_PICKER_APP_ID");
+  });
+
+  it("hides mailbox and Drive search tools, and asks for a new sign-in", async () => {
+    const store = memory();
+    const calls: string[] = [];
+    const fetchImpl: typeof fetch = async (input) => {
+      const url = String(input);
+      calls.push(url);
+      if (url === "https://oauth2.googleapis.com/token") {
+        return json({
+          access_token: "access-old",
+          refresh_token: "refresh-old",
+          expires_in: 3600,
+          scope: `${GOOGLE_SCOPES.gmailReadonly} ${GOOGLE_SCOPES.gmailCompose}`,
+        });
+      }
+      return json({}, 404);
+    };
+    const secrets = new EncryptedSecretStore("test-only-encryption-key");
+    const client = {
+      clientId: CLIENT_ID,
+      clientSecret: SECRET,
+      webOrigin: "https://app.alma.com.do",
+    };
+    const restricted = new GoogleWorkspaceConnector(store.db, secrets, client, {
+      fetchImpl,
+      mode: "restricted",
+      signingKey: "test-only-encryption-key",
+    });
+    const actor = context();
+    const started = await restricted.begin(
+      { provider: "gmail", redirectUrl: "https://ignored" },
+      actor,
+    );
+    store.addConnection("gmail", started.state);
+    await restricted.finishCallback({ ...actor, state: started.state, code: "code-old" });
+    const limited = new GoogleWorkspaceConnector(store.db, secrets, client, {
+      fetchImpl,
+      mode: "limited",
+      signingKey: "test-only-encryption-key",
+    });
+    expect(await limited.connectionReady(actor, "gmail")).toBe(false);
+    expect((await limited.discoverTools(actor)).map((tool) => tool.name)).not.toContain(
+      "gmail_list_labels",
+    );
+    expect(await limited.listReconnectRefs(actor)).toContain(started.state);
+    const before = calls.length;
+    const events = [];
+    for await (const event of limited.execute(
+      {
+        tool: "gmail_search_threads",
+        args: { q: "in:inbox" },
+        executionId: "exec-hidden",
+        route: { connectorId: "google", toolName: "gmail_search_threads" },
+      },
+      actor,
+    )) {
+      events.push(event);
+    }
+    expect(events).toEqual([{ type: "error", message: GOOGLE_TOOL_HIDDEN_MESSAGE }]);
+    expect(calls).toHaveLength(before);
+    const catalog = await limited.catalog(actor);
+    const gmail = catalog.find((item) => item.slug === "gmail");
+    expect(gmail?.connected).toBe(false);
+    expect(gmail?.notice).toContain("No lee tu bandeja");
+    expect(gmail?.notice).toContain("Limited Use");
+    expect(gmail?.notice).toContain("not used to train models");
+    expect(googleAppNotice("limited", "googledrive")).toContain("No busca el resto de tu Drive");
+  });
+
+  it("reads only a file the person picked", async () => {
+    const store = memory();
+    const calls: string[] = [];
+    const fetchImpl: typeof fetch = async (input) => {
+      const url = String(input);
+      calls.push(url);
+      if (url === "https://oauth2.googleapis.com/token") {
+        return json({
+          access_token: "access-drive",
+          refresh_token: "refresh-drive",
+          expires_in: 3600,
+          scope: GOOGLE_SCOPES.driveFile,
+        });
+      }
+      if (url.includes("alt=media")) return new Response("hello from the file", { status: 200 });
+      if (url.startsWith("https://www.googleapis.com/drive/v3/files/picked-file-1")) {
+        return json({ id: "picked-file-1", name: "Notes", mimeType: "text/plain" });
+      }
+      return json({}, 404);
+    };
+    const connector = new GoogleWorkspaceConnector(
+      store.db,
+      new EncryptedSecretStore("test-only-encryption-key"),
+      { clientId: CLIENT_ID, clientSecret: SECRET, webOrigin: "https://app.alma.com.do" },
+      {
+        fetchImpl,
+        mode: "limited",
+        picker: { apiKey: "AIzaSyExampleKeyExampleKey1234", appId: "123456789012" },
+        signingKey: "test-only-encryption-key",
+      },
+    );
+    const actor = context();
+    const started = await connector.begin(
+      { provider: "googledrive", redirectUrl: "https://x" },
+      actor,
+    );
+    expect(new URL(started.authorizationUrl!).searchParams.get("scope")).toBe(
+      GOOGLE_SCOPES.driveFile,
+    );
+    store.addConnection("googledrive", started.state);
+    await connector.finishCallback({ ...actor, state: started.state, code: "code-drive" });
+    const names = (await connector.discoverTools(actor)).map((tool) => tool.name);
+    expect(names).toEqual(["drive_list_picked", "drive_read_file"]);
+    const page = await connector.pickerPageUrl(actor);
+    expect(page).toContain("https://app.alma.com.do/drive-picker.html#");
+    const ticket = page!.slice(page!.indexOf("#") + 1);
+    expect(await connector.pickerSession(ticket, actor.signal)).toMatchObject({
+      apiKey: "AIzaSyExampleKeyExampleKey1234",
+      appId: "123456789012",
+      accessToken: "access-drive",
+    });
+    expect(
+      await connector.recordPickedFiles(
+        ticket,
+        [{ id: "picked-file-1", name: "Notes", mimeType: "text/plain" }],
+        actor.signal,
+      ),
+    ).toBe(true);
+    expect(await result(connector, "drive_list_picked", {})).toEqual({
+      files: [{ id: "picked-file-1", name: "Notes", mimeType: "text/plain" }],
+    });
+    const before = calls.length;
+    const events = [];
+    for await (const event of connector.execute(
+      {
+        tool: "drive_read_file",
+        args: { fileId: "other-file-99" },
+        executionId: "exec-miss",
+        route: { connectorId: "google", toolName: "drive_read_file" },
+      },
+      actor,
+    )) {
+      events.push(event);
+    }
+    expect(events).toEqual([{ type: "error", message: "Choose that file first." }]);
+    expect(calls).toHaveLength(before);
+    expect(await result(connector, "drive_read_file", { fileId: "picked-file-1" })).toMatchObject({
+      id: "picked-file-1",
+      text: "hello from the file",
+    });
+    expect(calls.some((url) => url.includes("/files?"))).toBe(false);
+    expect(calls.some((url) => url.includes("picked-file-1"))).toBe(true);
+    const wide = await connector.begin({ provider: "gmail", redirectUrl: "https://x" }, actor);
+    calls.length = 0;
+    const wideFetch: typeof fetch = async (input) => {
+      calls.push(String(input));
+      return json({
+        access_token: "access-wide",
+        refresh_token: "refresh-wide",
+        expires_in: 3600,
+        scope: `${GOOGLE_SCOPES.gmailSend} ${GOOGLE_SCOPES.gmailReadonly}`,
+      });
+    };
+    const refusing = new GoogleWorkspaceConnector(
+      store.db,
+      new EncryptedSecretStore("test-only-encryption-key"),
+      { clientId: CLIENT_ID, clientSecret: SECRET, webOrigin: "https://app.alma.com.do" },
+      { fetchImpl: wideFetch, mode: "limited", signingKey: "test-only-encryption-key" },
+    );
+    await expect(
+      refusing.finishCallback({ ...actor, state: wide.state, code: "code-wide" }),
+    ).rejects.toThrow("Google did not grant the requested access.");
+    expect(calls.some((url) => url.includes("gmail.googleapis.com"))).toBe(false);
+  });
+
+  it("keeps the reconnect message stable", () => {
+    expect(GOOGLE_RECONNECT_MESSAGE).toBe(
+      "Connect this Google app again from the card in the chat.",
+    );
   });
 });
 

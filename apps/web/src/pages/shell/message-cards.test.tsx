@@ -7,6 +7,7 @@ import { afterEach, expect, it, vi } from "vitest";
 const calls = vi.hoisted(() => ({
   begin: vi.fn(async () => ({ connectionId: "connection", authorizationUrl: null })),
   complete: vi.fn(async () => ({ status: "connected" })),
+  drivePicker: vi.fn(async () => ({ url: "https://app.example.test/drive-picker.html#ticket" })),
   mark: vi.fn(async () => ({ ok: true })),
   oauthBegin: vi.fn(async () => ({
     status: "authorization_required" as const,
@@ -16,7 +17,7 @@ const calls = vi.hoisted(() => ({
 }));
 vi.mock("../../lib/rpc", () => ({
   rpc: {
-    connections: { begin: calls.begin, complete: calls.complete },
+    connections: { begin: calls.begin, complete: calls.complete, drivePicker: calls.drivePicker },
     onboarding: { appConnected: calls.mark },
     mcp: { oauth: { begin: calls.oauthBegin }, assignments: { approve: calls.approve } },
   },
@@ -137,6 +138,94 @@ it("authorizes a card in a normal chat and marks its thread connected", async ()
     });
     expect(host.textContent).toContain("Connected");
     expect(host.querySelector("button")).toBeNull();
+  } finally {
+    await act(async () => root.unmount());
+    host.remove();
+  }
+});
+
+it("shows the Google notice before Connect and the file chooser only after", async () => {
+  const host = document.createElement("div");
+  document.body.append(host);
+  const root = createRoot(host);
+  const notice =
+    "ALMA solo envía correos que apruebas en el chat. No lee tu bandeja.\n\nLimited Use. not used to train models.";
+  try {
+    await act(async () =>
+      root.render(
+        <AppConnectCard
+          botId="bot"
+          threadId="normal-chat"
+          block={{
+            kind: "app_connect",
+            connectorId: "google",
+            provider: "gmail",
+            name: "Gmail",
+            description: "Send email you approve.",
+            logo: null,
+            status: "pending",
+            notice,
+          }}
+        />,
+      ),
+    );
+    const paragraph = [...host.querySelectorAll("p")].find((node) =>
+      node.textContent?.includes("No lee tu bandeja"),
+    );
+    const button = host.querySelector("button");
+    expect(paragraph).toBeTruthy();
+    expect(button).toBeTruthy();
+    expect(paragraph?.textContent).toContain("Limited Use");
+    if (!paragraph || !button) return;
+    expect(paragraph.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    await act(async () => button?.click());
+    expect(host.textContent).not.toContain("No lee tu bandeja");
+    expect(host.textContent).toContain("Connected");
+  } finally {
+    await act(async () => root.unmount());
+    host.remove();
+  }
+});
+
+it("opens the file chooser after Drive is connected", async () => {
+  const open = vi.spyOn(window, "open").mockReturnValue(null);
+  const host = document.createElement("div");
+  document.body.append(host);
+  const root = createRoot(host);
+  try {
+    await act(async () =>
+      root.render(
+        <AppConnectCard
+          botId="bot"
+          threadId="normal-chat"
+          block={{
+            kind: "app_connect",
+            connectorId: "google",
+            provider: "googledrive",
+            name: "Google Drive",
+            description: "Read files you choose.",
+            logo: null,
+            status: "connected",
+            filePicker: true,
+            notice: "hidden once connected",
+          }}
+        />,
+      ),
+    );
+    expect(host.textContent).not.toContain("hidden once connected");
+    const button = [...host.querySelectorAll("button")].find(
+      (node) => node.textContent === "Elegir archivo",
+    );
+    expect(button?.getAttribute("aria-label")).toBe("Elegir archivo. Choose a file.");
+    await act(async () => button?.click());
+    expect(calls.drivePicker).toHaveBeenCalledOnce();
+    expect(open).toHaveBeenCalledWith(
+      "https://app.example.test/drive-picker.html#ticket",
+      "rakazo-drive-picker",
+      "popup,width=960,height=720,noopener",
+    );
   } finally {
     await act(async () => root.unmount());
     host.remove();

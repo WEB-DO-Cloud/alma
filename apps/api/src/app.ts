@@ -145,6 +145,7 @@ import { configuredEmailProvider } from "./email.js";
 import { mountEmailInboundRoute } from "./email-inbound.js";
 import type { AppEnv } from "./env.js";
 import { loadEnv } from "./env.js";
+import { googleDrivePickerRoutes } from "./google-drive-picker.js";
 import { healthRoutes } from "./health.js";
 import { helpIndexHtml, helpIndexMarkdown, readHelpDoc } from "./help-docs.js";
 import { homeRetentionSweep } from "./home-retention.js";
@@ -874,6 +875,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
     ),
   );
   app.route("/", cspReportRoutes(requestClientIp));
+  if (connectors.google) app.route("/", googleDrivePickerRoutes(connectors.google));
   app.route(
     "/",
     pluginSubmissionRoutes({

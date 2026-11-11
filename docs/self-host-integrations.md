@@ -144,8 +144,13 @@ space or owner mismatch that keeps the server's tools from that bot.
 
 ## Apps and connectors
 
-Plugins use [Composio](https://composio.dev) when `COMPOSIO_API_KEY` is set. `ALMA_GOOGLE_BYO_OAUTH=true` lets an organization owner or admin save that organization's own Google OAuth client, and shows how to mark ALMA's client as Trusted. `ALMA_GOOGLE_OAUTH_CLIENT_ID` is that client ID. Leave both unset and Google sign-in stays as it is. Pipedream is an
-alternative managed connector provider: set `PIPEDREAM_CLIENT_ID`, `PIPEDREAM_CLIENT_SECRET`,
+Plugins use [Composio](https://composio.dev) when `COMPOSIO_API_KEY` is set. `ALMA_GOOGLE_BYO_OAUTH=true` lets an organization owner or admin save that organization's own Google OAuth client, and shows how to mark ALMA's client as Trusted. `ALMA_GOOGLE_OAUTH_CLIENT_ID` is that client ID. Leave both unset and Google sign-in stays as it is.
+
+`ALMA_GOOGLE_SCOPE_MODE` chooses the Google access ALMA requests. Leave it unset, or set `limited`, and Gmail can only send mail the person approves, Calendar is unchanged, and Drive can only read files the person picks. Set `restricted` to request the wider inbox and Drive search access. Any other value is `limited`. The API and the worker both need the same value.
+
+Choosing a Drive file in limited mode needs `ALMA_GOOGLE_PICKER_API_KEY` and `ALMA_GOOGLE_PICKER_APP_ID` together on the API and the worker. The key is a browser API key, not a client secret. Restrict it to the Picker API, and to this site plus `https://docs.google.com/*`. The app id is the Cloud project number. Do not commit either value. Leave both unset and Drive can still be connected, but no file can be chosen. One without the other refuses to start.
+
+Pipedream is an alternative managed connector provider: set `PIPEDREAM_CLIENT_ID`, `PIPEDREAM_CLIENT_SECRET`,
 `PIPEDREAM_PROJECT_ID` and `PIPEDREAM_ENVIRONMENT` (`development` or `production`). Set them on the
 API and worker.
 

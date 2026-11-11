@@ -44,6 +44,7 @@ overlay apps/api/src/computer-status.ts
 overlay apps/api/src/connection-flows.ts
 overlay apps/api/src/env.test.ts
 overlay apps/api/src/env.ts
+overlay apps/api/src/google-drive-picker.ts
 overlay apps/api/src/help-docs.test.ts
 overlay apps/api/src/help-docs.ts
 overlay apps/api/src/marketing-email.test.ts
@@ -67,6 +68,7 @@ overlay apps/api/src/router.test.ts
 overlay apps/api/src/router.ts
 overlay apps/api/src/routes/account.ts
 overlay apps/api/src/routes/bots.ts
+overlay apps/api/src/routes/connections.ts
 overlay apps/api/src/routes/content.ts
 overlay apps/api/src/routes/context.ts
 overlay apps/api/src/routes/digest.ts
@@ -178,6 +180,7 @@ overlay apps/mobile/assets/monochrome-icon.png
 overlay apps/mobile/assets/notification-icon.png
 overlay apps/mobile/assets/splash-icon-android.png
 overlay apps/mobile/assets/splash-icon.png
+overlay apps/mobile/components/AppConnectCard.tsx
 overlay apps/mobile/components/app-mark.tsx
 overlay apps/mobile/components/chat-header-title.tsx
 overlay apps/mobile/components/compatible-endpoint-form.tsx
@@ -344,6 +347,8 @@ overlay apps/web/index.html
 overlay apps/web/public/alma-logo-black.svg
 overlay apps/web/public/alma-logo-white.svg
 overlay apps/web/public/apple-touch-icon.png
+overlay apps/web/public/drive-picker.html
+overlay apps/web/public/drive-picker.js
 overlay apps/web/public/favicon-16x16.png
 overlay apps/web/public/favicon-32x32.png
 overlay apps/web/public/favicon.ico
@@ -430,6 +435,8 @@ overlay apps/web/src/pages/shell/composer-error.tsx
 overlay apps/web/src/pages/shell/composer.tsx
 overlay apps/web/src/pages/shell/create-bot-dialog.test.tsx
 overlay apps/web/src/pages/shell/import-status.ts
+overlay apps/web/src/pages/shell/message-cards.test.tsx
+overlay apps/web/src/pages/shell/message-cards.tsx
 overlay apps/web/src/pages/shell/message-hover-actions.tsx
 overlay apps/web/src/pages/shell/message-view.test.tsx
 overlay apps/web/src/pages/shell/message-view.tsx
@@ -607,6 +614,7 @@ overlay docs/designs/alma-restore-original-ui.md
 overlay docs/designs/deepseek-managed-model.md
 overlay docs/designs/google-workspace-byo-oauth.md
 overlay docs/designs/google-workspace-ga-apis.md
+overlay docs/designs/google-workspace-scope-mode.md
 overlay docs/designs/launch-promo.md
 overlay docs/designs/managed-model-consent.md
 overlay docs/designs/phase1-activation.md
@@ -727,6 +735,7 @@ overlay packages/adapters/src/fleet-tools.ts
 overlay packages/adapters/src/google-oauth-remote.ts
 overlay packages/adapters/src/google-oauth.test.ts
 overlay packages/adapters/src/google-oauth.ts
+overlay packages/adapters/src/google-scope-mode.ts
 overlay packages/adapters/src/google-workspace.test.ts
 overlay packages/adapters/src/google-workspace.ts
 overlay packages/adapters/src/grok-build-runtime.test.ts
@@ -833,6 +842,8 @@ overlay packages/contracts/src/billing.ts
 overlay packages/contracts/src/bot-secrets.ts
 overlay packages/contracts/src/client-build.test.ts
 overlay packages/contracts/src/client-build.ts
+overlay packages/contracts/src/content-security-policy.test.ts
+overlay packages/contracts/src/content-security-policy.ts
 overlay packages/contracts/src/desktop.ts
 overlay packages/contracts/src/domain.ts
 overlay packages/contracts/src/events.ts

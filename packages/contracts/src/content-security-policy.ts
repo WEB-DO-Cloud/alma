@@ -12,6 +12,9 @@ export const HTML_VIEWER_PATH = "/html-viewer.html";
 /** Static shell for MCP app cards; see `MCP_APP_SHELL_HTML` in core. Framed only by the app. */
 export const MCP_APP_VIEWER_PATH = "/mcp-app-viewer.html";
 
+/** Drive file chooser. Its policy allows the picker scripts; the app policy does not. */
+export const DRIVE_PICKER_PATH = "/drive-picker.html";
+
 /** Embedded computer screen and its local runtime assets. */
 export const COMPUTER_SCREEN_PATH = "/computer-screen/screen.html";
 export const COMPUTER_SCREEN_PREFIX = "/computer-screen/";
@@ -135,6 +138,25 @@ export const APP_CONTENT_SECURITY_POLICY = appContentSecurityPolicy();
 // The shell's meta CSP cannot restrict framing; only the app may embed it.
 const HTML_VIEWER_CONTENT_SECURITY_POLICY = serialize({ "frame-ancestors": ["'self'"] });
 
+const DRIVE_PICKER_CONTENT_SECURITY_POLICY = serialize({
+  "default-src": ["'none'"],
+  "script-src": ["'self'", "https://apis.google.com", "https://accounts.google.com"],
+  "frame-src": [
+    "'self'",
+    "https://docs.google.com",
+    "https://drive.google.com",
+    "https://accounts.google.com",
+  ],
+  "style-src": ["'self'", "'unsafe-inline'"],
+  "img-src": ["'self'", "https://*.googleusercontent.com", "data:"],
+  "connect-src": ["'self'", "https://*.googleapis.com"],
+  "font-src": ["'self'", "https://fonts.gstatic.com"],
+  "object-src": ["'none'"],
+  "base-uri": ["'none'"],
+  "form-action": ["'none'"],
+  "frame-ancestors": ["'self'"],
+});
+
 // Proxied responses keep their own headers; the screen proxy sets its own sandbox policy.
 const PASSTHROUGH_PREFIXES = ["/api", "/rpc", "/novnc"];
 
@@ -150,6 +172,7 @@ export function contentSecurityPolicyFor(
     return null;
   if (pathname === HTML_VIEWER_PATH || pathname === MCP_APP_VIEWER_PATH)
     return HTML_VIEWER_CONTENT_SECURITY_POLICY;
+  if (pathname === DRIVE_PICKER_PATH) return DRIVE_PICKER_CONTENT_SECURITY_POLICY;
   // The nested runtime has an opaque ancestor, which cannot match 'self'. Its sandbox
   // policy still prevents access to the app even when visited directly.
   if (screenPolicy && pathname === COMPUTER_SCREEN_RUNTIME_PATH) return screenPolicy.runtime;

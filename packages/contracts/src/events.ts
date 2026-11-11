@@ -205,6 +205,10 @@ export const MessageBlock = z.discriminatedUnion("kind", [
     description: z.string(),
     logo: z.string().nullable(),
     status: z.enum(["pending", "connected"]),
+    /** Shown above Connect while the card is pending. */
+    notice: z.string().max(2000).optional(),
+    /** After connect, the card can open the file chooser. */
+    filePicker: z.boolean().optional(),
   }),
   z.object({
     kind: z.literal("connect"),

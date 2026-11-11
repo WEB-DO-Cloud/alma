@@ -23,6 +23,7 @@ import { createRunExecutor } from "./executor.js";
 import type { ExecutorDeps } from "./executor-deps.js";
 import { ExpoPushProvider } from "./expo-push.js";
 import { deploymentGoogleClientId, googleRunAuthConfigs } from "./google-oauth.js";
+import { readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import { GoogleWorkspaceConnector, googleWorkspaceClient } from "./google-workspace.js";
 import type { RemoteConnectorDependencies } from "./installed-connectors.js";
 import { InstalledConnectorProvider } from "./installed-connectors.js";
@@ -57,6 +58,10 @@ export interface RunRuntimeEnv extends PipedreamEnvironmentValues {
   googleByoOauth?: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client id. */
   googleOAuthClientId?: string;
+  /** Exactly `restricted`, or `limited` for every other value. */
+  googleScopeMode: "limited" | "restricted";
+  /** Browser key and Cloud project number for choosing Drive files. Null when unset. */
+  googlePicker: { apiKey: string; appId: string } | null;
   /** Browser origin. The Google redirect is this origin plus /mcp/oauth/callback. */
   webOrigin?: string;
   cursorApiKey: string | undefined;
@@ -86,6 +91,8 @@ export function runRuntimeEnvFromProcess(source: NodeJS.ProcessEnv): RunRuntimeE
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
+    googleScopeMode: readGoogleScopeMode(source),
+    googlePicker: readGooglePickerEnv(source),
     webOrigin: source.WEB_ORIGIN?.trim() || undefined,
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: deploymentModel.key,
@@ -131,7 +138,13 @@ export function createConnectorRuntime(
     presets: env.mcpOAuthPresets ?? [],
     webOrigin: env.webOrigin,
   });
-  const google = workspace ? new GoogleWorkspaceConnector(prisma, secrets, workspace) : undefined;
+  const google = workspace
+    ? new GoogleWorkspaceConnector(prisma, secrets, workspace, {
+        mode: env.googleScopeMode,
+        picker: env.googlePicker,
+        signingKey: env.encryptionKey,
+      })
+    : undefined;
   const mcpOAuth = new McpOAuthBroker(
     prisma,
     secrets,
@@ -196,7 +209,7 @@ export function createConnectorRuntime(
     ...(overrides.connectors ?? []),
   ]);
   integrationSettings.warmDirectories();
-  return { mcpOAuth, mcp, pipedream, installed, integrationSettings, stack };
+  return { mcpOAuth, mcp, pipedream, installed, integrationSettings, stack, google };
 }
 
 export type ConnectorRuntime = ReturnType<typeof createConnectorRuntime>;

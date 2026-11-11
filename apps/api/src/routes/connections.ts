@@ -1,5 +1,6 @@
+import { ORPCError } from "@orpc/server";
 import type { ConnectorCatalogItem } from "@rakazo/adapter-kit";
-import { planLiveConnectionSync } from "@rakazo/adapters";
+import { GoogleWorkspaceConnector, planLiveConnectionSync } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
 import type { Prisma, PrismaClient } from "@rakazo/db";
 import { IsolationError, recordSecurityEvent } from "@rakazo/db";
@@ -182,6 +183,18 @@ export function connectionsRoutes(ctx: RouterContext) {
       revoke: authed.connections.revoke.handler(({ context, input }) =>
         revokeConnection(deps, context, input),
       ),
+      drivePicker: authed.connections.drivePicker.handler(async ({ context }) => {
+        const connector = deps.connectors.managed("google");
+        if (!(connector instanceof GoogleWorkspaceConnector)) {
+          throw new ORPCError("BAD_REQUEST", { message: "Choose a file is not available." });
+        }
+        const url = await connector.pickerPageUrl(
+          connectionContext(context.actor, "connections.drivePicker", context.signal),
+        );
+        if (!url)
+          throw new ORPCError("BAD_REQUEST", { message: "Choose a file is not available." });
+        return { url };
+      }),
       tools: authed.connections.tools.handler(async ({ context, input }) => {
         const connector = deps.connectors.managed(input.connectorId);
         if (!connector) return [];

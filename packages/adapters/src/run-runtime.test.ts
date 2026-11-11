@@ -1,6 +1,8 @@
 import { phoneCallSettings, resolveEncryptionKey, uploadSizeFromEnv } from "@rakazo/core";
 import { describe, expect, it } from "vitest";
 import { resolveDeploymentModel } from "./deployment-model.js";
+import { deploymentGoogleClientId } from "./google-oauth.js";
+import { readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import { mcpStdioOptionsFromEnv } from "./mcp-connector.js";
 import { parseMcpOAuthPresetClients } from "./mcp-oauth-presets.js";
 import { runRuntimeEnvFromProcess } from "./run-runtime.js";
@@ -13,6 +15,10 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
+    googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
+    googleScopeMode: readGoogleScopeMode(source),
+    googlePicker: readGooglePickerEnv(source),
+    webOrigin: source.WEB_ORIGIN?.trim() || undefined,
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: key,
     deploymentModelConfigured: configured,

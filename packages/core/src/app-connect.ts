@@ -59,13 +59,16 @@ export function matchConnectedAppCatalog(catalog: ConnectionCatalogItem[], app: 
 }
 
 export function appConnectCard(entry: ConnectionCatalogItem): AppConnectBlock {
-  const description =
-    itemMatchesMailTarget(entry, "gmail") || itemMatchesMailTarget(entry, "outlook")
+  const summary = entry.summary?.trim();
+  const description = summary
+    ? summary
+    : itemMatchesMailTarget(entry, "gmail") || itemMatchesMailTarget(entry, "outlook")
       ? "Search, read, draft, and send email."
       : (Object.entries(APP_DESCRIPTIONS).find(
           ([slug]) =>
             entry.slug.toLowerCase() === slug || featuredConnectorProvidersMatch(entry.slug, slug),
         )?.[1] ?? "");
+  const notice = entry.notice?.trim();
   return {
     kind: "app_connect",
     connectorId: entry.connectorId,
@@ -74,6 +77,8 @@ export function appConnectCard(entry: ConnectionCatalogItem): AppConnectBlock {
     description,
     logo: entry.logo ?? null,
     status: entry.connected ? "connected" : "pending",
+    ...(notice ? { notice } : {}),
+    ...(entry.filePicker ? { filePicker: true } : {}),
   };
 }
 

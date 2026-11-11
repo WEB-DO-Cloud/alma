@@ -13,6 +13,8 @@ import {
   mcpStdioOptionsFromEnv,
   parseMcpOAuthPresetClients,
   photonProjectsFromEnv,
+  readGooglePickerEnv,
+  readGoogleScopeMode,
   resolveCloudAgentProvider,
   resolveDeploymentModel,
   resolveSandboxProvider,
@@ -170,6 +172,10 @@ export interface AppEnv {
   googleByoOauth: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client ID. Otherwise absent. */
   googleOAuthClientId?: string;
+  /** Exactly restricted, or limited for every other value. */
+  googleScopeMode: "limited" | "restricted";
+  /** Browser key and Cloud project number. Null when both are unset. */
+  googlePicker: { apiKey: string; appId: string } | null;
   emailEmulator: boolean;
   slackClientId?: string;
   slackClientSecret?: string;
@@ -512,6 +518,8 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     mobileActionsEnabled: readMobileActionsConfig(source).enabled,
     googleByoOauth: flags.googleByoOauth,
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
+    googleScopeMode: readGoogleScopeMode(source),
+    googlePicker: readGooglePickerEnv(source),
   };
 }
 
