@@ -79,7 +79,8 @@
         {
           "ios": {
             "enabled": true,
-            "appGroupId": "group.com.rakazo.app",
+            "extensionBundleIdentifier": "do.alma.app.expo-sharing-extension",
+            "appGroupId": "group.do.alma.app",
             "activationRule": {
               "supportsText": true,
               "supportsWebUrlWithMaxCount": 1,
@@ -145,7 +146,8 @@
       },
       "entitlements": {
         "com.apple.developer.usernotifications.time-sensitive": true,
-        "com.apple.developer.usernotifications.communication": true
+        "com.apple.developer.usernotifications.communication": true,
+        "com.apple.security.application-groups": ["group.do.alma.app"]
       }
     },
     "android": {
@@ -178,7 +180,7 @@
                   "targetName": "expo-sharing-extension",
                   "bundleIdentifier": "do.alma.app.expo-sharing-extension",
                   "entitlements": {
-                    "com.apple.security.application-groups": ["group.com.rakazo.app"]
+                    "com.apple.security.application-groups": ["group.do.alma.app"]
                   }
                 },
                 {
