@@ -181,12 +181,12 @@ U1 removes the menu and its tests. U2 removes the Dictate control after the menu
 
 ## Verification Contract
 
-| Check | Command | Applies to |
-|---|---|---|
-| Mobile unit tests | `pnpm --filter @rakazo/mobile test` | U1, U2 |
-| Mobile typecheck | `pnpm --filter @rakazo/mobile check` | U1, U2 |
-| Web unit tests | `pnpm --filter @rakazo/web test` | U2, for the untouched composer cases |
-| Lint | `pnpm lint` | U1, U2, U3 |
+| Check             | Command                              | Applies to                           |
+| ----------------- | ------------------------------------ | ------------------------------------ |
+| Mobile unit tests | `pnpm --filter @rakazo/mobile test`  | U1, U2                               |
+| Mobile typecheck  | `pnpm --filter @rakazo/mobile check` | U1, U2                               |
+| Web unit tests    | `pnpm --filter @rakazo/web test`     | U2, for the untouched composer cases |
+| Lint              | `pnpm lint`                          | U1, U2, U3                           |
 
 Do not run the desktop Playwright suite locally. Do not run Maestro, Bitrise, or a store build. `apps/mobile` test script does not include the deleted screenshot flow.
 

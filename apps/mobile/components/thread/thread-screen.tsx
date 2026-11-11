@@ -1,3 +1,5 @@
+import { ph } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react/macro";
 import type { AgentSkillCatalogEntry } from "@rakazo/contracts";
 import {
   buildComposerMentionOptions,
@@ -30,7 +32,7 @@ import { useCallSession } from "../../lib/call-session";
 import { composerDraftScope } from "../../lib/composer-draft";
 import { cronLabels } from "../../lib/cron";
 import { listen, stop as stopDictation } from "../../lib/dictation";
-import { useI18n } from "../../lib/i18n";
+import { useUiLocale } from "../../lib/i18n";
 import { useThemedStyles } from "../../lib/native";
 import { useChatOnScreen } from "../../lib/page-card-detail";
 import { useInboxBot } from "../../lib/search-inbox";
@@ -88,7 +90,8 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   useChatOnScreen();
   const tokens = mobileTokens();
   const styles = useThemedStyles(createThreadHeaderStyles);
-  const { t, locale } = useI18n();
+  const { t } = useLingui();
+  const locale = useUiLocale();
   const focused = useIsFocused();
   const foreground = useAppForeground();
   const router = useRouter();
@@ -256,9 +259,9 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   const titleName = currentBot?.name ?? name ?? inboxBot?.name;
   const supportChat = !inGroup && titleBot?.kind === "support";
   const displayName = supportChat
-    ? t("Support")
-    : safeDisplayName(titleName, inGroup ? t("Group") : t("Bot"));
-  const composerPrompt = displayName ? t("Message {name}", { name: displayName }) : t("Message…");
+    ? t`Support`
+    : safeDisplayName(titleName, inGroup ? t`Group` : t`Bot`);
+  const composerPrompt = displayName ? t`Message ${ph({ name: displayName })}` : t`Message…`;
   const notificationThreadId = snap?.threadId ?? requestedThreadId ?? currentBot?.threadId;
   activeThreadId.current = notificationThreadId;
   const currentBotStatus =
@@ -294,7 +297,6 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
   // A bot waiting on the user (an ask card, a computer takeover) can still be stopped, but its
   // card is the state: no typing dots under it.
   const workingGroupBots = activeGroupBots.filter((bot) => isRunWorking(bot.status));
-  const working = inGroup ? activeGroupBots.length > 0 : isActiveStatus(currentBotStatus);
 
   const speakFinishedReplyRef = useAutoSpeakReply({
     botId,
@@ -358,6 +360,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
     foreground,
     focused,
     sessionEpoch,
+    userId,
     activeBotId,
     activeGroupId,
     readVisibleTarget,
@@ -543,8 +546,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
       }))}
       atBottom={!scroll.state.detached}
       label={
-        activityLine ??
-        (workingRoutine ? t("Running {name}…", { name: workingRoutine }) : t("Working…"))
+        activityLine ?? (workingRoutine ? t`Running ${ph({ name: workingRoutine })}…` : t`Working…`)
       }
     />
   );
@@ -629,8 +631,8 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
               replyTarget?.role === "user"
                 ? (otherAuthor(replyTarget.author, userId)?.name ??
                   channelMessageSender(replyTarget.blocks) ??
-                  t("You"))
-                : (memberName(snap?.members, replyTarget?.botId) ?? displayName ?? t("Bot"))
+                  t`You`)
+                : (memberName(snap?.members, replyTarget?.botId) ?? displayName ?? t`Bot`)
             }
             replyQuote={replyQuote}
             threadTarget={artifactTarget}
@@ -649,7 +651,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
             {supportChat && visibleMessages.length === 0 ? (
               <View style={{ paddingHorizontal: 24, paddingBottom: 8 }}>
                 <Text style={{ color: tokens.mutedForeground, textAlign: "center", fontSize: 13 }}>
-                  {t("Write to the ALMA team. A person will reply here.")}
+                  {t`Write to the ALMA team. A person will reply here.`}
                 </Text>
                 <Text
                   style={{
@@ -659,9 +661,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                     marginTop: 4,
                   }}
                 >
-                  {t(
-                    "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.",
-                  )}
+                  {t`Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.`}
                 </Text>
               </View>
             ) : null}
@@ -680,11 +680,11 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                     accessibilityRole="button"
                     onPress={() => attachments.attachFrom("camera")}
                   >
-                    <Text style={{ color: tokens.foreground }}>{t("Camera")}</Text>
+                    <Text style={{ color: tokens.foreground }}>{t`Camera`}</Text>
                   </Pressable>
                 ) : null}
                 <Pressable accessibilityRole="button" onPress={() => router.push("/share")}>
-                  <Text style={{ color: tokens.foreground }}>{t("Share")}</Text>
+                  <Text style={{ color: tokens.foreground }}>{t`Share`}</Text>
                 </Pressable>
                 {quickActionTarget({
                   enabled: true,
@@ -712,7 +712,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
                     }}
                   >
                     <Text style={{ color: tokens.foreground }}>
-                      {recording ? t("Recording") : t("Voice note")}
+                      {recording ? t`Recording` : t`Voice note`}
                     </Text>
                   </Pressable>
                 ) : null}
@@ -733,13 +733,11 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
               )}
               botId={botId}
               onCall={onCall}
-              working={working}
-              sending={composer.sending || attachments.shareImporting}
+              sending={attachments.shareImporting}
               styles={styles}
               attachActions={attachments.attachActions}
               attachFrom={attachments.attachFrom}
               send={composer.send}
-              stop={composer.stop}
               supportChat={supportChat}
               startVoiceCall={startVoiceCall}
               voiceNotes={voiceNotes}
@@ -753,6 +751,7 @@ export function Thread({ sessionEpoch, userId }: { sessionEpoch: number; userId:
         ) : null}
         <RunErrorSheet
           details={detailsOpen ? runError : null}
+          summary={normalizedRunError?.summary}
           onClose={() => setDetailsOpen(false)}
           action={runErrorAction}
         />

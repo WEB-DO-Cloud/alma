@@ -1,125 +1,137 @@
+import type { AdapterContext } from "@rakazo/adapter-kit";
+import { VoiceAccountError } from "@rakazo/adapter-kit";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { managedVoiceStatus, resolveManagedVoice } from "./managed-voice.js";
-import {
-  ttsLanguage,
-  voiceLanguage,
-  XAI_LEGAL_KEYTERMS,
-  XAI_STT_MODEL,
-  XAI_TTS_URL,
-  XAI_TTS_VOICE,
-  XaiVoiceProvider,
-} from "./xai-voice.js";
+import { XaiVoiceProvider } from "./xai-voice.js";
 
-const context = {
-  operationId: "voice",
-  traceId: "voice",
-  spaceId: "space",
-  userId: "user",
+const context: AdapterContext = {
+  operationId: "test-operation",
+  traceId: "test-trace",
+  spaceId: "test-space",
+  userId: "test-user",
   signal: new AbortController().signal,
 };
 
 afterEach(() => {
   vi.unstubAllGlobals();
-  vi.unstubAllEnvs();
+  vi.restoreAllMocks();
 });
 
-describe("voiceLanguage", () => {
-  it("defaults to Spanish and keeps a supported base code", () => {
-    expect(voiceLanguage(undefined)).toBe("es");
-    expect(voiceLanguage("")).toBe("es");
-    expect(voiceLanguage("es-DO")).toBe("es");
-    expect(voiceLanguage("EN_us")).toBe("en");
-    expect(voiceLanguage("pt-PT")).toBe("pt-pt");
-    expect(voiceLanguage("klingon")).toBe("es");
-  });
-});
-
-describe("ttsLanguage", () => {
-  it("uses a regional Spanish tag and keeps listed languages", () => {
-    expect(ttsLanguage(undefined)).toBe("es-ES");
-    expect(ttsLanguage("es-DO")).toBe("es-ES");
-    expect(ttsLanguage("es-MX")).toBe("es-MX");
-    expect(ttsLanguage("en-US")).toBe("en");
-    expect(ttsLanguage("pt-BR")).toBe("pt-BR");
-    expect(ttsLanguage("klingon")).toBe("es-ES");
-  });
-});
+function stubFetch(response: () => Response) {
+  const fetch = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => response());
+  vi.stubGlobal("fetch", fetch);
+  return fetch;
+}
 
 describe("XaiVoiceProvider", () => {
-  it("posts the file last and reads the transcript", async () => {
-    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => {
-      const form = init.body as FormData;
-      const names = [...form.keys()];
-      expect(names.at(-1)).toBe("file");
-      expect(names.indexOf("file")).toBe(names.length - 1);
-      expect(form.get("model")).toBe(XAI_STT_MODEL);
-      expect(form.get("format")).toBe("true");
-      expect(form.get("language")).toBe("es");
-      expect(form.getAll("keyterm")).toEqual([...XAI_LEGAL_KEYTERMS]);
-      expect((init.headers as Record<string, string>).authorization).toBe("Bearer xai-test-key");
-      return new Response(JSON.stringify({ text: "El saldo es $100." }), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    });
-    vi.stubGlobal("fetch", fetchMock);
-    const result = await new XaiVoiceProvider().transcribe(
-      {
-        audio: new Uint8Array([1, 2, 3]),
-        mimeType: "audio/webm",
-        apiKey: "xai-test-key",
-        language: "es-DO",
-      },
-      context,
+  it("speaks through the TTS endpoint and returns MP3 bytes", async () => {
+    const fetch = stubFetch(
+      () => new Response(new Uint8Array([1, 2, 3]), { headers: { "content-type": "audio/mpeg" } }),
     );
-    expect(result).toEqual({ text: "El saldo es $100." });
-    expect(fetchMock).toHaveBeenCalledWith("https://api.x.ai/v1/stt", expect.any(Object));
-  });
 
-  it("speaks with the operator voice and returns mpeg bytes", async () => {
-    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => {
-      expect(JSON.parse(String(init.body))).toEqual({
-        text: "El saldo es 100.",
-        voice_id: XAI_TTS_VOICE,
-        language: "es-ES",
-        text_normalization: true,
-      });
-      expect((init.headers as Record<string, string>).authorization).toBe("Bearer xai-test-key");
-      return new Response(new Uint8Array([1, 2, 3]), {
-        status: 200,
-        headers: { "content-type": "audio/mpeg" },
-      });
-    });
-    vi.stubGlobal("fetch", fetchMock);
     const clip = await new XaiVoiceProvider().synthesize(
-      { text: "El saldo es 100.", voiceId: XAI_TTS_VOICE, apiKey: "xai-test-key", language: "es" },
+      { text: "Olá", voiceId: "eve", apiKey: "xai-key" },
       context,
     );
-    expect(clip.mimeType).toBe("audio/mpeg");
-    expect([...clip.bytes]).toEqual([1, 2, 3]);
-    expect(fetchMock).toHaveBeenCalledWith(XAI_TTS_URL, expect.any(Object));
-  });
-});
 
-describe("managed voice", () => {
-  it("is ready for every org when the operator key is set", () => {
-    expect(resolveManagedVoice({ ALMA_VOICE_PROVIDER: " xai " }).enabled).toBe(true);
-    expect(resolveManagedVoice({}).enabled).toBe(false);
-    expect(managedVoiceStatus({ ALMA_VOICE_PROVIDER: "xai", XAI_API_KEY: "xai-test-key" })).toEqual(
-      {
-        configured: true,
-        ready: true,
-        transcribe: true,
-        provider: null,
-        voiceId: XAI_TTS_VOICE,
-      },
-    );
-    expect(managedVoiceStatus({ ALMA_VOICE_PROVIDER: "xai" })).toEqual({
-      configured: false,
-      ready: false,
-      transcribe: false,
-      provider: null,
-      voiceId: "",
+    expect(clip).toEqual({ bytes: new Uint8Array([1, 2, 3]), mimeType: "audio/mpeg" });
+    const [url, init] = fetch.mock.calls[0]!;
+    expect(String(url)).toBe("https://api.x.ai/v1/tts");
+    expect(init?.method).toBe("POST");
+    expect(new Headers(init?.headers).get("authorization")).toBe("Bearer xai-key");
+    expect(JSON.parse(String(init?.body))).toEqual({
+      text: "Olá",
+      voice_id: "eve",
+      language: "auto",
     });
+  });
+
+  it("lists voices by name and skips entries without an id", async () => {
+    const fetch = stubFetch(() =>
+      Response.json({
+        voices: [
+          { voice_id: "rex", name: "Rex" },
+          { name: "Nameless" },
+          { voice_id: "ara", name: "Ara" },
+          { voice_id: "sal" },
+        ],
+      }),
+    );
+
+    await expect(new XaiVoiceProvider().listVoices("xai-key", context)).resolves.toEqual([
+      { id: "ara", label: "Ara" },
+      { id: "rex", label: "Rex" },
+      { id: "sal", label: "sal" },
+    ]);
+    expect(String(fetch.mock.calls[0]![0])).toBe("https://api.x.ai/v1/tts/voices");
+    expect(new Headers(fetch.mock.calls[0]![1]?.headers).get("authorization")).toBe(
+      "Bearer xai-key",
+    );
+  });
+
+  it("reports xAI's incorrect-key reply as a rejected key", async () => {
+    const fetch = stubFetch(() =>
+      Response.json(
+        {
+          code: "Client specified an invalid argument",
+          error:
+            "Incorrect API key provided: xa***. You can obtain an API key from https://console.x.ai.",
+        },
+        { status: 400 },
+      ),
+    );
+
+    const result = await new XaiVoiceProvider().verify("xai-wrong", context);
+
+    expect(result.ok).toBe(false);
+    expect(result).toMatchObject({
+      message: "xAI rejected that key. Check the key and that it has speech permissions.",
+    });
+    expect(String(fetch.mock.calls[0]![0])).toBe("https://api.x.ai/v1/tts/voices");
+  });
+
+  it("uploads the recording last with a language hint and formatting", async () => {
+    const fetch = stubFetch(() => Response.json({ text: "  olá mundo " }));
+
+    const result = await new XaiVoiceProvider().transcribe(
+      { audio: new Uint8Array([1]), mimeType: "audio/ogg", apiKey: "xai-key", language: "pt-BR" },
+      context,
+    );
+
+    expect(result).toEqual({ text: "olá mundo" });
+    const [url, init] = fetch.mock.calls[0]!;
+    expect(String(url)).toBe("https://api.x.ai/v1/stt");
+    expect(new Headers(init?.headers).get("authorization")).toBe("Bearer xai-key");
+    const form = init?.body as FormData;
+    expect([...form.keys()]).toEqual(["language", "format", "file"]);
+    expect(form.get("language")).toBe("pt");
+    expect(form.get("format")).toBe("true");
+    expect((form.get("file") as File).name).toBe("speech.ogg");
+  });
+
+  it("omits the language and formatting for an invalid hint", async () => {
+    const fetch = stubFetch(() => Response.json({ text: "hi" }));
+
+    await new XaiVoiceProvider().transcribe(
+      { audio: new Uint8Array([1]), mimeType: "audio/webm", apiKey: "xai-key", language: "??" },
+      context,
+    );
+
+    const form = fetch.mock.calls[0]![1]?.body as FormData;
+    expect([...form.keys()]).toEqual(["file"]);
+  });
+
+  it("raises xAI's own words when the account has no credit", async () => {
+    const message = "You have run out of credits or need a Grok subscription";
+    stubFetch(() => Response.json({ error: message }, { status: 403 }));
+
+    const error = await new XaiVoiceProvider()
+      .transcribe(
+        { audio: new Uint8Array([1]), mimeType: "audio/webm", apiKey: "xai-key" },
+        context,
+      )
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(VoiceAccountError);
+    expect(error).toMatchObject({ code: "VOICE_OUT_OF_CREDIT", message });
   });
 });

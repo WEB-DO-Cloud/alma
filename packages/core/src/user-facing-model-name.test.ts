@@ -49,9 +49,8 @@ const localeFile = (path: string) =>
 describe("user-facing model names", () => {
   it("keeps the upstream vendor out of translation catalogs", () => {
     const catalogs = [
-      ...filesUnder(join(root, "apps/web/src/locales"), localeFile),
+      ...filesUnder(join(root, "packages/i18n/locales"), localeFile),
       ...filesUnder(join(root, "apps/mobile/locales"), localeFile),
-      ...filesUnder(join(root, "apps/mobile/lib/locales"), localeFile),
       ...filesUnder(join(root, "apps/desktop/src/locales"), localeFile),
       ...filesUnder(join(root, "packages/auth/src/locales"), localeFile),
       ...filesUnder(join(root, "packages/page-kit/src/kit/locales"), localeFile),

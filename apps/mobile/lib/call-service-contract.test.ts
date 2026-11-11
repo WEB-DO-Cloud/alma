@@ -90,6 +90,12 @@ describe("Android call service", () => {
       nl: "values-nl",
       ja: "values-ja",
       pl: "values-pl",
+      fr: "values-fr",
+      he: "values-iw",
+      hi: "values-hi",
+      ko: "values-ko",
+      "pt-BR": "values-pt-rBR",
+      tr: "values-tr",
     } as const satisfies Record<(typeof UI_LOCALES)[number], string>;
     const keys = [
       "rakazo_call_channel",

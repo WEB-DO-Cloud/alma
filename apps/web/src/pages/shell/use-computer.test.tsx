@@ -415,18 +415,20 @@ it("keeps control connected when the retiring view socket closes, then releases 
   await read();
   let frames = [...container.querySelectorAll("iframe")];
   expect(frames).toHaveLength(2);
+  // The same element stays, so its page does not reload.
   expect(frames[0]).toBe(viewFrame);
   expect(frames[0]!.getAttribute("aria-hidden")).toBe("true");
-  expect(frames[1]!.dataset.src).toContain("/novnc/session/control/");
+  expect(frames[1]!.dataset.src).toContain("/control/");
   // The watch socket closes upstream after takeover. That report belongs to the
   // retiring frame, not the control screen that is still loading.
   await reportFrom(frames[0]!, "disconnected");
   expect(state.screenLoadError).toBeNull();
+  await reportFrom(frames[1]!, "connecting");
   expect(container.querySelectorAll("iframe")).toHaveLength(2);
   await reportFrom(frames[1]!, "connected");
   frames = [...container.querySelectorAll("iframe")];
   expect(frames).toHaveLength(1);
-  expect(frames[0]!.dataset.src).toContain("/novnc/session/control/");
+  expect(frames[0]!.dataset.src).toContain("/control/");
   expect(state.screenLoadError).toBeNull();
 
   await act(async () => {

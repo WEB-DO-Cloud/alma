@@ -7,10 +7,8 @@ import {
   suggestEmailCorrection,
 } from "@rakazo/core";
 import { Button, Input, InputOTP, InputOTPGroup, InputOTPSlot, Label } from "@rakazo/ui-web";
-import { Server } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { IconTooltip } from "../components/IconTooltip";
 import { PasskeySignIn } from "../components/PasskeySignIn";
 import { authClient } from "../lib/auth";
 import type { AuthCapabilities } from "../lib/auth-capabilities";
@@ -558,7 +556,6 @@ export function AuthFrame({
   children: React.ReactNode;
   logo?: boolean;
 }) {
-  const { t } = useLingui();
   const server = desktopBridge()?.server;
   return (
     <div
@@ -567,20 +564,6 @@ export function AuthFrame({
     >
       <div className="app-drag flex items-center gap-2 px-5 py-[18px]">
         <WindowChrome />
-        {server ? (
-          <IconTooltip label={t`Change server`}>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={t`Change server`}
-              className="app-no-drag ml-auto text-muted-foreground"
-              onClick={() => void server.change()}
-            >
-              <Server />
-            </Button>
-          </IconTooltip>
-        ) : null}
       </div>
       <div className="flex flex-1 items-center justify-center px-6 pb-16">
         <form onSubmit={onSubmit} className="flex w-full max-w-[460px] flex-col items-center">
@@ -612,6 +595,13 @@ export function AuthFrame({
           {children}
         </form>
       </div>
+      {server ? (
+        <div className="flex justify-center pb-6">
+          <Button type="button" variant="text" size="sm" onClick={() => void server.change()}>
+            <Trans>Change server</Trans>
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

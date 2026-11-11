@@ -658,6 +658,7 @@ export const appContract = {
         webhookConfigured: z.literal(true),
       }),
     ),
+    revealWebhookSecret: oc.input(botId).output(z.object({ secret: z.string() })),
   },
   groups: {
     create: oc.input(CreateGroupInput).output(GroupSchema),
@@ -837,6 +838,10 @@ export const appContract = {
     /** With `messageId`, the chat reads as unread from that message: the next open puts New above it. */
     markUnread: oc
       .input(threadTarget.and(z.object({ messageId: Id.optional() })))
+      .output(z.object({ ok: z.literal(true) })),
+    /** Hides the chat from the caller's list until `until`; null wakes it now. */
+    snooze: oc
+      .input(threadTarget.and(z.object({ until: z.iso.datetime({ offset: true }).nullable() })))
       .output(z.object({ ok: z.literal(true) })),
   },
   computer: {
@@ -1538,6 +1543,20 @@ export const appContract = {
       )
       .output(z.object({ ok: z.literal(true) })),
     unregisterPush: oc.output(z.object({ ok: z.literal(true) })),
+    /**
+     * Keeps this phone's live status card of the user's bots at work up to date. `following` is
+     * false when the server cannot update the card or no bot is at work, so the app ends it.
+     */
+    followWorkActivity: oc
+      .input(z.object({ token: z.string().regex(/^[a-fA-F0-9]{64,512}$/) }))
+      .output(z.object({ following: z.boolean() })),
+    /**
+     * Lets the server start this phone's live status card when the user's bots get to work from
+     * another device. `token` is the phone's token for starting cards, again whenever it changes.
+     */
+    registerWorkActivityStarts: oc
+      .input(z.object({ token: z.string().regex(/^[a-fA-F0-9]{64,512}$/) }))
+      .output(z.object({ ok: z.literal(true) })),
   },
   search: {
     query: oc.input(z.object({ q: z.string().max(200) })).output(SearchQueryOutputSchema),
@@ -1581,7 +1600,10 @@ export const appContract = {
         z
           .object({
             provider: z.string(),
-            /** Optional for a self-hosted server and for providers without keys. */
+            /**
+             * Optional for a self-hosted server, for providers without keys, and for a provider
+             * the account's model connection authenticates (the catalog's `modelConnection`).
+             */
             apiKey: z.string().max(4096).default(""),
             voiceId: z.string().max(120).optional(),
             speechModel: z.string().max(64).optional(),

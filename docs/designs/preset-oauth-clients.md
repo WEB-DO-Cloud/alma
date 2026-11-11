@@ -1,7 +1,7 @@
 # Preset OAuth clients for MCP servers
 
-*   **Status:** In Review
-*   **Date:** 2026-11-04
+-   **Status:** In Review
+-   **Date:** 2026-11-04
 
 ## Problem
 
@@ -25,12 +25,12 @@ An invalid value fails process startup. The error names the variable and the hos
 
 ## Non-goals
 
-*   No new sign-in copy. The buttons stay Connect OAuth.
-*   No preset for stdio servers. Those still need a client and an authorization server entered on the server, because they have no endpoint host to match.
-*   No per-preset scope. The MCP resource's published scopes are still what the flow requests. A preset cannot override `redirect_uri`, `scope`, `state`, or the other parameters the flow sets itself.
-*   No second redirect URI. Native apps keep opening the provider in the browser and returning to the web callback.
+-   No new sign-in copy. The buttons stay Connect OAuth.
+-   No preset for stdio servers. Those still need a client and an authorization server entered on the server, because they have no endpoint host to match.
+-   No per-preset scope. The MCP resource's published scopes are still what the flow requests. A preset cannot override `redirect_uri`, `scope`, `state`, or the other parameters the flow sets itself.
+-   No second redirect URI. Native apps keep opening the provider in the browser and returning to the web callback.
 
 ## Open questions
 
-*   Google's MCP resource metadata is what supplies the API scopes. This change does not add a scope field to the preset. If a host publishes no scopes and the registered client has none either, the grant may be too narrow. That would be a follow-up, not a second env var.
-*   `*.googleapis.com` matches every host that ends in `.googleapis.com`, including more than one label (`a.b.googleapis.com`). It does not match `googleapis.com` itself. An exact key wins over a wildcard.
+-   Google's MCP resource metadata is what supplies the API scopes. This change does not add a scope field to the preset. If a host publishes no scopes and the registered client has none either, the grant may be too narrow. That would be a follow-up, not a second env var.
+-   `*.googleapis.com` matches every host that ends in `.googleapis.com`, including more than one label (`a.b.googleapis.com`). It does not match `googleapis.com` itself. An exact key wins over a wildcard.

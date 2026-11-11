@@ -240,7 +240,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         topic: "Where you use it",
         rakazo:
-          "Web app, Electron desktop app, and Expo mobile app. Voice can speak replies, take dictation, and call a bot, with your own ElevenLabs, OpenAI, Cartesia, or Fish Audio key.",
+          "Web app, Electron desktop app, and Expo mobile app. Voice can speak replies, take dictation, and call a bot, with your own ElevenLabs, OpenAI, Cartesia, Fish Audio, or xAI key.",
         other:
           "Muse app on iOS and Android, WhatsApp, and muse.ai, per the launch. The Connect recap adds the Mac app, a voice mode you can shape, and Muse on AI glasses in the coming months.",
       },
@@ -259,7 +259,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         question: "Does ALMA include Muse on WhatsApp, shopping checkout, or AI glasses?",
         answer:
-          "No. Those are Muse surfaces Meta describes. ALMA's clients are the web app, the Electron desktop app, and the Expo mobile app. Voice in ALMA uses a key you bring for ElevenLabs, OpenAI, Cartesia, or Fish Audio.",
+          "No. Those are Muse surfaces Meta describes. ALMA's clients are the web app, the Electron desktop app, and the Expo mobile app. Voice in ALMA uses a key you bring for ElevenLabs, OpenAI, Cartesia, Fish Audio, or xAI.",
       },
       {
         question: "Where do the Muse details come from?",
@@ -419,7 +419,7 @@ export const ALTERNATIVES: readonly Alternative[] = [
       {
         topic: "Where you use it",
         rakazo:
-          "Web app, Electron desktop app, and Expo mobile app. Voice can speak replies, take dictation, and call a bot, with your own ElevenLabs, OpenAI, Cartesia, or Fish Audio key.",
+          "Web app, Electron desktop app, and Expo mobile app. Voice can speak replies, take dictation, and call a bot, with your own ElevenLabs, OpenAI, Cartesia, Fish Audio, or xAI key.",
         other:
           "The homepage says you text or call it. The privacy policy and terms also describe the Instinct website, Mac apps, and mobile apps.",
       },

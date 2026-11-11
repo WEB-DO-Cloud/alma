@@ -6,8 +6,7 @@ import { asSystem, runAsSystem } from "./row-security.js";
 import { backfillSupportBots, ensureSupportBot } from "./support-bot.js";
 
 const databaseUrl = process.env.DATABASE_URL;
-const describePostgres =
-  process.env.VERIFY_DATABASE && databaseUrl ? describe.sequential : describe.skip;
+const describePostgres = process.env.VERIFY_DATABASE && databaseUrl ? describe : describe.skip;
 
 describePostgres("support bot (PostgreSQL)", () => {
   let prisma: PrismaClient;

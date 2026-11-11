@@ -1,25 +1,25 @@
 # Phase 2A foundation
 
-*   **Status:** Reviewed, ready to implement
-*   **Date:** 2026-11-07
-*   **Branch:** `cursor/phase2a-foundation-633f`
-*   **Author:** ALMA overlay. Upstream Rakazo files change only where this note names them.
+-   **Status:** Reviewed, ready to implement
+-   **Date:** 2026-11-07
+-   **Branch:** `cursor/phase2a-foundation-633f`
+-   **Author:** ALMA overlay. Upstream Rakazo files change only where this note names them.
 
 ## Review resolutions
 
 A zero-context review read this note and the code it names. These decisions override any earlier sentence they touch.
 
-*   **Personal visibility.** `work_contexts` adds `kind <> 'personal' OR ownerUserId = app.user_id`. A global owner filter would hide work and client contexts from everyone except the creator.
-*   **Role inserts do not read `work_contexts`.** `work_context_roles` copies `kind`. `WITH CHECK` allows a personal role only when `userId` and `grantedByUserId` are the current user. That blocks a shared personal context without a policy cycle.
-*   **Child writes.** Records, links, and drafts check the actor's role on `work_context_roles` in `WITH CHECK` (draft and record inserts require `owner`, `professional`, or `assistant`). Setting `status` to `approved` requires `owner` or `professional`. The role policy does not read those tables.
-*   **Grants.** `GRANT SELECT, INSERT, UPDATE, DELETE` matches `20261119120000_alma_activation`, not `organization_profiles`. System policies are `USING ((SELECT app_rls_bypass()))` with no `WITH CHECK`. Tenant policies have both `USING` and `WITH CHECK`, like `alma_trials`.
-*   **Encryption owner.** `ROW_OWNER` is the column `createdByUserId`. `ENCRYPTED_MODELS.ownerRelation` is the Prisma relation `createdBy`. `SpaceSource` gains `work_records` and `outbound_drafts`. Migration delegates are `workRecord` and `outboundDraft`. `contentEncryptionStatus` gains two `UNION ALL` branches using the `rkz1:%` rule. Bodies are plain text, like memory documents, not message blocks.
-*   **Hold placement.** `externalSendHold` runs inside `gateToolCall` after the connector kind and batch tool names are known, and before occurrence counting and `recordEffect`. It runs for approval replays. A hold returns `{ result: { error } }` and records no effect. Flag off does not call it.
-*   **Mirror.** When the flag is on, skip `mirrorRun` only. Still set `messagingMirroredAt` for messaging runs so the job reconciler does not retry forever.
-*   **Phase 1 names.** The nine names are real, but they are not all written in `alma-activation.ts`. `signup`, `task_started`, and `limit_reached` are in `alma-trial.ts`. `plan_viewed` is in `apps/api/src/alma-onboarding.ts`. `checkout_started` and `payment_completed` are in `apps/api/src/billing.ts`. The regression test greps `recordActivationEvent` call sites under `packages/db/src` and `apps/api/src`. Phase 2A does not call it.
-*   **Hash.** Sorting `attachmentIds` means order does not change the hash. The hash changes when recipient, channel, body, or the set of attachment ids changes.
-*   **Compose.** Add both keys to `x-app-environment` in the three compose files, and duplicate them on the api service where the Phase 1 keys are duplicated. The worker inherits the anchor.
-*   **Startup.** `loadEnv` and `apps/worker/src/index.ts` (next to `readAlmaFlags()`) call `readPhase2aConfig`.
+-   **Personal visibility.** `work_contexts` adds `kind <> 'personal' OR ownerUserId = app.user_id`. A global owner filter would hide work and client contexts from everyone except the creator.
+-   **Role inserts do not read `work_contexts`.** `work_context_roles` copies `kind`. `WITH CHECK` allows a personal role only when `userId` and `grantedByUserId` are the current user. That blocks a shared personal context without a policy cycle.
+-   **Child writes.** Records, links, and drafts check the actor's role on `work_context_roles` in `WITH CHECK` (draft and record inserts require `owner`, `professional`, or `assistant`). Setting `status` to `approved` requires `owner` or `professional`. The role policy does not read those tables.
+-   **Grants.** `GRANT SELECT, INSERT, UPDATE, DELETE` matches `20261119120000_alma_activation`, not `organization_profiles`. System policies are `USING ((SELECT app_rls_bypass()))` with no `WITH CHECK`. Tenant policies have both `USING` and `WITH CHECK`, like `alma_trials`.
+-   **Encryption owner.** `ROW_OWNER` is the column `createdByUserId`. `ENCRYPTED_MODELS.ownerRelation` is the Prisma relation `createdBy`. `SpaceSource` gains `work_records` and `outbound_drafts`. Migration delegates are `workRecord` and `outboundDraft`. `contentEncryptionStatus` gains two `UNION ALL` branches using the `rkz1:%` rule. Bodies are plain text, like memory documents, not message blocks.
+-   **Hold placement.** `externalSendHold` runs inside `gateToolCall` after the connector kind and batch tool names are known, and before occurrence counting and `recordEffect`. It runs for approval replays. A hold returns `{ result: { error } }` and records no effect. Flag off does not call it.
+-   **Mirror.** When the flag is on, skip `mirrorRun` only. Still set `messagingMirroredAt` for messaging runs so the job reconciler does not retry forever.
+-   **Phase 1 names.** The nine names are real, but they are not all written in `alma-activation.ts`. `signup`, `task_started`, and `limit_reached` are in `alma-trial.ts`. `plan_viewed` is in `apps/api/src/alma-onboarding.ts`. `checkout_started` and `payment_completed` are in `apps/api/src/billing.ts`. The regression test greps `recordActivationEvent` call sites under `packages/db/src` and `apps/api/src`. Phase 2A does not call it.
+-   **Hash.** Sorting `attachmentIds` means order does not change the hash. The hash changes when recipient, channel, body, or the set of attachment ids changes.
+-   **Compose.** Add both keys to `x-app-environment` in the three compose files, and duplicate them on the api service where the Phase 1 keys are duplicated. The worker inherits the anchor.
+-   **Startup.** `loadEnv` and `apps/worker/src/index.ts` (next to `readAlmaFlags()`) call `readPhase2aConfig`.
 
 This slice is the dependency-first part of Phase 2A from the feedback backlog: scope isolation (MF01) and the external-message approval contract (WA02 with the TE01 roles that contract needs). A structured professional refusal (SK04) and offline fixtures (UX05, UX03) ship with it because they are small and they name the safety rules the contract enforces. OCR, spreadsheet parsing, invitations, a queue screen, and a real sender do not.
 
@@ -35,38 +35,38 @@ Phase 1 (merged) already records the activation funnel in `activation_events`. T
 
 ## Goals
 
-*   With `ALMA_PHASE2A` off, every current send, approval card, upload, and screen behaves as it does today.
-*   With the flag on, a personal context is visible only to its owner. A work or client context is visible only to people with a role on that context. A list or a resolve never returns another context's rows.
-*   With the flag on, an external message leaves only as a draft whose recipient, channel, body, and attachments were approved as one hash. An edit after approval clears the approval. A cancel before dispatch stops the send. No status and no label means delivered. This slice does not call a provider.
-*   With the flag on, connector writes and linked-chat mirroring do not run. They return a hold. Clinical, filing, payment, and price actions are refused and cannot be drafted as external messages.
-*   Fixtures cover personal use and the eight launch sectors. They do not insert activation events.
+-   With `ALMA_PHASE2A` off, every current send, approval card, upload, and screen behaves as it does today.
+-   With the flag on, a personal context is visible only to its owner. A work or client context is visible only to people with a role on that context. A list or a resolve never returns another context's rows.
+-   With the flag on, an external message leaves only as a draft whose recipient, channel, body, and attachments were approved as one hash. An edit after approval clears the approval. A cancel before dispatch stops the send. No status and no label means delivered. This slice does not call a provider.
+-   With the flag on, connector writes and linked-chat mirroring do not run. They return a hold. Clinical, filing, payment, and price actions are refused and cannot be drafted as external messages.
+-   Fixtures cover personal use and the eight launch sectors. They do not insert activation events.
 
 ## Non-goals
 
-*   No OCR, no spreadsheet or statement parsing, no field extraction (MF02, IN04). Follow-up.
-*   No email invitations, expiring links, or seat prices (the rest of TE01, and D05).
-*   No WhatsApp provider, no email sender, no recall, no correction-after-delivery UI (WA01, UX04).
-*   No new screen on web, desktop, or phone, except the Queue increment below.
-*   No new analytics event, no PostHog change, no latency recorder, no dashboard.
-*   No change to Phase 1 trial, sector copy, checklist, or plan sentences.
-*   Photography, finance, and agriculture are not fixtures.
+-   No OCR, no spreadsheet or statement parsing, no field extraction (MF02, IN04). Follow-up.
+-   No email invitations, expiring links, or seat prices (the rest of TE01, and D05).
+-   No WhatsApp provider, no email sender, no recall, no correction-after-delivery UI (WA01, UX04).
+-   No new screen on web, desktop, or phone, except the Queue increment below.
+-   No new analytics event, no PostHog change, no latency recorder, no dashboard.
+-   No change to Phase 1 trial, sector copy, checklist, or plan sentences.
+-   Photography, finance, and agriculture are not fixtures.
 
 ## Flags
 
 Parsed by `readPhase2aConfig` in `packages/core/src/phase2a.ts`. On only when the value is exactly `true`. `1` and `yes` are off.
 
-| Env | Meaning | Default |
-| --- | --- | --- |
-| `ALMA_PHASE2A` | Isolation, drafts, holds, and refusals | off |
-| `ALMA_PHASE2A_DISPATCH_DELAY_SECONDS` | Seconds after approval before a later sender may claim the draft. Integer 0 through 300. | 30 |
+| Env                                   | Meaning                                                                                  | Default |
+| ------------------------------------- | ---------------------------------------------------------------------------------------- | ------- |
+| `ALMA_PHASE2A`                        | Isolation, drafts, holds, and refusals                                                   | off     |
+| `ALMA_PHASE2A_DISPATCH_DELAY_SECONDS` | Seconds after approval before a later sender may claim the draft. Integer 0 through 300. | 30      |
 
 The delay is validated only when the flag is on. An out-of-range value throws. `loadEnv` in `apps/api/src/env.ts` and worker startup in `apps/worker/src/index.ts` both call `readPhase2aConfig`, so a bad value fails before serving.
 
 Add both names to `x-app-environment` in:
 
-*   `infra/compose/docker-compose.yml`
-*   `infra/compose/docker-compose.images.yml`
-*   `infra/compose/docker-compose.prod.yml`
+-   `infra/compose/docker-compose.yml`
+-   `infra/compose/docker-compose.images.yml`
+-   `infra/compose/docker-compose.prod.yml`
 
 Duplicate them on the api service in those files, where `ALMA_TRIAL_ENABLED` is duplicated. The worker service only uses the anchor.
 
@@ -97,65 +97,65 @@ All new tables are empty. The previous release does not read them. Ids are Prism
 
 ### `work_contexts`
 
-| Column | Notes |
-| --- | --- |
-| `id` | Primary key |
-| `organizationId` | Cascade on organization delete |
-| `spaceId` | Cascade on space delete |
-| `ownerUserId` | Creator. Personal rows are readable only by this user |
-| `kind` | `personal`, `work`, or `client` |
-| `label` | 1–80 characters |
-| `parentId` | Null, or a work context in the same space |
-| `createdAt`, `updatedAt` | |
+| Column                   | Notes                                                 |
+| ------------------------ | ----------------------------------------------------- |
+| `id`                     | Primary key                                           |
+| `organizationId`         | Cascade on organization delete                        |
+| `spaceId`                | Cascade on space delete                               |
+| `ownerUserId`            | Creator. Personal rows are readable only by this user |
+| `kind`                   | `personal`, `work`, or `client`                       |
+| `label`                  | 1–80 characters                                       |
+| `parentId`               | Null, or a work context in the same space             |
+| `createdAt`, `updatedAt` |                                                       |
 
 ### `work_context_roles`
 
-| Column | Notes |
-| --- | --- |
-| `contextId`, `userId` | Primary key |
+| Column                              | Notes                                                               |
+| ----------------------------------- | ------------------------------------------------------------------- |
+| `contextId`, `userId`               | Primary key                                                         |
 | `organizationId`, `spaceId`, `kind` | Copied from the context so the policy does not read `work_contexts` |
-| `role` | `owner`, `professional`, `assistant`, `reader` |
-| `grantedByUserId` | |
-| `createdAt` | |
+| `role`                              | `owner`, `professional`, `assistant`, `reader`                      |
+| `grantedByUserId`                   |                                                                     |
+| `createdAt`                         |                                                                     |
 
 The creator's owner row is inserted in the same transaction as the context. Personal contexts get that one row and no others.
 
 ### `work_records`
 
-| Column | Notes |
-| --- | --- |
-| `id`, `contextId`, `organizationId`, `spaceId`, `createdByUserId` | |
-| `kind` | `contact`, `matter`, or `note` |
-| `title` | 1–160 characters |
-| `body` | Nullable text, sealed when encryption is on |
-| `createdAt`, `updatedAt` | |
+| Column                                                            | Notes                                       |
+| ----------------------------------------------------------------- | ------------------------------------------- |
+| `id`, `contextId`, `organizationId`, `spaceId`, `createdByUserId` |                                             |
+| `kind`                                                            | `contact`, `matter`, or `note`              |
+| `title`                                                           | 1–160 characters                            |
+| `body`                                                            | Nullable text, sealed when encryption is on |
+| `createdAt`, `updatedAt`                                          |                                             |
 
 ### `work_links`
 
-| Column | Notes |
-| --- | --- |
-| `id`, `contextId`, `organizationId`, `spaceId`, `createdByUserId` | |
-| `targetKind` | `thread` or `artifact` |
-| `targetId` | |
-| `createdAt` | |
+| Column                                                            | Notes                  |
+| ----------------------------------------------------------------- | ---------------------- |
+| `id`, `contextId`, `organizationId`, `spaceId`, `createdByUserId` |                        |
+| `targetKind`                                                      | `thread` or `artifact` |
+| `targetId`                                                        |                        |
+| `createdAt`                                                       |                        |
 
 Unique on `(targetKind, targetId)`.
 
 ### `outbound_drafts`
 
-| Column | Notes |
-| --- | --- |
-| `id`, `contextId`, `organizationId`, `spaceId` | |
-| `createdByUserId`, `creatorRole` | Role at create time, so approval does not read another person's role row |
-| `recipient` | 1–200 characters. A display address, not a provider id |
-| `channel` | `whatsapp`, `email`, or `other` |
-| `body` | 1–8000 characters, sealed when encryption is on |
-| `attachmentIds` | Text array, at most 8, each already linked to this context |
-| `bodyHash` | Hex SHA-256 of the canonical payload |
-| `actionClass` | Always `message` for a stored draft |
-| `status` | `draft`, `pending`, `approved`, `cancelled`, `dispatching`, `sent`, `failed`, `unknown` |
-| `approvedByUserId`, `approvedAt`, `approvedBodyHash`, `dispatchAfter` | Null unless `approved` or a later status a future sender sets |
-| `createdAt`, `updatedAt` | |
+| Column                                                                | Notes                                                                                   |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `id`, `contextId`, `organizationId`, `spaceId`                        |                                                                                         |
+| `createdByUserId`, `creatorRole`                                      | Role at create time, so approval does not read another person's role row                |
+| `recipient`                                                           | 1–200 characters. A display address, not a provider id                                  |
+| `channel`                                                             | `whatsapp`, `email`, or `other`                                                         |
+| `body`                                                                | 1–8000 characters, sealed when encryption is on                                         |
+| `attachmentIds`                                                       | Text array, at most 8, each already linked to this context                              |
+| `bodyHash`                                                            | Hex SHA-256 of the canonical payload                                                    |
+| `actionClass`                                                         | Always `message` for a stored draft                                                     |
+| `status`                                                              | `draft`, `pending`, `approved`, `cancelled`, `dispatching`, `sent`, `failed`, `unknown` |
+| `approvedByUserId`, `approvedAt`, `approvedBodyHash`, `dispatchAfter` | Null unless `approved` or a later status a future sender sets                           |
+| `createdAt`, `updatedAt`                                              |                                                                                         |
 
 ### `work_approval_events`
 
@@ -171,12 +171,12 @@ Records, links, drafts, and approval events are visible when the space matches a
 
 Application checks, on top of RLS:
 
-*   The actor's space supplies `organizationId`.
-*   `grant` and `revoke` require the actor's role to be `owner` on that context.
-*   The grantee has a `member` row in the organization. This slice does not invite new people.
-*   `revoke` of the last owner fails.
-*   Draft create, edit, submit, and cancel require `owner`, `professional`, or `assistant`.
-*   Approve requires the approver's role to be `owner` or `professional`. When the drafter's role is `assistant`, the approver must be a different user. An owner or professional may approve a draft they wrote.
+-   The actor's space supplies `organizationId`.
+-   `grant` and `revoke` require the actor's role to be `owner` on that context.
+-   The grantee has a `member` row in the organization. This slice does not invite new people.
+-   `revoke` of the last owner fails.
+-   Draft create, edit, submit, and cancel require `owner`, `professional`, or `assistant`.
+-   Approve requires the approver's role to be `owner` or `professional`. When the drafter's role is `assistant`, the approver must be a different user. An owner or professional may approve a draft they wrote.
 
 Flag off: every new procedure throws `FORBIDDEN` with message `phase2a_disabled` and writes nothing.
 
@@ -184,31 +184,31 @@ Flag off: every new procedure throws `FORBIDDEN` with message `phase2a_disabled`
 
 Pure functions in `packages/core/src/phase2a.ts`. The database applies them with a conditional update so two callers cannot both win.
 
-| From | Command | To | Notes |
-| --- | --- | --- | --- |
-| `draft` | edit | `draft` | Replaces payload and hash |
-| `draft` | submit | `pending` | Hash frozen |
-| `pending` | edit | `draft` | Action `invalidated` |
-| `pending` | approve | `approved` | Stores approver and `dispatchAfter` = now + delay |
-| `pending` | cancel | `cancelled` | |
-| `approved` | edit | `draft` | Clears approval. Action `invalidated` |
-| `approved` | cancel | `cancelled` | Allowed before a later sender claims |
-| `approved` | claim | `dispatching` | Only when `dispatchAfter` <= now and hashes match. Not called by this slice's processes |
-| `dispatching` | result | `sent`, `failed`, or `unknown` | Not called by this slice's processes |
-| `sent`, `failed`, `unknown`, `dispatching`, `cancelled` | edit or cancel | error | `phase2a_already_sent` or `phase2a_in_flight` |
+| From                                                    | Command        | To                             | Notes                                                                                   |
+| ------------------------------------------------------- | -------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
+| `draft`                                                 | edit           | `draft`                        | Replaces payload and hash                                                               |
+| `draft`                                                 | submit         | `pending`                      | Hash frozen                                                                             |
+| `pending`                                               | edit           | `draft`                        | Action `invalidated`                                                                    |
+| `pending`                                               | approve        | `approved`                     | Stores approver and `dispatchAfter` = now + delay                                       |
+| `pending`                                               | cancel         | `cancelled`                    |                                                                                         |
+| `approved`                                              | edit           | `draft`                        | Clears approval. Action `invalidated`                                                   |
+| `approved`                                              | cancel         | `cancelled`                    | Allowed before a later sender claims                                                    |
+| `approved`                                              | claim          | `dispatching`                  | Only when `dispatchAfter` <= now and hashes match. Not called by this slice's processes |
+| `dispatching`                                           | result         | `sent`, `failed`, or `unknown` | Not called by this slice's processes                                                    |
+| `sent`, `failed`, `unknown`, `dispatching`, `cancelled` | edit or cancel | error                          | `phase2a_already_sent` or `phase2a_in_flight`                                           |
 
 Approve when the hash changed returns `phase2a_stale_approval` and leaves the row unchanged (the edit already moved it, or the update matches zero rows).
 
 Presenter `deliveryLabel(status, dispatchAfter, now)`:
 
-*   `draft` → `draft`
-*   `pending` → `waiting`
-*   `approved` → `waiting`
-*   `dispatching` → `sending`
-*   `sent` → `sent`
-*   `failed` → `failed`
-*   `unknown` → `unknown`
-*   `cancelled` → `cancelled`
+-   `draft` → `draft`
+-   `pending` → `waiting`
+-   `approved` → `waiting`
+-   `dispatching` → `sending`
+-   `sent` → `sent`
+-   `failed` → `failed`
+-   `unknown` → `unknown`
+-   `cancelled` → `cancelled`
 
 The function's return type does not include `delivered`.
 
@@ -220,10 +220,10 @@ When the flag is off, both call sites do what they do today.
 
 When the flag is on:
 
-*   A tool whose class is `clinical`, `filing`, `payment`, or `price` returns `{ error: "phase2a_refused" }`. Class comes from an explicit tool-name set (`prescribe`, `diagnose`, `file_return`, `submit_filing`, `commit_price`, `send_quote`) or from a mutating call whose connector kind is `stripe`, `shopify`, `paypal`, or `square`, or from `paid_request`.
-*   Any other mutating connector call (`connectorToolRequiresApproval`) returns `{ error: "phase2a_external_hold" }`.
-*   Reads, in-app `message_user`, and `web_fetch` are unchanged.
-*   Linked-chat mirroring does not enqueue.
+-   A tool whose class is `clinical`, `filing`, `payment`, or `price` returns `{ error: "phase2a_refused" }`. Class comes from an explicit tool-name set (`prescribe`, `diagnose`, `file_return`, `submit_filing`, `commit_price`, `send_quote`) or from a mutating call whose connector kind is `stripe`, `shopify`, `paypal`, or `square`, or from `paid_request`.
+-   Any other mutating connector call (`connectorToolRequiresApproval`) returns `{ error: "phase2a_external_hold" }`.
+-   Reads, in-app `message_user`, and `web_fetch` are unchanged.
+-   Linked-chat mirroring does not enqueue.
 
 The hold does not create a draft. Guessing the context from the run would attach a client the person did not name.
 
@@ -231,10 +231,10 @@ The hold does not create a draft. Guessing the context from the run would attach
 
 Authenticated procedures on `appContract`, implemented in `apps/api/src/routes/phase2a.ts` and registered from `apps/api/src/router.ts`. Each path is added to `exhaustiveProtectedCalls` in `packages/testkit/src/authorization.test.ts`.
 
-*   `phase2a/contexts/list`, `create`, `grant`, `revoke`
-*   `phase2a/records/list`, `create`, `resolve`
-*   `phase2a/links/create`
-*   `phase2a/drafts/list`, `create`, `edit`, `submit`, `approve`, `cancel`
+-   `phase2a/contexts/list`, `create`, `grant`, `revoke`
+-   `phase2a/records/list`, `create`, `resolve`
+-   `phase2a/links/create`
+-   `phase2a/drafts/list`, `create`, `edit`, `submit`, `approve`, `cancel`
 
 `records/list` and `drafts/list` require a `contextId`. There is no list across contexts.
 
@@ -244,11 +244,11 @@ Contracts live in `packages/contracts/src/phase2a.ts` and are exported from `pac
 
 `packages/core/src/phase2a-fixtures.ts` lists personal plus `abogados`, `notaria`, `arquitectura`, `contabilidad`, `clinica-dental`, `clinica-medica`, `inmobiliaria`, and `seguros`. Each entry has:
 
-*   a sector id taken from `ALMA_WORK_SECTORS` or `ALMA_PERSONAL_SECTOR`
-*   one refused `actionClass` (`clinical`, `filing`, `payment`, or `price`)
-*   two context ids and one record id that `visibleRecordIds` must hide when the other context is queried
-*   `proposedBudgetMs` copied from the backlog's proposed targets, with `sla: false`
-*   `activationEventName: null`
+-   a sector id taken from `ALMA_WORK_SECTORS` or `ALMA_PERSONAL_SECTOR`
+-   one refused `actionClass` (`clinical`, `filing`, `payment`, or `price`)
+-   two context ids and one record id that `visibleRecordIds` must hide when the other context is queried
+-   `proposedBudgetMs` copied from the backlog's proposed targets, with `sla: false`
+-   `activationEventName: null`
 
 `splitTiming({ modelMs, approvalWaitMs })` returns those two numbers separately. It does not add them into one latency.
 
@@ -270,24 +270,24 @@ Rollback is the flag off. Tables stay. The previous release never queries them.
 
 Unit, no database:
 
-*   Flag off for `""`, `"1"`, `"yes"`, `"TRUE"`. Flag on only for `"true"`. Delay bounds.
-*   Personal cannot parent or be shared. Client parent must be work in the same space.
-*   `visibleRecordIds` hides the other context, including personal versus work.
-*   Resolve of two titles is ambiguous and returns no body.
-*   Edit after approve clears the hash and the approver. Approve of a stale hash fails.
-*   Assistant cannot approve. Owner can approve their own draft. Reader cannot draft.
-*   Cancel of `approved` works. Cancel of `sent` returns `phase2a_already_sent` and the message has neither "recall" nor "delivered".
-*   Presenter never returns `delivered`. `approved` after the delay is still `waiting`.
-*   Hold is null when the flag is off, including `gmail_send_email`. Hold and refusal when on, as in Tool hold.
-*   Nine fixtures. No new activation event name. Timing is not summed.
-*   Canonical hash changes when the body, recipient, channel, or attachment id set changes. Reordering the same attachment ids does not change it.
+-   Flag off for `""`, `"1"`, `"yes"`, `"TRUE"`. Flag on only for `"true"`. Delay bounds.
+-   Personal cannot parent or be shared. Client parent must be work in the same space.
+-   `visibleRecordIds` hides the other context, including personal versus work.
+-   Resolve of two titles is ambiguous and returns no body.
+-   Edit after approve clears the hash and the approver. Approve of a stale hash fails.
+-   Assistant cannot approve. Owner can approve their own draft. Reader cannot draft.
+-   Cancel of `approved` works. Cancel of `sent` returns `phase2a_already_sent` and the message has neither "recall" nor "delivered".
+-   Presenter never returns `delivered`. `approved` after the delay is still `waiting`.
+-   Hold is null when the flag is off, including `gmail_send_email`. Hold and refusal when on, as in Tool hold.
+-   Nine fixtures. No new activation event name. Timing is not summed.
+-   Canonical hash changes when the body, recipient, channel, or attachment id set changes. Reordering the same attachment ids does not change it.
 
 Postgres, when `VERIFY_DATABASE=1`:
 
-*   Two users in one space. User B's list of user A's personal context is empty under user B's tenant context.
-*   A record in client A is not returned for client B.
-*   A thread linked to client A cannot be linked to client B.
-*   Conditional approve: a second approve matches zero rows.
+-   Two users in one space. User B's list of user A's personal context is empty under user B's tenant context.
+-   A record in client A is not returned for client B.
+-   A thread linked to client A cannot be linked to client B.
+-   Conditional approve: a second approve matches zero rows.
 
 `packages/testkit/src/authorization.test.ts` lists the new procedures so an unauthenticated call is rejected.
 
@@ -299,12 +299,12 @@ Rollback is setting `ALMA_PHASE2A` to anything other than `true` and restarting 
 
 ## Out of scope, as follow-ups
 
-*   MF02 / IN04: format validation beyond the existing upload allowlist, OCR, provenance, spreadsheet and statement columns, missing-document checklists.
-*   TE01 remainder: invitations, expiry, field-level rights, supervised handoff of tasks.
-*   Queue UI on web and phone, then the flag may be considered for a staging deploy.
-*   A sender that claims `approved` rows after `dispatchAfter`, calls a provider, and records `sent`, `failed`, or `unknown`. Still no `delivered`. Still no recall.
-*   Prose refusal with a versioned rubric. Not a keyword list.
-*   UX03 measurement into the existing activation events, only if D08 still allows that payload. Do not add a parallel table.
+-   MF02 / IN04: format validation beyond the existing upload allowlist, OCR, provenance, spreadsheet and statement columns, missing-document checklists.
+-   TE01 remainder: invitations, expiry, field-level rights, supervised handoff of tasks.
+-   Queue UI on web and phone, then the flag may be considered for a staging deploy.
+-   A sender that claims `approved` rows after `dispatchAfter`, calls a provider, and records `sent`, `failed`, or `unknown`. Still no `delivered`. Still no recall.
+-   Prose refusal with a versioned rubric. Not a keyword list.
+-   UX03 measurement into the existing activation events, only if D08 still allows that payload. Do not add a parallel table.
 
 ## Owner decision
 
@@ -320,47 +320,47 @@ With the switch on, a mutating connector call returns `phase2a_external_hold` an
 
 ### Decision
 
-*   Remove `phase2a_external_hold`. That does not add a new gate. A mutating connector call follows the existing approval card, including auto and allow rules, except tools that still return `phase2a_refused`. Clinical, filing, payment, and price tools stay refused.
-*   Restore linked-chat mirroring. It follows today's messaging delivery, not `outbound_drafts`. Skipping it dropped replies the queue does not show.
-*   Do not turn a connector call into a draft by guessing the client. Replaying an approved draft through a connector stays a later increment. This increment does not call a provider and does not mark a draft sent.
-*   `MeSchema` gains optional `phase2aEnabled`. `meDto` sets it from `deps.env.phase2aEnabled`. Older servers omit it. The queue is hidden when it is not true.
+-   Remove `phase2a_external_hold`. That does not add a new gate. A mutating connector call follows the existing approval card, including auto and allow rules, except tools that still return `phase2a_refused`. Clinical, filing, payment, and price tools stay refused.
+-   Restore linked-chat mirroring. It follows today's messaging delivery, not `outbound_drafts`. Skipping it dropped replies the queue does not show.
+-   Do not turn a connector call into a draft by guessing the client. Replaying an approved draft through a connector stays a later increment. This increment does not call a provider and does not mark a draft sent.
+-   `MeSchema` gains optional `phase2aEnabled`. `meDto` sets it from `deps.env.phase2aEnabled`. Older servers omit it. The queue is hidden when it is not true.
 
 ### Screen
 
 Web route `/app/queue`, opened from the account menu item Queue. Do not reuse the onboarding item Your work. Phone route `queue` inside Account settings. The same actions on both:
 
-*   Show New draft and Submit only when the person's role on the context is `owner`, `professional`, or `assistant`. Show Approve only for `owner` or `professional`, and not when an assistant would be approving their own draft. Save and Cancel follow the same write roles, and only on a draft that can still change.
-*   Client contexts are not created here. The form creates `personal` or `work` only. New drafts send no attachments.
+-   Show New draft and Submit only when the person's role on the context is `owner`, `professional`, or `assistant`. Show Approve only for `owner` or `professional`, and not when an assistant would be approving their own draft. Save and Cancel follow the same write roles, and only on a draft that can still change.
+-   Client contexts are not created here. The form creates `personal` or `work` only. New drafts send no attachments.
 
-*   List contexts the person can see. Creating one is a name plus Personal or Work.
-*   The selected context lists its drafts. Each row shows the recipient, the channel, the full text, and the delivery label. The label never says delivered.
-*   A new draft needs a recipient, a channel (`email`, `whatsapp`, or `other`), and the text. It is saved as `draft`.
-*   Submit moves `draft` to `pending`. Approve is only on `pending`. Save edits the recipient or the text and returns an approved or pending draft to `draft`. Cancel is only on `pending` or `approved`.
-*   A sent draft has no cancel control. The server error `phase2a_already_sent` is shown as the code's own words, which do not say recall or delivered.
+-   List contexts the person can see. Creating one is a name plus Personal or Work.
+-   The selected context lists its drafts. Each row shows the recipient, the channel, the full text, and the delivery label. The label never says delivered.
+-   A new draft needs a recipient, a channel (`email`, `whatsapp`, or `other`), and the text. It is saved as `draft`.
+-   Submit moves `draft` to `pending`. Approve is only on `pending`. Save edits the recipient or the text and returns an approved or pending draft to `draft`. Cancel is only on `pending` or `approved`.
+-   A sent draft has no cancel control. The server error `phase2a_already_sent` is shown as the code's own words, which do not say recall or delivered.
 
 Copy, and why a label is not enough:
 
-| English | Spanish | Why it is there |
-| --- | --- | --- |
-| Queue | Cola | Names the screen. A blank header does not say what the list is. |
-| Nothing waiting | Nada en espera | The empty list. Hiding the list would look like a failed load. |
-| Recipient | Destinatario | Names the field. The placeholder alone is not a label. |
-| New draft | Nuevo borrador | Names the form. |
-| Personal | Personal | Already used for the sector choice. |
-| Work | Trabajo | Already used for the sector choice. |
-| Approve | Aprobar | Already used on approval cards. |
-| Submit | Enviar | Already used. Here it means hand the draft over for approval, not send it out. |
-| Save | Guardar | Already used. |
-| Cancel | Cancelar | Already used. |
+| English         | Spanish        | Why it is there                                                                |
+| --------------- | -------------- | ------------------------------------------------------------------------------ |
+| Queue           | Cola           | Names the screen. A blank header does not say what the list is.                |
+| Nothing waiting | Nada en espera | The empty list. Hiding the list would look like a failed load.                 |
+| Recipient       | Destinatario   | Names the field. The placeholder alone is not a label.                         |
+| New draft       | Nuevo borrador | Names the form.                                                                |
+| Personal        | Personal       | Already used for the sector choice.                                            |
+| Work            | Trabajo        | Already used for the sector choice.                                            |
+| Approve         | Aprobar        | Already used on approval cards.                                                |
+| Submit          | Enviar         | Already used. Here it means hand the draft over for approval, not send it out. |
+| Save            | Guardar        | Already used.                                                                  |
+| Cancel          | Cancelar       | Already used.                                                                  |
 
 Channel values stay `email`, `whatsapp`, and `other` as the control's own words. No extra sentence explains them.
 
 ### Tests
 
-*   The hold test expects `gmail_send_email` to be allowed when the switch is on. `prescribe`, `file_return`, `commit_price`, `paid_request`, and a mutating Stripe call stay refused.
-*   A web render test opens the queue with one waiting draft, approves it, and does not render the word delivered. Web strings go through the Lingui catalogs.
-*   A phone render test does the same. Every new `t()` id is added to the seven non-English catalogs under `apps/mobile/lib/locales/` (`es`, `de`, `nl`, `ja`, `ru`, `zh`, `zh-TW`).
-*   With the switch off, `me.phase2aEnabled` is absent or false and the account row is not rendered.
+-   The hold test expects `gmail_send_email` to be allowed when the switch is on. `prescribe`, `file_return`, `commit_price`, `paid_request`, and a mutating Stripe call stay refused.
+-   A web render test opens the queue with one waiting draft, approves it, and does not render the word delivered. Web strings go through the Lingui catalogs.
+-   A phone render test does the same. Every new `t()` id is added to the seven non-English catalogs under `apps/mobile/lib/locales/` (`es`, `de`, `nl`, `ja`, `ru`, `zh`, `zh-TW`).
+-   With the switch off, `me.phase2aEnabled` is absent or false and the account row is not rendered.
 
 ### Out of scope
 

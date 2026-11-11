@@ -1,19 +1,19 @@
 # DeepSeek as the operator model
 
-*   **Status:** In Review
-*   **Date:** 2026-11-04
+-   **Status:** In Review
+-   **Date:** 2026-11-04
 
 The operator can run the managed chat model on Pi against DeepSeek (`https://api.deepseek.com`, model id `deepseek-flash`, catalog label DeepSeek V4.1 Flash) instead of Grok Build. Grok Build stays the runtime when `ALMA_MODEL_RUNTIME` is unset. Voice stays on xAI.
 
 ## Environment
 
-| Variable | Meaning |
-| --- | --- |
-| `ALMA_MODEL_RUNTIME` | `grok-build` when unset. `pi` runs the caller's Pi runtime. Any other id still fails closed. |
-| `PI_DEFAULT_PROVIDER` | `deepseek` selects DeepSeek's key. |
-| `PI_DEFAULT_MODEL` | Model id. For `deepseek`, unset means `deepseek-flash`. |
-| `DEEPSEEK_API_KEY` | Deployment key for provider `deepseek`. Not a user credential. |
-| `XAI_API_KEY` | Unchanged. Operator speech-to-text, and the Grok Build fallback. DeepSeek does not replace it. |
+| Variable              | Meaning                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| `ALMA_MODEL_RUNTIME`  | `grok-build` when unset. `pi` runs the caller's Pi runtime. Any other id still fails closed.   |
+| `PI_DEFAULT_PROVIDER` | `deepseek` selects DeepSeek's key.                                                             |
+| `PI_DEFAULT_MODEL`    | Model id. For `deepseek`, unset means `deepseek-flash`.                                        |
+| `DEEPSEEK_API_KEY`    | Deployment key for provider `deepseek`. Not a user credential.                                 |
+| `XAI_API_KEY`         | Unchanged. Operator speech-to-text, and the Grok Build fallback. DeepSeek does not replace it. |
 
 `ALMA_MANAGED_MODEL` is unchanged. `0`, `false`, `no`, and `off` restore per-user keys.
 

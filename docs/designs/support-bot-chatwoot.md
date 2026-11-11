@@ -11,7 +11,7 @@ Non-goals: AI triage or Chatwoot Captain inside ALMA; agents seeing the user's o
 ## 2. Terms
 
 - **Support bot**: a `Bot` row with `kind = "support"`. There is exactly one per user per space.
-- **Chatwoot inbox**: a new inbox of type *API channel* in account 178581, named, for example, "ALMA App". It is created only after Damien's OK. The 8 inboxes that exist today are WhatsApp, email, website widget, and Facebook, and none of them is an API channel.
+- **Chatwoot inbox**: a new inbox of type _API channel_ in account 178581, named, for example, "ALMA App". It is created only after Damien's OK. The 8 inboxes that exist today are WhatsApp, email, website widget, and Facebook, and none of them is an API channel.
 - **Contact**: a Chatwoot contact whose `identifier` is the ALMA user id.
 - **Support conversation**: the single Chatwoot conversation for one ALMA user. Its id is stored on our side.
 
@@ -62,6 +62,7 @@ Commands like `/` skills, `@` mentions, voice-mode AI calls, and Stop do nothing
 ## 8. UI (web, desktop, mobile)
 
 When `kind === "support"`:
+
 - The header shows the translated name and a headset icon, with no model or thinking-level picker.
 - These are hidden: the computer panel, Stop, call/voice-AI button, skills `/`, `@` mentions, "Report AI answer", regenerate, routines, instructions, memory, and bot settings. Composer, attach, and hold-to-dictate stay. Dictation becomes text before sending.
 - An empty-chat hint, `support.emptyHint`, reads: "Write to the ALMA team. A person will reply here." In Spanish: "Escribe al equipo de ALMA. Una persona te responderá aquí."
@@ -71,13 +72,13 @@ When `kind === "support"`:
 
 New keys, at least in en and es, in the web Lingui catalogs (`apps/web/src/locales/*/messages.po`) and in `apps/mobile/locales/*.json`. Other locales fall back to en.
 
-| key | en | es |
-|---|---|---|
-| support.botName | Support | Soporte |
-| support.emptyHint | Write to the ALMA team. A person will reply here. | Escribe al equipo de ALMA. Una persona te responderá aquí. |
-| support.notDelivered | Not delivered. Tap to retry. | No enviado. Toca para reintentar. |
-| support.locked | The Support chat can't be removed. | El chat de Soporte no se puede eliminar. |
-| support.pushTitle | Support | Soporte |
+| key                  | en                                                | es                                                         |
+| -------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| support.botName      | Support                                           | Soporte                                                    |
+| support.emptyHint    | Write to the ALMA team. A person will reply here. | Escribe al equipo de ALMA. Una persona te responderá aquí. |
+| support.notDelivered | Not delivered. Tap to retry.                      | No enviado. Toca para reintentar.                          |
+| support.locked       | The Support chat can't be removed.                | El chat de Soporte no se puede eliminar.                   |
+| support.pushTitle    | Support                                           | Soporte                                                    |
 
 Server-side push text uses the user's saved locale.
 
@@ -98,14 +99,17 @@ Support chats are stored in **Chatwoot cloud (app.chatwoot.com), outside the Dom
 **Proposed wording (PENDING DAMIEN'S APPROVAL; do not publish until approved):**
 
 Privacy policy, new paragraph. Goes into `apps/www/src/pages/privacy.astro` and the store privacy page.
+
 - ES: "Tu trabajo jurídico, tus documentos y tus conversaciones con el asistente ALMA se procesan y almacenan únicamente en la República Dominicana. Si escribes en el chat de Soporte, ese mensaje, los archivos que adjuntes, tu nombre y tu correo se envían a Chatwoot (Chatwoot Inc.), nuestro proveedor de atención al cliente, que los almacena fuera de la República Dominicana solo para responderte. No compartas información confidencial de tus casos en el chat de Soporte."
 - EN: "Your legal work, documents and conversations with the ALMA assistant are processed and stored only in the Dominican Republic. If you write in the Support chat, that message, any files you attach, your name and your email are sent to Chatwoot (Chatwoot Inc.), our customer support provider, which stores them outside the Dominican Republic only to answer you. Please don't share confidential case information in the Support chat."
 
 Marketing and store claim, replacing "data processed in the DR only":
+
 - ES: "Tus casos y documentos se procesan solo en la República Dominicana."
 - EN: "Your cases and documents are processed only in the Dominican Republic."
 
 In-app note under the support empty-chat hint, key `support.privacyNote`:
+
 - ES: "Los mensajes de Soporte se gestionan con Chatwoot, fuera de RD. No incluyas datos confidenciales de casos."
 - EN: "Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details."
 
@@ -157,6 +161,7 @@ The account-deletion and data-export flows (`apps/api/src/account-deletion.ts`, 
 ## 16. Effort
 
 About 4–5 working days of agent time:
+
 - Server and data model: 2 days.
 - UI on web, desktop, and mobile: 1–1.5 days.
 - Tests and backfill: 1 day.

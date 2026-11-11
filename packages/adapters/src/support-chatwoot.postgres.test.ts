@@ -8,8 +8,7 @@ import type { SupportChatwootConfig } from "./support-chatwoot.js";
 import { acceptSupportReply, forwardSupportMessage } from "./support-chatwoot.js";
 
 const databaseUrl = process.env.DATABASE_URL;
-const describePostgres =
-  process.env.VERIFY_DATABASE && databaseUrl ? describe.sequential : describe.skip;
+const describePostgres = process.env.VERIFY_DATABASE && databaseUrl ? describe : describe.skip;
 
 describePostgres("support chat round trip (PostgreSQL)", () => {
   let prisma: PrismaClient;

@@ -1,8 +1,8 @@
+import { useLingui } from "@lingui/react/macro";
 import type { OutboundDraft, WorkContext } from "@rakazo/contracts";
 import { queueDraftActions, undoCountdown } from "@rakazo/core";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { useI18n } from "./i18n";
 
 const channels = ["email", "whatsapp", "other"] as const;
 
@@ -35,7 +35,7 @@ export function ApprovalQueue({
   onCancel: (id: string) => void;
   sendUndo?: boolean;
 }) {
-  const { t } = useI18n();
+  const { t } = useLingui();
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [body, setBody] = useState("");
@@ -52,7 +52,7 @@ export function ApprovalQueue({
     }).compose;
   return (
     <View>
-      <Text>{t("Queue")}</Text>
+      <Text>{t`Queue`}</Text>
       {contexts.map((item) => (
         <Pressable
           key={item.id}
@@ -62,7 +62,7 @@ export function ApprovalQueue({
           <Text>{item.label}</Text>
         </Pressable>
       ))}
-      <TextInput accessibilityLabel={t("Name")} value={name} onChangeText={setName} />
+      <TextInput accessibilityLabel={t`Name`} value={name} onChangeText={setName} />
       <Pressable
         accessibilityRole="button"
         onPress={() => {
@@ -71,7 +71,7 @@ export function ApprovalQueue({
           onCreateContext("personal", label);
         }}
       >
-        <Text>{t("Personal")}</Text>
+        <Text>{t`Personal`}</Text>
       </Pressable>
       <Pressable
         accessibilityRole="button"
@@ -81,13 +81,13 @@ export function ApprovalQueue({
           onCreateContext("work", label);
         }}
       >
-        <Text>{t("Work")}</Text>
+        <Text>{t`Work`}</Text>
       </Pressable>
       {compose ? (
         <View>
-          <Text>{t("New draft")}</Text>
+          <Text>{t`New draft`}</Text>
           <TextInput
-            accessibilityLabel={t("Recipient")}
+            accessibilityLabel={t`Recipient`}
             value={recipient}
             onChangeText={setRecipient}
           />
@@ -96,7 +96,7 @@ export function ApprovalQueue({
               <Text>{value}</Text>
             </Pressable>
           ))}
-          <TextInput accessibilityLabel={t("Message")} value={body} onChangeText={setBody} />
+          <TextInput accessibilityLabel={t`Message`} value={body} onChangeText={setBody} />
           <Pressable
             accessibilityRole="button"
             onPress={() => {
@@ -104,11 +104,11 @@ export function ApprovalQueue({
               onCreateDraft({ recipient: recipient.trim(), channel, body });
             }}
           >
-            <Text>{t("Save")}</Text>
+            <Text>{t`Save`}</Text>
           </Pressable>
         </View>
       ) : null}
-      {context && drafts.length === 0 ? <Text>{t("Nothing waiting")}</Text> : null}
+      {context && drafts.length === 0 ? <Text>{t`Nothing waiting`}</Text> : null}
       {context
         ? drafts.map((draft) => {
             const actions = queueDraftActions({
@@ -126,23 +126,23 @@ export function ApprovalQueue({
                 <Text>{draft.body}</Text>
                 {actions.submit ? (
                   <Pressable accessibilityRole="button" onPress={() => onSubmit(draft.id)}>
-                    <Text>{t("Submit")}</Text>
+                    <Text>{t`Submit`}</Text>
                   </Pressable>
                 ) : null}
                 {actions.approve ? (
                   <Pressable accessibilityRole="button" onPress={() => onApprove(draft.id)}>
-                    <Text>{t("Approve")}</Text>
+                    <Text>{t`Approve`}</Text>
                   </Pressable>
                 ) : null}
                 {actions.cancel ? (
                   <Pressable accessibilityRole="button" onPress={() => onCancel(draft.id)}>
                     <Text>
                       {sendUndo && draft.status === "approved"
-                        ? `${t("Undo")}${(() => {
+                        ? `${t`Undo`}${(() => {
                             const seconds = undoCountdown(draft.dispatchAfter, new Date());
                             return seconds !== null && seconds > 0 ? ` ${seconds}s` : "";
                           })()}`
-                        : t("Cancel")}
+                        : t`Cancel`}
                     </Text>
                   </Pressable>
                 ) : null}

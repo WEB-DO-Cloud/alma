@@ -1,5 +1,7 @@
 import type { VoiceStatus } from "@rakazo/contracts";
-import { XAI_TTS_VOICE } from "./xai-voice.js";
+import { XAI_VOICE_PROVIDER_ID } from "./xai-voice.js";
+
+const MANAGED_VOICE_ID = "eve";
 
 export interface ManagedVoiceConfig {
   enabled: boolean;
@@ -11,8 +13,8 @@ export interface ManagedVoiceConfig {
 export function resolveManagedVoice(env: NodeJS.ProcessEnv = process.env): ManagedVoiceConfig {
   const provider = env.ALMA_VOICE_PROVIDER?.trim().toLowerCase();
   return {
-    enabled: provider === "xai",
-    provider: "xai",
+    enabled: provider === XAI_VOICE_PROVIDER_ID,
+    provider: XAI_VOICE_PROVIDER_ID,
     apiKey: env.XAI_API_KEY?.trim() || undefined,
   };
 }
@@ -34,6 +36,6 @@ export function managedVoiceStatus(env: NodeJS.ProcessEnv = process.env): VoiceS
     ready: true,
     transcribe: true,
     provider: null,
-    voiceId: XAI_TTS_VOICE,
+    voiceId: MANAGED_VOICE_ID,
   };
 }

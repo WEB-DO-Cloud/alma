@@ -1,14 +1,16 @@
+import { useLingui } from "@lingui/react/macro";
 import { ALMA_WORK_SECTORS, almaLanguage, almaText } from "@rakazo/contracts";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { rpc } from "../lib/api";
-import { useI18n } from "../lib/i18n";
+import { useUiLocale } from "../lib/i18n";
 import { useMobileTokens } from "../lib/native";
 
 /** Personal use first, then a sector. Skip leaves the assistant unchanged. */
 export default function SectorStart() {
-  const { locale, t } = useI18n();
+  const { t } = useLingui();
+  const locale = useUiLocale();
   const tokens = useMobileTokens();
   const router = useRouter();
   const language = almaLanguage(locale);
@@ -37,13 +39,13 @@ export default function SectorStart() {
       style={{ flex: 1, backgroundColor: tokens.background }}
     >
       <Text style={{ color: tokens.foreground, fontSize: 28, fontWeight: "500" }}>
-        {step === "use" ? t("What do you want ALMA for first?") : t("What kind of work?")}
+        {step === "use" ? t`What do you want ALMA for first?` : t`What kind of work?`}
       </Text>
       {step === "sector" ? (
         <TextInput
           value={query}
           onChangeText={setQuery}
-          accessibilityLabel={t("Search")}
+          accessibilityLabel={t`Search`}
           style={{
             color: tokens.foreground,
             borderColor: tokens.border,
@@ -56,11 +58,11 @@ export default function SectorStart() {
       {step === "use" ? (
         <>
           <Choice
-            label={t("Personal use")}
+            label={t`Personal use`}
             disabled={pending}
             onPress={() => void save("personal")}
           />
-          <Choice label={t("Work")} disabled={pending} onPress={() => setStep("sector")} />
+          <Choice label={t`Work`} disabled={pending} onPress={() => setStep("sector")} />
         </>
       ) : (
         rows.map((sector) => (
@@ -72,7 +74,7 @@ export default function SectorStart() {
           />
         ))
       )}
-      <Choice label={t("Skip")} disabled={pending} onPress={() => void save("skip")} />
+      <Choice label={t`Skip`} disabled={pending} onPress={() => void save("skip")} />
     </ScrollView>
   );
 }

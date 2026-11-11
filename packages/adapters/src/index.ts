@@ -4,7 +4,11 @@ export * from "./agent-environment.js";
 export * from "./agent-import-settings.js";
 export * from "./ai-consent.js";
 export type { ApnsVoipConfig } from "./apns-voip.js";
-export { apnsVoipConfig, createApnsVoipProvider } from "./apns-voip-config.js";
+export {
+  apnsVoipConfig,
+  createApnsActivityProvider,
+  createApnsVoipProvider,
+} from "./apns-voip-config.js";
 export * from "./artifact-store-factory.js";
 export * from "./artifacts.js";
 export * from "./audit-forwarding.js";
@@ -155,6 +159,7 @@ export * from "./openai-voice.js";
 export * from "./openrouter-usage.js";
 export * from "./page-browser-session.js";
 export * from "./page-share-secrets.js";
+export * from "./paid-services-factory.js";
 export * from "./parallel-web.js";
 export * from "./payment-wallet-factory.js";
 export * from "./payment-wallets.js";
@@ -185,6 +190,7 @@ export * from "./remote-mcp.js";
 export * from "./resend-email.js";
 export { finishRoutineHandover } from "./routine-handover.js";
 export * from "./routine-watch.js";
+export { notifyMemberMessage } from "./run-notifications.js";
 export * from "./run-runtime.js";
 export * from "./run-secret.js";
 export * from "./run-wakeup.js";
@@ -225,10 +231,12 @@ export * from "./user-device-emulator.js";
 export * from "./user-device-gateway.js";
 export * from "./user-device-protocol.js";
 export * from "./voice-factory.js";
+export * from "./voice-model-connection.js";
 export * from "./wakeup.js";
 export * from "./web-limits.js";
 export * from "./web-provider-factory.js";
 export * from "./web-ssrf.js";
 export * from "./web-tools.js";
+export * from "./work-activity.js";
 export * from "./wrapped-env.js";
 export * from "./xai-voice.js";

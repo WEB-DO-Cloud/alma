@@ -12,6 +12,7 @@ export * from "./board.js";
 export * from "./board-live.js";
 export * from "./bootstrap-user.js";
 export * from "./bot-email-address.js";
+export * from "./bot-email-sends.js";
 export * from "./bot-instructions.js";
 export * from "./bot-update.js";
 export * from "./cancel-runs.js";
@@ -29,7 +30,12 @@ export * from "./cross-space-communication.js";
 export * from "./database-access.js";
 export * from "./deferred-migrations.js";
 export * from "./digest-store.js";
-export { eventsAfter, followThreadEvents, notifyRealtime } from "./event-stream.js";
+export {
+  eventsAfter,
+  followThreadEvents,
+  notifyRealtime,
+  observeThreadChanges,
+} from "./event-stream.js";
 export * from "./events.js";
 export * from "./expire-stuck-run.js";
 export * from "./external-conversations.js";
@@ -39,6 +45,7 @@ export * from "./memory-config.js";
 export * from "./messages.js";
 export * from "./messaging.js";
 export * from "./model-credentials.js";
+export * from "./model-credit-cap.js";
 export * from "./model-credits.js";
 export * from "./model-roles.js";
 export * from "./monthly-report-store.js";
@@ -65,6 +72,7 @@ export * from "./spending.js";
 export * from "./support-bot.js";
 export * from "./thread-ask.js";
 export { primaryActiveRun } from "./thread-listing.js";
+export * from "./thread-reads.js";
 export type { ClaimedSteeringMessage, ClaimSteeringInput } from "./thread-steering.js";
 export {
   claimSteering,
