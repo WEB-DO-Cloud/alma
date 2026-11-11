@@ -4631,6 +4631,11 @@ msgstr "Documentación"
 msgid "Document changed. Reopen to edit the latest version."
 msgstr "El documento ha cambiado. Vuelve a abrirlo para editar la última versión."
 
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+msgid "Don't include confidential details."
+msgstr "No incluyas datos confidenciales."
+
 #: apps/mobile/app/sign-in.tsx
 #: apps/web/src/pages/Auth.tsx
 msgid "Don’t have an account?"

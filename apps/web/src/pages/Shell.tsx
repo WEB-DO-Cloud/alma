@@ -1230,7 +1230,7 @@ function SpaceShell() {
               <div className="pointer-events-auto px-6 pb-3 text-center text-body-sm text-muted-foreground">
                 <p>{t`Write to the ALMA team. A person will reply here.`}</p>
                 <p className="mt-1">
-                  {t`Support messages are handled through Chatwoot, outside the DR. Don't include confidential case details.`}
+                  {t`Don't include confidential details.`}
                 </p>
               </div>
             ) : null}
