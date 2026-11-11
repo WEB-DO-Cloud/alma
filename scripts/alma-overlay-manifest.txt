@@ -661,6 +661,7 @@ overlay infra/compose/install-images-pull-never.smoke.sh
 overlay infra/compose/install-images.sh
 overlay infra/compose/restrict-computer-egress.sh
 overlay infra/compose/restrict-computer-egress.smoke.sh
+overlay infra/preview/start.sh
 overlay infra/railway/README.md
 overlay infra/sandboxes/computer/Dockerfile
 overlay infra/sandboxes/computer/control.py
@@ -860,6 +861,7 @@ overlay packages/core/src/model-providers.ts
 overlay packages/core/src/monthly-report-pdf.ts
 overlay packages/core/src/monthly-report.test.ts
 overlay packages/core/src/monthly-report.ts
+overlay packages/core/src/node/desktop-runtime.ts
 overlay packages/core/src/node/phase2a-hash.ts
 overlay packages/core/src/node/terminal-server.ts
 overlay packages/core/src/notify-policy.test.ts

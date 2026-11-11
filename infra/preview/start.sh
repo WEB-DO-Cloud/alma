@@ -89,7 +89,11 @@ SQL
 }
 
 shutdown() {
-  kill $(jobs -pr) 2> /dev/null || true
+  local pid
+  for pid in $(jobs -pr); do
+    kill "$pid" 2> /dev/null || true
+    kill -KILL "$pid" 2> /dev/null || true
+  done
   wait || true
   stop_database
 }

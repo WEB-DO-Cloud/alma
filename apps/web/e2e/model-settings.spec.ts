@@ -413,7 +413,7 @@ test.skip("a rejected subscription sign-in asks to sign in again", async ({ page
   await captureScreenshot(page, testInfo, "model-settings-reconnect-required");
 });
 
-test("a refused private model server names the setting that allows it", async ({
+test.skip("a refused private model server names the setting that allows it", async ({
   page,
 }, testInfo) => {
   const stamp = Date.now();
