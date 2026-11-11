@@ -1459,10 +1459,6 @@ msgstr "正在呼叫…"
 msgid "Calls"
 msgstr "调用"
 
-#: src/components/QuickActions.tsx
-msgid "Camera"
-msgstr ""
-
 #: src/components/pages/SharePopover.tsx
 msgid "Can view without signing in"
 msgstr ""
@@ -6606,7 +6602,6 @@ msgstr "形状 {0}"
 
 #: src/components/pages/PagesList.tsx
 #: src/components/pages/SharePopover.tsx
-#: src/components/QuickActions.tsx
 #: src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr ""
@@ -7865,10 +7860,6 @@ msgstr "查看源代码"
 #: src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "语音"
-
-#: src/components/QuickActions.tsx
-msgid "Voice note"
-msgstr ""
 
 #: src/lib/tts.ts
 msgid "Voice request timed out."
