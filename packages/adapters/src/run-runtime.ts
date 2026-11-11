@@ -22,7 +22,8 @@ import { deploymentModelUsageLookup, resolveDeploymentModel } from "./deployment
 import { createRunExecutor } from "./executor.js";
 import type { ExecutorDeps } from "./executor-deps.js";
 import { ExpoPushProvider } from "./expo-push.js";
-import { googleRunAuthConfigs } from "./google-oauth.js";
+import { deploymentGoogleClientId, googleRunAuthConfigs } from "./google-oauth.js";
+import { GoogleWorkspaceConnector, googleWorkspaceClient } from "./google-workspace.js";
 import type { RemoteConnectorDependencies } from "./installed-connectors.js";
 import { InstalledConnectorProvider } from "./installed-connectors.js";
 import { IntegrationProviderSettings } from "./integration-provider-settings.js";
@@ -54,6 +55,10 @@ export interface RunRuntimeEnv extends PipedreamEnvironmentValues {
   composioApiKey: string | undefined;
   /** ALMA_GOOGLE_BYO_OAUTH is exactly true. Off leaves Google sign-in unchanged. */
   googleByoOauth?: boolean;
+  /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client id. */
+  googleOAuthClientId?: string;
+  /** Browser origin. The Google redirect is this origin plus /mcp/oauth/callback. */
+  webOrigin?: string;
   cursorApiKey: string | undefined;
   deploymentModelKey: string | undefined;
   deploymentModelConfigured: boolean;
@@ -80,6 +85,8 @@ export function runRuntimeEnvFromProcess(source: NodeJS.ProcessEnv): RunRuntimeE
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
+    googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
+    webOrigin: source.WEB_ORIGIN?.trim() || undefined,
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: deploymentModel.key,
     deploymentModelConfigured: deploymentModel.configured,
@@ -119,6 +126,12 @@ export function createConnectorRuntime(
 ) {
   const { prisma, secrets } = deps;
   const { network, composio } = overrides;
+  const workspace = googleWorkspaceClient({
+    clientId: env.googleOAuthClientId,
+    presets: env.mcpOAuthPresets ?? [],
+    webOrigin: env.webOrigin,
+  });
+  const google = workspace ? new GoogleWorkspaceConnector(prisma, secrets, workspace) : undefined;
   const mcpOAuth = new McpOAuthBroker(
     prisma,
     secrets,
@@ -136,6 +149,7 @@ export function createConnectorRuntime(
       network,
       events: deps.events,
       allowPrivateEndpoint: env.mcpAllowPrivateEndpoint,
+      blockWorkspacePreview: Boolean(google),
     },
     mcpOAuth,
   );
@@ -161,7 +175,11 @@ export function createConnectorRuntime(
       composio:
         composio ??
         (isComposioEnabled(env.composioApiKey)
-          ? new ComposioConnector({ apiKey: env.composioApiKey, authConfigIdsFor })
+          ? new ComposioConnector({
+              apiKey: env.composioApiKey,
+              authConfigIdsFor,
+              omitWorkspaceCatalog: Boolean(google),
+            })
           : undefined),
       pipedream,
     },
@@ -169,6 +187,7 @@ export function createConnectorRuntime(
     authConfigIdsFor,
   );
   const stack = createConnectorStack(composio, [
+    ...(google ? [google] : []),
     installed,
     ...integrationSettings
       .providers()

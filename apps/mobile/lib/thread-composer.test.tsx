@@ -197,7 +197,15 @@ vi.mock("react-native", () => {
   };
 });
 vi.mock("@expo/ui/community/menu", () => ({
-  MenuView: ({ children }: { children?: ReactNode }) => children,
+  MenuView: ({ actions, children }: { actions?: Array<{ title: string }>; children?: ReactNode }) =>
+    createElement(
+      "div",
+      { "data-testid": "attach-menu" },
+      actions?.map((action) =>
+        createElement("button", { key: action.title, type: "button" }, action.title),
+      ),
+      children,
+    ),
 }));
 vi.mock("../components/glass-surface", () => ({
   GlassSurface: ({
@@ -361,6 +369,22 @@ describe("thread composer isolation", () => {
   function field() {
     return container.querySelector("input")!;
   }
+
+  it("keeps Camera in the attach menu and does not show Share or Voice note", () => {
+    render({
+      attachActions: [
+        { id: "library", title: "Photo library" },
+        { id: "camera", title: "Camera" },
+        { id: "file", title: "File" },
+      ],
+    });
+    const labels = [...container.querySelectorAll("button")].map(
+      (button) => button.textContent?.trim() || "",
+    );
+    expect(labels).toEqual(expect.arrayContaining(["Camera", "Photo library", "File"]));
+    expect(labels).not.toContain("Share");
+    expect(labels).not.toContain("Voice note");
+  });
 
   it("tints a completed mention inline instead of drawing a chip beside the input", () => {
     type("ask @He");

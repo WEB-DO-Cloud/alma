@@ -247,7 +247,10 @@ overlay apps/mobile/lib/client-update.test.ts
 overlay apps/mobile/lib/client-update.ts
 overlay apps/mobile/lib/endpoint.test.ts
 overlay apps/mobile/lib/endpoint.ts
+overlay apps/mobile/lib/incoming-share.test.ts
+overlay apps/mobile/lib/incoming-share.ts
 overlay apps/mobile/lib/integrations-screen.test.tsx
+overlay apps/mobile/lib/ios-signing.test.ts
 overlay apps/mobile/lib/message-context-menu.test.ts
 overlay apps/mobile/lib/message-context-menu.ts
 overlay apps/mobile/lib/messaging-screen.test.tsx
@@ -355,7 +358,6 @@ overlay apps/web/src/components/GitHubStarPrompt.tsx
 overlay apps/web/src/components/McpServerHealthLine.test.tsx
 overlay apps/web/src/components/McpServerHealthLine.tsx
 overlay apps/web/src/components/ModelCredits.tsx
-overlay apps/web/src/components/QuickActions.tsx
 overlay apps/web/src/components/SendUndoBar.tsx
 overlay apps/web/src/components/SidebarFooter.test.tsx
 overlay apps/web/src/components/SidebarFooter.tsx
@@ -378,7 +380,6 @@ overlay apps/web/src/lib/user-error.ts
 overlay apps/web/src/novnc-html.test.ts
 overlay apps/web/src/novnc-html.ts
 overlay apps/web/src/pages/AccountSettingsOverlay.tsx
-overlay apps/web/src/pages/ActionsPreviewPage.tsx
 overlay apps/web/src/pages/Auth.test.tsx
 overlay apps/web/src/pages/Auth.tsx
 overlay apps/web/src/pages/BotContextMenu.tsx
@@ -424,6 +425,7 @@ overlay apps/web/src/pages/shell/bot-panel.test.tsx
 overlay apps/web/src/pages/shell/bot-panel.tsx
 overlay apps/web/src/pages/shell/chat-context-menu.tsx
 overlay apps/web/src/pages/shell/chat-header.tsx
+overlay apps/web/src/pages/shell/composer-chips.test.tsx
 overlay apps/web/src/pages/shell/composer-error.tsx
 overlay apps/web/src/pages/shell/composer.tsx
 overlay apps/web/src/pages/shell/create-bot-dialog.test.tsx
@@ -595,6 +597,7 @@ overlay docs/context-and-evals-tasks.md
 overlay docs/designs/2026-10-31-store-release-signing.md
 overlay docs/designs/2026-11-03-alma-batch.md
 overlay docs/designs/2026-11-07-takeover-screen.md
+overlay docs/designs/2026-11-11-ios-signing-targets.md
 overlay docs/designs/alma-desktop-local-memory.md
 overlay docs/designs/alma-managed-model.md
 overlay docs/designs/alma-managed-voice-calls.md
@@ -603,6 +606,7 @@ overlay docs/designs/alma-rebrand.md
 overlay docs/designs/alma-restore-original-ui.md
 overlay docs/designs/deepseek-managed-model.md
 overlay docs/designs/google-workspace-byo-oauth.md
+overlay docs/designs/google-workspace-ga-apis.md
 overlay docs/designs/launch-promo.md
 overlay docs/designs/managed-model-consent.md
 overlay docs/designs/phase1-activation.md
@@ -617,6 +621,8 @@ overlay docs/designs/reviews/2026-10-27-alma-managed-voice-calls.md
 overlay docs/designs/reviews/2026-11-03-alma-batch.md
 overlay docs/designs/reviews/2026-11-07-phase2c-engagement.md
 overlay docs/designs/reviews/2026-11-08-google-workspace-byo-oauth.md
+overlay docs/designs/reviews/2026-11-11-google-workspace-ga-apis.md
+overlay docs/designs/reviews/2026-11-11-ios-signing-targets.md
 overlay docs/designs/support-bot-chatwoot.md
 overlay docs/designs/vault-card-autofill.md
 overlay docs/desktop-app.md
@@ -721,6 +727,8 @@ overlay packages/adapters/src/fleet-tools.ts
 overlay packages/adapters/src/google-oauth-remote.ts
 overlay packages/adapters/src/google-oauth.test.ts
 overlay packages/adapters/src/google-oauth.ts
+overlay packages/adapters/src/google-workspace.test.ts
+overlay packages/adapters/src/google-workspace.ts
 overlay packages/adapters/src/grok-build-runtime.test.ts
 overlay packages/adapters/src/grok-build-runtime.ts
 overlay packages/adapters/src/history-compaction.test.ts
@@ -737,6 +745,7 @@ overlay packages/adapters/src/linux-desktop.ts
 overlay packages/adapters/src/managed-model.test.ts
 overlay packages/adapters/src/managed-model.ts
 overlay packages/adapters/src/managed-voice.ts
+overlay packages/adapters/src/mcp-connector.ts
 overlay packages/adapters/src/mcp-oauth-presets.test.ts
 overlay packages/adapters/src/mcp-oauth-presets.ts
 overlay packages/adapters/src/mcp-oauth.test.ts
@@ -895,6 +904,7 @@ overlay packages/db/prisma/migrations/20261208120400_send_undo/migration.sql
 overlay packages/db/prisma/migrations/20261208120500_monthly_report/migration.sql
 overlay packages/db/prisma/migrations/20261208120600_referral_prompt/migration.sql
 overlay packages/db/prisma/migrations/20261209120000_organization_google_oauth_clients/migration.sql
+overlay packages/db/prisma/migrations/20261210120000_google_workspace_grants/migration.sql
 overlay packages/db/prisma/schema.prisma
 overlay packages/db/src/account-export.ts
 overlay packages/db/src/alma-activation.ts
@@ -918,6 +928,7 @@ overlay packages/db/src/repos.ts
 overlay packages/db/src/row-security.postgres.test.ts
 overlay packages/db/src/row-security.ts
 overlay packages/db/src/send-undo-store.ts
+overlay packages/db/src/space-members.ts
 overlay packages/db/src/support-bot.postgres.test.ts
 overlay packages/db/src/support-bot.ts
 overlay packages/i18n/src/run-error.ts

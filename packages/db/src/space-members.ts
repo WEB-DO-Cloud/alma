@@ -609,6 +609,7 @@ async function departSpace(
           await tx.agentSkillSpace.deleteMany({ where: own });
           await tx.mcpOAuthSession.deleteMany({ where: own });
           await tx.modelOAuthSession.deleteMany({ where: own });
+          await tx.googleWorkspaceGrant.deleteMany({ where: own });
           await tx.connection.deleteMany({ where: own });
           await tx.messagingIdentity.deleteMany({ where: own });
           await tx.messagingLinkCode.deleteMany({ where: own });

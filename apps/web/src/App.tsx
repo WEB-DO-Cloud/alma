@@ -87,9 +87,6 @@ const ReportPage = lazyComponent(() =>
 const ReferralPage = lazyComponent(() =>
   import("./pages/ReferralPage").then((module) => module.ReferralPage),
 );
-const ActionsPreviewPage = lazyComponent(() =>
-  import("./pages/ActionsPreviewPage").then((module) => module.ActionsPreviewPage),
-);
 const BoardPage = lazyComponent(() => import("./pages/Board").then((module) => module.BoardPage));
 const AdminPluginsPage = lazyComponent(() =>
   import("./pages/AdminPluginsPage").then((module) => module.AdminPluginsPage),
@@ -253,9 +250,6 @@ function SessionApp() {
               ) : null}
               {import.meta.env.DEV ? (
                 <Route path="/preview/referral" element={<ReferralPage />} />
-              ) : null}
-              {import.meta.env.DEV ? (
-                <Route path="/preview/actions" element={<ActionsPreviewPage />} />
               ) : null}
               <Route
                 path={MCP_OAUTH_CALLBACK_PATH}

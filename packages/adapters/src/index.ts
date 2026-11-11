@@ -95,6 +95,7 @@ export * from "./fish-audio-voice.js";
 export * from "./fleet-tools.js";
 export * from "./github-webhook-emulator.js";
 export * from "./google-oauth.js";
+export * from "./google-workspace.js";
 export * from "./graphql-connectors.js";
 export * from "./grok-build-runtime.js";
 export * from "./group-handoff.js";

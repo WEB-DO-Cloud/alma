@@ -9,6 +9,7 @@ const state = vi.hoisted(() => ({
   remove: vi.fn(),
   // The iOS app group container; null on Android and on iOS builds without the extension.
   container: null as { uri: string; files: string[] } | null,
+  group: "",
 }));
 vi.mock("react-native", () => ({
   Platform: {
@@ -53,7 +54,7 @@ vi.mock("expo-file-system", () => {
         const container = state.container;
         if (!container) return {};
         return {
-          "group.com.rakazo.app": {
+          [state.group]: {
             uri: container.uri,
             list: () => container.files.map((name) => new File(`${container.uri}${name}`)),
           },
@@ -63,6 +64,7 @@ vi.mock("expo-file-system", () => {
   };
 });
 const {
+  IOS_SHARE_APP_GROUP,
   isIncomingShareCurrent,
   receiveIncomingShare,
   takeIncomingShare,
@@ -77,6 +79,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   state.os = "android";
   state.container = null;
+  state.group = IOS_SHARE_APP_GROUP;
   cancelIncomingShare();
   state.payloads = [];
   vi.clearAllMocks();
