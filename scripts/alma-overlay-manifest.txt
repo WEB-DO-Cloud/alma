@@ -233,6 +233,9 @@ overlay apps/mobile/lib/endpoint.test.ts
 overlay apps/mobile/lib/endpoint.ts
 overlay apps/mobile/lib/i18n.test.ts
 overlay apps/mobile/lib/i18n.ts
+overlay apps/mobile/lib/incoming-share.test.ts
+overlay apps/mobile/lib/incoming-share.ts
+overlay apps/mobile/lib/ios-signing.test.ts
 overlay apps/mobile/lib/integrations-screen.test.tsx
 overlay apps/mobile/lib/message-context-menu.test.ts
 overlay apps/mobile/lib/message-context-menu.ts
@@ -555,6 +558,7 @@ overlay docs/content-encryption.md
 overlay docs/context-and-evals-tasks.md
 overlay docs/designs/2026-10-31-store-release-signing.md
 overlay docs/designs/2026-11-03-alma-batch.md
+overlay docs/designs/2026-11-11-ios-signing-targets.md
 overlay docs/designs/alma-desktop-local-memory.md
 overlay docs/designs/alma-managed-model.md
 overlay docs/designs/alma-managed-voice-calls.md
@@ -572,6 +576,7 @@ overlay docs/designs/reviews/2026-10-26-alma-rebrand-drift.md
 overlay docs/designs/reviews/2026-10-26-alma-rebrand.md
 overlay docs/designs/reviews/2026-10-27-alma-managed-voice-calls.md
 overlay docs/designs/reviews/2026-11-03-alma-batch.md
+overlay docs/designs/reviews/2026-11-11-ios-signing-targets.md
 overlay docs/designs/support-bot-chatwoot.md
 overlay docs/designs/vault-card-autofill.md
 overlay docs/desktop-app.md
