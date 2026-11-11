@@ -12,7 +12,29 @@ import { matchFeaturedConnectorId } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import { runAsTenant } from "@rakazo/db";
 import { deploymentGoogleClientId } from "./google-oauth.js";
+import type { DrivePick, GooglePickerEnv, GoogleScopeMode } from "./google-scope-mode.js";
+import {
+  acceptedScopes,
+  googleAppNotice,
+  googleAppScopes,
+  googleAppSummary,
+  grantUsable,
+  mergeDrivePicks,
+  readDrivePickerTicket,
+  signDrivePickerTicket,
+  toolVisible,
+} from "./google-scope-mode.js";
 import type { McpOAuthPreset } from "./mcp-oauth-presets.js";
+
+export {
+  googleAppNotice,
+  googleAppScopes,
+  googleAppSummary,
+  grantUsable,
+  readGooglePickerEnv,
+  readGoogleScopeMode,
+  toolVisible,
+} from "./google-scope-mode.js";
 
 const AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -21,6 +43,8 @@ const RESPONSE_LIMIT = 1_000_000;
 const REFRESH_WITHIN_MS = 60_000;
 
 export const WORKSPACE_PREVIEW_MESSAGE = "This Google app connects from the card in the chat.";
+export const GOOGLE_RECONNECT_MESSAGE = "Connect this Google app again from the card in the chat.";
+export const GOOGLE_TOOL_HIDDEN_MESSAGE = "That Google tool is not available.";
 
 const PREVIEW_HOSTS = new Set([
   "gmailmcp.googleapis.com",
@@ -29,30 +53,18 @@ const PREVIEW_HOSTS = new Set([
 ]);
 
 const APPS = [
-  {
-    provider: "gmail",
-    name: "Gmail",
-    scopes: [
-      "https://www.googleapis.com/auth/gmail.readonly",
-      "https://www.googleapis.com/auth/gmail.compose",
-    ],
-  },
-  {
-    provider: "googlecalendar",
-    name: "Google Calendar",
-    scopes: [
-      "https://www.googleapis.com/auth/calendar.calendarlist.readonly",
-      "https://www.googleapis.com/auth/calendar.events",
-    ],
-  },
-  {
-    provider: "googledrive",
-    name: "Google Drive",
-    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
-  },
+  { provider: "gmail", name: "Gmail" },
+  { provider: "googlecalendar", name: "Google Calendar" },
+  { provider: "googledrive", name: "Google Drive" },
 ] as const;
 
 type AppProvider = (typeof APPS)[number]["provider"];
+
+export type GoogleWorkspaceAccess = {
+  mode?: GoogleScopeMode;
+  picker?: GooglePickerEnv | null;
+  signingKey?: string;
+};
 
 const OMITTED_CATALOG = new Set(["gmail", "google-calendar", "google-drive"]);
 
@@ -62,6 +74,9 @@ type TokenSecret = {
   accessToken: string;
   refreshToken: string;
   expiresAt: string;
+  /** Absent on a grant saved before scope mode existed. That grant counts as the restricted set. */
+  scopes?: string[];
+  picks?: DrivePick[];
 };
 
 export type GoogleWorkspaceClient = {
@@ -174,6 +189,7 @@ const TOOLS: ToolSpec[] = [
       type: "object",
       properties: {
         to: { ...STRING, maxLength: 320 },
+        subject: { ...STRING, maxLength: 500 },
         body: { ...STRING, maxLength: 100_000 },
       },
       required: ["to", "body"],
@@ -226,18 +242,50 @@ const TOOLS: ToolSpec[] = [
       additionalProperties: false,
     },
   },
+  {
+    name: "drive_list_picked",
+    provider: "googledrive",
+    description: "List Drive files the user has chosen. This does not search Drive.",
+    label: "Listing chosen files",
+    readOnly: true,
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
+  },
+  {
+    name: "drive_read_file",
+    provider: "googledrive",
+    description: "Read the text of one Drive file the user has chosen.",
+    label: "Reading a file",
+    readOnly: true,
+    inputSchema: {
+      type: "object",
+      properties: { fileId: { ...STRING, maxLength: 128 } },
+      required: ["fileId"],
+      additionalProperties: false,
+    },
+  },
 ];
 
 const TOOL_BY_NAME = new Map(TOOLS.map((tool) => [tool.name, tool]));
 
 export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
+  private readonly mode: GoogleScopeMode;
+  private readonly picker: GooglePickerEnv | null;
+  private readonly signingKey: string;
+  private readonly fetchImpl: typeof fetch;
+  private readonly now: () => Date;
+
   constructor(
     private readonly prisma: PrismaClient,
     private readonly secrets: SecretStore,
     private readonly client: GoogleWorkspaceClient,
-    private readonly fetchImpl: typeof fetch = fetch,
-    private readonly now: () => Date = () => new Date(),
-  ) {}
+    options: GoogleWorkspaceAccess & { fetchImpl?: typeof fetch; now?: () => Date } = {},
+  ) {
+    this.mode = options.mode ?? "limited";
+    this.picker = options.picker ?? null;
+    this.signingKey = options.signingKey ?? "";
+    this.fetchImpl = options.fetchImpl ?? fetch;
+    this.now = options.now ?? (() => new Date());
+  }
 
   describe() {
     return {
@@ -249,7 +297,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
   }
 
   async catalog(context: AdapterContext): Promise<ConnectorCatalogItem[]> {
-    const connected = new Set(await this.connectedProviders(context));
+    const connected = new Set(await this.usableProviders(context));
     return APPS.map((app) => ({
       connectorId: "google",
       slug: app.provider,
@@ -257,21 +305,37 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
       logo: null,
       connected: connected.has(app.provider),
       noAuth: false,
+      summary: googleAppSummary(this.mode, app.provider),
+      notice: googleAppNotice(this.mode, app.provider),
+      ...(app.provider === "googledrive" && this.mode === "limited" && this.picker
+        ? { filePicker: true }
+        : {}),
     }));
   }
 
   async listConnectedExternalIds(context: AdapterContext): Promise<string[]> {
-    return this.connectedProviders(context);
+    return this.usableProviders(context);
   }
 
   async listReconnectRefs(context: AdapterContext): Promise<string[]> {
     const rows = await this.inTenant(context, (db) =>
       db.googleWorkspaceGrant.findMany({
-        where: { spaceId: context.spaceId, userId: context.userId, status: "expired" },
-        select: { id: true },
+        where: {
+          spaceId: context.spaceId,
+          userId: context.userId,
+          status: { in: ["expired", "connected"] },
+        },
       }),
     );
-    return rows.map((row) => row.id);
+    const refs: string[] = [];
+    for (const row of rows) {
+      if (row.status === "expired") {
+        refs.push(row.id);
+        continue;
+      }
+      if (!(await this.grantMatchesMode(row, context))) refs.push(row.id);
+    }
+    return refs;
   }
 
   async connectionReady(context: AdapterContext, externalId: string): Promise<boolean> {
@@ -301,10 +365,10 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
           provider,
           status: "connected",
         },
-        select: { id: true },
       }),
     );
-    return Boolean(grant);
+    if (!grant) return false;
+    return this.grantMatchesMode(grant, context);
   }
 
   async begin(
@@ -314,6 +378,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     const provider = appFor(request.provider);
     if (!provider) throw new Error("Unknown Google app.");
     const app = APPS.find((entry) => entry.provider === provider)!;
+    const scopes = googleAppScopes(this.mode, app.provider);
     const id = randomUUID();
     const verifier = randomBytes(32).toString("base64url");
     const redirectUri = new URL("/mcp/oauth/callback", this.client.webOrigin).toString();
@@ -343,7 +408,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
       client_id: this.client.clientId,
       redirect_uri: redirectUri,
       response_type: "code",
-      scope: app.scopes.join(" "),
+      scope: scopes.join(" "),
       state: id,
       access_type: "offline",
       prompt: "consent",
@@ -398,15 +463,22 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
       }),
       context.signal,
     );
-    if (!tokens.refreshToken) {
+    const provider = appFor(row.provider);
+    const requested = provider ? googleAppScopes(this.mode, provider) : null;
+    const scopes = requested ? acceptedScopes(tokens.scopeField, requested) : null;
+    if (!tokens.refreshToken || !scopes) {
       await this.inTenant(context, (db) =>
         db.googleWorkspaceGrant.deleteMany({
           where: { id: row.id, spaceId: input.spaceId, userId: input.userId, status: "pending" },
         }),
       );
-      throw new Error("Google did not return a refresh token.");
+      throw new Error(
+        tokens.refreshToken
+          ? "Google did not grant the requested access."
+          : "Google did not return a refresh token.",
+      );
     }
-    await this.storeConnected(context, row, tokens.refreshToken, tokens);
+    await this.storeConnected(context, row, tokens.refreshToken, tokens, scopes);
     return true;
   }
 
@@ -457,11 +529,65 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     );
   }
 
+  /** Popup or phone browser address for choosing a Drive file. Null when choosing is not set up. */
+  async pickerPageUrl(context: AdapterContext): Promise<string | null> {
+    if (!this.picker || !this.signingKey) return null;
+    const grant = await this.newestConnected(context, "googledrive");
+    if (!grant || !(await this.grantMatchesMode(grant, context))) return null;
+    const ticket = signDrivePickerTicket(
+      this.signingKey,
+      { grantId: grant.id, spaceId: context.spaceId, userId: context.userId },
+      this.now().getTime(),
+    );
+    return `${this.client.webOrigin}/drive-picker.html#${ticket}`;
+  }
+
+  /** Browser key, project number, and a short-lived access token for the picker page. */
+  async pickerSession(
+    ticket: string,
+    signal: AbortSignal,
+  ): Promise<{ apiKey: string; appId: string; accessToken: string } | null> {
+    const opened = await this.pickerGrant(ticket, signal);
+    if (!opened || !this.picker) return null;
+    const live = await this.freshToken(opened.grant, opened.secret, opened.context).catch(
+      () => null,
+    );
+    if (!live) return null;
+    return { apiKey: this.picker.apiKey, appId: this.picker.appId, accessToken: live.accessToken };
+  }
+
+  /** Records files the picker returned. The ticket is the only credential. */
+  async recordPickedFiles(
+    ticket: string,
+    files: readonly { id?: unknown; name?: unknown; mimeType?: unknown }[],
+    signal: AbortSignal,
+  ): Promise<boolean> {
+    const opened = await this.pickerGrant(ticket, signal);
+    if (!opened) return false;
+    const picks = mergeDrivePicks(opened.secret.picks, files);
+    if (!picks) return false;
+    await this.storeConnected(
+      opened.context,
+      opened.grant,
+      opened.secret.refreshToken,
+      opened.secret,
+      opened.secret.scopes,
+      false,
+      picks,
+    );
+    return true;
+  }
+
   async discoverTools(context: AdapterContext): Promise<ConnectorTool[]> {
-    const connected = new Set(await this.connectedProviders(context));
-    return TOOLS.filter((tool) => connected.has(tool.provider)).map((tool) => ({
+    const connected = new Set(await this.usableProviders(context));
+    return TOOLS.filter(
+      (tool) => connected.has(tool.provider) && toolVisible(this.mode, tool.name),
+    ).map((tool) => ({
       name: tool.name,
-      description: tool.description,
+      description:
+        this.mode === "limited" && tool.name === "gmail_send"
+          ? "Send a plain-text Gmail message the user has approved. This does not read the mailbox."
+          : tool.description,
       label: tool.label,
       readOnly: tool.readOnly,
       inputSchema: tool.inputSchema,
@@ -472,8 +598,8 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
   async *execute(call: ConnectorCall, context: AdapterContext): AsyncIterable<ConnectorEvent> {
     const name = call.route?.toolName ?? call.tool;
     const tool = TOOL_BY_NAME.get(name);
-    if (!tool) {
-      yield { type: "error", message: "Unknown Google tool." };
+    if (!tool || !toolVisible(this.mode, tool.name)) {
+      yield { type: "error", message: tool ? GOOGLE_TOOL_HIDDEN_MESSAGE : "Unknown Google tool." };
       return;
     }
     try {
@@ -493,13 +619,19 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     context: AdapterContext,
   ): Promise<unknown> {
     const grant = await this.newestConnected(context, tool.provider);
-    if (!grant) throw new Error("Google needs to be connected again.");
-    const secret = await this.freshToken(grant, context);
+    if (!grant) throw new Error(GOOGLE_RECONNECT_MESSAGE);
+    const secret = await this.open(grant.ciphertext, grant.id, context);
+    if (secret.kind !== "connected" || !grantUsable(this.mode, tool.provider, secret.scopes)) {
+      throw new Error(GOOGLE_RECONNECT_MESSAGE);
+    }
+    if (tool.name === "drive_list_picked") return { files: secret.picks ?? [] };
+    if (tool.name === "drive_read_file") return this.readPickedFile(secret, args, grant, context);
+    const live = await this.freshToken(grant, secret, context);
     const request = toolRequest(tool.name, args, this.now());
     const response = await this.fetchImpl(request.url, {
       method: request.method,
       headers: {
-        authorization: `Bearer ${secret.accessToken}`,
+        authorization: `Bearer ${live.accessToken}`,
         accept: "application/json",
         ...(request.body ? { "content-type": "application/json" } : {}),
       },
@@ -510,12 +642,83 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     return readGoogleJson(response);
   }
 
-  private async freshToken(
+  private async readPickedFile(
+    secret: TokenSecret,
+    args: Record<string, unknown>,
     grant: { id: string; ciphertext: string; provider: string },
     context: AdapterContext,
+  ): Promise<unknown> {
+    const fileId = textArg(args, "fileId");
+    if (!/^[A-Za-z0-9_-]{10,128}$/.test(fileId)) throw new Error("fileId is not a file id.");
+    const pick = secret.picks?.find((item) => item.id === fileId);
+    if (!pick) throw new Error("Choose that file first.");
+    const live = await this.freshToken(grant, secret, context);
+    const metaUrl = new URL(`https://www.googleapis.com/drive/v3/files/${fileId}`);
+    metaUrl.searchParams.set("fields", "id,name,mimeType");
+    const metaResponse = await this.fetchImpl(metaUrl.toString(), {
+      headers: { authorization: `Bearer ${live.accessToken}`, accept: "application/json" },
+      signal: context.signal,
+      redirect: "error",
+    });
+    if (metaResponse.status === 403 || metaResponse.status === 404) {
+      await metaResponse.body?.cancel().catch(() => undefined);
+      throw new Error("That file is not available. Choose it again.");
+    }
+    const meta = (await readGoogleJson(metaResponse)) as { name?: unknown; mimeType?: unknown };
+    const name = typeof meta.name === "string" ? meta.name : pick.name;
+    const mimeType = typeof meta.mimeType === "string" ? meta.mimeType : pick.mimeType;
+    const exported = exportMime(mimeType);
+    const download = exported
+      ? exportFileUrl(fileId, exported)
+      : textMime(mimeType)
+        ? mediaFileUrl(fileId)
+        : null;
+    if (!download) return { id: fileId, name, mimeType, text: null };
+    const response = await this.fetchImpl(download, {
+      headers: { authorization: `Bearer ${live.accessToken}` },
+      signal: context.signal,
+      redirect: "error",
+    });
+    if (response.status === 403 || response.status === 404) {
+      await response.body?.cancel().catch(() => undefined);
+      throw new Error("That file is not available. Choose it again.");
+    }
+    const text = await readLimitedText(response);
+    if (!response.ok) throw new Error(`Google returned ${response.status}.`);
+    const truncated = text.length > 100_000;
+    return {
+      id: fileId,
+      name,
+      mimeType,
+      text: truncated ? text.slice(0, 100_000) : text,
+      ...(truncated ? { truncated: true } : {}),
+    };
+  }
+
+  private async pickerGrant(
+    ticket: string,
+    signal: AbortSignal,
+  ): Promise<{
+    grant: { id: string; ciphertext: string; provider: string };
+    secret: TokenSecret;
+    context: AdapterContext;
+  } | null> {
+    const claims = readDrivePickerTicket(this.signingKey, ticket, this.now().getTime());
+    if (!claims) return null;
+    const context = actorContext({ spaceId: claims.spaceId, userId: claims.userId, signal });
+    const grant = await this.newestConnected(context, "googledrive");
+    if (!grant || grant.id !== claims.grantId) return null;
+    const secret = await this.open(grant.ciphertext, grant.id, context).catch(() => null);
+    if (secret?.kind !== "connected") return null;
+    if (!grantUsable(this.mode, "googledrive", secret.scopes)) return null;
+    return { grant, secret, context };
+  }
+
+  private async freshToken(
+    grant: { id: string; ciphertext: string; provider: string },
+    secret: TokenSecret,
+    context: AdapterContext,
   ): Promise<TokenSecret> {
-    const secret = await this.open(grant.ciphertext, grant.id, context);
-    if (secret.kind !== "connected") throw new Error("Google needs to be connected again.");
     if (Date.parse(secret.expiresAt) - this.now().getTime() > REFRESH_WITHIN_MS) return secret;
     try {
       const tokens = await this.tokenRequest(
@@ -533,13 +736,17 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
         { id: grant.id, provider: grant.provider },
         refreshToken,
         { accessToken: tokens.accessToken, expiresAt: tokens.expiresAt },
+        secret.scopes,
         false,
+        secret.picks,
       );
       return {
         kind: "connected",
         accessToken: tokens.accessToken,
         refreshToken,
         expiresAt: tokens.expiresAt,
+        ...(secret.scopes ? { scopes: secret.scopes } : {}),
+        ...(secret.picks ? { picks: secret.picks } : {}),
       };
     } catch {
       await this.inTenant(context, (db) =>
@@ -548,7 +755,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
           data: { status: "expired" },
         }),
       );
-      throw new Error("Google needs to be connected again.");
+      throw new Error(GOOGLE_RECONNECT_MESSAGE);
     }
   }
 
@@ -557,7 +764,9 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     grant: { id: string; provider: string },
     refreshToken: string,
     tokens: { accessToken: string; expiresAt: string },
+    scopes: readonly string[] | undefined,
     replaceOlder = true,
+    picks?: readonly DrivePick[],
   ): Promise<void> {
     const ciphertext = await this.seal(
       {
@@ -565,6 +774,8 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
         accessToken: tokens.accessToken,
         refreshToken,
         expiresAt: tokens.expiresAt,
+        ...(scopes ? { scopes: [...scopes] } : {}),
+        ...(picks && picks.length > 0 ? { picks: [...picks] } : {}),
       },
       grant.id,
       context,
@@ -621,25 +832,43 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     );
   }
 
-  private async connectedProviders(context: AdapterContext): Promise<AppProvider[]> {
+  private async usableProviders(context: AdapterContext): Promise<AppProvider[]> {
     const rows = await this.inTenant(context, (db) =>
       db.googleWorkspaceGrant.findMany({
         where: { spaceId: context.spaceId, userId: context.userId, status: "connected" },
-        select: { provider: true },
       }),
     );
     const found = new Set<AppProvider>();
     for (const row of rows) {
       const provider = appFor(row.provider);
-      if (provider) found.add(provider);
+      if (provider && (await this.grantMatchesMode(row, context))) found.add(provider);
     }
     return [...found];
+  }
+
+  private async grantMatchesMode(
+    grant: { id: string; ciphertext: string; provider: string },
+    context: AdapterContext,
+  ): Promise<boolean> {
+    const provider = appFor(grant.provider);
+    if (!provider) return false;
+    try {
+      const secret = await this.open(grant.ciphertext, grant.id, context);
+      return secret.kind === "connected" && grantUsable(this.mode, provider, secret.scopes);
+    } catch {
+      return false;
+    }
   }
 
   private async tokenRequest(
     body: URLSearchParams,
     signal: AbortSignal,
-  ): Promise<{ accessToken: string; refreshToken: string; expiresAt: string }> {
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: string;
+    scopeField: unknown;
+  }> {
     const response = await this.fetchImpl(TOKEN_URL, {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded", accept: "application/json" },
@@ -652,6 +881,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
       access_token?: unknown;
       refresh_token?: unknown;
       expires_in?: unknown;
+      scope?: unknown;
     };
     if (typeof payload.access_token !== "string" || !payload.access_token) {
       throw new Error("Could not sign in to Google.");
@@ -661,6 +891,7 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
       accessToken: payload.access_token,
       refreshToken: typeof payload.refresh_token === "string" ? payload.refresh_token : "",
       expiresAt: new Date(this.now().getTime() + expiresIn * 1000).toISOString(),
+      scopeField: payload.scope,
     };
   }
 
@@ -676,8 +907,22 @@ export class GoogleWorkspaceConnector implements ManagedConnectorProvider {
     context: AdapterContext,
   ): Promise<PendingSecret | TokenSecret> {
     const text = await this.secrets.load(ciphertext, { recordId, signal: context.signal });
-    const parsed = JSON.parse(text) as PendingSecret | TokenSecret;
-    if (parsed.kind === "pending" || parsed.kind === "connected") return parsed;
+    const parsed = JSON.parse(text) as
+      | PendingSecret
+      | (TokenSecret & { scopes?: unknown; picks?: unknown });
+    if (parsed.kind === "pending") return parsed;
+    if (parsed.kind === "connected") {
+      const scopes = stringList(parsed.scopes);
+      const picks = drivePicks(parsed.picks);
+      return {
+        kind: "connected",
+        accessToken: parsed.accessToken,
+        refreshToken: parsed.refreshToken,
+        expiresAt: parsed.expiresAt,
+        ...(scopes ? { scopes } : {}),
+        ...(picks ? { picks } : {}),
+      };
+    }
     throw new Error("Could not sign in to Google.");
   }
 
@@ -776,7 +1021,11 @@ function toolRequest(
     };
   }
   if (name === "gmail_send") {
-    const raw = rfc822({ To: textArg(args, "to"), Subject: "" }, textArg(args, "body"));
+    const subject = typeof args.subject === "string" ? args.subject.trim() : "";
+    const raw = rfc822(
+      { To: textArg(args, "to"), Subject: subject ? headerValue(subject) : "" },
+      textArg(args, "body"),
+    );
     return {
       url: "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
       method: "POST",
@@ -819,6 +1068,16 @@ function toolRequest(
 }
 
 async function readGoogleJson(response: Response): Promise<unknown> {
+  const text = await readLimitedText(response);
+  if (!response.ok) throw new Error(`Google returned ${response.status}.`);
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    throw new Error("The response was not JSON.");
+  }
+}
+
+async function readLimitedText(response: Response): Promise<string> {
   const reader = response.body?.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
@@ -836,10 +1095,57 @@ async function readGoogleJson(response: Response): Promise<unknown> {
   }
   const text = reader ? Buffer.concat(chunks).toString("utf8") : await response.text();
   if (!reader && text.length > RESPONSE_LIMIT) throw new Error("The response was too large.");
-  if (!response.ok) throw new Error(`Google returned ${response.status}.`);
-  try {
-    return JSON.parse(text) as unknown;
-  } catch {
-    throw new Error("The response was not JSON.");
+  return text;
+}
+
+function stringList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.filter((item): item is string => typeof item === "string");
+}
+
+function drivePicks(value: unknown): DrivePick[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const picks: DrivePick[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== "object") continue;
+    const record = item as { id?: unknown; name?: unknown; mimeType?: unknown };
+    if (
+      typeof record.id !== "string" ||
+      typeof record.name !== "string" ||
+      typeof record.mimeType !== "string"
+    ) {
+      continue;
+    }
+    picks.push({ id: record.id, name: record.name, mimeType: record.mimeType });
   }
+  return picks;
+}
+
+function exportMime(mime: string): string | null {
+  if (mime === "application/vnd.google-apps.document") return "text/plain";
+  if (mime === "application/vnd.google-apps.presentation") return "text/plain";
+  if (mime === "application/vnd.google-apps.spreadsheet") return "text/csv";
+  return null;
+}
+
+function textMime(mime: string): boolean {
+  return (
+    mime.startsWith("text/") ||
+    mime === "application/json" ||
+    mime === "application/xml" ||
+    mime.endsWith("+json") ||
+    mime.endsWith("+xml")
+  );
+}
+
+function exportFileUrl(id: string, mime: string): string {
+  const url = new URL(`https://www.googleapis.com/drive/v3/files/${id}/export`);
+  url.searchParams.set("mimeType", mime);
+  return url.toString();
+}
+
+function mediaFileUrl(id: string): string {
+  const url = new URL(`https://www.googleapis.com/drive/v3/files/${id}`);
+  url.searchParams.set("alt", "media");
+  return url.toString();
 }

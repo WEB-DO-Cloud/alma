@@ -859,6 +859,12 @@ export const ConnectionCatalogItemSchema = z.object({
   logo: z.string().nullable(),
   connected: z.boolean(),
   noAuth: z.boolean(),
+  /** One-line card description from the connector, when it has one. */
+  summary: z.string().max(200).optional(),
+  /** Shown on a pending connect card. Spanish, then English. */
+  notice: z.string().max(2000).optional(),
+  /** The card can open the file chooser after this app is connected. */
+  filePicker: z.boolean().optional(),
 });
 export type ConnectionCatalogItem = z.infer<typeof ConnectionCatalogItemSchema>;
 

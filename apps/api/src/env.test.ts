@@ -24,6 +24,8 @@ describe("loadEnv", () => {
       referralPromptEnabled: false,
       mobileActionsEnabled: false,
       googleByoOauth: false,
+      googleScopeMode: "limited",
+      googlePicker: null,
     });
     expect(loadEnv({ ...base, ALMA_REFERRAL_REWARDS: "true" }).referralPromptEnabled).toBe(false);
     expect(loadEnv({ ...base, ALMA_GOOGLE_BYO_OAUTH: "yes" }).googleByoOauth).toBe(false);
@@ -37,6 +39,20 @@ describe("loadEnv", () => {
     expect(
       loadEnv({ ...base, ALMA_GOOGLE_OAUTH_CLIENT_ID: "not-a-client" }).googleOAuthClientId,
     ).toBeUndefined();
+    expect(loadEnv({ ...base, ALMA_GOOGLE_SCOPE_MODE: "restricted" }).googleScopeMode).toBe(
+      "restricted",
+    );
+    expect(loadEnv({ ...base, ALMA_GOOGLE_SCOPE_MODE: "yes" }).googleScopeMode).toBe("limited");
+    expect(
+      loadEnv({
+        ...base,
+        ALMA_GOOGLE_PICKER_API_KEY: "AIzaSyExampleKeyExampleKey1234",
+        ALMA_GOOGLE_PICKER_APP_ID: "123456789012",
+      }).googlePicker,
+    ).toEqual({ apiKey: "AIzaSyExampleKeyExampleKey1234", appId: "123456789012" });
+    expect(() => loadEnv({ ...base, ALMA_GOOGLE_PICKER_APP_ID: "123456789012" })).toThrow(
+      "ALMA_GOOGLE_PICKER_API_KEY",
+    );
     expect(
       loadEnv({ ...base, ALMA_TRIAL_ENABLED: "true", ALMA_ONBOARDING_V2: "true" }),
     ).toMatchObject({

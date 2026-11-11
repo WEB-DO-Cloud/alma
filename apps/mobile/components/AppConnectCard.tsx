@@ -39,6 +39,21 @@ export function AppConnectCard({
   const view = appConnectPresentation({ ...block, status }, busy);
 
   useEffect(() => () => connectionAttempt.current?.abort(), []);
+  const notice = status === "pending" ? block.notice : undefined;
+
+  async function chooseFile() {
+    if (readOnly) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const started = await rpc("connections/drivePicker", {});
+      if (started.url) await Linking.openURL(started.url);
+    } catch (reason) {
+      setError(errorText(reason, "No se pudo abrir el selector. Could not open the file chooser."));
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function authorize() {
     if (readOnly || !threadId) return;
@@ -96,6 +111,9 @@ export function AppConnectCard({
         gap: 8,
       }}
     >
+      {notice ? (
+        <Text style={{ color: tokens.mutedForeground, ...typeScale.secondary }}>{notice}</Text>
+      ) : null}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
         <ConnectorIcon name={block.name} logo={block.logo} size={40} />
         <View style={{ flex: 1, gap: 2 }}>
@@ -127,6 +145,15 @@ export function AppConnectCard({
           </Text>
         ) : null}
       </View>
+      {status === "connected" && block.filePicker && !readOnly ? (
+        <NativeActionButton
+          label="Elegir archivo"
+          accessibilityLabel="Elegir archivo. Choose a file."
+          fill={false}
+          busy={busy}
+          onPress={() => void chooseFile()}
+        />
+      ) : null}
       {error ? (
         <Text style={{ color: tokens.destructive, ...typeScale.caption }}>{error}</Text>
       ) : null}

@@ -7,6 +7,7 @@ import {
   CSP_REPORT_PATH,
   CSP_REPORTING_ENDPOINTS,
   contentSecurityPolicyFor,
+  DRIVE_PICKER_PATH,
   HTML_VIEWER_PATH,
   MCP_APP_VIEWER_PATH,
   parseContentSecuritySources,
@@ -68,6 +69,10 @@ describe("app content security policy", () => {
 
   it("lets only the app frame the HTML viewer shell, whose own meta CSP governs it", () => {
     expect(contentSecurityPolicyFor(HTML_VIEWER_PATH)).toBe("frame-ancestors 'self'");
+    const picker = directives(contentSecurityPolicyFor(DRIVE_PICKER_PATH)!);
+    expect(picker.get("script-src")).toContain("https://apis.google.com");
+    expect(picker.get("frame-src")).toContain("https://docs.google.com");
+    expect(APP_CONTENT_SECURITY_POLICY).not.toContain("apis.google.com");
     expect(contentSecurityPolicyFor(MCP_APP_VIEWER_PATH)).toBe("frame-ancestors 'self'");
   });
 

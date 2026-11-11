@@ -339,8 +339,11 @@ x-app-environment: &app-environment
   ALMA_MOBILE_ACTIONS:
   # Organization Google client. Off unless set to the exact string true.
   ALMA_GOOGLE_BYO_OAUTH:
-  # The worker refreshes Gmail, Calendar, and Drive tokens, so it needs the same client and origin.
+  # The worker refreshes Gmail, Calendar, and Drive tokens, so it needs the same client, origin, and scope mode.
   ALMA_GOOGLE_OAUTH_CLIENT_ID:
+  ALMA_GOOGLE_SCOPE_MODE:
+  ALMA_GOOGLE_PICKER_API_KEY:
+  ALMA_GOOGLE_PICKER_APP_ID:
   WEB_ORIGIN: ${WEB_ORIGIN:-http://127.0.0.1:5173}
 
 services:
@@ -532,6 +535,9 @@ services:
       ALMA_REFERRAL_REWARDS:
       ALMA_MOBILE_ACTIONS:
       ALMA_GOOGLE_OAUTH_CLIENT_ID:
+      ALMA_GOOGLE_SCOPE_MODE:
+      ALMA_GOOGLE_PICKER_API_KEY:
+      ALMA_GOOGLE_PICKER_APP_ID:
       CRISP_WEBSITE_ID:
       INTEGRATIONS_CATALOG_URL:
       TEAM_CHAT_BOT_ID:

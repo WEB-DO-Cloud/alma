@@ -1295,6 +1295,8 @@ export const appContract = {
       )
       .output(ConnectionSchema),
     revoke: oc.input(z.object({ connectionId: Id })).output(z.object({ ok: z.literal(true) })),
+    /** Address of the page where the signed-in person chooses a Drive file. */
+    drivePicker: oc.output(z.object({ url: z.string().url() })),
     /** Tools the connected provider exposes. Read-only; no per-tool allowlist yet. */
     tools: oc.input(z.object({ connectorId: z.string(), provider: z.string() })).output(
       z.array(
