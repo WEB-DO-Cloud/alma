@@ -123,6 +123,8 @@ describe("bitrise", () => {
         "android-aab",
         "android-apk",
         "android-debug",
+        "desktop-linux",
+        "desktop-mac",
         "ios-archive",
         "ios-simulator",
         "manual-play-internal",

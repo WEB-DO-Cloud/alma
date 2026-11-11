@@ -233,6 +233,203 @@ workflows:
                 bundle exec fastlane android internal
       - deploy-to-bitrise-io@2: {}
 
+  desktop-mac:
+    description: >-
+      Manual only. ALMA Desktop for macOS as one universal app (Intel and Apple Silicon), signed with
+      Developer ID and notarized, DMG and ZIP. Mirrors the macOS job of release-desktop.yml. Builds
+      artifacts on Bitrise and publishes nothing.
+    meta:
+      bitrise.io:
+        stack: osx-xcode-27.1.x
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Install Node 24 and pnpm
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                arch="$(uname -m)"; [[ "$arch" == "x86_64" ]] && arch=x64
+                base="https://nodejs.org/dist/latest-v24.x"
+                tarball="$(curl -fsSL "$base/SHASUMS256.txt" | awk -v a="darwin-$arch.tar.gz" '$2 ~ a"$" {print $2; exit}')"
+                curl -fsSL "$base/$tarball" -o "/tmp/$tarball"
+                (cd /tmp && curl -fsSL "$base/SHASUMS256.txt" | grep " $tarball\$" | shasum -a 256 -c -)
+                mkdir -p "$HOME/node24"
+                tar -xzf "/tmp/$tarball" -C "$HOME/node24" --strip-components 1
+                envman add --key PATH --value "$HOME/node24/bin:$PATH"
+                export PATH="$HOME/node24/bin:$PATH"
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                node --version
+                pnpm --version
+      - script@1:
+          title: Build the renderer and the Electron main process
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                pnpm install --frozen-lockfile
+                DATABASE_URL="${DATABASE_URL:-postgres://rakazo:rakazo@127.0.0.1:5433/rakazo}" pnpm db:generate
+                RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/web build
+                RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/desktop build
+      - script@1:
+          title: Package the signed and notarized universal macOS app
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                # Secrets: DESKTOP_MAC_CSC_LINK (base64 Developer ID p12), DESKTOP_MAC_CSC_KEY_PASSWORD,
+                # APPLE_API_KEY_ID, APPLE_API_ISSUER, APPLE_API_KEY_P8 (App Store Connect team key).
+                for name in DESKTOP_MAC_CSC_LINK DESKTOP_MAC_CSC_KEY_PASSWORD APPLE_API_KEY_ID APPLE_API_ISSUER APPLE_API_KEY_P8; do
+                  if [[ -z "${!name:-}" ]]; then
+                    echo "$name is not set." >&2
+                    exit 1
+                  fi
+                done
+                umask 077
+                key_dir="$(mktemp -d)"
+                trap 'rm -rf "$key_dir"' EXIT
+                if [[ "$APPLE_API_KEY_P8" == *"BEGIN PRIVATE KEY"* ]]; then
+                  printf '%s\n' "$APPLE_API_KEY_P8" > "$key_dir/apple-api-key.p8"
+                else
+                  printf '%s' "$APPLE_API_KEY_P8" | base64 --decode > "$key_dir/apple-api-key.p8"
+                fi
+                export CSC_LINK="$DESKTOP_MAC_CSC_LINK"
+                export CSC_KEY_PASSWORD="$DESKTOP_MAC_CSC_KEY_PASSWORD"
+                export APPLE_API_KEY="$key_dir/apple-api-key.p8"
+                export APPLE_API_KEY_ID APPLE_API_ISSUER
+                pnpm --filter @rakazo/desktop exec electron-builder \
+                  --mac --universal --publish never -c.forceCodeSigning=true
+      - script@1:
+          title: Verify architectures, signature, entitlements, and notarization
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                app="apps/desktop/out/mac-universal/ALMA.app"
+                test -d "$app"
+                exe="$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$app/Contents/Info.plist")"
+                echo "Main executable: $exe"
+                lipo "$app/Contents/MacOS/$exe" -verify_arch x86_64 arm64
+                lipo -archs "$app/Contents/MacOS/$exe"
+                codesign --verify --deep --strict --verbose=2 "$app"
+                codesign -dv --verbose=2 "$app" 2>&1 | grep -E "^(Authority|TeamIdentifier|Runtime|Timestamp)"
+                # Without this entitlement the hardened runtime silences the microphone.
+                entitlements="$(mktemp)"
+                while IFS= read -r -d '' bundle; do
+                  codesign -d --entitlements :- "$bundle" > "$entitlements" 2>/dev/null
+                  mic="$(/usr/libexec/PlistBuddy -c "Print :com.apple.security.device.audio-input" "$entitlements" 2>/dev/null || true)"
+                  if [[ "$mic" != "true" ]]; then
+                    echo "$bundle is missing the microphone entitlement" >&2
+                    exit 1
+                  fi
+                done < <(find "$app" -type d -name "*.app" -print0)
+                xcrun stapler validate "$app"
+                spctl --assess --type execute --verbose=2 "$app"
+                grep -Fqx "provider: github" "$app/Contents/Resources/app-update.yml"
+                grep -Fqx "owner: WEB-DO-Cloud" "$app/Contents/Resources/app-update.yml"
+                grep -Fqx "repo: alma" "$app/Contents/Resources/app-update.yml"
+                native="$app/Contents/Resources/app.asar.unpacked/node_modules"
+                lipo "$native/@koromix/koffi-darwin-x64/darwin_x64/koffi.node" -verify_arch x86_64
+                lipo "$native/@koromix/koffi-darwin-arm64/darwin_arm64/koffi.node" -verify_arch arm64
+                lipo "$native/@oxc-parser/binding-darwin-x64/parser.darwin-x64.node" -verify_arch x86_64
+                lipo "$native/@oxc-parser/binding-darwin-arm64/parser.darwin-arm64.node" -verify_arch arm64
+                speech="$app/Contents/Resources/speech/rakazo-speech"
+                lipo "$speech" -verify_arch x86_64 arm64
+                codesign -d --entitlements :- "$speech" > "$entitlements" 2>/dev/null
+                test "$(/usr/libexec/PlistBuddy -c "Print :com.apple.security.device.audio-input" "$entitlements")" = true
+                rm -f "$entitlements"
+                "$speech" xx < /dev/null | grep -Fq '"language-not-supported"'
+                ELECTRON_RUN_AS_NODE=1 "$app/Contents/MacOS/$exe" -e '
+                  const { createRequire } = require("node:module");
+                  const appRequire = createRequire(`${process.argv[1]}/Contents/Resources/app.asar/package.json`);
+                  const koffi = appRequire("koffi");
+                  if (koffi.load(null).func("int getpid()")() !== process.pid) {
+                    throw new Error("Packaged native bridge dependency failed");
+                  }
+                  const native = `${process.argv[1]}/Contents/Resources/app.asar.unpacked/node_modules`;
+                  const parser = appRequire(`${native}/@oxc-parser/binding-darwin-${process.arch}/parser.darwin-${process.arch}.node`);
+                  if (parser.parseSync("smoke.js", "const ready = true;").errors.length !== 0) {
+                    throw new Error("Packaged monitoring parser dependency failed");
+                  }
+                ' "$PWD/$app"
+                # The app inside the DMG is stapled. Report whether the DMG itself carries a ticket too.
+                for dmg in apps/desktop/out/*.dmg; do
+                  hdiutil verify "$dmg"
+                  xcrun stapler validate "$dmg" || echo "note: $dmg has no stapled ticket of its own; the app inside is stapled."
+                  spctl --assess --type open --context context:primary-signature --verbose=2 "$dmg" || true
+                done
+                version="$(node -p "require('./apps/desktop/package.json').version")"
+                grep -Fqx "version: $version" apps/desktop/out/latest-mac.yml
+      - script@1:
+          title: Collect the installers
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                out="$BITRISE_DEPLOY_DIR"
+                mkdir -p "$out"
+                cp apps/desktop/out/*.dmg apps/desktop/out/*.zip apps/desktop/out/latest-mac.yml "$out"/
+                cp apps/desktop/out/*.blockmap "$out"/ 2>/dev/null || true
+                (cd "$out" && shasum -a 256 ALMA-mac.* latest-mac.yml > SHA256SUMS-mac.txt && cat SHA256SUMS-mac.txt)
+      - deploy-to-bitrise-io@2: {}
+
+  desktop-linux:
+    description: >-
+      Manual only. ALMA Desktop for Linux as an x64 AppImage. Mirrors the Linux job of
+      release-desktop.yml. Signs AppImage updates only when DESKTOP_LINUX_UPDATE_SIGNING_KEY is set.
+      Publishes nothing.
+    meta:
+      bitrise.io:
+        stack: ubuntu-resolute-26.04-bitrise-2026-android
+    steps:
+      - git-clone@8: {}
+      - script@1:
+          title: Build the x64 AppImage
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -euo pipefail
+                base="https://nodejs.org/dist/latest-v24.x"
+                tarball="$(curl -fsSL "$base/SHASUMS256.txt" | awk '$2 ~ /linux-x64\.tar\.xz$/ {print $2; exit}')"
+                curl -fsSL "$base/$tarball" -o "/tmp/$tarball"
+                (cd /tmp && curl -fsSL "$base/SHASUMS256.txt" | grep " $tarball\$" | sha256sum -c -)
+                mkdir -p "$HOME/node24"
+                tar -xJf "/tmp/$tarball" -C "$HOME/node24" --strip-components 1
+                export PATH="$HOME/node24/bin:$PATH"
+                export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+                corepack enable
+                node --version
+                pnpm --version
+                pnpm install --frozen-lockfile
+                DATABASE_URL="${DATABASE_URL:-postgres://rakazo:rakazo@127.0.0.1:5433/rakazo}" pnpm db:generate
+                RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/web build
+                RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/desktop build
+                pnpm --filter @rakazo/desktop exec electron-builder --linux --x64 --publish never
+                config="$(find apps/desktop/out -name app-update.yml -print -quit)"
+                grep -Fqx "provider: github" "$config"
+                grep -Fqx "owner: WEB-DO-Cloud" "$config"
+                grep -Fqx "repo: alma" "$config"
+                version="$(node -p "require('./apps/desktop/package.json').version")"
+                grep -Fqx "version: $version" apps/desktop/out/latest-linux.yml
+                file apps/desktop/out/*.AppImage
+                if [[ -n "${DESKTOP_LINUX_UPDATE_SIGNING_KEY:-}" ]]; then
+                  umask 077
+                  key="$(mktemp)"
+                  trap 'rm -f "$key"' EXIT
+                  printf '%s\n' "$DESKTOP_LINUX_UPDATE_SIGNING_KEY" > "$key"
+                  pnpm exec tsx apps/desktop/scripts/sign-linux-update.ts "$key" "$version" apps/desktop/out/*.AppImage
+                else
+                  echo "note: DESKTOP_LINUX_UPDATE_SIGNING_KEY is not set, so the AppImage has no update signature."
+                fi
+                out="$BITRISE_DEPLOY_DIR"
+                mkdir -p "$out"
+                cp apps/desktop/out/*.AppImage apps/desktop/out/latest-linux.yml "$out"/
+                cp apps/desktop/out/*.AppImage.sig "$out"/ 2>/dev/null || true
+                (cd "$out" && sha256sum ALMA-linux.* latest-linux.yml > SHA256SUMS-linux.txt && cat SHA256SUMS-linux.txt)
+      - deploy-to-bitrise-io@2: {}
+
 trigger_map:
   - push_branch: main
     workflow: mobile-tests
