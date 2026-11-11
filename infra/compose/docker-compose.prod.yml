@@ -338,6 +338,9 @@ x-app-environment: &app-environment
   ALMA_MOBILE_ACTIONS:
   # Organization Google client. Off unless set to the exact string true.
   ALMA_GOOGLE_BYO_OAUTH:
+  # The worker refreshes Gmail, Calendar, and Drive tokens, so it needs the same client and origin.
+  ALMA_GOOGLE_OAUTH_CLIENT_ID:
+  WEB_ORIGIN:
 
 services:
   postgres:
