@@ -621,7 +621,8 @@ export function mcpRoutes(ctx: RouterContext) {
         }),
         complete: authed.mcp.oauth.complete.handler(async ({ context, input }) => {
           try {
-            const google = deps.connectors.managed("google");
+            // Router tests build a partial deps object with no connector registry.
+            const google = deps.connectors?.managed("google");
             if (google instanceof GoogleWorkspaceConnector) {
               const finished = await google.finishCallback({
                 state: input.state,
