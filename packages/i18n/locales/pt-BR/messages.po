@@ -5309,11 +5309,11 @@ msgstr "Receba notificações quando este bot terminar ou precisar de resposta"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "Baixar app para computador"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "Baixar o aplicativo móvel"
+msgstr "Baixar app para celular"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

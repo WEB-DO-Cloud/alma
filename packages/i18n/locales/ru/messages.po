@@ -5309,7 +5309,7 @@ msgstr "Получать уведомления, когда этот бот за
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "Скачать приложение для компьютера"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"

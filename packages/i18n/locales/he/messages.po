@@ -5309,11 +5309,11 @@ msgstr "קבלת התראה כשהבוט הזה מסיים או צריך קלט"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "הורדת אפליקציית מחשב"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "הורדת האפליקציה לנייד"
+msgstr "הורדת אפליקציה לנייד"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

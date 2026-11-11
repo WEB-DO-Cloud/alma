@@ -5310,11 +5310,11 @@ msgstr "在此機器人完成或需要輸入時收到通知"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "下載桌面應用程式"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "下載手機應用程式"
+msgstr "下載行動應用程式"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

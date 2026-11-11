@@ -5309,7 +5309,7 @@ msgstr "Benachrichtigung, wenn dieser Bot fertig ist oder Eingabe braucht"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "Desktop-App herunterladen"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"

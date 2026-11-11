@@ -5309,11 +5309,11 @@ msgstr "このボットが完了したときや入力が必要なときに通知
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "デスクトップアプリをダウンロード"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "モバイルアプリを入手"
+msgstr "モバイルアプリをダウンロード"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

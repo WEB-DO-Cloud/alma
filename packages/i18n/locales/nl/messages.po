@@ -5309,11 +5309,11 @@ msgstr "Ontvang een melding wanneer deze bot klaar is of invoer nodig heeft"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "Desktop-app downloaden"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "De mobiele app downloaden"
+msgstr "Mobiele app downloaden"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

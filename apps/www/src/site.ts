@@ -1,4 +1,4 @@
-import { DESKTOP_DOWNLOADS as APP_DESKTOP_DOWNLOADS, MOBILE_APP_STORES } from "@rakazo/contracts";
+import { MOBILE_APP_STORES } from "@rakazo/contracts";
 
 export const SITE_NAME = "ALMA";
 export const SITE_URL = "https://alma.com.do";
@@ -11,7 +11,11 @@ export const INTEGRATION_CLAIMS_URL = `${APP_URL}/api/v1/integration-claims`;
 /** Marketing catalog snapshot on this site. `CATALOG_URL` in the environment overrides the file. */
 export const CATALOG_URL = `${SITE_URL}/integrations/catalog.json`;
 export const GITHUB_URL = "https://github.com/WEB-DO-Cloud/alma";
-export const DESKTOP_DOWNLOADS = APP_DESKTOP_DOWNLOADS;
+export const DESKTOP_DOWNLOADS = {
+  mac: "https://github.com/WEB-DO-Cloud/alma/releases/latest/download/ALMA-mac.dmg",
+  windows: "https://github.com/WEB-DO-Cloud/alma/releases/latest/download/ALMA-Setup.exe",
+  linux: "https://github.com/WEB-DO-Cloud/alma/releases/latest/download/ALMA-linux.AppImage",
+} as const;
 export const IOS_APP_URL = MOBILE_APP_STORES.ios;
 export const ANDROID_APP_STORE_URL = MOBILE_APP_STORES.android;
 export const GITHUB_API_REPO = "https://api.github.com/repos/WEB-DO-Cloud/alma";

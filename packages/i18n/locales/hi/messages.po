@@ -5309,11 +5309,11 @@ msgstr "जब यह बॉट काम पूरा करे या उस�
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "डेस्कटॉप ऐप डाउनलोड करें"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "मोबाइल ऐप पाएँ"
+msgstr "मोबाइल ऐप डाउनलोड करें"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

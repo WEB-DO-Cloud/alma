@@ -5309,11 +5309,11 @@ msgstr "在此 Bot 完成或需要输入时收到通知"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "下载桌面应用"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
-msgstr "获取移动应用"
+msgstr "下载移动应用"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

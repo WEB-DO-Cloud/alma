@@ -5309,7 +5309,7 @@ msgstr "이 봇이 작업을 마치거나 입력이 필요할 때 알림 받기"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download desktop app"
-msgstr ""
+msgstr "데스크톱 앱 다운로드"
 
 #: apps/web/src/components/SidebarFooter.tsx
 msgid "Download mobile app"
