@@ -1,0 +1,21 @@
+# Notice
+
+frontend-design is the published skill from anthropics/skills, Apache License 2.0.
+Its terms are in frontend-design/LICENSE.txt. That skill is unchanged.
+
+hyperframes and hyperframes-cli are from heygen-com/hyperframes, Apache License 2.0,
+Copyright 2026 HeyGen, Inc. Each skill's LICENSE file is the upstream license.
+
+ALMA changed the HyperFrames text so a bot does not send usage telemetry:
+
+- hyperframes/SKILL.md — removed the instruction to run `npx hyperframes events`,
+  and removed `--skill` from the init example. That flag stamps usage telemetry.
+- hyperframes-cli/SKILL.md — removed the events beacon and the instruction to
+  send feedback after a render. `events`, `feedback`, and `telemetry enable`
+  are named as commands not to run.
+- hyperframes-cli/references/feedback.md — replaced the send-feedback steps
+  with a do-not-send note.
+- hyperframes-cli/references/preview-render.md — removed the post-render
+  feedback steps and the instruction to pass `--skill` for usage attribution.
+- hyperframes-cli/references/init-and-scaffold.md — `--skill` is a flag not to pass.
+- hyperframes-cli/references/upgrade-info-misc.md — removed `telemetry enable`.

@@ -1,4 +1,5 @@
-import { buildSkillMd } from "@rakazo/core";
+import { buildSkillMd, parseSkillMd } from "@rakazo/core";
+import { EMBEDDED_BUILTIN_SKILLS } from "./builtin-skill-assets.js";
 
 const HELP_DOCS_ORIGIN = "https://app.alma.com.do";
 const RAKAZO_DOCS: ReadonlyArray<readonly [topics: string, url: string]> = [
@@ -66,12 +67,48 @@ ${RAKAZO_DOCS.map(([topics, url]) => `- ${topics}: ${url}`).join("\n")}`,
   },
 ];
 
+/**
+ * Published third-party skills. SKILL.md is the upstream original, license
+ * frontmatter included. Companion files are inlined in builtin-skill-assets.ts
+ * because the API bundle is one file and cannot read them at runtime.
+ *
+ * hyperframes keeps its references and each frame preset's FRAME.md. scripts/
+ * and the preset HTML, showcases, and fonts are omitted: scripts are programs,
+ * and the HTML and fonts exceed the companion limits (40 files, 100KB each,
+ * 400KB). A project still gets those from `npx hyperframes init`.
+ *
+ * hyperframes-cli links such as `../hyperframes/references/...` stay as
+ * published. skill_read resolves them to this hyperframes skill.
+ * Telemetry beacons were removed from the HyperFrames text; NOTICE records
+ * each edit.
+ */
+const IMPORTED_SKILL_NAMES = ["frontend-design", "hyperframes", "hyperframes-cli"] as const;
+
+function importedBuiltinSkill(name: (typeof IMPORTED_SKILL_NAMES)[number]) {
+  const embedded = EMBEDDED_BUILTIN_SKILLS[name];
+  if (!embedded) throw new Error(`Missing built-in skill ${name}.`);
+  const parsed = parseSkillMd(embedded.content);
+  if ("error" in parsed) throw new Error(`${name}: ${parsed.error}`);
+  if (parsed.name !== name) throw new Error(`${name} SKILL.md is named ${parsed.name}.`);
+  return {
+    name: parsed.name,
+    description: parsed.description,
+    content: embedded.content,
+    files: embedded.files,
+  };
+}
+
 export const BUILTIN_AGENT_SKILLS: Array<{
   name: string;
   description: string;
   content: string;
-}> = SKILLS.map(({ name, description, body }) => ({
-  name,
-  description,
-  content: buildSkillMd({ name, description, body }),
-}));
+  /** Text files beside SKILL.md, keyed by path relative to the skill folder. */
+  files?: Readonly<Record<string, string>>;
+}> = [
+  ...SKILLS.map(({ name, description, body }) => ({
+    name,
+    description,
+    content: buildSkillMd({ name, description, body }),
+  })),
+  ...IMPORTED_SKILL_NAMES.map((name) => importedBuiltinSkill(name)),
+];

@@ -21,7 +21,9 @@
       "!**/verify-report",
       "!**/data",
       "!**/*.astro",
-      "!**/apps/www"
+      "!**/apps/www",
+      "!**/packages/adapters/src/builtin-skills",
+      "!**/packages/adapters/src/builtin-skill-assets.ts"
     ]
   },
   "plugins": [
