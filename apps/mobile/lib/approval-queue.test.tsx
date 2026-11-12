@@ -5,11 +5,31 @@ import { act, createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { expect, it, vi } from "vitest";
 
+vi.mock("./native", () => ({
+  useMobileTokens: () => ({
+    foreground: "#FFFFFF",
+    mutedForeground: "#EBEBF599",
+    muted: "#202020",
+    border: "#FCFCFC14",
+  }),
+}));
 vi.mock("react-native", () => ({
   StyleSheet: { create: <T,>(styles: T) => styles },
   View: ({ children }: { children?: ReactNode }) => createElement("div", null, children),
-  Text: ({ children }: { children?: ReactNode }) => createElement("span", null, children),
-  TextInput: () => null,
+  Text: ({ children, style }: { children?: ReactNode; style?: { color?: string } }) =>
+    createElement("span", { "data-color": style?.color }, children),
+  TextInput: ({
+    style,
+    placeholderTextColor,
+  }: {
+    style?: { color?: string; backgroundColor?: string };
+    placeholderTextColor?: string;
+  }) =>
+    createElement("input", {
+      "data-color": style?.color,
+      "data-background": style?.backgroundColor,
+      "data-placeholder-color": placeholderTextColor,
+    }),
   Pressable: ({ children, onPress }: { children?: ReactNode; onPress?: () => void }) =>
     createElement("button", { type: "button", onClick: onPress }, children),
 }));
@@ -52,6 +72,9 @@ it("approves a waiting draft and never says delivered", async () => {
       />,
     );
   });
+  expect(host.querySelector("span")?.getAttribute("data-color")).toBe("#FFFFFF");
+  expect(host.querySelector("input")?.getAttribute("data-color")).toBe("#FFFFFF");
+  expect(host.querySelector("input")?.getAttribute("data-placeholder-color")).toBe("#EBEBF599");
   expect(host.textContent).toContain("Hola");
   expect(host.textContent).toContain("waiting");
   expect(host.textContent?.toLowerCase()).not.toContain("delivered");
