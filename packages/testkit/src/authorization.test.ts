@@ -440,6 +440,25 @@ describeWithDatabase("API authorization and resource isolation", () => {
       ["capabilities/catalogSearch"],
       ["capabilities/pluginParts"],
       ["capabilities/pluginPreview"],
+      ["emailImap/detect", { email: "ada@example.test" }],
+      [
+        "emailImap/test",
+        {
+          email: "ada@example.test",
+          password: "secret",
+          imap: { host: "imap.example.test", port: 993, security: "ssl" },
+          smtp: { host: "smtp.example.test", port: 587, security: "starttls" },
+        },
+      ],
+      [
+        "emailImap/save",
+        {
+          email: "ada@example.test",
+          password: "secret",
+          imap: { host: "imap.example.test", port: 993, security: "ssl" },
+          smtp: { host: "smtp.example.test", port: 587, security: "starttls" },
+        },
+      ],
       ["connections/catalog", {}],
       ["connections/list"],
       ["connections/begin", connectionInput("Unauthenticated")],

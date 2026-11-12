@@ -84,6 +84,8 @@ export * from "./draft-dispatch.js";
 export * from "./e2b-sandbox.js";
 export * from "./elevenlabs-voice.js";
 export * from "./email-emulator.js";
+export { EmailImapConnector } from "./email-imap-connector.js";
+export { MailboxFailure } from "./email-imap-mailbox.js";
 export * from "./email-provider.js";
 export * from "./executor.js";
 export * from "./expo-push.js";

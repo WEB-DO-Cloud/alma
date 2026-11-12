@@ -1,5 +1,6 @@
 import type { ConnectionCatalogItem } from "@rakazo/contracts";
-import { catalogItemMatchesQuery } from "./mail-connector-aliases.js";
+import { EMAIL_IMAP_CONNECTOR_ID, emailImapCatalogName } from "@rakazo/contracts";
+import { catalogItemMatchesQuery, mailTargetsForQuery } from "./mail-connector-aliases.js";
 
 export const FEATURED_CONNECTOR_IDS = [
   "gmail",
@@ -104,7 +105,17 @@ export function filterConnectionCatalogItems(
       item.slug.toLowerCase().includes(needle) ||
       item.connectorId.toLowerCase().includes(needle) ||
       item.category?.toLowerCase().includes(needle) ||
-      catalogItemMatchesQuery(item, needle),
+      catalogItemMatchesQuery(item, needle) ||
+      emailImapQuery(item, needle),
+  );
+}
+
+/** "correo" and "email" find the mailbox row whichever language the stored name uses. */
+function emailImapQuery(item: ConnectionCatalogItem, needle: string): boolean {
+  if (item.connectorId !== EMAIL_IMAP_CONNECTOR_ID) return false;
+  if (mailTargetsForQuery(needle)) return true;
+  return [emailImapCatalogName("en"), emailImapCatalogName("es")].some((name) =>
+    name.toLowerCase().includes(needle),
   );
 }
 
@@ -132,7 +143,8 @@ export function catalogItemsInCategory<T extends ConnectionCatalogItem>(
       item.name.toLowerCase().includes(needle) ||
       item.slug.toLowerCase().includes(needle) ||
       item.connectorId.toLowerCase().includes(needle) ||
-      catalogItemMatchesQuery(item, needle)
+      catalogItemMatchesQuery(item, needle) ||
+      emailImapQuery(item, needle)
     );
   });
 }

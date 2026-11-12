@@ -5,7 +5,7 @@ import type {
   McpServerConnection,
   PluginMarketplaceEntry,
 } from "@rakazo/contracts";
-import { mcpServerConnection } from "@rakazo/contracts";
+import { EMAIL_IMAP_CONNECTOR_ID, mcpServerConnection } from "@rakazo/contracts";
 import { catalogItemKey } from "@rakazo/core";
 import { Button, SectionHeading } from "@rakazo/ui-web";
 import { Check, ChevronLeft, CircleAlert, TriangleAlert } from "lucide-react";
@@ -102,6 +102,8 @@ export type TileContext = {
   pluginForApp: Map<string, PluginMarketplaceEntry>;
   onOpenApp: (item: ConnectionCatalogItem) => void;
   onOpenDetail: (item: ConnectionCatalogItem) => void;
+  /** The mailbox connector opens a form instead of a browser sign-in. */
+  onEmailImap?: () => void;
 };
 
 /** An app in the catalog with its Add or Added button; a connected app opens its page. */
@@ -150,7 +152,7 @@ export function CatalogTile({
 }
 
 function CatalogActions({ item, context }: { item: ConnectionCatalogItem; context: TileContext }) {
-  const { connections, onOpenDetail } = context;
+  const { connections, onOpenDetail, onEmailImap } = context;
   const key = catalogItemKey(item);
   const connected = connections.itemConnected(item);
   const connecting = connections.pending === key;
@@ -178,7 +180,8 @@ function CatalogActions({ item, context }: { item: ConnectionCatalogItem; contex
       disabled={connecting}
       onClick={(event) => {
         event.stopPropagation();
-        void connections.connect(item);
+        if (item.connectorId === EMAIL_IMAP_CONNECTOR_ID) onEmailImap?.();
+        else void connections.connect(item);
       }}
     >
       {connecting ? <Trans>Adding…</Trans> : <Trans>Add</Trans>}

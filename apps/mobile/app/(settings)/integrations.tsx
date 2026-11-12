@@ -9,7 +9,13 @@ import type {
   McpSourcePreset,
   PluginMarketplaceEntry,
 } from "@rakazo/contracts";
-import { mcpServerConnection, mcpServerNeedsSignIn, SUBMIT_PLUGIN_URL } from "@rakazo/contracts";
+import {
+  catalogItemLabel,
+  EMAIL_IMAP_CONNECTOR_ID,
+  mcpServerConnection,
+  mcpServerNeedsSignIn,
+  SUBMIT_PLUGIN_URL,
+} from "@rakazo/contracts";
 import type { PluginCategory } from "@rakazo/core";
 import {
   buildFeaturedConnectorTiles,
@@ -49,6 +55,7 @@ import type {
 import { AddCustomForm, AddCustomMenu } from "../../components/add-custom-integration";
 import { BotTemplateIcon } from "../../components/bot-template-icon";
 import { ConnectorIcon } from "../../components/connector-icon";
+import { EmailImapForm } from "../../components/email-imap-form";
 import type { ConnectionTool } from "../../components/integration-detail";
 import { IntegrationDetail } from "../../components/integration-detail";
 import { PLUGIN_PAGE_SIZE, PluginSection } from "../../components/integration-plugins";
@@ -91,7 +98,7 @@ export default function Integrations() {
   const { app: appToOpen } = useLocalSearchParams<{ app?: string }>();
   const navigation = useNavigation();
   const styles = useThemedStyles(createIntegrationsStyles);
-  const { t } = useLingui();
+  const { i18n, t } = useLingui();
   const categoryLabels: Record<PluginCategory, string> = {
     productivity: t`Productivity`,
     communication: t`Communication`,
@@ -124,6 +131,7 @@ export default function Integrations() {
   const [sourcePresets, setSourcePresets] = useState<McpSourcePreset[]>([]);
   const [sourcePreset, setSourcePreset] = useState<McpSourcePreset | null>(null);
   const [adding, setAdding] = useState<"github" | "source" | null>(null);
+  const [emailForm, setEmailForm] = useState(false);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [credential, setCredential] = useState("");
@@ -727,6 +735,11 @@ export default function Integrations() {
   }
 
   async function connect(item: ConnectionCatalogItem) {
+    if (item.connectorId === EMAIL_IMAP_CONNECTOR_ID) {
+      closeDetail();
+      setEmailForm(true);
+      return;
+    }
     const isCurrent = captureConnectionScope();
     if (!isCurrent()) return;
     connectionAttempt.current?.abort();
@@ -1051,7 +1064,15 @@ export default function Integrations() {
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
       >
-        {adding ? (
+        {emailForm ? (
+          <EmailImapForm
+            onClose={() => setEmailForm(false)}
+            onSaved={() => {
+              setEmailForm(false);
+              void refresh();
+            }}
+          />
+        ) : adding ? (
           <AddCustomForm
             adding={adding}
             gitUrl={gitUrl}
@@ -1147,7 +1168,7 @@ export default function Integrations() {
 
             {detailItem ? (
               <IntegrationDetail
-                item={detailItem}
+                item={{ ...detailItem, name: catalogItemLabel(detailItem, i18n.locale) }}
                 accounts={accountsFor(detailItem)}
                 pending={pending}
                 labelDrafts={labelDrafts}
@@ -1226,7 +1247,9 @@ export default function Integrations() {
                           );
                         })
                       : null}
-                    {renderedListed.map((item) => renderCatalogTile(item, item.name))}
+                    {renderedListed.map((item) =>
+                      renderCatalogTile(item, catalogItemLabel(item, i18n.locale)),
+                    )}
                   </View>
                 ) : null}
 
@@ -1269,7 +1292,9 @@ export default function Integrations() {
                   installedSources={installedSources}
                   columns={catalogColumns}
                   onOpenPlugin={openPlugin}
-                  renderAppTile={(item) => renderCatalogTile(item, item.name)}
+                  renderAppTile={(item) =>
+                    renderCatalogTile(item, catalogItemLabel(item, i18n.locale))
+                  }
                 />
                 {pluginsState !== "loading" && SUBMIT_PLUGIN_URL ? (
                   <NativeActionButton

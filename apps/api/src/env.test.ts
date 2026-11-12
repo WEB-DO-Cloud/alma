@@ -25,6 +25,7 @@ describe("loadEnv", () => {
       mobileActionsEnabled: false,
       googleByoOauth: false,
       composioIntegrations: false,
+      emailImapConnector: false,
       googleScopeMode: "limited",
       googlePicker: null,
     });
@@ -37,6 +38,8 @@ describe("loadEnv", () => {
     expect(loadEnv({ ...base, ALMA_COMPOSIO_INTEGRATIONS: "true" }).composioIntegrations).toBe(
       true,
     );
+    expect(loadEnv({ ...base, ALMA_EMAIL_IMAP_CONNECTOR: "yes" }).emailImapConnector).toBe(false);
+    expect(loadEnv({ ...base, ALMA_EMAIL_IMAP_CONNECTOR: "true" }).emailImapConnector).toBe(true);
     expect(
       loadEnv({
         ...base,

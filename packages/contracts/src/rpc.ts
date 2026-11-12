@@ -1289,6 +1289,103 @@ export const appContract = {
     get: oc.output(IntegrationSetupStateSchema),
     save: oc.input(IntegrationProviderConfigSchema).output(z.object({ ok: z.literal(true) })),
   },
+  emailImap: {
+    detect: oc.input(z.object({ email: z.string().max(254) })).output(
+      z.object({
+        detected: z.boolean(),
+        username: z.string().optional(),
+        imap: z
+          .object({
+            host: z.string(),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          })
+          .optional(),
+        smtp: z
+          .object({
+            host: z.string(),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          })
+          .optional(),
+      }),
+    ),
+    test: oc
+      .input(
+        z.object({
+          email: z.string().max(254),
+          password: z.string().max(256),
+          username: z.string().max(254).optional(),
+          imap: z.object({
+            host: z.string().max(253),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          }),
+          smtp: z.object({
+            host: z.string().max(253),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          }),
+        }),
+      )
+      .output(
+        z.object({
+          ok: z.boolean(),
+          code: z
+            .enum([
+              "invalid",
+              "wrong_password",
+              "unreachable",
+              "tls",
+              "auth_unsupported",
+              "private_host",
+              "rate_limited",
+              "too_large",
+              "not_found",
+            ])
+            .optional(),
+          side: z.enum(["imap", "smtp"]).optional(),
+        }),
+      ),
+    save: oc
+      .input(
+        z.object({
+          email: z.string().max(254),
+          password: z.string().max(256),
+          username: z.string().max(254).optional(),
+          imap: z.object({
+            host: z.string().max(253),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          }),
+          smtp: z.object({
+            host: z.string().max(253),
+            port: z.number().int(),
+            security: z.enum(["ssl", "starttls"]),
+          }),
+        }),
+      )
+      .output(
+        z.object({
+          ok: z.boolean(),
+          connectionId: z.string().optional(),
+          code: z
+            .enum([
+              "invalid",
+              "wrong_password",
+              "unreachable",
+              "tls",
+              "auth_unsupported",
+              "private_host",
+              "rate_limited",
+              "too_large",
+              "not_found",
+            ])
+            .optional(),
+          side: z.enum(["imap", "smtp"]).optional(),
+        }),
+      ),
+  },
   connections: {
     catalog: oc
       .input(z.object({ query: z.string().optional(), connectorId: z.string().optional() }))

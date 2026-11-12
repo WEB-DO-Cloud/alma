@@ -42,6 +42,7 @@ import { errorText } from "../lib/user-error";
 import { AddMenu } from "./plugins/add-menu";
 import { ConnectorDetail } from "./plugins/connector-detail";
 import { DomainSearch, useDomainSearch } from "./plugins/domain-search";
+import { EmailImapForm } from "./plugins/email-imap-form";
 import { GithubImport } from "./plugins/github-import";
 import { ManageView } from "./plugins/manage-view";
 import type { TileContext } from "./plugins/parts";
@@ -52,7 +53,7 @@ import { SourceFormView, useSourceForm } from "./plugins/source-form";
 import { PLUGIN_PAGE_SIZE, useCatalogBrowse } from "./plugins/use-catalog-browse";
 import { usePluginConnections } from "./plugins/use-plugin-connections";
 
-type OverlayView = "browse" | "manage" | "github" | "source" | "browseMcp" | "domain";
+type OverlayView = "browse" | "manage" | "github" | "source" | "browseMcp" | "domain" | "email";
 
 const CHIP_COUNT = 6;
 
@@ -229,6 +230,11 @@ export function PluginsOverlay({
     pluginForApp,
     onOpenApp: openApp,
     onOpenDetail: openDetail,
+    onEmailImap: () => {
+      setPlugin(null);
+      setDetailKey(null);
+      setView("email");
+    },
   };
 
   function beginSource(kind: SourceKind, preset: McpSourcePreset | null = null) {
@@ -506,7 +512,24 @@ export function PluginsOverlay({
               onChanged={refresh}
             />
           ) : detailItem ? (
-            <ConnectorDetail item={detailItem} state={state} onBack={closeDetail} />
+            <ConnectorDetail
+              item={detailItem}
+              state={state}
+              onBack={closeDetail}
+              onAdd={detailItem.connectorId === "email-imap" ? () => setView("email") : undefined}
+            />
+          ) : view === "email" ? (
+            <EmailImapForm
+              onBack={() => setView("browse")}
+              onSaved={() => {
+                setView("browse");
+                void state
+                  .refresh()
+                  .catch((err: unknown) =>
+                    setCatalogError(errorText(err, t`Could not load integrations`)),
+                  );
+              }}
+            />
           ) : view === "manage" ? (
             <ManageView
               state={state}

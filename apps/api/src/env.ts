@@ -172,6 +172,8 @@ export interface AppEnv {
   googleByoOauth: boolean;
   /** Exactly ALMA_COMPOSIO_INTEGRATIONS=true. */
   composioIntegrations: boolean;
+  /** Exactly ALMA_EMAIL_IMAP_CONNECTOR=true. */
+  emailImapConnector: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client ID. Otherwise absent. */
   googleOAuthClientId?: string;
   /** Exactly restricted, or limited for every other value. */
@@ -526,6 +528,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     mobileActionsEnabled: readMobileActionsConfig(source).enabled,
     googleByoOauth: flags.googleByoOauth,
     composioIntegrations: flags.composioIntegrations,
+    emailImapConnector: flags.emailImapConnector,
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),

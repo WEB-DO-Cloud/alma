@@ -1,6 +1,10 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConnectionCatalogItem, PluginMarketplaceEntry } from "@rakazo/contracts";
-import { CATALOG_SEARCH_QUERY_MAX_LENGTH, SUBMIT_PLUGIN_URL } from "@rakazo/contracts";
+import {
+  CATALOG_SEARCH_QUERY_MAX_LENGTH,
+  catalogItemLabel,
+  SUBMIT_PLUGIN_URL,
+} from "@rakazo/contracts";
 import {
   CONNECTION_CATALOG_PAGE_SIZE,
   catalogItemKey,
@@ -41,7 +45,8 @@ export function PluginBrowse({
   /** Opens the public MCP catalog searched for the query. */
   onSearchPublic: (query: string) => void;
 }) {
-  const { t } = useLingui();
+  const { i18n, t } = useLingui();
+  const labelFor = (item: ConnectionCatalogItem) => catalogItemLabel(item, i18n.locale);
   const { catalogLoaded, catalog, pluginCatalog, pluginInstalls } = state;
   const {
     query,
@@ -134,7 +139,7 @@ export function PluginBrowse({
         <section data-testid="plugin-results" className="mt-2">
           {categorySlice.length ? (
             <div className="grid grid-cols-2 gap-2">
-              {categorySlice.map((item) => catalogTile(item, item.name, item.logo))}
+              {categorySlice.map((item) => catalogTile(item, labelFor(item), item.logo))}
             </div>
           ) : null}
           {visibleCount < categoryItems.length ? (
@@ -150,7 +155,7 @@ export function PluginBrowse({
           ) : null}
           {brandMatches.length || pluginMatches.length ? (
             <div className={`grid grid-cols-2 gap-2 ${categorySlice.length ? "mt-2" : ""}`}>
-              {brandMatches.map(({ item }) => catalogTile(item, item.name, item.logo))}
+              {brandMatches.map(({ item }) => catalogTile(item, labelFor(item), item.logo))}
               {pluginMatches.slice(0, pluginCount).map(renderPluginRow)}
             </div>
           ) : null}
@@ -197,7 +202,7 @@ export function PluginBrowse({
             </SectionHeading>
             <div className="grid grid-cols-2 gap-2">
               {recommended.map(({ entry, item }) =>
-                item ? catalogTile(item, item.name, item.logo) : renderPluginRow(entry),
+                item ? catalogTile(item, labelFor(item), item.logo) : renderPluginRow(entry),
               )}
             </div>
           </section>
@@ -314,7 +319,7 @@ export function PluginBrowse({
           {visible.length > 0 && !category ? (
             <div className="grid grid-cols-2 gap-2">
               {rendered.map((item) =>
-                catalogTile(item, item.name, item.logo, {
+                catalogTile(item, labelFor(item), item.logo, {
                   // Avoid duplicate connection-tile-* ids while featured is also shown.
                   tileTestId: !showFeatured,
                 }),
@@ -339,7 +344,7 @@ export function PluginBrowse({
           {strongMatches.length > 0 && !category ? (
             <div className="mb-2 grid grid-cols-2 gap-2">
               {strongMatches.map((item) =>
-                catalogTile(item, item.name, item.logo, { tileTestId: true }),
+                catalogTile(item, labelFor(item), item.logo, { tileTestId: true }),
               )}
             </div>
           ) : null}
@@ -347,7 +352,7 @@ export function PluginBrowse({
           {rendered.length > 0 && !category ? (
             <div className="mt-2 grid grid-cols-2 gap-2">
               {rendered.map((item) =>
-                catalogTile(item, item.name, item.logo, { tileTestId: true }),
+                catalogTile(item, labelFor(item), item.logo, { tileTestId: true }),
               )}
             </div>
           ) : null}
