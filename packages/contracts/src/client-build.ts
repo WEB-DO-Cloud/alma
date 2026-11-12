@@ -24,6 +24,18 @@ export const MOBILE_APP_STORES = {
 export const IOS_APP_STORE_URL = MOBILE_APP_STORES.ios;
 export const ANDROID_APP_STORE_URL = MOBILE_APP_STORES.android;
 
+/**
+ * ALMA Desktop installers, served as static files from app.alma.com.do/downloads. macOS is one
+ * universal app (Intel and Apple Silicon), signed and notarized. There is no Windows build yet,
+ * so Windows visitors get the downloads page.
+ */
+export const DESKTOP_DOWNLOADS_URL = "https://app.alma.com.do/downloads/";
+export const DESKTOP_DOWNLOADS = {
+  mac: `${DESKTOP_DOWNLOADS_URL}ALMA-mac.dmg`,
+  linux: `${DESKTOP_DOWNLOADS_URL}ALMA-linux.AppImage`,
+  windows: DESKTOP_DOWNLOADS_URL,
+} as const;
+
 const BUILD_ID = /^\d{14}$/;
 
 /** A build id is the UTC time it was built, to the second (`YYYYMMDDHHMMSS`), so ids sort as text. */

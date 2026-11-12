@@ -5494,7 +5494,11 @@ msgid "Get notified when this Bot finishes or needs input"
 msgstr "이 봇이 작업을 마치거나 입력이 필요할 때 알림 받기"
 
 #: apps/web/src/components/SidebarFooter.tsx
-msgid "Get the mobile app"
+msgid "Download desktop app"
+msgstr "데스크톱 앱 다운로드"
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Download mobile app"
 msgstr "모바일 앱 다운로드"
 
 #: apps/mobile/components/computer-update-progress.tsx

@@ -5494,8 +5494,12 @@ msgid "Get notified when this Bot finishes or needs input"
 msgstr "קבלת התראה כשהבוט הזה מסיים או צריך קלט"
 
 #: apps/web/src/components/SidebarFooter.tsx
-msgid "Get the mobile app"
-msgstr "הורדת האפליקציה לנייד"
+msgid "Download desktop app"
+msgstr "הורדת אפליקציית מחשב"
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Download mobile app"
+msgstr "הורדת אפליקציה לנייד"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx

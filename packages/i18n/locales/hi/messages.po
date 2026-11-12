@@ -5494,8 +5494,12 @@ msgid "Get notified when this Bot finishes or needs input"
 msgstr "जब यह बॉट काम पूरा करे या उसे इनपुट चाहिए हो, तब सूचना पाएँ"
 
 #: apps/web/src/components/SidebarFooter.tsx
-msgid "Get the mobile app"
-msgstr "मोबाइल ऐप पाएँ"
+msgid "Download desktop app"
+msgstr "डेस्कटॉप ऐप डाउनलोड करें"
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Download mobile app"
+msgstr "मोबाइल ऐप डाउनलोड करें"
 
 #: apps/mobile/components/computer-update-progress.tsx
 #: apps/web/src/components/ComputerUpdateProgress.tsx
