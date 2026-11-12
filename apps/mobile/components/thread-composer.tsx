@@ -30,6 +30,7 @@ import type { Ref } from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { TextInputInstance, ViewStyle } from "react-native";
 import {
+  ActivityIndicator,
   AppState,
   Pressable,
   ScrollView,
@@ -41,7 +42,6 @@ import {
 import { useComposerDictation } from "../lib/composer-dictation";
 import type { ComposerDraftScope } from "../lib/composer-draft";
 import { readComposerDraft, writeComposerDraft } from "../lib/composer-draft";
-import { listen, stop as stopDictation } from "../lib/dictation";
 import { useMobileTokens, useResolvedAppearance } from "../lib/native";
 import type { ComposerSnapshot } from "../lib/thread-feedback";
 import { BotAvatar } from "./bot-avatar";
@@ -92,8 +92,6 @@ type ThreadComposerProps = {
   send: () => Promise<void>;
   supportChat?: boolean;
   startVoiceCall: () => Promise<void>;
-  /** Existing dictation. Shown only when voice notes are on. */
-  voiceNotes?: boolean;
   onSlashAction: (action: SlashActionId) => void;
   /** The composer holds no text: the last of it was deleted or sent. */
   onEmptied?: () => void;
@@ -118,7 +116,6 @@ export function ThreadComposer({
   send,
   supportChat,
   startVoiceCall,
-  voiceNotes = false,
   onSlashAction,
   onEmptied,
 }: ThreadComposerProps) {
@@ -133,10 +130,10 @@ export function ThreadComposer({
   const textScale = Math.min(fontScale, MAX_FONT_SCALE);
   const colorScheme = useResolvedAppearance();
   const { t } = useLingui();
-  const [recording, setRecording] = useState(false);
   const inputRef = useRef<TextInputInstance>(null);
   const [saved] = useState(() => readComposerDraft(draftScope));
   const [draft, setDraft] = useState(saved.text);
+  const [emptyRowHeight, setEmptyRowHeight] = useState<number>();
   const draftRef = useRef(saved.text);
   const nativeSelection = useRef({ start: saved.text.length, end: saved.text.length });
   const completedSelection = useRef<number | null>(null);
@@ -184,6 +181,13 @@ export function ThreadComposer({
     setSlashQuery(null);
   }
   const dictation = useComposerDictation({ disabled: onCall, onWords: showDictation });
+  function toggleDictation() {
+    if (dictation.status === "idle") {
+      dictatedBase.current = draftRef.current;
+      dictated.current = draftRef.current;
+    }
+    dictation.toggle();
+  }
   // Saving waits for a pause in typing; closing the conversation or leaving the app saves at once.
   // Set while the composer holds text that storage does not have yet.
   const pendingSave = useRef<(() => boolean) | null>(null);
@@ -433,9 +437,15 @@ export function ThreadComposer({
     justifyContent: "center",
   } as const;
 
+  // One line of text with its padding, as measured while the box is empty. The pills and attach
+  // button centre on it: the bar can grow past 44 (font scale, Android text metrics), and a fixed
+  // bottom margin would leave them high.
+  const lineHeight = Math.max(44, emptyRowHeight ?? 22 + 22 * textScale);
+  const pillInset = (lineHeight - composerPillStyle.height) / 2;
+
   const canSend = Boolean(draft.trim()) || selectedSkill !== null || attachmentIds.length > 0;
-  // Sending resets the box, which would drop words a provider is still transcribing.
-  const sendBlocked = sending || !canSend || dictation.status === "transcribing";
+  // Sending resets the box, which would drop a clip still recording or words still being transcribed.
+  const sendBlocked = sending || !canSend || dictation.status !== "idle";
 
   return (
     <>
@@ -582,7 +592,7 @@ export function ThreadComposer({
             accessible
             accessibilityRole="button"
             accessibilityLabel={t`Attach file`}
-            style={{ width: 44, height: 44 }}
+            style={{ width: 44, height: 44, marginBottom: (lineHeight - 44) / 2 }}
           >
             <GlassSurface
               shape="circle"
@@ -659,6 +669,9 @@ export function ThreadComposer({
             ) : null}
             <Pressable
               accessible={false}
+              onLayout={(event) => {
+                if (!draftRef.current) setEmptyRowHeight(event.nativeEvent.layout.height);
+              }}
               onPress={() => inputRef.current?.focus()}
               style={{
                 flexGrow: 1,
@@ -787,35 +800,35 @@ export function ThreadComposer({
               </TextInput>
             </Pressable>
           </View>
-          {voiceNotes ? (
+          {onCall ? null : (
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel={recording ? t`Recording` : t`Record`}
+              accessibilityLabel={dictation.status === "idle" ? t`Dictate` : t`Stop dictating`}
+              disabled={dictation.status === "transcribing"}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
-              onPress={() => {
-                if (recording) {
-                  stopDictation();
-                  setRecording(false);
-                  return;
-                }
-                setRecording(true);
-                void listen({
-                  onFinal: (text) => {
-                    const current = draftRef.current;
-                    draftRef.current = current.trim() ? `${current.trimEnd()} ${text}` : text;
-                    setDraft(draftRef.current);
-                    setRecording(false);
-                  },
-                  onGiveUp: () => setRecording(false),
-                }).catch(() => setRecording(false));
-              }}
-              style={{ marginBottom: 8 }}
+              onPress={toggleDictation}
+              style={{ marginBottom: pillInset }}
             >
-              <Text style={{ color: tokens.foreground }}>
-                {recording ? t`Recording` : t`Record`}
-              </Text>
+              <GlassSurface
+                tint={dictation.status === "idle" ? undefined : tokens.foreground}
+                style={composerPillStyle}
+                fallbackStyle={{
+                  backgroundColor: dictation.status === "idle" ? tokens.muted : tokens.foreground,
+                }}
+              >
+                {dictation.status === "transcribing" ? (
+                  <ActivityIndicator size="small" color={tokens.background} />
+                ) : (
+                  <NativeSymbol
+                    ios={dictation.status === "listening" ? "mic.fill" : "mic"}
+                    android={dictation.status === "listening" ? "mic" : "mic-outline"}
+                    size={15}
+                    color={dictation.status === "idle" ? tokens.mutedForeground : tokens.background}
+                  />
+                )}
+              </GlassSurface>
             </Pressable>
-          ) : null}
+          )}
           {/* No call while dictation still owns the microphone or its words are on the way. */}
           {!canSend && botId && !onCall && !supportChat && dictation.status === "idle" ? (
             <Pressable
@@ -823,7 +836,7 @@ export function ThreadComposer({
               accessibilityLabel={t`Call`}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
               onPress={() => void startVoiceCall()}
-              style={{ marginBottom: 8 }}
+              style={{ marginBottom: pillInset }}
             >
               <GlassSurface
                 tint={tokens.primary}
@@ -845,7 +858,7 @@ export function ThreadComposer({
               disabled={sendBlocked}
               hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
               onPress={() => void send()}
-              style={{ marginBottom: 8, opacity: sendBlocked ? 0.5 : 1 }}
+              style={{ marginBottom: pillInset, opacity: sendBlocked ? 0.5 : 1 }}
             >
               <GlassSurface
                 tint={tokens.primary}

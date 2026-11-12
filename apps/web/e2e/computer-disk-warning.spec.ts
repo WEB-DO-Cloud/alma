@@ -19,7 +19,10 @@ test("a nearly full computer offers to clean up its disk", async ({ page }, test
       await route.fulfill({ response, json: body });
     } catch (error) {
       // The reload below can cancel a read that was already in flight.
-      if (!String(error).includes("Route is already handled")) throw error;
+      const message = String(error);
+      if (!/disposed|aborted|already handled|Target closed|Failed to find context/i.test(message)) {
+        throw error;
+      }
     }
   };
   await page.route("**/rpc/computer/status", (route) => withFullDisk(route, (json) => json));

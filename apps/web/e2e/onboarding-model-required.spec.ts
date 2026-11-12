@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, signup } from "./helpers";
+import { captureScreenshot, readRouteJson, signup } from "./helpers";
 
 test.afterEach(async ({ page }) => {
   // Not "wait": a handler whose fulfill() lost a race to the route teardown never settles,
@@ -39,8 +39,10 @@ test("onboarding cannot continue with an empty or failed model catalog", async (
 
 test("Ollama Cloud onboarding requires a key before continuing", async ({ page }) => {
   await page.route("**/rpc/me", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Record<string, unknown> };
     await route.fulfill({ response, json: { json: { ...body.json, needsModel: true } } });
   });
   const stamp = Date.now();
@@ -64,8 +66,10 @@ test("ALMA credits are chosen like a provider, with nothing else to fill in", as
   page,
 }, testInfo) => {
   await page.route("**/rpc/me", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Record<string, unknown> };
     await route.fulfill({
       response,
       json: { json: { ...body.json, needsModel: true, billingEnabled: true } },

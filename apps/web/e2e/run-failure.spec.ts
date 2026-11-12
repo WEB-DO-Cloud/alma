@@ -1,6 +1,12 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, openNewSpace, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openNewSpace,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 function isPresented(error: Locator) {
   return error.evaluate((element) => {
@@ -146,8 +152,10 @@ test("an operator usage cap explains the pause without offering a billing upgrad
   await completeOnboarding(page);
   // Use the normal failure fixture and replace only the server's error message.
   await page.route("**/rpc/threads/get", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { run?: { error?: string | null } } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { run?: { error?: string | null } } };
     if (body.json?.run?.error)
       body.json.run.error = "Usage limit reached. Contact support to continue.";
     await route.fulfill({ response, json: body });

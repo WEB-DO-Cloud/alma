@@ -1,7 +1,14 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { Routine } from "@rakazo/contracts";
-import { activeBotId, completeOnboarding, createNamedBot, rpc, signup } from "./helpers";
+import {
+  activeBotId,
+  completeOnboarding,
+  createNamedBot,
+  readRouteJson,
+  rpc,
+  signup,
+} from "./helpers";
 
 async function openComposer(page: Page, prefix: string) {
   await signup(page, `${prefix}-${Date.now()}@rakazo.test`, "password12", "Draft Keeper");
@@ -91,9 +98,11 @@ test("an unchanged routine retry after a lost response reuses the run", {
   const runIds: string[] = [];
   await page.route("**/rpc/threads/sendWithRoutines", async (route) => {
     nonces.push(route.request().postDataJSON().json.clientNonce);
-    const response = await route.fetch();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
     expect(response.ok()).toBe(true);
-    runIds.push(...(await response.json()).json.routineRunIds);
+    runIds.push(...fetched.body.json.routineRunIds);
     if (nonces.length === 1) await route.abort("internetdisconnected");
     else await route.fulfill({ response });
   });

@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, openUserSettings, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openUserSettings,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 // win32 shares the non-darwin "this computer" branch with linux.
 for (const platform of ["darwin", "linux"]) {
@@ -160,8 +166,10 @@ test("a saved host choice closes when refreshing the profile fails", async ({ pa
       });
       return;
     }
-    const response = await route.fetch();
-    const body = await response.json();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body;
     const me = url.endsWith("/me") ? body.json : body.json.me;
     me.canChooseHostComputer = true;
     me.computerHost = null;

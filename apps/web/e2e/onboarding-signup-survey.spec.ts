@@ -1,11 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, chooseOption, signup } from "./helpers";
+import { captureScreenshot, chooseOption, readRouteJson, signup } from "./helpers";
 
 test("new users answer the signup survey before their first chat", async ({ page }, testInfo) => {
   // Local and CI servers do not bill, so stand in for a billing deployment's flag.
   await page.route("**/rpc/me", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Record<string, unknown> };
     await route.fulfill({ response, json: { json: { ...body.json, needsSignupSurvey: true } } });
   });
   const submitted: unknown[] = [];

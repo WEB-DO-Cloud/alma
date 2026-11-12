@@ -8,6 +8,7 @@ import {
   createNamedBot,
   openBotPanelTab,
   openUserSettings,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -225,8 +226,10 @@ test("memory and skills are readable and editable in the app", async ({ page }, 
   await page.route(
     "**/rpc/agentSkills/get",
     async (route) => {
-      const response = await route.fetch();
-      const body = await response.json();
+      const fetched = await readRouteJson(route);
+      if (!fetched) return;
+      const response = fetched.response;
+      const body = fetched.body;
       await route.fulfill({
         response,
         json: { ...body, json: { ...body.json, readOnly: true, source: "plugin" } },
