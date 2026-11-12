@@ -213,7 +213,7 @@
   "Create account": "Hesap oluştur",
   "Create group": "Grup oluştur",
   "Create your first bot": "İlk botunu oluştur",
-  "Create your ALMA": "ALMA hesabını oluştur",
+  "Create your account": "Hesabını oluştur",
   "Creating…": "Oluşturuluyor…",
   "Credential": "Kimlik bilgisi",
   "Credential saved": "Kimlik bilgisi kaydedildi",
@@ -476,7 +476,6 @@
   "Show settings": "Ayarları göster",
   "Sign in": "Oturum aç",
   "Sign in  →": "Oturum aç  →",
-  "Sign in to ALMA": "ALMA'da oturum aç",
   "Sign up": "Kaydol",
   "Skill {0}": "Beceri: {0}",
   "Skip": "Atla",
@@ -576,5 +575,6 @@
   "Credentials are encrypted and never sent to the model.": "Kimlik bilgileri şifrelenir ve modele asla gönderilmez.",
   "Rename section": "Bölümü yeniden adlandır",
   "Could not rename section": "Bölüm yeniden adlandırılamadı",
-  "{count, plural, one {# message with {peer}} other {# messages with {peer}}}": "{count, plural, one {{peer} ile # mesaj} other {{peer} ile # mesaj}}"
+  "{count, plural, one {# message with {peer}} other {# messages with {peer}}}": "{count, plural, one {{peer} ile # mesaj} other {{peer} ile # mesaj}}",
+  "No passkey found on this device. Sign in with your password, then add a passkey in your account.": "Bu cihazda geçiş anahtarı bulunamadı. Parolanla oturum aç, sonra hesabına bir geçiş anahtarı ekle."
 }

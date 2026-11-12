@@ -4,7 +4,7 @@ appId: do.alma.app
 - launchApp:
     stopApp: true
 - extendedWaitUntil:
-    visible: "Account|Create your ALMA account|Sign in to ALMA"
+    visible: "Account|Create your account|^Sign in$"
     timeout: 40000
 - runFlow:
     when:
@@ -17,5 +17,5 @@ appId: do.alma.app
           timeout: 15000
       - tapOn: "Sign out"
 - extendedWaitUntil:
-    visible: "Create your ALMA account|Sign in to ALMA"
+    visible: "Create your account|^Sign in$"
     timeout: 20000

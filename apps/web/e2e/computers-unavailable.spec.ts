@@ -1,10 +1,18 @@
 import type { Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, openBotPanelTab, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openBotPanelTab,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 async function patchJson(route: Route, patch: (body: { json?: Record<string, unknown> }) => void) {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   patch(body);
   await route.fulfill({ response, json: body });
 }

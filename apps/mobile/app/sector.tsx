@@ -1,8 +1,10 @@
 import { useLingui } from "@lingui/react/macro";
 import { ALMA_WORK_SECTORS, almaLanguage, almaText } from "@rakazo/contracts";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, Text } from "react-native";
+import { ListSearchInput } from "../components/list-search-input";
+import { SettingsGroup, SettingsRow } from "../components/settings-group";
 import { rpc } from "../lib/api";
 import { useUiLocale } from "../lib/i18n";
 import { useMobileTokens } from "../lib/native";
@@ -34,65 +36,55 @@ export default function SectorStart() {
   );
 
   return (
-    <ScrollView
-      contentContainerStyle={{ padding: 24, gap: 12 }}
-      style={{ flex: 1, backgroundColor: tokens.background }}
-    >
-      <Text style={{ color: tokens.foreground, fontSize: 28, fontWeight: "500" }}>
-        {step === "use" ? t`What do you want ALMA for first?` : t`What kind of work?`}
-      </Text>
-      {step === "sector" ? (
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          accessibilityLabel={t`Search`}
-          style={{
-            color: tokens.foreground,
-            borderColor: tokens.border,
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-          }}
-        />
-      ) : null}
-      {step === "use" ? (
-        <>
-          <Choice
-            label={t`Personal use`}
+    <>
+      <Stack.Screen options={{ title: "" }} />
+      <ScrollView
+        contentContainerStyle={{ padding: 24, gap: 20 }}
+        keyboardShouldPersistTaps="handled"
+        style={{ flex: 1, backgroundColor: tokens.background }}
+      >
+        <Text
+          accessibilityRole="header"
+          style={{ color: tokens.foreground, fontSize: 28, fontWeight: "500" }}
+        >
+          {step === "use" ? t`What do you want ALMA for first?` : t`What kind of work?`}
+        </Text>
+        {step === "sector" ? <ListSearchInput query={query} setQuery={setQuery} /> : null}
+        <SettingsGroup>
+          {step === "use" ? (
+            <>
+              <SettingsRow
+                disabled={pending}
+                dimmed={pending}
+                onPress={() => void save("personal")}
+                title={t`Personal use`}
+              />
+              <SettingsRow
+                disabled={pending}
+                dimmed={pending}
+                onPress={() => setStep("sector")}
+                title={t`Work`}
+              />
+            </>
+          ) : (
+            rows.map((sector) => (
+              <SettingsRow
+                key={sector.id}
+                disabled={pending}
+                dimmed={pending}
+                onPress={() => void save("work", sector.id)}
+                title={almaText(sector.label, language)}
+              />
+            ))
+          )}
+          <SettingsRow
             disabled={pending}
-            onPress={() => void save("personal")}
+            dimmed={pending}
+            onPress={() => void save("skip")}
+            title={t`Skip`}
           />
-          <Choice label={t`Work`} disabled={pending} onPress={() => setStep("sector")} />
-        </>
-      ) : (
-        rows.map((sector) => (
-          <Choice
-            key={sector.id}
-            label={almaText(sector.label, language)}
-            disabled={pending}
-            onPress={() => void save("work", sector.id)}
-          />
-        ))
-      )}
-      <Choice label={t`Skip`} disabled={pending} onPress={() => void save("skip")} />
-    </ScrollView>
-  );
-}
-
-function Choice({
-  label,
-  onPress,
-  disabled,
-}: {
-  label: string;
-  onPress: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress}>
-      <View style={{ paddingVertical: 12 }}>
-        <Text>{label}</Text>
-      </View>
-    </Pressable>
+        </SettingsGroup>
+      </ScrollView>
+    </>
   );
 }

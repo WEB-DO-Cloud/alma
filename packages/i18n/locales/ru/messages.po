@@ -91,6 +91,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "Соединение {0}"
 
+#. placeholder {0}: trial.daysLeft
+#: apps/web/src/components/activation.tsx
+msgid "{0} days left"
+msgstr ""
+
 #. placeholder {0}: parts.amount
 #: apps/web/src/components/ArtifactFileCard.tsx
 msgid "{0} GB"
@@ -121,10 +126,20 @@ msgstr "{0} работает"
 msgid "{0} KB"
 msgstr "{0} КБ"
 
+#. placeholder {0}: usd(creditsUsd)
+#: apps/web/src/components/PlanUsage.tsx
+msgid "{0} left"
+msgstr ""
+
 #. placeholder {0}: parts.amount
 #: apps/web/src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} МБ"
+
+#. placeholder {0}: trial.messagesLeft
+#: apps/web/src/components/activation.tsx
+msgid "{0} messages"
+msgstr ""
 
 #. placeholder {0}: sender.name
 #: apps/web/src/pages/ExternalConversationSettings.tsx
@@ -140,6 +155,11 @@ msgstr "{0} ТБ"
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
 msgid "{0}, paused until you turn it on"
 msgstr "{0}, приостановлена, пока вы её не включите"
+
+#. placeholder {0}: Math.round(used)
+#: apps/web/src/components/PlanUsage.tsx
+msgid "{0}% used"
+msgstr ""
 
 #: apps/web/src/lib/billing.ts
 msgid "{amount} / {period}"
@@ -160,6 +180,10 @@ msgstr "{amount} в неделю"
 #: apps/mobile/lib/spending-limit.ts
 msgid "{amount} in total"
 msgstr "{amount} всего"
+
+#: apps/mobile/app/(settings)/account.tsx
+msgid "{amount} left"
+msgstr ""
 
 #: apps/mobile/lib/spending-limit.ts
 msgid "{amount} spent"
@@ -204,6 +228,10 @@ msgstr "{channel} {id}"
 #: apps/mobile/lib/app-version.ts
 msgid "{channel} {id}, {date}"
 msgstr "{channel} {id}, {date}"
+
+#: apps/web/src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr ""
 
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
@@ -304,6 +332,10 @@ msgstr "{count} ч назад"
 #: apps/mobile/lib/activity.ts
 msgid "{count}m ago"
 msgstr "{count} мин назад"
+
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {Остался # день} few {Осталось # дня} many {Осталось # дней} other {Осталось # дня}} · {left, plural, one {# сообщение} few {# сообщения} many {# сообщений} other {# сообщения}}"
 
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
@@ -489,6 +521,16 @@ msgstr "Далее {price} в год"
 msgid "{price} / year. Cancel anytime."
 msgstr "{price} в год. Отмена в любой момент."
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr ""
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "{promo}/month for your first {months} months, then {price}/month"
+msgstr ""
+
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
 msgid "{provider} can't run this model."
@@ -673,6 +715,10 @@ msgstr "{title}, сохранится как {savedAs}"
 msgid "{toolCount, plural, one {# tool} other {# tools}}"
 msgstr "{toolCount, plural, one {# инструмент} few {# инструмента} many {# инструментов} other {# инструмента}}"
 
+#: apps/mobile/app/(settings)/account.tsx
+msgid "{used}% used"
+msgstr ""
+
 #: apps/mobile/components/vault-item-editor.tsx
 msgid "{variable} is reserved. Choose another name."
 msgstr "{variable} зарезервировано. Выберите другое имя."
@@ -805,6 +851,10 @@ msgstr "1 бот теперь использует модель простран
 msgid "1 connector"
 msgstr "1 коннектор"
 
+#: apps/web/src/components/activation.tsx
+msgid "1 day left"
+msgstr ""
+
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/mobile/app/invite.tsx
 msgid "1 free month earned"
@@ -814,6 +864,10 @@ msgstr "Получен 1 бесплатный месяц"
 #: apps/web/src/pages/BotContextMenu.tsx
 msgid "1 hour"
 msgstr "1 час"
+
+#: apps/web/src/components/activation.tsx
+msgid "1 message"
+msgstr ""
 
 #: apps/mobile/app/(settings)/skills.tsx
 msgid "1 skill"
@@ -1059,6 +1113,10 @@ msgstr "Добавить свой"
 msgid "Add email trigger"
 msgstr "Добавить триггер почты"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add every scope listed here."
+msgstr ""
+
 #: apps/mobile/components/model-role-settings.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
 msgid "Add fallback"
@@ -1130,6 +1188,10 @@ msgstr "Добавьте URL сервера"
 msgid "Add skills"
 msgstr "Добавить навыки"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add the redirect URI shown here as an authorized redirect URI."
+msgstr ""
+
 #: apps/web/src/components/teach/SkillDraftCard.tsx
 msgid "Add to routine"
 msgstr "Добавить в задачу"
@@ -1196,6 +1258,11 @@ msgstr "Расширенные"
 msgid "Advanced..."
 msgstr "Расширенные..."
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr ""
+
 #: apps/mobile/components/thread/thread-list-controls.tsx
 msgid "Agent"
 msgstr "Агент"
@@ -1240,6 +1307,10 @@ msgstr "Все {price} идут на использование моделей."
 msgid "All bots"
 msgstr "Все боты"
 
+#: apps/web/src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr ""
+
 #: apps/mobile/app/artifacts.tsx
 #: apps/web/src/pages/Artifacts.tsx
 msgid "All files"
@@ -1267,6 +1338,10 @@ msgstr "Разрешить"
 msgid "Allow {name} on mobile"
 msgstr "Разрешить {name} на телефоне"
 
+#: apps/web/src/lib/dictation.ts
+msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
+msgstr "Разрешите ALMA использовать распознавание речи и микрофон в Системных настройках."
+
 #: apps/mobile/app/bot-settings.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Allow cross-space bot communication"
@@ -1290,18 +1365,11 @@ msgstr "Разрешите доступ к микрофону, чтобы дик
 msgid "Allow once"
 msgstr "Разрешить один раз"
 
-#: apps/web/src/lib/dictation.ts
-msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
-msgstr "Разрешите ALMA использовать распознавание речи и микрофон в Системных настройках."
-
+#: apps/mobile/lib/call-session.ts
 #: apps/mobile/lib/composer-dictation.ts
+#: apps/mobile/lib/thread-voice.ts
 msgid "Allow speech recognition in Settings, or connect a voice provider that transcribes."
 msgstr "Разрешите распознавание речи в Настройках или подключите голосового провайдера с расшифровкой."
-
-#: apps/mobile/lib/call-session.ts
-#: apps/mobile/lib/thread-voice.ts
-msgid "Allow speech recognition in Settings, or connect ElevenLabs, OpenAI, or Fish Audio."
-msgstr "Разрешите распознавание речи в Настройках или подключите ElevenLabs, OpenAI или Fish Audio."
 
 #: apps/web/src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Allow writing"
@@ -1316,6 +1384,24 @@ msgstr "Разрешено в этом пространстве"
 #: apps/web/src/components/AskCard.tsx
 msgid "Allowed once"
 msgstr "Разрешено один раз"
+
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/mobile/app/(settings)/ai-data-sharing.tsx
+#: apps/mobile/app/bot-settings.tsx
+#: apps/web/src/pages/AccountSettingsOverlay.tsx
+#: apps/web/src/pages/shell/avatar-studio-popover.tsx
+msgid "ALMA"
+msgstr "ALMA"
+
+#: apps/mobile/app/(settings)/billing.tsx
+#: apps/web/src/pages/onboarding/use-onboarding-model.ts
+msgid "ALMA credits"
+msgstr "Кредиты ALMA"
+
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-view.tsx
+msgid "ALMA Support"
+msgstr ""
 
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 msgid "Already connected"
@@ -1518,8 +1604,10 @@ msgstr "Подтверждения"
 
 #: apps/mobile/app/(settings)/messaging.tsx
 #: apps/mobile/components/McpApprovalCard.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/pages/MessagingSettingsPanel.tsx
 #: apps/web/src/pages/PluginSubmissionsPanel.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "Утвердить"
@@ -1606,6 +1694,10 @@ msgstr "Спрашивает только перед покупками и пе�
 #: apps/web/src/pages/shell/computer-panel.tsx
 msgid "Asleep"
 msgstr "Спит"
+
+#: apps/web/src/components/activation.tsx
+msgid "Assistant"
+msgstr ""
 
 #. placeholder {0}: preset.time
 #: apps/web/src/lib/cron.ts
@@ -1766,6 +1858,11 @@ msgstr "Bearer"
 msgid "Bearer token"
 msgstr "Bearer-токен"
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr ""
+
 #: apps/mobile/app/(settings)/_layout.tsx
 #: apps/mobile/app/(settings)/account.tsx
 #: apps/web/src/pages/settings-nav.ts
@@ -1883,6 +1980,7 @@ msgstr "Модель бота"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QuietHoursPage.tsx
 msgid "Both"
 msgstr "Оба варианта"
 
@@ -1934,6 +2032,14 @@ msgstr "Встроенный"
 msgid "Button “{button}” · read from the page, not checked"
 msgstr "Кнопка «{button}» · прочитано со страницы, не проверено"
 
+#: apps/web/src/components/activation.tsx
+msgid "Calendar"
+msgstr ""
+
+#: apps/web/src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr ""
+
 #: apps/mobile/components/thread-composer.tsx
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Call"
@@ -1972,10 +2078,6 @@ msgstr "Вызовы"
 msgid "Calls need transcription"
 msgstr "Для звонков нужна транскрипция"
 
-#: apps/web/src/pages/settings-nav.ts
-msgid "Calls, dictation, and replies read aloud."
-msgstr "Звонки, диктовка и озвучивание ответов."
-
 #: apps/mobile/lib/thread-attachments.ts
 msgid "Camera"
 msgstr "Камера"
@@ -1990,6 +2092,7 @@ msgstr "Не удаётся связаться с сервером."
 
 #: apps/mobile/components/model-picker-list.tsx
 #: apps/web/src/components/TextOnlyMark.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "Не может читать изображения"
@@ -2036,6 +2139,7 @@ msgstr "Не может читать изображения"
 #: apps/mobile/components/thread/quote-sheet.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/lib/account-name-editor.ts
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/ask-action-label.ts
 #: apps/mobile/lib/bot-lifecycle.ts
 #: apps/mobile/lib/confirm-delete-section.ts
@@ -2057,10 +2161,16 @@ msgstr "Не может читать изображения"
 #: apps/web/src/pages/onboarding/model-step.tsx
 #: apps/web/src/pages/PaymentWalletSettingsPanel.tsx
 #: apps/web/src/pages/PluginSubmissionsPanel.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/create-bot-dialog.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
 msgid "Cancel"
 msgstr "Отмена"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr ""
 
 #: apps/web/src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2313,6 +2423,10 @@ msgstr "Выбрать папку"
 msgid "Choose how to use ALMA"
 msgstr "Выберите, как использовать ALMA"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Choose Test connection."
+msgstr ""
+
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
@@ -2371,6 +2485,19 @@ msgstr "Сбросить фильтры"
 msgid "Clearing…"
 msgstr "Очистка…"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID"
+msgstr ""
+
+#. placeholder {0}: view.clientIdLast4
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID ending in {0}. Secret saved."
+msgstr ""
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client secret"
+msgstr ""
+
 #: apps/mobile/app/new-group.tsx
 #: apps/mobile/app/page.tsx
 #: apps/mobile/app/paywall.tsx
@@ -2380,6 +2507,7 @@ msgstr "Очистка…"
 #: apps/mobile/components/sheet-close-button.ios.tsx
 #: apps/mobile/components/sheet-close-button.tsx
 #: apps/web/src/components/ErrorBoundary.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/MessagingSettingsPanel.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
@@ -2562,10 +2690,10 @@ msgstr "Завершено"
 #: apps/mobile/app/bot-settings.tsx
 #: apps/mobile/components/computer-mode-picker.tsx
 #: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/settings-nav.ts
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Computer"
 msgstr "Компьютер"
 
@@ -2732,6 +2860,7 @@ msgstr "Подключить поставщика памяти"
 msgid "Connect my own"
 msgstr "Подключить своё"
 
+#: apps/mobile/app/(settings)/integrations.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
 msgid "Connect OAuth"
 msgstr "Подключить OAuth"
@@ -2889,8 +3018,10 @@ msgstr "Диалоги"
 #: apps/web/src/components/pages/SharePopover.tsx
 #: apps/web/src/components/vault/BotEmailAddresses.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
+#: apps/web/src/pages/ReferralPage.tsx
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 #: apps/web/src/pages/shell/agent-import.tsx
 #: apps/web/src/pages/shell/message-hover-actions.tsx
@@ -2920,6 +3051,10 @@ msgstr "Скопировать {address}"
 msgid "Copy {label}"
 msgstr "Копировать: {label}"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy client ID"
+msgstr ""
+
 #: apps/mobile/components/code-copy-button.tsx
 #: apps/mobile/components/thread/message-row.tsx
 #: apps/web/src/components/markdown-copy.tsx
@@ -2945,6 +3080,10 @@ msgstr "Копировать ссылку"
 #: apps/web/src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "Скопировать промпт"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy redirect URI"
+msgstr ""
 
 #: apps/web/src/components/markdown-copy.tsx
 msgid "Copy rows"
@@ -3096,6 +3235,7 @@ msgstr "Не удалось подключиться к экрану компь�
 #: apps/mobile/app/sign-in.tsx
 #: apps/mobile/app/thread.tsx
 #: apps/mobile/components/account-deletion.tsx
+#: apps/mobile/components/ComputerCard.tsx
 #: apps/mobile/components/confirm-identity.tsx
 #: apps/mobile/lib/api-auth.ts
 #: apps/mobile/lib/identity-confirmation.ts
@@ -3104,6 +3244,7 @@ msgstr "Не удалось подключиться к экрану компь�
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/components/AccountAccess.tsx
 #: apps/web/src/components/AccountDataSettings.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/ConfirmIdentityDialog.tsx
 #: apps/web/src/components/PasskeyOffer.tsx
 #: apps/web/src/components/PasskeySettings.tsx
@@ -3303,6 +3444,7 @@ msgstr "Не удалось покинуть пространство"
 msgid "Could not load"
 msgstr "Не удалось загрузить"
 
+#: apps/mobile/components/inbox-activity.tsx
 #: apps/web/src/pages/ActivityList.tsx
 msgid "Could not load activity"
 msgstr "Не удалось загрузить активность"
@@ -3534,6 +3676,7 @@ msgstr "Не удалось воспроизвести тестовый клип
 
 #: apps/mobile/components/audio-attachment.tsx
 #: apps/mobile/lib/voice.ts
+#: apps/web/src/lib/tts.ts
 msgid "Could not play that clip."
 msgstr "Не удалось воспроизвести этот клип."
 
@@ -3645,6 +3788,10 @@ msgstr "Не удалось переименовать страницу. Поп�
 msgid "Could not render chart"
 msgstr "Не удалось отобразить диаграмму"
 
+#: apps/web/src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr ""
+
 #: apps/web/src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "Не удалось сбросить пароль"
@@ -3675,6 +3822,7 @@ msgstr "Не удалось запустить задачу"
 #: apps/web/src/pages/ExternalConversationSettings.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
+#: apps/web/src/pages/SectorStart.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
 #: apps/web/src/pages/shell/use-chat-snooze.ts
@@ -4045,6 +4193,10 @@ msgstr "Создайте раздел и переместите в него {0}.
 msgid "Create account"
 msgstr "Зарегистрироваться"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Create an OAuth client ID of type Web application."
+msgstr ""
+
 #: apps/mobile/app/(settings)/bot-template.tsx
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
 msgid "Create bot"
@@ -4076,9 +4228,10 @@ msgstr "Создать раздел"
 msgid "Create space"
 msgstr "Создайте пространство"
 
+#: apps/mobile/app/sign-in.tsx
 #: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "Создайте свой ALMA"
+msgid "Create your account"
+msgstr "Создайте свой аккаунт"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -4113,9 +4266,11 @@ msgstr "Учётные данные: {names}"
 msgid "Credit amount"
 msgstr "Сумма кредитов"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/mobile/app/paywall.tsx
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/components/PlanUsage.tsx
 msgid "Credits"
 msgstr "Кредиты"
 
@@ -4371,6 +4526,8 @@ msgid "Delete memories too"
 msgstr "Удалите воспоминания тоже"
 
 #: apps/mobile/app/(settings)/organization.tsx
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/AccountMenu.tsx
 #: apps/web/src/pages/OrganizationSettingsPanel.tsx
 msgid "Delete organization"
 msgstr "Удалить организацию"
@@ -4418,6 +4575,10 @@ msgstr "удалено"
 #: apps/mobile/components/pages/page-card.tsx
 msgid "Deleted"
 msgstr "Удалена"
+
+#: apps/web/src/pages/shell/transcript-member-name.ts
+msgid "Deleted bot"
+msgstr ""
 
 #: apps/web/src/components/PasskeySettings.tsx
 #: apps/web/src/pages/Artifacts.tsx
@@ -4636,6 +4797,11 @@ msgstr "Документ изменился. Откройте его снова,
 msgid "Don’t have an account?"
 msgstr "У вас нет учетной записи?"
 
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+msgid "Don't include confidential details."
+msgstr ""
+
 #: apps/mobile/app/(settings)/vault.tsx
 #: apps/mobile/app/bot-settings.tsx
 #: apps/mobile/components/ComputerCard.tsx
@@ -4646,12 +4812,13 @@ msgstr "У вас нет учетной записи?"
 #: apps/mobile/lib/activity.ts
 #: apps/mobile/lib/board.ts
 #: apps/web/src/components/AccountDataSettings.tsx
+#: apps/web/src/components/activation.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/ToolActivityDisclosure.tsx
 #: apps/web/src/lib/ticket-status.ts
 #: apps/web/src/pages/ActivityList.tsx
 #: apps/web/src/pages/shell/avatar-studio-popover.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Done"
 msgstr "Готово"
 
@@ -4683,6 +4850,7 @@ msgid "Download CSV"
 msgstr "Скачать CSV"
 
 #: apps/web/src/components/pages/DownloadPdfButton.tsx
+#: apps/web/src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr "Скачать PDF"
 
@@ -4747,6 +4915,7 @@ msgstr "Изменить задачу"
 #: apps/mobile/app/sign-in.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 #: apps/web/src/pages/AdminAccessPage.tsx
@@ -4789,6 +4958,10 @@ msgstr "Встроенная"
 msgid "Enable {0}"
 msgstr "Включить {0}"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "End"
+msgstr ""
+
 #: apps/web/src/components/ComputerProviderSettings.tsx
 msgid "End user ID"
 msgstr "ID конечного пользователя"
@@ -4800,10 +4973,6 @@ msgstr "Заканчивается"
 #: apps/web/src/lib/billing.ts
 msgid "Ends {day}"
 msgstr "Закончится {day}"
-
-#: apps/web/src/components/GitHubStarPrompt.tsx
-msgid "Enjoying ALMA?"
-msgstr "Нравится ALMA?"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
@@ -5080,6 +5249,10 @@ msgstr "Неуспешный."
 msgid "Failure handling"
 msgstr "Обработка сбоев"
 
+#: apps/web/src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr ""
+
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 msgid "Fields that mark a change"
 msgstr "Поля, указывающие на изменение"
@@ -5192,6 +5365,14 @@ msgstr "Завершено."
 msgid "Finishing MCP connection…"
 msgstr "Завершение подключения MCP…"
 
+#: apps/web/src/components/activation.tsx
+msgid "First file"
+msgstr ""
+
+#: apps/web/src/components/activation.tsx
+msgid "First task"
+msgstr ""
+
 #: apps/web/src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Focus message"
 msgstr "Перейти к сообщению"
@@ -5211,6 +5392,7 @@ msgstr "Найдено моделей: {count}."
 
 #: apps/mobile/app/paywall.tsx
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "Бесплатно"
 
@@ -5270,6 +5452,10 @@ msgstr "Полный доступ без оплаты"
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 msgid "Full name"
 msgstr "Полное имя"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Full steps"
+msgstr ""
 
 #: apps/web/src/pages/WindowChrome.tsx
 msgid "Fullscreen"
@@ -5340,6 +5526,14 @@ msgstr "На главную"
 msgid "Go to bot"
 msgstr "Перейти к боту"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google apps connected with it may need to be connected again."
+msgstr ""
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google Workspace"
+msgstr ""
+
 #: apps/web/src/pages/AdminAccessPage.tsx
 msgid "Grant"
 msgstr "Выдать"
@@ -5390,6 +5584,10 @@ msgstr "Настройки группы"
 #: apps/web/src/pages/ExternalConversationSettings.tsx
 msgid "Group updates"
 msgstr "Обновления группы"
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "Groups left with fewer than two bots are deleted too, including their messages, files, and pages."
+msgstr ""
 
 #: apps/mobile/components/CallCard.tsx
 #: apps/web/src/components/call/CallCard.tsx
@@ -5472,6 +5670,7 @@ msgstr "Привет, вот так я звучу."
 msgid "Hidden"
 msgstr "Скрыто"
 
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
 msgid "Hide"
 msgstr "Скрыть"
@@ -5586,6 +5785,8 @@ msgid "https://example.com/openapi.json"
 msgstr "https://example.com/openapi.json"
 
 #: apps/mobile/app/computer.tsx
+#: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/shell/computer-release-actions.tsx
 msgid "I’m done"
 msgstr "Готово"
@@ -5635,6 +5836,10 @@ msgstr "Импорт агента"
 msgid "Import data"
 msgstr "Импорт данных"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "In Google Cloud, open the OAuth consent screen for your Workspace project and set the user type to Internal."
+msgstr ""
+
 #: apps/mobile/lib/board.ts
 #: apps/web/src/lib/ticket-status.ts
 msgid "In progress"
@@ -5644,6 +5849,18 @@ msgstr "В работе"
 #: apps/web/src/lib/ticket-status.ts
 msgid "In review"
 msgstr "На проверке"
+
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "In the app"
+msgstr ""
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr ""
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "In the Google Admin console, open Security, Access and data control, API controls, Manage third-party app access, then Configure new app."
+msgstr ""
 
 #: apps/mobile/app/(settings)/plugin.tsx
 #: apps/web/src/components/integrations/plugin-marketplace.tsx
@@ -5904,6 +6121,11 @@ msgstr "Последняя проверка {0}: без изменений"
 #: apps/web/src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "Позже"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "Launch offer"
+msgstr ""
 
 #: apps/mobile/app/(settings)/messaging.tsx
 #: apps/mobile/app/space-members.tsx
@@ -6298,6 +6520,10 @@ msgstr "Память {position}"
 msgid "Memory for {title}"
 msgstr "Память для {title}"
 
+#: apps/web/src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr ""
+
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Memory scope"
 msgstr "Область памяти"
@@ -6319,8 +6545,10 @@ msgstr "Упоминает функции OpenClaw"
 msgid "Mentions: {mentions}"
 msgstr "Упоминает: {mentions}"
 
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/search-sheet.ts
 #: apps/mobile/lib/thread-message-text.ts
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/chat-shared.ts
 #: apps/web/src/pages/shell/composer.tsx
 #: apps/web/src/pages/SpaceSearch.tsx
@@ -6440,9 +6668,11 @@ msgstr "Режим"
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
 #: apps/web/src/pages/routine-editor/model-settings.tsx
 #: apps/web/src/pages/shell/agent-import-plan.tsx
+#: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Model"
 msgstr "Модель"
@@ -6462,6 +6692,7 @@ msgid "Model id"
 msgstr "Идентификатор модели"
 
 #: apps/web/src/components/FoundModelPicker.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "Варианты модели"
@@ -6471,11 +6702,7 @@ msgid "Model provider"
 msgstr "Провайдер модели"
 
 #: apps/mobile/app/(settings)/_layout.tsx
-#: apps/mobile/app/(settings)/account.tsx
-#: apps/mobile/app/(settings)/space.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
-#: apps/web/src/pages/settings-nav.ts
-#: apps/web/src/pages/SpaceSettingOverrides.tsx
 msgid "Models"
 msgstr "Модели"
 
@@ -6497,14 +6724,20 @@ msgstr "Список моделей в порядке. {modelCount, plural, one 
 msgid "Monday"
 msgstr "понедельник"
 
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr ""
+
 #: apps/web/src/lib/billing.ts
 msgid "month"
 msgstr "месяц"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/spending-limit.tsx
 #: apps/mobile/app/paywall.tsx
 #: apps/mobile/lib/cron.ts
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/components/PlanUsage.tsx
 #: apps/web/src/components/SpendingLimitSettings.tsx
 #: apps/web/src/lib/cron.ts
 msgid "Monthly"
@@ -6548,6 +6781,10 @@ msgstr "Больше действий с компьютером"
 #: apps/web/src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "Утренняя сводка"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr ""
 
 #: apps/mobile/components/model-role-settings.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
@@ -6595,6 +6832,7 @@ msgstr "Мои компьютеры"
 #: apps/mobile/components/name-dialog-compose.tsx
 #: apps/mobile/components/name-dialog.tsx
 #: apps/mobile/components/vault-item-editor.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/CreateOrganizationDialog.tsx
 #: apps/web/src/components/teach/SkillDraftCard.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
@@ -6605,6 +6843,7 @@ msgstr "Мои компьютеры"
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/OrganizationSettingsPanel.tsx
 #: apps/web/src/pages/plugins/source-form.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/RoutineEditor.tsx
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
@@ -6678,9 +6917,9 @@ msgid "Needs takeover"
 msgstr "Требуется передача управления"
 
 #: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/lib/roster-status.ts
 #: apps/web/src/pages/shell/computer-overlay.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Needs you"
 msgstr "Требуется ваше участие"
 
@@ -6726,6 +6965,11 @@ msgstr "Новые компьютеры работают на"
 #: apps/web/src/components/VaultSettings.tsx
 msgid "New contact"
 msgstr "Новый контакт"
+
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "New draft"
+msgstr ""
 
 #: apps/web/src/pages/GroupPanel.tsx
 msgid "New group"
@@ -6869,6 +7113,14 @@ msgstr "Нет ботов"
 msgid "No bots match"
 msgstr "Ни один бот не подходит"
 
+#: apps/mobile/app/(settings)/messaging.tsx
+msgid "No chat apps are connected on this server"
+msgstr ""
+
+#: apps/web/src/components/activation.tsx
+msgid "No files yet."
+msgstr ""
+
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
 #: apps/web/src/components/SecretAskCard.tsx
@@ -6896,6 +7148,7 @@ msgstr "Нет подходящих ботов"
 
 #: apps/mobile/components/model-picker-list.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -6932,6 +7185,10 @@ msgstr "Не найдено файлов OpenClaw, Hermes или докумен�
 #: apps/web/src/components/pages/PagesList.tsx
 msgid "No pages match “{query}”."
 msgstr "Нет страниц по запросу «{query}»."
+
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "На этом устройстве нет ключа доступа. Войдите с паролем, затем добавьте ключ доступа в аккаунте."
 
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
@@ -6972,6 +7229,7 @@ msgstr "Нет строк"
 msgid "No runs match these filters."
 msgstr "Нет запусков, соответствующих этим фильтрам."
 
+#: apps/mobile/components/inbox-activity.tsx
 #: apps/mobile/components/routine-run-history.tsx
 #: apps/web/src/pages/ActivityList.tsx
 msgid "No runs yet"
@@ -7040,6 +7298,11 @@ msgstr "Ещё не проверено"
 msgid "Not connected"
 msgstr "Не подключено"
 
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr ""
+
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 msgid "Not imported"
 msgstr "Не импортировано"
@@ -7058,7 +7321,6 @@ msgstr "Нет в каталоге плагинов"
 #: apps/mobile/lib/composer-dictation.ts
 #: apps/mobile/lib/passkey.ts
 #: apps/mobile/lib/thread-voice.ts
-#: apps/web/src/components/GitHubStarPrompt.tsx
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "Not now"
 msgstr "Не сейчас"
@@ -7068,6 +7330,7 @@ msgid "Not Now"
 msgstr "Не сейчас"
 
 #: apps/mobile/components/failed-send-bubble.tsx
+#: apps/web/src/components/SendUndoBar.tsx
 msgid "Not sent"
 msgstr "Не отправлено"
 
@@ -7098,6 +7361,10 @@ msgstr "Не используется в ALMA"
 msgid "Not working"
 msgstr "Не работает"
 
+#: apps/web/src/components/activation.tsx
+msgid "Nothing due today."
+msgstr ""
+
 #: apps/mobile/app/(settings)/memory.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -7106,6 +7373,11 @@ msgstr "Пока ничего не запомнено"
 #: apps/mobile/app/(settings)/vault.tsx
 msgid "Nothing saved yet."
 msgstr "Пока ничего не сохранено."
+
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr ""
 
 #: apps/mobile/app/(settings)/account.tsx
 msgid "Notification settings"
@@ -7150,6 +7422,10 @@ msgstr "Секрет клиента OAuth (необязательно)"
 msgid "OAuth connection failed"
 msgstr "Соединение OAuth не удалось"
 
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Off"
+msgstr ""
+
 #: apps/web/src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
 msgstr "Не в сети"
@@ -7157,6 +7433,10 @@ msgstr "Не в сети"
 #: apps/mobile/lib/call-session.ts
 msgid "OK, switching to {name}."
 msgstr "Хорошо, переключаю на {name}."
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "On"
+msgstr ""
 
 #: apps/mobile/components/CallCard.tsx
 msgid "On a call with {name}"
@@ -7231,12 +7511,12 @@ msgstr "Только вы"
 #: apps/mobile/app/pages.tsx
 #: apps/mobile/components/ImportSetupCard.tsx
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/markdown-link-prompt.tsx
 #: apps/web/src/components/pages/PagesList.tsx
 #: apps/web/src/pages/PaymentWalletSettingsPanel.tsx
 #: apps/web/src/pages/shell/computer-panel.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Open"
 msgstr "Открыть"
 
@@ -7261,6 +7541,12 @@ msgstr "Открыть {title}"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Open <0>{0}</0> and enter this code:"
 msgstr "Откройте <0>{0}</0> и введите этот код:"
+
+#: apps/web/src/components/pages/PublicPageShell.tsx
+#: apps/web/src/pages/Invite.tsx
+#: apps/web/src/pages/SharedPage.tsx
+msgid "Open ALMA"
+msgstr "Открыть ALMA"
 
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Open call"
@@ -7309,12 +7595,6 @@ msgstr "Открыть ссылку"
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Open navigation"
 msgstr "Открыть навигацию"
-
-#: apps/web/src/components/pages/PublicPageShell.tsx
-#: apps/web/src/pages/Invite.tsx
-#: apps/web/src/pages/SharedPage.tsx
-msgid "Open ALMA"
-msgstr "Открыть ALMA"
 
 #: apps/mobile/lib/composer-dictation.ts
 #: apps/mobile/lib/thread-voice.ts
@@ -7555,6 +7835,10 @@ msgstr "Просрочена"
 msgid "Paste a replacement key"
 msgstr "Вставьте запасной ключ"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Paste the client ID and client secret, then save."
+msgstr ""
+
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
 msgid "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed."
@@ -7603,9 +7887,16 @@ msgstr "Личность"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
 #: apps/mobile/app/index.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr "Личное"
+
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "Personal use"
+msgstr ""
 
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
@@ -7723,6 +8014,10 @@ msgstr "Писать «Без изменений» в чат"
 msgid "PR reviewer"
 msgstr "Ревьюер PR"
 
+#: apps/web/src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr ""
+
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "Предпочтения"
@@ -7828,6 +8123,10 @@ msgstr "Публичным серверам требуется https://. HTTP р
 msgid "Pull request"
 msgstr "Запрос на слияние"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "Push"
+msgstr ""
+
 #: apps/mobile/app/paywall.tsx
 msgid "Put your bots to work"
 msgstr "Пусть боты работают на вас"
@@ -7836,28 +8135,27 @@ msgstr "Пусть боты работают на вас"
 msgid "Questions, approvals, takeover"
 msgstr "Вопросы, подтверждения, передача управления"
 
+#: apps/mobile/app/(settings)/_layout.tsx
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/components/SidebarFooter.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr ""
+
 #: apps/mobile/lib/activity.ts
 #: apps/web/src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "В очереди"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "Quiet hours"
+msgstr ""
+
 #: apps/mobile/components/thread/message-row.tsx
 #: apps/mobile/components/thread/quote-sheet.tsx
 msgid "Quote"
 msgstr "Цитировать"
-
-#: apps/mobile/app/(settings)/account.tsx
-#: apps/mobile/app/(settings)/ai-data-sharing.tsx
-#: apps/mobile/app/bot-settings.tsx
-#: apps/web/src/pages/AccountSettingsOverlay.tsx
-#: apps/web/src/pages/shell/avatar-studio-popover.tsx
-msgid "ALMA"
-msgstr "ALMA"
-
-#: apps/mobile/app/(settings)/billing.tsx
-#: apps/web/src/pages/onboarding/use-onboarding-model.ts
-msgid "ALMA credits"
-msgstr "Кредиты ALMA"
 
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -7922,6 +8220,11 @@ msgstr "Недавние"
 msgid "Recent payments"
 msgstr "Последние платежи"
 
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Recipient"
+msgstr ""
+
 #: apps/web/src/pages/plugins/plugin-browse.tsx
 msgid "Recommended"
 msgstr "Рекомендуемые"
@@ -7943,6 +8246,14 @@ msgstr "Переподключить OAuth"
 #: apps/web/src/components/ComputerUpdateProgress.tsx
 msgid "Reconnecting"
 msgstr "Повторное подключение"
+
+#: apps/web/src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr ""
+
+#: apps/web/src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr ""
 
 #: apps/web/src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
@@ -8019,6 +8330,7 @@ msgstr "Повторное создание компьютера"
 msgid "Recruiting & HR"
 msgstr "Подбор персонала и HR"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 msgid "Redirect URI"
 msgstr "URI перенаправления"
@@ -8101,6 +8413,7 @@ msgstr "Удалённый MCP-сервер"
 #: apps/web/src/components/TrustedLinkSitesSettings.tsx
 #: apps/web/src/components/vault/LoginFieldsInput.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
 #: apps/web/src/pages/plugins/connector-detail.tsx
@@ -8203,6 +8516,10 @@ msgstr "Удалить навык {name}"
 msgid "Remove skills"
 msgstr "Удалить навыки"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Remove this Google client?"
+msgstr ""
+
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 msgid "Remove webhook"
 msgstr "Удалить вебхук"
@@ -8210,6 +8527,10 @@ msgstr "Удалить вебхук"
 #: apps/web/src/pages/ScratchpadSection.tsx
 msgid "Removed, but list refresh failed"
 msgstr "Удалено, но обновить список не удалось."
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Removing the client uses ALMA's Google sign-in again. Google apps already connected with this client may need to be connected again."
+msgstr ""
 
 #: apps/mobile/app/(settings)/integrations.tsx
 #: apps/mobile/app/(settings)/plugin.tsx
@@ -8310,6 +8631,15 @@ msgstr "Ответ отменён"
 msgid "Replying to {0}"
 msgstr "Ответ: {0}"
 
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr ""
+
+#: apps/web/src/pages/Shell.tsx
+msgid "Report sent"
+msgstr ""
+
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
 msgid "Request a new code"
@@ -8368,6 +8698,11 @@ msgstr "Сброс"
 #: apps/mobile/components/thread-error-notice.tsx
 msgid "Resets {date}."
 msgstr "Сброс {date}."
+
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/PlanUsage.tsx
+msgid "Resets in {reset}"
+msgstr ""
 
 #: apps/web/src/components/ComputerMaintenanceActions.tsx
 msgid "Resetting…"
@@ -8471,6 +8806,11 @@ msgstr "Повторить попытку сейчас"
 msgid "Retry screen"
 msgstr "Повторить загрузку экрана"
 
+#: apps/web/src/pages/McpOAuthCallback.tsx
+#: apps/web/src/pages/SlackInstallCallback.tsx
+msgid "Return to ALMA"
+msgstr "Вернуться в ALMA"
+
 #. placeholder {0}: call.botName
 #: apps/web/src/components/call/CallCard.tsx
 msgid "Return to call with {0}"
@@ -8479,11 +8819,6 @@ msgstr "Вернуться к звонку с {0}"
 #: apps/mobile/app/thread.tsx
 msgid "Return to inbox"
 msgstr "Вернуться во входящие"
-
-#: apps/web/src/pages/McpOAuthCallback.tsx
-#: apps/web/src/pages/SlackInstallCallback.tsx
-msgid "Return to ALMA"
-msgstr "Вернуться в ALMA"
 
 #: apps/web/src/lib/model-connection-preflight.ts
 msgid "Review provider settings and test again."
@@ -8647,6 +8982,7 @@ msgstr "суббота"
 #: apps/mobile/components/thread/ask-block.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/lib/account-name-editor.ts
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/use-inbox-chat-actions.ts
 #: apps/web/src/components/ComputerProviderSettings.tsx
 #: apps/web/src/components/PasskeySettings.tsx
@@ -8656,13 +8992,17 @@ msgstr "суббота"
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 #: apps/web/src/pages/Board.tsx
+#: apps/web/src/pages/DigestPage.tsx
 #: apps/web/src/pages/ExternalConversationSettings.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/GroupPanel.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/QuietHoursPage.tsx
 #: apps/web/src/pages/RoutineEditor.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
@@ -8752,6 +9092,10 @@ msgstr "Задачи по расписанию"
 msgid "Scheduled tasks"
 msgstr "Запланированные задачи"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Scopes"
+msgstr ""
+
 #: apps/web/src/pages/McpServerForm.tsx
 msgid "Scopes (optional)"
 msgstr "Области доступа (необязательно)"
@@ -8761,6 +9105,7 @@ msgid "Screen not connected"
 msgstr "Экран не подключён"
 
 #: apps/mobile/app/search.tsx
+#: apps/mobile/app/sector.tsx
 #: apps/mobile/components/inbox-header.tsx
 #: apps/mobile/components/list-search-input.tsx
 #: apps/mobile/components/model-picker-list.tsx
@@ -8770,6 +9115,7 @@ msgstr "Экран не подключён"
 #: apps/web/src/components/VaultSettings.tsx
 #: apps/web/src/pages/Artifacts.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/plugins/domain-search.tsx
@@ -8810,6 +9156,10 @@ msgstr "Поиск ботов, действий и настроек"
 msgid "Search by domain"
 msgstr "Поиск по домену"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Search for this client ID and set access to Trusted."
+msgstr ""
+
 #: apps/web/src/components/integrations/IntegrationSetup.tsx
 msgid "Search integrations.sh"
 msgstr "Поиск integrations.sh"
@@ -8820,6 +9170,7 @@ msgstr "Искать «{query}» среди MCP-серверов"
 
 #: apps/web/src/components/FoundModelPicker.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -8991,6 +9342,11 @@ msgstr "Имя сервера"
 msgid "Server URL"
 msgstr "URL-адрес сервера"
 
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/PlanUsage.tsx
+msgid "Session"
+msgstr ""
+
 #: apps/web/src/components/SpendingLimitSettings.tsx
 msgid "Set"
 msgstr "Задать"
@@ -9025,6 +9381,11 @@ msgstr "Настройки: Общие"
 msgid "Settings: Usage"
 msgstr "Настройки: Использование"
 
+#: apps/web/src/components/activation.tsx
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr ""
+
 #: apps/mobile/components/ImportSetupCard.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
@@ -9057,6 +9418,7 @@ msgstr "Форма {number}"
 #: apps/mobile/app/pages.tsx
 #: apps/web/src/components/pages/PagesList.tsx
 #: apps/web/src/components/pages/SharePopover.tsx
+#: apps/web/src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr "Поделиться"
 
@@ -9070,6 +9432,10 @@ msgstr "Поделиться «{title}»"
 msgid "Share {name}"
 msgstr "Поделиться {name}"
 
+#: apps/web/src/pages/ReferralPage.tsx
+msgid "Share ALMA"
+msgstr ""
+
 #: apps/mobile/lib/ai-consent.ts
 msgid "Share data with {name}?"
 msgstr "Поделиться данными с {name}?"
@@ -9077,6 +9443,10 @@ msgstr "Поделиться данными с {name}?"
 #: apps/mobile/app/invite.tsx
 msgid "Share link"
 msgstr "Поделиться ссылкой"
+
+#: apps/web/src/pages/ReferralPage.tsx
+msgid "Share text"
+msgstr ""
 
 #: apps/mobile/app/share.tsx
 msgid "Share to"
@@ -9202,11 +9572,6 @@ msgstr "Войдите снова"
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "Войдите на <0>{0}</0>, затем вставьте код сюда."
 
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "Войти в ALMA"
-
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
 msgid "Sign in to your existing account to link SSO"
@@ -9234,10 +9599,6 @@ msgstr "Всё равно выйти"
 #: apps/web/src/pages/Auth.tsx
 msgid "Sign up"
 msgstr "Зарегистрироваться"
-
-#: apps/mobile/app/sign-in.tsx
-msgid "Sign up for ALMA"
-msgstr "Зарегистрироваться в ALMA"
 
 #: apps/web/src/components/integrations/plugin-marketplace.tsx
 msgid "Sign-in cancelled. Try again."
@@ -9313,6 +9674,10 @@ msgstr "Навыки попадают в библиотеку, общую для
 
 #: apps/mobile/app/computer.tsx
 #: apps/mobile/app/new-group.tsx
+#: apps/mobile/app/sector.tsx
+#: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
+#: apps/web/src/pages/SectorStart.tsx
 #: apps/web/src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "Пропустить"
@@ -9322,7 +9687,7 @@ msgid "Skip or deploy key"
 msgstr "Пропустить или добавить ключ"
 
 #: apps/mobile/components/ComputerCard.tsx
-#: apps/web/src/pages/shell/message-view.tsx
+#: apps/web/src/components/ComputerCard.tsx
 msgid "Skipped"
 msgstr "Пропущено"
 
@@ -9449,6 +9814,7 @@ msgid "Spaces"
 msgstr "Пространства"
 
 #: apps/web/src/pages/shell/message-view.tsx
+#: apps/web/src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "Озвучить"
 
@@ -9485,10 +9851,7 @@ msgstr "SSO"
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO временно недоступен. Попробуйте снова."
 
-#: apps/web/src/components/GitHubStarPrompt.tsx
-msgid "Star on GitHub"
-msgstr "Поставить звезду на GitHub"
-
+#: apps/web/src/pages/QuietHoursPage.tsx
 #: apps/web/src/pages/shell/computer-overlay.tsx
 msgid "Start"
 msgstr "Запустить"
@@ -9567,6 +9930,7 @@ msgid "Status"
 msgstr "Статус"
 
 #: apps/web/src/components/teach/SkillDraftCard.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 msgid "Steps"
 msgstr "Шаги"
 
@@ -9627,8 +9991,10 @@ msgid "subagent"
 msgstr "субагент"
 
 #: apps/mobile/app/(settings)/model-connection.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "Отправить"
 
@@ -9667,6 +10033,15 @@ msgstr "Требуется подписка"
 #: apps/web/src/lib/cron.ts
 msgid "Sunday"
 msgstr "воскресенье"
+
+#: apps/mobile/components/chat-header-title.tsx
+#: apps/mobile/components/inbox-rows.tsx
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+#: apps/web/src/pages/shell/chat-header.tsx
+#: apps/web/src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr ""
 
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
@@ -9740,6 +10115,7 @@ msgid "Table"
 msgstr "Таблица"
 
 #: apps/mobile/app/computer.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/shell/computer-overlay.tsx
 msgid "Take control"
 msgstr "Взять управление"
@@ -9809,6 +10185,7 @@ msgid "Test API key"
 msgstr "Проверить API-ключ"
 
 #: apps/web/src/components/ModelConnectionPreflightNotice.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
 msgid "Test connection"
 msgstr "Проверить подключение"
@@ -9831,8 +10208,8 @@ msgid "That doesn’t look like a URL"
 msgstr "Это не похоже на URL"
 
 #: apps/mobile/lib/endpoint.ts
-msgid "That URL did not look like a ALMA server"
-msgstr "Этот адрес не похож на сервер ALMA"
+msgid "That URL did not look like an ALMA server"
+msgstr ""
 
 #: apps/mobile/lib/endpoint.ts
 msgid "That URL is missing a host"
@@ -9872,6 +10249,10 @@ msgstr "Браузер бота остаётся авторизованным д
 msgid "The browser keeps dropping the microphone. Start dictation again to retry."
 msgstr "Браузер постоянно теряет микрофон. Начните диктовку снова, чтобы повторить попытку."
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "The client ID is not set on this server."
+msgstr ""
+
 #: apps/web/src/pages/settings-nav.ts
 msgid "The computer your bots work on."
 msgstr "Компьютер, на котором работают ваши боты."
@@ -9879,6 +10260,14 @@ msgstr "Компьютер, на котором работают ваши бот
 #: apps/web/src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "Время ожидания соединения истекло."
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "The group {names} will be deleted too, including its messages, files, and pages."
+msgstr ""
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "The groups {names} will be deleted too, including their messages, files, and pages."
+msgstr ""
 
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
@@ -9899,6 +10288,11 @@ msgstr "Модель вернула непригодный ответ. Попр�
 msgid "The owner may have turned off its link or deleted it."
 msgstr "Возможно, владелец отключил ссылку или удалил страницу."
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr ""
+
 #: apps/mobile/lib/run-error-presentation.ts
 msgid "The provider couldn't serve the model selected for this bot."
 msgstr "Провайдер не смог предоставить модель, выбранную для этого бота."
@@ -9914,6 +10308,10 @@ msgstr "Провайдер получил слишком много запрос
 #: apps/mobile/lib/run-error-presentation.ts
 msgid "The provider refused the key this bot used for its reply."
 msgstr "Провайдер отклонил ключ, который бот использовал для ответа."
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "The scope list could not be loaded."
+msgstr ""
 
 #: apps/mobile/app/computer.tsx
 #: apps/web/src/lib/computer-screen.ts
@@ -9947,6 +10345,18 @@ msgstr "На сервере возникла проблема. Попробуй�
 #: apps/web/src/components/pages/SharePopover.tsx
 msgid "The shared link stops working"
 msgstr "Общая ссылка перестанет работать"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "The trial ended."
+msgstr ""
+
+#: apps/mobile/lib/unsent-sends.ts
+#: apps/mobile/lib/user-error.ts
+#: apps/web/src/lib/user-error.ts
+#: apps/web/src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr ""
 
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/web/src/components/ModelCredits.tsx
@@ -10124,6 +10534,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "Контекстное окно этой модели слишком мало. Выберите другую модель."
 
 #: apps/web/src/pages/Artifacts.tsx
+#: apps/web/src/pages/ReportPage.tsx
 msgid "This month"
 msgstr "В этом месяце"
 
@@ -10248,6 +10659,10 @@ msgstr "Диалог"
 #: apps/web/src/lib/cron.ts
 msgid "Thursday"
 msgstr "четверг"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Time"
+msgstr ""
 
 #: apps/mobile/components/routine-schedule-editor.tsx
 #: apps/web/src/pages/RoutineSchedule.tsx
@@ -10391,6 +10806,10 @@ msgstr "В пробном периоде меньше часов, чтобы п�
 msgid "Troubleshoot"
 msgstr "Устранение неполадок"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Trusted app"
+msgstr ""
+
 #: apps/mobile/app/(settings)/account.tsx
 #: apps/web/src/components/TrustedLinkSitesSettings.tsx
 msgid "Trusted sites"
@@ -10493,9 +10912,17 @@ msgid "Unassigned"
 msgstr "Без раздела"
 
 #: apps/mobile/components/change-undo.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/AskCard.tsx
+#: apps/web/src/components/SendUndoBar.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "Отменить"
+
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr ""
 
 #: apps/mobile/components/integration-detail.tsx
 #: apps/web/src/pages/plugins/connector-detail.tsx
@@ -10634,6 +11061,7 @@ msgstr "Обновление…"
 
 #: apps/mobile/app/computer.tsx
 #: apps/mobile/lib/run-error-presentation.ts
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/pages/shell/composer-error.tsx
 #: apps/web/src/pages/shell/shell-sidebar.tsx
 #: apps/web/src/pages/shell/use-computer.tsx
@@ -10658,6 +11086,7 @@ msgid "URL"
 msgstr "URL"
 
 #: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/SidebarFooter.tsx
 #: apps/web/src/pages/settings-nav.ts
 msgid "Usage"
 msgstr "Использование"
@@ -10694,6 +11123,11 @@ msgstr "Использовать собственный сервер"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Use a found model"
 msgstr "Использовать найденную модель"
+
+#: apps/mobile/app/(settings)/billing.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "Use ALMA credits"
+msgstr "Использовать кредиты ALMA"
 
 #: apps/mobile/lib/endpoint.ts
 msgid "Use an http or https URL"
@@ -10745,11 +11179,6 @@ msgstr "Использовать мою подписку или API-ключ"
 msgid "Use Protected input for passwords."
 msgstr "Для паролей используйте «Защищённый ввод»."
 
-#: apps/mobile/app/(settings)/billing.tsx
-#: apps/web/src/components/ModelCredits.tsx
-msgid "Use ALMA credits"
-msgstr "Использовать кредиты ALMA"
-
 #: apps/mobile/components/space-bots-model.tsx
 msgid "Use space default"
 msgstr "Использовать модель пространства по умолчанию"
@@ -10757,6 +11186,10 @@ msgstr "Использовать модель пространства по ум
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Use up to 512 letters, digits, _ or -."
 msgstr "Используйте до 512 букв, цифр, _ или -."
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Use your own Google client"
+msgstr ""
 
 #: apps/mobile/app/(settings)/model-connection.tsx
 msgid "Use your own key"
@@ -10862,14 +11295,14 @@ msgstr "Показать все"
 msgid "View source"
 msgstr "Посмотреть исходный код"
 
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "View usage"
+msgstr ""
+
 #: apps/mobile/app/(settings)/_layout.tsx
-#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/ai-data-sharing.tsx
-#: apps/mobile/app/(settings)/space.tsx
 #: apps/mobile/app/bot-settings.tsx
-#: apps/web/src/pages/settings-nav.ts
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
-#: apps/web/src/pages/SpaceSettingOverrides.tsx
 #: apps/web/src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "Голос"
@@ -10921,6 +11354,10 @@ msgstr "Разбудить"
 msgid "Wallet"
 msgstr "Кошелёк"
 
+#: apps/web/src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr ""
+
 #: apps/web/src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
 msgstr "Веб, компьютер и телефон"
@@ -10955,7 +11392,9 @@ msgstr "Будни"
 msgid "Weekends"
 msgstr "По выходным"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/spending-limit.tsx
+#: apps/web/src/components/PlanUsage.tsx
 #: apps/web/src/components/SpendingLimitSettings.tsx
 msgid "Weekly"
 msgstr "Еженедельно"
@@ -10978,9 +11417,19 @@ msgstr "Что может использовать это пространств
 msgid "What do you most want ALMA to help with?"
 msgstr "С чем ALMA должен помочь вам в первую очередь?"
 
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr ""
+
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
 msgstr "Чем мне заняться в первую очередь?"
+
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "What kind of work?"
+msgstr ""
 
 #: apps/web/src/components/teach/TeachComputerOverlay.tsx
 msgid "What result will you demonstrate?"
@@ -11055,10 +11504,6 @@ msgstr "Где должны работать боты?"
 msgid "Where your bots pay from."
 msgstr "Откуда ваши боты платят."
 
-#: apps/web/src/pages/settings-nav.ts
-msgid "Which LLMs your bots use."
-msgstr "Какие LLM используют ваши боты."
-
 #: apps/web/src/components/pages/SharePopover.tsx
 msgid "Who can open this page"
 msgstr "Кто может открыть эту страницу"
@@ -11095,7 +11540,11 @@ msgid "Won't do"
 msgstr "Не будет сделано"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
+#: apps/mobile/app/sector.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "Работа"
 
@@ -11134,6 +11583,11 @@ msgstr "Работает с вашей подпиской ChatGPT или Claude.
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Workspace"
 msgstr "Рабочее пространство"
+
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr ""
 
 #: apps/mobile/app/routine.tsx
 msgid "Write what this routine should do."
@@ -11254,6 +11708,10 @@ msgstr "Ваш адрес электронной почты"
 msgid "Your free trial has started"
 msgstr "Бесплатный пробный период начался"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Your Google client"
+msgstr ""
+
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
 msgid "Your model provider"
@@ -11336,6 +11794,10 @@ msgstr "У вашего голосового провайдера закончи
 #: apps/web/src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "Ваш голосовой провайдер отклонил ключ."
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr ""
 
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx

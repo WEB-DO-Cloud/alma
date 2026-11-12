@@ -611,6 +611,7 @@ overlay docs/designs/alma-managed-voice-calls.md
 overlay docs/designs/alma-mobile-app.md
 overlay docs/designs/alma-rebrand.md
 overlay docs/designs/alma-restore-original-ui.md
+overlay docs/designs/composio-integrations.md
 overlay docs/designs/deepseek-managed-model.md
 overlay docs/designs/google-workspace-byo-oauth.md
 overlay docs/designs/google-workspace-ga-apis.md

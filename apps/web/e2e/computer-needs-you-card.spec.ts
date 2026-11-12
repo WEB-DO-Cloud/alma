@@ -5,6 +5,7 @@ import {
   captureScreenshot,
   completeOnboarding,
   createNamedBot,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -32,7 +33,7 @@ test("needs-you computer card opens a group member bot computer", async ({ page 
   await expect(card.getByText("Needs you", { exact: true })).toBeVisible();
   const open = card.getByTestId("computer-card-open");
   await expect(open).toBeVisible();
-  await expect(open).toHaveText("Open");
+  await expect(open).toHaveText("Take control");
   await captureScreenshot(page, testInfo, "computer-needs-you-card-group");
 
   await open.click();
@@ -67,8 +68,10 @@ async function mockGroupComputerCard(page: Page, groupId: string, botId: string)
       await route.continue();
       return;
     }
-    const response = await route.fetch();
-    const parsed = (await response.json()) as {
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const parsed = fetched.body as {
       json?: { threadId: string; cursor: number; messages?: Array<{ id?: string }> };
     };
     const snap = parsed.json;

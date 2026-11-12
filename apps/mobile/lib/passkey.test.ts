@@ -180,14 +180,24 @@ describe("passkey sign-in", () => {
     expect(fetchMobileJson).toHaveBeenCalledOnce();
   });
 
-  it("includes the native error name and code when the sheet fails", async () => {
+  it("shows the native message when the sheet fails", async () => {
     vi.mocked(get).mockRejectedValue({
       name: "NotSupportedError",
       code: "ERR_NOT_CONFIGURED",
       message: "AASA",
     });
+    await expect(signInWithPasskey()).rejects.toThrow("AASA");
+    expect(replaceSessionTokenIfCurrent).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["NoCredentials", { name: "Error", code: "Passkey Get", message: "NoCredentials" }],
+    ["no credentials", { code: "Passkey Get", message: "No credentials available" }],
+    ["a no-credentials code", { code: "NO_CREDENTIALS", message: "" }],
+  ])("explains a missing passkey when Android reports %s", async (_label, error) => {
+    vi.mocked(get).mockRejectedValue(error);
     await expect(signInWithPasskey()).rejects.toThrow(
-      "Could not continue (NotSupportedError ERR_NOT_CONFIGURED)",
+      "No passkey found on this device. Sign in with your password, then add a passkey in your account.",
     );
     expect(replaceSessionTokenIfCurrent).not.toHaveBeenCalled();
   });
@@ -310,6 +320,21 @@ describe("passkey registration", () => {
     await expect(addPasskey()).rejects.toThrow(
       "Could not continue (ConstraintError ERR_CONSTRAINT)",
     );
+  });
+
+  it("shows the native message when registration fails with one", async () => {
+    vi.mocked(fetchMobileJson).mockResolvedValueOnce(
+      challengeResponse({
+        challenge: "register",
+        rp: { id: "rakazo.example.test", name: "ALMA" },
+      }),
+    );
+    vi.mocked(create).mockRejectedValue({
+      name: "Error",
+      code: "Passkey Create",
+      message: "NotConfigured",
+    });
+    await expect(addPasskey()).rejects.toThrow("NotConfigured");
   });
 
   it("does not send another server's session", async () => {

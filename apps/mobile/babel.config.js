@@ -58,7 +58,8 @@ module.exports = (api) => {
     plugins: [
       asyncArrowRestPattern,
       // Release builds keep each string's English text, so a string the catalogs do not list yet
-      // shows in English instead of its id.
+      // shows in English instead of its id. Production has no message compiler, so braces in
+      // that text stay literal unless the bundle compiled the string from the extracted template.
       ["@lingui/babel-plugin-lingui-macro", { descriptorFields: "message" }],
     ],
   };

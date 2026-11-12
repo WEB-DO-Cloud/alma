@@ -4,18 +4,22 @@ name: Auth
 - runFlow: ../subflows/launch-app.yaml
 - runFlow:
     when:
-      visible: "Sign in to ALMA"
+      visible:
+        text: "^Sign in$"
+        above: "Email"
     commands:
       - tapOn: "Sign up"
 - extendedWaitUntil:
-    visible: "Create your ALMA account"
+    visible: "Create your account"
     timeout: 15000
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: 01-welcome
 - tapOn: "Sign in"
 - extendedWaitUntil:
-    visible: "Sign in to ALMA"
+    visible:
+      text: "^Sign in$"
+      above: "Email"
     timeout: 15000
 - waitForAnimationToEnd:
     timeout: 3000
@@ -25,7 +29,9 @@ name: Auth
 - tapOn: "Password"
 - inputText: "wrong-password"
 - hideKeyboard
-- tapOn: "Sign in"
+- tapOn:
+    text: "^Sign in$"
+    below: "Password"
 - extendedWaitUntil:
     visible: "Invalid email or password|Invalid credentials|Could not sign in"
     timeout: 20000

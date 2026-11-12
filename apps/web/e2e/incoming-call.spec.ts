@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, signup } from "./helpers";
+import { captureScreenshot, completeOnboarding, readRouteJson, signup } from "./helpers";
 
 test("incoming calls show answer and decline controls in both themes", async ({
   page,
@@ -7,8 +7,10 @@ test("incoming calls show answer and decline controls in both themes", async ({
   await signup(page, `incoming-call-${Date.now()}@rakazo.test`, "password12", "Caller");
   await completeOnboarding(page);
   await page.route("**/rpc/spaces/list", async (route) => {
-    const response = await route.fetch();
-    const body = await response.json();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body;
     const bot = body.json.current.bots[0];
     if (bot)
       bot.incomingCall = {

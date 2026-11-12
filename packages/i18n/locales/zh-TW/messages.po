@@ -92,6 +92,11 @@ msgstr "{0} {unitLabel}"
 msgid "{0} connection"
 msgstr "{0} 連線"
 
+#. placeholder {0}: trial.daysLeft
+#: apps/web/src/components/activation.tsx
+msgid "{0} days left"
+msgstr "剩餘 {0} 天"
+
 #. placeholder {0}: parts.amount
 #: apps/web/src/components/ArtifactFileCard.tsx
 msgid "{0} GB"
@@ -122,10 +127,20 @@ msgstr "{0} 正在執行"
 msgid "{0} KB"
 msgstr "{0} KB"
 
+#. placeholder {0}: usd(creditsUsd)
+#: apps/web/src/components/PlanUsage.tsx
+msgid "{0} left"
+msgstr "剩餘 {0}"
+
 #. placeholder {0}: parts.amount
 #: apps/web/src/components/ArtifactFileCard.tsx
 msgid "{0} MB"
 msgstr "{0} MB"
+
+#. placeholder {0}: trial.messagesLeft
+#: apps/web/src/components/activation.tsx
+msgid "{0} messages"
+msgstr "{0} 則訊息"
 
 #. placeholder {0}: sender.name
 #: apps/web/src/pages/ExternalConversationSettings.tsx
@@ -141,6 +156,11 @@ msgstr "{0} TB"
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
 msgid "{0}, paused until you turn it on"
 msgstr "{0}，開啟前保持暫停"
+
+#. placeholder {0}: Math.round(used)
+#: apps/web/src/components/PlanUsage.tsx
+msgid "{0}% used"
+msgstr "已用 {0}%"
 
 #: apps/web/src/lib/billing.ts
 msgid "{amount} / {period}"
@@ -161,6 +181,10 @@ msgstr "每週 {amount}"
 #: apps/mobile/lib/spending-limit.ts
 msgid "{amount} in total"
 msgstr "總計 {amount}"
+
+#: apps/mobile/app/(settings)/account.tsx
+msgid "{amount} left"
+msgstr "剩餘 {amount}"
 
 #: apps/mobile/lib/spending-limit.ts
 msgid "{amount} spent"
@@ -205,6 +229,10 @@ msgstr "{channel} {id}"
 #: apps/mobile/lib/app-version.ts
 msgid "{channel} {id}, {date}"
 msgstr "{channel} {id}，{date}"
+
+#: apps/web/src/pages/UndoPage.tsx
+msgid "{choice} seconds"
+msgstr "{choice} 秒"
 
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 msgid "{commandVariable} is reserved and cannot be used as a command variable. Choose another name."
@@ -305,6 +333,10 @@ msgstr "{count} 小時前"
 #: apps/mobile/lib/activity.ts
 msgid "{count}m ago"
 msgstr "{count} 分鐘前"
+
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, other {剩餘 # 天}} · {left, plural, other {剩餘 # 則訊息}}"
 
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
@@ -490,6 +522,16 @@ msgstr "開始按每年 {price} 計費"
 msgid "{price} / year. Cancel anytime."
 msgstr "每年 {price}。可隨時取消。"
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "{price}/month, billed in US dollars."
+msgstr "{price}/月，以美元計費。"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "{promo}/month for your first {months} months, then {price}/month"
+msgstr "前 {months} 個月 {promo}/月，之後 {price}/月"
+
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
 msgid "{provider} can't run this model."
@@ -674,6 +716,10 @@ msgstr "{title}，儲存為 {savedAs}"
 msgid "{toolCount, plural, one {# tool} other {# tools}}"
 msgstr "{toolCount, plural, one {# 個工具} other {# 個工具}}"
 
+#: apps/mobile/app/(settings)/account.tsx
+msgid "{used}% used"
+msgstr "已用 {used}%"
+
 #: apps/mobile/components/vault-item-editor.tsx
 msgid "{variable} is reserved. Choose another name."
 msgstr "{variable} 已被保留。請選擇其他名稱。"
@@ -806,6 +852,10 @@ msgstr "1 個機器人已改用空間預設模型。"
 msgid "1 connector"
 msgstr "1 個連接器"
 
+#: apps/web/src/components/activation.tsx
+msgid "1 day left"
+msgstr "剩餘 1 天"
+
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/mobile/app/invite.tsx
 msgid "1 free month earned"
@@ -815,6 +865,10 @@ msgstr "已獲得 1 個月免費"
 #: apps/web/src/pages/BotContextMenu.tsx
 msgid "1 hour"
 msgstr "1 小時"
+
+#: apps/web/src/components/activation.tsx
+msgid "1 message"
+msgstr "1 則訊息"
 
 #: apps/mobile/app/(settings)/skills.tsx
 msgid "1 skill"
@@ -1060,6 +1114,10 @@ msgstr "新增自訂項目"
 msgid "Add email trigger"
 msgstr "新增電子郵件觸發條件"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add every scope listed here."
+msgstr "新增此處列出的每一項權限。"
+
 #: apps/mobile/components/model-role-settings.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
 msgid "Add fallback"
@@ -1131,6 +1189,10 @@ msgstr "新增伺服器網址"
 msgid "Add skills"
 msgstr "新增技能"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Add the redirect URI shown here as an authorized redirect URI."
+msgstr "將此處顯示的重新導向 URI 新增為已授權的重新導向 URI。"
+
 #: apps/web/src/components/teach/SkillDraftCard.tsx
 msgid "Add to routine"
 msgstr "加入例行任務"
@@ -1197,6 +1259,11 @@ msgstr "進階"
 msgid "Advanced..."
 msgstr "進階..."
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "After that, the plan renews at {price}/month until you cancel."
+msgstr "之後方案以 {price}/月續訂，直到你取消。"
+
 #: apps/mobile/components/thread/thread-list-controls.tsx
 msgid "Agent"
 msgstr "代理程式"
@@ -1241,6 +1308,10 @@ msgstr "{price} 全數用於模型使用。"
 msgid "All bots"
 msgstr "所有機器人"
 
+#: apps/web/src/pages/ReportPage.tsx
+msgid "All customers"
+msgstr "全部客戶"
+
 #: apps/mobile/app/artifacts.tsx
 #: apps/web/src/pages/Artifacts.tsx
 msgid "All files"
@@ -1268,6 +1339,10 @@ msgstr "允許"
 msgid "Allow {name} on mobile"
 msgstr "在手機上允許 {name}"
 
+#: apps/web/src/lib/dictation.ts
+msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
+msgstr "請在系統設定中允許 ALMA 使用語音辨識和麥克風。"
+
 #: apps/mobile/app/bot-settings.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Allow cross-space bot communication"
@@ -1291,18 +1366,11 @@ msgstr "允許存取麥克風以進行聽寫。"
 msgid "Allow once"
 msgstr "允許一次"
 
-#: apps/web/src/lib/dictation.ts
-msgid "Allow ALMA to use Speech Recognition and the microphone in System Settings."
-msgstr "請在系統設定中允許 ALMA 使用語音辨識和麥克風。"
-
+#: apps/mobile/lib/call-session.ts
 #: apps/mobile/lib/composer-dictation.ts
+#: apps/mobile/lib/thread-voice.ts
 msgid "Allow speech recognition in Settings, or connect a voice provider that transcribes."
 msgstr "請在設定中允許語音辨識，或連接支援轉寫的語音服務。"
-
-#: apps/mobile/lib/call-session.ts
-#: apps/mobile/lib/thread-voice.ts
-msgid "Allow speech recognition in Settings, or connect ElevenLabs, OpenAI, or Fish Audio."
-msgstr "請在「設定」中允許語音辨識，或連線 ElevenLabs、OpenAI 或 Fish Audio。"
 
 #: apps/web/src/pages/memory-providers/SerenitySettingsForm.tsx
 msgid "Allow writing"
@@ -1317,6 +1385,24 @@ msgstr "已在此空間允許"
 #: apps/web/src/components/AskCard.tsx
 msgid "Allowed once"
 msgstr "已允許一次"
+
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/mobile/app/(settings)/ai-data-sharing.tsx
+#: apps/mobile/app/bot-settings.tsx
+#: apps/web/src/pages/AccountSettingsOverlay.tsx
+#: apps/web/src/pages/shell/avatar-studio-popover.tsx
+msgid "ALMA"
+msgstr "ALMA"
+
+#: apps/mobile/app/(settings)/billing.tsx
+#: apps/web/src/pages/onboarding/use-onboarding-model.ts
+msgid "ALMA credits"
+msgstr "ALMA 額度"
+
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-view.tsx
+msgid "ALMA Support"
+msgstr "ALMA 支援"
 
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 msgid "Already connected"
@@ -1519,8 +1605,10 @@ msgstr "核准"
 
 #: apps/mobile/app/(settings)/messaging.tsx
 #: apps/mobile/components/McpApprovalCard.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/pages/MessagingSettingsPanel.tsx
 #: apps/web/src/pages/PluginSubmissionsPanel.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "Approve"
 msgstr "核准"
@@ -1607,6 +1695,10 @@ msgstr "只在購物及首次使用你的電腦前詢問。僅套用封鎖規則
 #: apps/web/src/pages/shell/computer-panel.tsx
 msgid "Asleep"
 msgstr "休眠中"
+
+#: apps/web/src/components/activation.tsx
+msgid "Assistant"
+msgstr "助手"
 
 #. placeholder {0}: preset.time
 #: apps/web/src/lib/cron.ts
@@ -1767,6 +1859,11 @@ msgstr "Bearer"
 msgid "Bearer token"
 msgstr "Bearer 權杖"
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "Billed in US dollars."
+msgstr "以美元計費。"
+
 #: apps/mobile/app/(settings)/_layout.tsx
 #: apps/mobile/app/(settings)/account.tsx
 #: apps/web/src/pages/settings-nav.ts
@@ -1884,6 +1981,7 @@ msgstr "機器人的模型"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QuietHoursPage.tsx
 msgid "Both"
 msgstr "兩者都有"
 
@@ -1935,6 +2033,14 @@ msgstr "內建"
 msgid "Button “{button}” · read from the page, not checked"
 msgstr "按鈕「{button}」· 讀取自頁面，未核實"
 
+#: apps/web/src/components/activation.tsx
+msgid "Calendar"
+msgstr "日曆"
+
+#: apps/web/src/components/activation.tsx
+msgid "Calendar and email connect in Settings. They are not connected."
+msgstr "日曆和郵件在設定中連接。目前尚未連接。"
+
 #: apps/mobile/components/thread-composer.tsx
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Call"
@@ -1973,10 +2079,6 @@ msgstr "通話"
 msgid "Calls need transcription"
 msgstr "通話需要語音轉文字"
 
-#: apps/web/src/pages/settings-nav.ts
-msgid "Calls, dictation, and replies read aloud."
-msgstr "通話、語音輸入和朗讀回覆。"
-
 #: apps/mobile/lib/thread-attachments.ts
 msgid "Camera"
 msgstr "相機"
@@ -1991,6 +2093,7 @@ msgstr "無法連線伺服器。"
 
 #: apps/mobile/components/model-picker-list.tsx
 #: apps/web/src/components/TextOnlyMark.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "Can't read images"
 msgstr "無法讀取影像"
@@ -2037,6 +2140,7 @@ msgstr "無法讀取影像"
 #: apps/mobile/components/thread/quote-sheet.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/lib/account-name-editor.ts
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/ask-action-label.ts
 #: apps/mobile/lib/bot-lifecycle.ts
 #: apps/mobile/lib/confirm-delete-section.ts
@@ -2058,10 +2162,16 @@ msgstr "無法讀取影像"
 #: apps/web/src/pages/onboarding/model-step.tsx
 #: apps/web/src/pages/PaymentWalletSettingsPanel.tsx
 #: apps/web/src/pages/PluginSubmissionsPanel.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/create-bot-dialog.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
 msgid "Cancel"
 msgstr "取消"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "Cancel in the billing portal. Access lasts through the period already paid."
+msgstr "在帳單入口網站中取消。已付費的期間內仍可使用。"
 
 #: apps/web/src/pages/shell/agent-import.tsx
 msgid "Cancel new bot"
@@ -2314,6 +2424,10 @@ msgstr "選擇資料夾"
 msgid "Choose how to use ALMA"
 msgstr "選擇 ALMA 的使用方式"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Choose Test connection."
+msgstr "選擇測試連線。"
+
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
@@ -2372,6 +2486,19 @@ msgstr "清除篩選"
 msgid "Clearing…"
 msgstr "正在清空…"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID"
+msgstr "用戶端 ID"
+
+#. placeholder {0}: view.clientIdLast4
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client ID ending in {0}. Secret saved."
+msgstr "用戶端 ID 結尾為 {0}。密鑰已儲存。"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Client secret"
+msgstr "用戶端密鑰"
+
 #: apps/mobile/app/new-group.tsx
 #: apps/mobile/app/page.tsx
 #: apps/mobile/app/paywall.tsx
@@ -2381,6 +2508,7 @@ msgstr "正在清空…"
 #: apps/mobile/components/sheet-close-button.ios.tsx
 #: apps/mobile/components/sheet-close-button.tsx
 #: apps/web/src/components/ErrorBoundary.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/MessagingSettingsPanel.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
@@ -2563,10 +2691,10 @@ msgstr "已完成"
 #: apps/mobile/app/bot-settings.tsx
 #: apps/mobile/components/computer-mode-picker.tsx
 #: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/settings-nav.ts
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Computer"
 msgstr "電腦"
 
@@ -2733,6 +2861,7 @@ msgstr "連結記憶供應商"
 msgid "Connect my own"
 msgstr "連接自己的服務"
 
+#: apps/mobile/app/(settings)/integrations.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
 msgid "Connect OAuth"
 msgstr "連線 OAuth"
@@ -2890,8 +3019,10 @@ msgstr "對話"
 #: apps/web/src/components/pages/SharePopover.tsx
 #: apps/web/src/components/vault/BotEmailAddresses.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
+#: apps/web/src/pages/ReferralPage.tsx
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 #: apps/web/src/pages/shell/agent-import.tsx
 #: apps/web/src/pages/shell/message-hover-actions.tsx
@@ -2921,6 +3052,10 @@ msgstr "複製 {address}"
 msgid "Copy {label}"
 msgstr "複製 {label}"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy client ID"
+msgstr "複製用戶端 ID"
+
 #: apps/mobile/components/code-copy-button.tsx
 #: apps/mobile/components/thread/message-row.tsx
 #: apps/web/src/components/markdown-copy.tsx
@@ -2946,6 +3081,10 @@ msgstr "複製連結"
 #: apps/web/src/pages/shell/agent-import.tsx
 msgid "Copy prompt"
 msgstr "複製提示詞"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Copy redirect URI"
+msgstr "複製重新導向 URI"
 
 #: apps/web/src/components/markdown-copy.tsx
 msgid "Copy rows"
@@ -3097,6 +3236,7 @@ msgstr "無法連線至電腦螢幕"
 #: apps/mobile/app/sign-in.tsx
 #: apps/mobile/app/thread.tsx
 #: apps/mobile/components/account-deletion.tsx
+#: apps/mobile/components/ComputerCard.tsx
 #: apps/mobile/components/confirm-identity.tsx
 #: apps/mobile/lib/api-auth.ts
 #: apps/mobile/lib/identity-confirmation.ts
@@ -3105,6 +3245,7 @@ msgstr "無法連線至電腦螢幕"
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/components/AccountAccess.tsx
 #: apps/web/src/components/AccountDataSettings.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/ConfirmIdentityDialog.tsx
 #: apps/web/src/components/PasskeyOffer.tsx
 #: apps/web/src/components/PasskeySettings.tsx
@@ -3304,6 +3445,7 @@ msgstr "無法退出空間"
 msgid "Could not load"
 msgstr "無法載入"
 
+#: apps/mobile/components/inbox-activity.tsx
 #: apps/web/src/pages/ActivityList.tsx
 msgid "Could not load activity"
 msgstr "無法載入活動紀錄"
@@ -3535,6 +3677,7 @@ msgstr "無法播放測試片段"
 
 #: apps/mobile/components/audio-attachment.tsx
 #: apps/mobile/lib/voice.ts
+#: apps/web/src/lib/tts.ts
 msgid "Could not play that clip."
 msgstr "無法播放該音訊。"
 
@@ -3646,6 +3789,10 @@ msgstr "無法重新命名此頁面。請再試一次。"
 msgid "Could not render chart"
 msgstr "無法渲染圖表"
 
+#: apps/web/src/pages/Shell.tsx
+msgid "Could not report this response"
+msgstr "無法檢舉這則回覆"
+
 #: apps/web/src/pages/Auth.tsx
 msgid "Could not reset password"
 msgstr "無法重設密碼"
@@ -3676,6 +3823,7 @@ msgstr "無法執行例行任務"
 #: apps/web/src/pages/ExternalConversationSettings.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
+#: apps/web/src/pages/SectorStart.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
 #: apps/web/src/pages/shell/use-chat-snooze.ts
@@ -4046,6 +4194,10 @@ msgstr "建立分組並把 {0} 移入。"
 msgid "Create account"
 msgstr "建立帳號"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Create an OAuth client ID of type Web application."
+msgstr "建立一個類型為網頁應用程式的 OAuth 用戶端 ID。"
+
 #: apps/mobile/app/(settings)/bot-template.tsx
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
 msgid "Create bot"
@@ -4077,9 +4229,10 @@ msgstr "建立分組"
 msgid "Create space"
 msgstr "建立空間"
 
+#: apps/mobile/app/sign-in.tsx
 #: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "建立你的 ALMA"
+msgid "Create your account"
+msgstr "建立你的帳號"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -4114,9 +4267,11 @@ msgstr "憑證：{names}"
 msgid "Credit amount"
 msgstr "額度金額"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/mobile/app/paywall.tsx
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/components/PlanUsage.tsx
 msgid "Credits"
 msgstr "額度"
 
@@ -4372,6 +4527,8 @@ msgid "Delete memories too"
 msgstr "同時刪除記憶"
 
 #: apps/mobile/app/(settings)/organization.tsx
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/AccountMenu.tsx
 #: apps/web/src/pages/OrganizationSettingsPanel.tsx
 msgid "Delete organization"
 msgstr "刪除組織"
@@ -4419,6 +4576,10 @@ msgstr "已刪除"
 #: apps/mobile/components/pages/page-card.tsx
 msgid "Deleted"
 msgstr "已刪除"
+
+#: apps/web/src/pages/shell/transcript-member-name.ts
+msgid "Deleted bot"
+msgstr "已刪除的機器人"
 
 #: apps/web/src/components/PasskeySettings.tsx
 #: apps/web/src/pages/Artifacts.tsx
@@ -4637,6 +4798,11 @@ msgstr "文件已變更，請重新開啟以編輯最新版本。"
 msgid "Don’t have an account?"
 msgstr "還沒有帳號？"
 
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+msgid "Don't include confidential details."
+msgstr "請勿包含機密資訊。"
+
 #: apps/mobile/app/(settings)/vault.tsx
 #: apps/mobile/app/bot-settings.tsx
 #: apps/mobile/components/ComputerCard.tsx
@@ -4647,12 +4813,13 @@ msgstr "還沒有帳號？"
 #: apps/mobile/lib/activity.ts
 #: apps/mobile/lib/board.ts
 #: apps/web/src/components/AccountDataSettings.tsx
+#: apps/web/src/components/activation.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/ToolActivityDisclosure.tsx
 #: apps/web/src/lib/ticket-status.ts
 #: apps/web/src/pages/ActivityList.tsx
 #: apps/web/src/pages/shell/avatar-studio-popover.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Done"
 msgstr "完成"
 
@@ -4684,6 +4851,7 @@ msgid "Download CSV"
 msgstr "下載 CSV"
 
 #: apps/web/src/components/pages/DownloadPdfButton.tsx
+#: apps/web/src/pages/ReportPage.tsx
 msgid "Download PDF"
 msgstr "下載 PDF"
 
@@ -4748,6 +4916,7 @@ msgstr "編輯例行任務"
 #: apps/mobile/app/sign-in.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 #: apps/web/src/pages/AdminAccessPage.tsx
@@ -4790,6 +4959,10 @@ msgstr "內建"
 msgid "Enable {0}"
 msgstr "啟用 {0}"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "End"
+msgstr "結束"
+
 #: apps/web/src/components/ComputerProviderSettings.tsx
 msgid "End user ID"
 msgstr "終端使用者 ID"
@@ -4801,10 +4974,6 @@ msgstr "結束於"
 #: apps/web/src/lib/billing.ts
 msgid "Ends {day}"
 msgstr "於 {day} 結束"
-
-#: apps/web/src/components/GitHubStarPrompt.tsx
-msgid "Enjoying ALMA?"
-msgstr "喜歡 ALMA 嗎？"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
@@ -5081,6 +5250,10 @@ msgstr "失敗。"
 msgid "Failure handling"
 msgstr "失敗處理"
 
+#: apps/web/src/pages/shell/chat-header.tsx
+msgid "Feedback"
+msgstr "意見回饋"
+
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 msgid "Fields that mark a change"
 msgstr "標記變化的欄位"
@@ -5193,6 +5366,14 @@ msgstr "已完成。"
 msgid "Finishing MCP connection…"
 msgstr "正在完成 MCP 連線…"
 
+#: apps/web/src/components/activation.tsx
+msgid "First file"
+msgstr "第一個檔案"
+
+#: apps/web/src/components/activation.tsx
+msgid "First task"
+msgstr "第一個任務"
+
 #: apps/web/src/pages/shell/keyboard-shortcuts-dialog.tsx
 msgid "Focus message"
 msgstr "移至訊息欄"
@@ -5212,6 +5393,7 @@ msgstr "找到 {count} 個模型。"
 
 #: apps/mobile/app/paywall.tsx
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 msgid "Free"
 msgstr "免費"
 
@@ -5271,6 +5453,10 @@ msgstr "完整功能，無需付費"
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 msgid "Full name"
 msgstr "全名"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Full steps"
+msgstr "完整步驟"
 
 #: apps/web/src/pages/WindowChrome.tsx
 msgid "Fullscreen"
@@ -5341,6 +5527,14 @@ msgstr "返回首頁"
 msgid "Go to bot"
 msgstr "前往機器人"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google apps connected with it may need to be connected again."
+msgstr "用它連接的 Google 應用程式可能需要重新連接。"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Google Workspace"
+msgstr "Google Workspace"
+
 #: apps/web/src/pages/AdminAccessPage.tsx
 msgid "Grant"
 msgstr "授予"
@@ -5391,6 +5585,10 @@ msgstr "群組設定"
 #: apps/web/src/pages/ExternalConversationSettings.tsx
 msgid "Group updates"
 msgstr "群組更新"
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "Groups left with fewer than two bots are deleted too, including their messages, files, and pages."
+msgstr "機器人少於兩個的群組也會被刪除，包括其中的訊息、檔案和頁面。"
 
 #: apps/mobile/components/CallCard.tsx
 #: apps/web/src/components/call/CallCard.tsx
@@ -5473,6 +5671,7 @@ msgstr "你好，這是我的聲音。"
 msgid "Hidden"
 msgstr "隱藏"
 
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
 msgid "Hide"
 msgstr "隱藏"
@@ -5587,6 +5786,8 @@ msgid "https://example.com/openapi.json"
 msgstr "https://example.com/openapi.json"
 
 #: apps/mobile/app/computer.tsx
+#: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/shell/computer-release-actions.tsx
 msgid "I’m done"
 msgstr "我做完了"
@@ -5636,6 +5837,10 @@ msgstr "匯入代理程式"
 msgid "Import data"
 msgstr "匯入資料"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "In Google Cloud, open the OAuth consent screen for your Workspace project and set the user type to Internal."
+msgstr "在 Google Cloud 中開啟 Workspace 專案的 OAuth 同意畫面，並將使用者類型設為內部。"
+
 #: apps/mobile/lib/board.ts
 #: apps/web/src/lib/ticket-status.ts
 msgid "In progress"
@@ -5645,6 +5850,18 @@ msgstr "進行中"
 #: apps/web/src/lib/ticket-status.ts
 msgid "In review"
 msgstr "審查中"
+
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "In the app"
+msgstr "在應用程式內"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "In the app and push"
+msgstr "在應用程式內和推播"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "In the Google Admin console, open Security, Access and data control, API controls, Manage third-party app access, then Configure new app."
+msgstr "在 Google 管理控制台中，開啟安全性、存取和資料控制、API 控制、管理第三方應用程式存取權，然後設定新應用程式。"
 
 #: apps/mobile/app/(settings)/plugin.tsx
 #: apps/web/src/components/integrations/plugin-marketplace.tsx
@@ -5905,6 +6122,11 @@ msgstr "上次檢查 {0}：無變化"
 #: apps/web/src/components/DesktopUpdates.tsx
 msgid "Later"
 msgstr "稍後"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "Launch offer"
+msgstr "上線優惠"
 
 #: apps/mobile/app/(settings)/messaging.tsx
 #: apps/mobile/app/space-members.tsx
@@ -6299,6 +6521,10 @@ msgstr "記憶 {position}"
 msgid "Memory for {title}"
 msgstr "{title} 的記憶"
 
+#: apps/web/src/pages/MemorySettingsOverlay.tsx
+msgid "Memory is managed by ALMA"
+msgstr "記憶由 ALMA 管理"
+
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Memory scope"
 msgstr "記憶範圍"
@@ -6320,8 +6546,10 @@ msgstr "提及 OpenClaw 功能"
 msgid "Mentions: {mentions}"
 msgstr "提及：{mentions}"
 
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/search-sheet.ts
 #: apps/mobile/lib/thread-message-text.ts
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/shell/chat-shared.ts
 #: apps/web/src/pages/shell/composer.tsx
 #: apps/web/src/pages/SpaceSearch.tsx
@@ -6441,9 +6669,11 @@ msgstr "模式"
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
 #: apps/web/src/pages/routine-editor/model-settings.tsx
 #: apps/web/src/pages/shell/agent-import-plan.tsx
+#: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
 msgid "Model"
 msgstr "模型"
@@ -6463,6 +6693,7 @@ msgid "Model id"
 msgstr "模型 ID"
 
 #: apps/web/src/components/FoundModelPicker.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 msgid "Model options"
 msgstr "模型選項"
@@ -6472,11 +6703,7 @@ msgid "Model provider"
 msgstr "模型供應商"
 
 #: apps/mobile/app/(settings)/_layout.tsx
-#: apps/mobile/app/(settings)/account.tsx
-#: apps/mobile/app/(settings)/space.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
-#: apps/web/src/pages/settings-nav.ts
-#: apps/web/src/pages/SpaceSettingOverrides.tsx
 msgid "Models"
 msgstr "模型"
 
@@ -6498,14 +6725,20 @@ msgstr "模型清單正常。{modelCount, plural, one {# 個模型} other {# 個
 msgid "Monday"
 msgstr "週一"
 
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Monday summary"
+msgstr "週一摘要"
+
 #: apps/web/src/lib/billing.ts
 msgid "month"
 msgstr "月"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/spending-limit.tsx
 #: apps/mobile/app/paywall.tsx
 #: apps/mobile/lib/cron.ts
 #: apps/web/src/components/ModelCredits.tsx
+#: apps/web/src/components/PlanUsage.tsx
 #: apps/web/src/components/SpendingLimitSettings.tsx
 #: apps/web/src/lib/cron.ts
 msgid "Monthly"
@@ -6549,6 +6782,10 @@ msgstr "更多電腦操作"
 #: apps/web/src/components/bot-templates/bot-template-copy.ts
 msgid "Morning briefing"
 msgstr "晨間簡報"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Morning summary"
+msgstr "早晨摘要"
 
 #: apps/mobile/components/model-role-settings.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
@@ -6596,6 +6833,7 @@ msgstr "我的電腦"
 #: apps/mobile/components/name-dialog-compose.tsx
 #: apps/mobile/components/name-dialog.tsx
 #: apps/mobile/components/vault-item-editor.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/CreateOrganizationDialog.tsx
 #: apps/web/src/components/teach/SkillDraftCard.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx
@@ -6606,6 +6844,7 @@ msgstr "我的電腦"
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/OrganizationSettingsPanel.tsx
 #: apps/web/src/pages/plugins/source-form.tsx
+#: apps/web/src/pages/QueuePage.tsx
 #: apps/web/src/pages/RoutineEditor.tsx
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
@@ -6679,9 +6918,9 @@ msgid "Needs takeover"
 msgstr "需要接管"
 
 #: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/lib/roster-status.ts
 #: apps/web/src/pages/shell/computer-overlay.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Needs you"
 msgstr "需要你處理"
 
@@ -6727,6 +6966,11 @@ msgstr "新電腦執行於"
 #: apps/web/src/components/VaultSettings.tsx
 msgid "New contact"
 msgstr "新增聯絡人"
+
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "New draft"
+msgstr "新草稿"
 
 #: apps/web/src/pages/GroupPanel.tsx
 msgid "New group"
@@ -6870,6 +7114,14 @@ msgstr "沒有機器人"
 msgid "No bots match"
 msgstr "沒有符合的機器人"
 
+#: apps/mobile/app/(settings)/messaging.tsx
+msgid "No chat apps are connected on this server"
+msgstr "此伺服器未連接任何聊天應用程式"
+
+#: apps/web/src/components/activation.tsx
+msgid "No files yet."
+msgstr "還沒有檔案。"
+
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
 #: apps/web/src/components/SecretAskCard.tsx
@@ -6897,6 +7149,7 @@ msgstr "沒有符合的機器人"
 
 #: apps/mobile/components/model-picker-list.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "No matching models"
@@ -6933,6 +7186,10 @@ msgstr "找不到 OpenClaw、Hermes 或代理程式文件。"
 #: apps/web/src/components/pages/PagesList.tsx
 msgid "No pages match “{query}”."
 msgstr "沒有符合「{query}」的頁面。"
+
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "這部裝置沒有通行金鑰。請用密碼登入，然後在帳號中新增通行金鑰。"
 
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
@@ -6973,6 +7230,7 @@ msgstr "沒有資料列"
 msgid "No runs match these filters."
 msgstr "沒有符合篩選條件的執行紀錄。"
 
+#: apps/mobile/components/inbox-activity.tsx
 #: apps/mobile/components/routine-run-history.tsx
 #: apps/web/src/pages/ActivityList.tsx
 msgid "No runs yet"
@@ -7041,6 +7299,11 @@ msgstr "尚未檢查"
 msgid "Not connected"
 msgstr "未連線"
 
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-view.tsx
+msgid "Not delivered. Tap to retry."
+msgstr "未送達。點一下以重試。"
+
 #: apps/web/src/pages/shell/agent-import-plan.tsx
 msgid "Not imported"
 msgstr "未匯入"
@@ -7059,7 +7322,6 @@ msgstr "不在外掛程式目錄中"
 #: apps/mobile/lib/composer-dictation.ts
 #: apps/mobile/lib/passkey.ts
 #: apps/mobile/lib/thread-voice.ts
-#: apps/web/src/components/GitHubStarPrompt.tsx
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "Not now"
 msgstr "暫不"
@@ -7069,6 +7331,7 @@ msgid "Not Now"
 msgstr "暫不"
 
 #: apps/mobile/components/failed-send-bubble.tsx
+#: apps/web/src/components/SendUndoBar.tsx
 msgid "Not sent"
 msgstr "未傳送"
 
@@ -7099,6 +7362,10 @@ msgstr "ALMA 不使用"
 msgid "Not working"
 msgstr "無法正常工作"
 
+#: apps/web/src/components/activation.tsx
+msgid "Nothing due today."
+msgstr "今天沒有到期事項。"
+
 #: apps/mobile/app/(settings)/memory.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 msgid "Nothing remembered yet"
@@ -7107,6 +7374,11 @@ msgstr "尚無記憶"
 #: apps/mobile/app/(settings)/vault.tsx
 msgid "Nothing saved yet."
 msgstr "尚未儲存任何內容。"
+
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Nothing waiting"
+msgstr "沒有等待中的事項"
 
 #: apps/mobile/app/(settings)/account.tsx
 msgid "Notification settings"
@@ -7151,6 +7423,10 @@ msgstr "OAuth 客戶端金鑰（選填）"
 msgid "OAuth connection failed"
 msgstr "OAuth 連線失敗"
 
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Off"
+msgstr "關"
+
 #: apps/web/src/components/ComputerDeviceSettings.tsx
 msgid "Offline"
 msgstr "離線"
@@ -7158,6 +7434,10 @@ msgstr "離線"
 #: apps/mobile/lib/call-session.ts
 msgid "OK, switching to {name}."
 msgstr "好的，正在切換到 {name}。"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "On"
+msgstr "開"
 
 #: apps/mobile/components/CallCard.tsx
 msgid "On a call with {name}"
@@ -7232,12 +7512,12 @@ msgstr "僅限自己"
 #: apps/mobile/app/pages.tsx
 #: apps/mobile/components/ImportSetupCard.tsx
 #: apps/web/src/components/bot-templates/bot-templates-dialog.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/components/markdown-link-prompt.tsx
 #: apps/web/src/components/pages/PagesList.tsx
 #: apps/web/src/pages/PaymentWalletSettingsPanel.tsx
 #: apps/web/src/pages/shell/computer-panel.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
-#: apps/web/src/pages/shell/message-view.tsx
 msgid "Open"
 msgstr "開啟"
 
@@ -7262,6 +7542,12 @@ msgstr "開啟 {title}"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Open <0>{0}</0> and enter this code:"
 msgstr "開啟 <0>{0}</0> 並輸入以下代碼："
+
+#: apps/web/src/components/pages/PublicPageShell.tsx
+#: apps/web/src/pages/Invite.tsx
+#: apps/web/src/pages/SharedPage.tsx
+msgid "Open ALMA"
+msgstr "開啟 ALMA"
 
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Open call"
@@ -7310,12 +7596,6 @@ msgstr "開啟連結"
 #: apps/web/src/pages/shell/chat-header.tsx
 msgid "Open navigation"
 msgstr "開啟導覽"
-
-#: apps/web/src/components/pages/PublicPageShell.tsx
-#: apps/web/src/pages/Invite.tsx
-#: apps/web/src/pages/SharedPage.tsx
-msgid "Open ALMA"
-msgstr "開啟 ALMA"
 
 #: apps/mobile/lib/composer-dictation.ts
 #: apps/mobile/lib/thread-voice.ts
@@ -7556,6 +7836,10 @@ msgstr "付款逾期"
 msgid "Paste a replacement key"
 msgstr "貼上替換金鑰"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Paste the client ID and client secret, then save."
+msgstr "貼上用戶端 ID 和用戶端密鑰，然後儲存。"
+
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
 msgid "Paste the OpenAI-compatible address from your server. ALMA adds /v1 if needed."
@@ -7604,9 +7888,16 @@ msgstr "人設"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
 #: apps/mobile/app/index.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Personal"
 msgstr "個人"
+
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "Personal use"
+msgstr "個人使用"
 
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/components/vault-item-sheet.tsx
@@ -7724,6 +8015,10 @@ msgstr "在聊天室中傳送「沒有變更」"
 msgid "PR reviewer"
 msgstr "PR 審查員"
 
+#: apps/web/src/pages/ReportPage.tsx
+msgid "Practice"
+msgstr "練習"
+
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 msgid "Preferences"
 msgstr "偏好設定"
@@ -7829,6 +8124,10 @@ msgstr "公開伺服器需要使用 https://。HTTP 僅適用於區域網路。"
 msgid "Pull request"
 msgstr "Pull request"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "Push"
+msgstr "推播"
+
 #: apps/mobile/app/paywall.tsx
 msgid "Put your bots to work"
 msgstr "讓你的機器人開始工作"
@@ -7837,28 +8136,27 @@ msgstr "讓你的機器人開始工作"
 msgid "Questions, approvals, takeover"
 msgstr "提問、核准和接管"
 
+#: apps/mobile/app/(settings)/_layout.tsx
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/components/SidebarFooter.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Queue"
+msgstr "佇列"
+
 #: apps/mobile/lib/activity.ts
 #: apps/web/src/pages/ActivityList.tsx
 msgid "Queued"
 msgstr "排隊中"
 
+#: apps/web/src/pages/QuietHoursPage.tsx
+msgid "Quiet hours"
+msgstr "勿擾時段"
+
 #: apps/mobile/components/thread/message-row.tsx
 #: apps/mobile/components/thread/quote-sheet.tsx
 msgid "Quote"
 msgstr "引用"
-
-#: apps/mobile/app/(settings)/account.tsx
-#: apps/mobile/app/(settings)/ai-data-sharing.tsx
-#: apps/mobile/app/bot-settings.tsx
-#: apps/web/src/pages/AccountSettingsOverlay.tsx
-#: apps/web/src/pages/shell/avatar-studio-popover.tsx
-msgid "ALMA"
-msgstr "ALMA"
-
-#: apps/mobile/app/(settings)/billing.tsx
-#: apps/web/src/pages/onboarding/use-onboarding-model.ts
-msgid "ALMA credits"
-msgstr "ALMA 額度"
 
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "rakazo-shared and IDs starting with bot- are reserved for ALMA."
@@ -7923,6 +8221,11 @@ msgstr "最近"
 msgid "Recent payments"
 msgstr "最近付款"
 
+#: apps/mobile/lib/approval-queue.tsx
+#: apps/web/src/pages/QueuePage.tsx
+msgid "Recipient"
+msgstr "收件者"
+
 #: apps/web/src/pages/plugins/plugin-browse.tsx
 msgid "Recommended"
 msgstr "推薦"
@@ -7944,6 +8247,14 @@ msgstr "重新連線 OAuth"
 #: apps/web/src/components/ComputerUpdateProgress.tsx
 msgid "Reconnecting"
 msgstr "正在重新連線"
+
+#: apps/web/src/pages/VoicePreviewPage.tsx
+msgid "Record"
+msgstr "錄音"
+
+#: apps/web/src/pages/VoicePreviewPage.tsx
+msgid "Recording"
+msgstr "正在錄音"
 
 #: apps/web/src/components/teach/TeachComputerOverlay.tsx
 msgid "Recording may have started, but the view could not refresh"
@@ -8020,6 +8331,7 @@ msgstr "正在重建電腦"
 msgid "Recruiting & HR"
 msgstr "招募與人力資源"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 msgid "Redirect URI"
 msgstr "重新導向 URI"
@@ -8102,6 +8414,7 @@ msgstr "遠端 MCP 伺服器"
 #: apps/web/src/components/TrustedLinkSitesSettings.tsx
 #: apps/web/src/components/vault/LoginFieldsInput.tsx
 #: apps/web/src/components/vault/VaultItemDetail.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 #: apps/web/src/pages/ModelRoleSettings.tsx
 #: apps/web/src/pages/plugins/connector-detail.tsx
@@ -8204,6 +8517,10 @@ msgstr "移除技能 {name}"
 msgid "Remove skills"
 msgstr "移除技能"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Remove this Google client?"
+msgstr "移除這個 Google 用戶端？"
+
 #: apps/web/src/pages/routine-editor/trigger-cards.tsx
 msgid "Remove webhook"
 msgstr "移除 Webhook"
@@ -8211,6 +8528,10 @@ msgstr "移除 Webhook"
 #: apps/web/src/pages/ScratchpadSection.tsx
 msgid "Removed, but list refresh failed"
 msgstr "已移除，但清單重新整理失敗"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Removing the client uses ALMA's Google sign-in again. Google apps already connected with this client may need to be connected again."
+msgstr "移除後會重新使用 ALMA 的 Google 登入。已用此用戶端連接的 Google 應用程式可能需要重新連接。"
 
 #: apps/mobile/app/(settings)/integrations.tsx
 #: apps/mobile/app/(settings)/plugin.tsx
@@ -8311,6 +8632,15 @@ msgstr "已取消回覆"
 msgid "Replying to {0}"
 msgstr "正在回覆 {0}"
 
+#: apps/mobile/components/thread/message-row.tsx
+#: apps/web/src/pages/shell/message-hover-actions.tsx
+msgid "Report response"
+msgstr "檢舉回覆"
+
+#: apps/web/src/pages/Shell.tsx
+msgid "Report sent"
+msgstr "檢舉已送出"
+
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
 msgid "Request a new code"
@@ -8369,6 +8699,11 @@ msgstr "重設"
 #: apps/mobile/components/thread-error-notice.tsx
 msgid "Resets {date}."
 msgstr "將於 {date} 重設。"
+
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/PlanUsage.tsx
+msgid "Resets in {reset}"
+msgstr "{reset}後重設"
 
 #: apps/web/src/components/ComputerMaintenanceActions.tsx
 msgid "Resetting…"
@@ -8472,6 +8807,11 @@ msgstr "立即重試"
 msgid "Retry screen"
 msgstr "重新連線螢幕"
 
+#: apps/web/src/pages/McpOAuthCallback.tsx
+#: apps/web/src/pages/SlackInstallCallback.tsx
+msgid "Return to ALMA"
+msgstr "返回 ALMA"
+
 #. placeholder {0}: call.botName
 #: apps/web/src/components/call/CallCard.tsx
 msgid "Return to call with {0}"
@@ -8480,11 +8820,6 @@ msgstr "返回與 {0} 的通話"
 #: apps/mobile/app/thread.tsx
 msgid "Return to inbox"
 msgstr "返回收件匣"
-
-#: apps/web/src/pages/McpOAuthCallback.tsx
-#: apps/web/src/pages/SlackInstallCallback.tsx
-msgid "Return to ALMA"
-msgstr "返回 ALMA"
 
 #: apps/web/src/lib/model-connection-preflight.ts
 msgid "Review provider settings and test again."
@@ -8648,6 +8983,7 @@ msgstr "週六"
 #: apps/mobile/components/thread/ask-block.tsx
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/mobile/lib/account-name-editor.ts
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/mobile/lib/use-inbox-chat-actions.ts
 #: apps/web/src/components/ComputerProviderSettings.tsx
 #: apps/web/src/components/PasskeySettings.tsx
@@ -8657,13 +8993,17 @@ msgstr "週六"
 #: apps/web/src/components/vault/VaultItemEditor.tsx
 #: apps/web/src/pages/AccountSettingsOverlay.tsx
 #: apps/web/src/pages/Board.tsx
+#: apps/web/src/pages/DigestPage.tsx
 #: apps/web/src/pages/ExternalConversationSettings.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/GroupPanel.tsx
 #: apps/web/src/pages/KnowledgeSection.tsx
 #: apps/web/src/pages/McpServerForm.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/ModelSettingsOverlay.tsx
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/QuietHoursPage.tsx
 #: apps/web/src/pages/RoutineEditor.tsx
 #: apps/web/src/pages/shell/bot-panel.tsx
 #: apps/web/src/pages/shell/dialogs.tsx
@@ -8753,6 +9093,10 @@ msgstr "排程例行任務"
 msgid "Scheduled tasks"
 msgstr "排程任務"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Scopes"
+msgstr "權限範圍"
+
 #: apps/web/src/pages/McpServerForm.tsx
 msgid "Scopes (optional)"
 msgstr "範圍（選填）"
@@ -8762,6 +9106,7 @@ msgid "Screen not connected"
 msgstr "螢幕未連線"
 
 #: apps/mobile/app/search.tsx
+#: apps/mobile/app/sector.tsx
 #: apps/mobile/components/inbox-header.tsx
 #: apps/mobile/components/list-search-input.tsx
 #: apps/mobile/components/model-picker-list.tsx
@@ -8771,6 +9116,7 @@ msgstr "螢幕未連線"
 #: apps/web/src/components/VaultSettings.tsx
 #: apps/web/src/pages/Artifacts.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/providers-section.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/plugins/domain-search.tsx
@@ -8811,6 +9157,10 @@ msgstr "搜尋機器人、操作和設定"
 msgid "Search by domain"
 msgstr "依網域搜尋"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Search for this client ID and set access to Trusted."
+msgstr "搜尋此用戶端 ID，並將存取權設為受信任。"
+
 #: apps/web/src/components/integrations/IntegrationSetup.tsx
 msgid "Search integrations.sh"
 msgstr "搜尋 integrations.sh"
@@ -8821,6 +9171,7 @@ msgstr "在 MCP 伺服器中搜尋「{query}」"
 
 #: apps/web/src/components/FoundModelPicker.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
+#: apps/web/src/pages/model-settings/model-picker.tsx
 #: apps/web/src/pages/model-settings/role-model-picker.tsx
 #: apps/web/src/pages/shell/chat-model-picker.tsx
 msgid "Search models"
@@ -8992,6 +9343,11 @@ msgstr "伺服器名稱"
 msgid "Server URL"
 msgstr "伺服器 URL"
 
+#: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/PlanUsage.tsx
+msgid "Session"
+msgstr "工作階段"
+
 #: apps/web/src/components/SpendingLimitSettings.tsx
 msgid "Set"
 msgstr "設定"
@@ -9026,6 +9382,11 @@ msgstr "設定：一般"
 msgid "Settings: Usage"
 msgstr "設定：用量"
 
+#: apps/web/src/components/activation.tsx
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Setup"
+msgstr "設定"
+
 #: apps/mobile/components/ImportSetupCard.tsx
 #: apps/web/src/pages/shell/import-setup-card.tsx
 msgid "Setup complete"
@@ -9058,6 +9419,7 @@ msgstr "形狀 {number}"
 #: apps/mobile/app/pages.tsx
 #: apps/web/src/components/pages/PagesList.tsx
 #: apps/web/src/components/pages/SharePopover.tsx
+#: apps/web/src/pages/ReferralPage.tsx
 msgid "Share"
 msgstr "分享"
 
@@ -9071,6 +9433,10 @@ msgstr "分享「{title}」"
 msgid "Share {name}"
 msgstr "分享 {name}"
 
+#: apps/web/src/pages/ReferralPage.tsx
+msgid "Share ALMA"
+msgstr "分享 ALMA"
+
 #: apps/mobile/lib/ai-consent.ts
 msgid "Share data with {name}?"
 msgstr "與 {name} 分享資料？"
@@ -9078,6 +9444,10 @@ msgstr "與 {name} 分享資料？"
 #: apps/mobile/app/invite.tsx
 msgid "Share link"
 msgstr "分享連結"
+
+#: apps/web/src/pages/ReferralPage.tsx
+msgid "Share text"
+msgstr "分享文字"
 
 #: apps/mobile/app/share.tsx
 msgid "Share to"
@@ -9203,11 +9573,6 @@ msgstr "重新登入"
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "在 <0>{0}</0> 登入，然後將代碼貼到這裡。"
 
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "登入 ALMA"
-
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts
 msgid "Sign in to your existing account to link SSO"
@@ -9235,10 +9600,6 @@ msgstr "仍要登出"
 #: apps/web/src/pages/Auth.tsx
 msgid "Sign up"
 msgstr "註冊"
-
-#: apps/mobile/app/sign-in.tsx
-msgid "Sign up for ALMA"
-msgstr "註冊 ALMA"
 
 #: apps/web/src/components/integrations/plugin-marketplace.tsx
 msgid "Sign-in cancelled. Try again."
@@ -9314,6 +9675,10 @@ msgstr "技能會加入所有機器人共用的技能庫。"
 
 #: apps/mobile/app/computer.tsx
 #: apps/mobile/app/new-group.tsx
+#: apps/mobile/app/sector.tsx
+#: apps/mobile/components/ComputerCard.tsx
+#: apps/web/src/components/ComputerCard.tsx
+#: apps/web/src/pages/SectorStart.tsx
 #: apps/web/src/pages/shell/computer-release-actions.tsx
 msgid "Skip"
 msgstr "跳過"
@@ -9323,7 +9688,7 @@ msgid "Skip or deploy key"
 msgstr "跳過或使用部署金鑰"
 
 #: apps/mobile/components/ComputerCard.tsx
-#: apps/web/src/pages/shell/message-view.tsx
+#: apps/web/src/components/ComputerCard.tsx
 msgid "Skipped"
 msgstr "已略過"
 
@@ -9450,6 +9815,7 @@ msgid "Spaces"
 msgstr "空間"
 
 #: apps/web/src/pages/shell/message-view.tsx
+#: apps/web/src/pages/VoicePreviewPage.tsx
 msgid "Speak"
 msgstr "朗讀"
 
@@ -9486,10 +9852,7 @@ msgstr "單一登入"
 msgid "SSO is temporarily unavailable. Try again."
 msgstr "SSO 暫時不可用，請重試。"
 
-#: apps/web/src/components/GitHubStarPrompt.tsx
-msgid "Star on GitHub"
-msgstr "在 GitHub 上給星"
-
+#: apps/web/src/pages/QuietHoursPage.tsx
 #: apps/web/src/pages/shell/computer-overlay.tsx
 msgid "Start"
 msgstr "啟動"
@@ -9568,6 +9931,7 @@ msgid "Status"
 msgstr "狀態"
 
 #: apps/web/src/components/teach/SkillDraftCard.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 msgid "Steps"
 msgstr "步驟"
 
@@ -9628,8 +9992,10 @@ msgid "subagent"
 msgstr "子代理程式"
 
 #: apps/mobile/app/(settings)/model-connection.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/pages/model-settings/connection-controls.tsx
 #: apps/web/src/pages/onboarding/model-step.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Submit"
 msgstr "提交"
 
@@ -9668,6 +10034,15 @@ msgstr "需要訂閱"
 #: apps/web/src/lib/cron.ts
 msgid "Sunday"
 msgstr "週日"
+
+#: apps/mobile/components/chat-header-title.tsx
+#: apps/mobile/components/inbox-rows.tsx
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+#: apps/web/src/pages/shell/chat-header.tsx
+#: apps/web/src/pages/shell/sidebar-roster.tsx
+msgid "Support"
+msgstr "支援"
 
 #: apps/mobile/components/compatible-endpoint-form.tsx
 #: apps/web/src/pages/model-settings/compatible-model-fields.tsx
@@ -9741,6 +10116,7 @@ msgid "Table"
 msgstr "表格"
 
 #: apps/mobile/app/computer.tsx
+#: apps/web/src/components/ComputerCard.tsx
 #: apps/web/src/pages/shell/computer-overlay.tsx
 msgid "Take control"
 msgstr "接管控制權"
@@ -9810,6 +10186,7 @@ msgid "Test API key"
 msgstr "測試 API 金鑰"
 
 #: apps/web/src/components/ModelConnectionPreflightNotice.tsx
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
 #: apps/web/src/pages/McpServersOverlay.tsx
 msgid "Test connection"
 msgstr "測試連線"
@@ -9832,8 +10209,8 @@ msgid "That doesn’t look like a URL"
 msgstr "這看起來不像 URL"
 
 #: apps/mobile/lib/endpoint.ts
-msgid "That URL did not look like a ALMA server"
-msgstr "該地址看起來不是 ALMA 伺服器"
+msgid "That URL did not look like an ALMA server"
+msgstr "這個網址不像是 ALMA 伺服器"
 
 #: apps/mobile/lib/endpoint.ts
 msgid "That URL is missing a host"
@@ -9873,6 +10250,10 @@ msgstr "機器人的瀏覽器會為此空間的每個人保持登入"
 msgid "The browser keeps dropping the microphone. Start dictation again to retry."
 msgstr "瀏覽器反覆中斷麥克風連線。請重新啟動語音輸入。"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "The client ID is not set on this server."
+msgstr "此伺服器未設定用戶端 ID。"
+
 #: apps/web/src/pages/settings-nav.ts
 msgid "The computer your bots work on."
 msgstr "你的機器人工作用的電腦。"
@@ -9880,6 +10261,14 @@ msgstr "你的機器人工作用的電腦。"
 #: apps/web/src/lib/model-connection-preflight.ts
 msgid "The connection timed out."
 msgstr "連線超時。"
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "The group {names} will be deleted too, including its messages, files, and pages."
+msgstr "群組 {names} 也會被刪除，包括其中的訊息、檔案和頁面。"
+
+#: apps/web/src/pages/shell/dialogs.tsx
+msgid "The groups {names} will be deleted too, including their messages, files, and pages."
+msgstr "這些群組 {names} 也會被刪除，包括其中的訊息、檔案和頁面。"
 
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
@@ -9900,6 +10289,11 @@ msgstr "模型回傳了無法使用的回覆，請再試一次。"
 msgid "The owner may have turned off its link or deleted it."
 msgstr "擁有者可能已關閉連結或刪除了它。"
 
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "The plan renews monthly until you cancel."
+msgstr "方案按月續訂，直到你取消。"
+
 #: apps/mobile/lib/run-error-presentation.ts
 msgid "The provider couldn't serve the model selected for this bot."
 msgstr "供應商無法提供為此機器人選擇的模型。"
@@ -9915,6 +10309,10 @@ msgstr "供應商收到的請求過多，無法為此機器人提供回覆。"
 #: apps/mobile/lib/run-error-presentation.ts
 msgid "The provider refused the key this bot used for its reply."
 msgstr "供應商拒絕了此機器人用於回覆的金鑰。"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "The scope list could not be loaded."
+msgstr "無法載入權限範圍清單。"
 
 #: apps/mobile/app/computer.tsx
 #: apps/web/src/lib/computer-screen.ts
@@ -9948,6 +10346,18 @@ msgstr "伺服器出現問題。請稍後重試。"
 #: apps/web/src/components/pages/SharePopover.tsx
 msgid "The shared link stops working"
 msgstr "共用連結將失效"
+
+#: apps/mobile/app/paywall.tsx
+#: apps/web/src/components/activation.tsx
+msgid "The trial ended."
+msgstr "試用已結束。"
+
+#: apps/mobile/lib/unsent-sends.ts
+#: apps/mobile/lib/user-error.ts
+#: apps/web/src/lib/user-error.ts
+#: apps/web/src/pages/shell/use-composer-actions.ts
+msgid "The trial has reached its limit."
+msgstr "試用已達到上限。"
 
 #: apps/mobile/app/(settings)/billing.tsx
 #: apps/web/src/components/ModelCredits.tsx
@@ -10125,6 +10535,7 @@ msgid "This model's context window is too small. Choose another model."
 msgstr "此模型的上下文視窗太小。請選擇其他模型。"
 
 #: apps/web/src/pages/Artifacts.tsx
+#: apps/web/src/pages/ReportPage.tsx
 msgid "This month"
 msgstr "本月"
 
@@ -10249,6 +10660,10 @@ msgstr "對話"
 #: apps/web/src/lib/cron.ts
 msgid "Thursday"
 msgstr "週四"
+
+#: apps/web/src/pages/DigestPage.tsx
+msgid "Time"
+msgstr "時間"
 
 #: apps/mobile/components/routine-schedule-editor.tsx
 #: apps/web/src/pages/RoutineSchedule.tsx
@@ -10392,6 +10807,10 @@ msgstr "為防止濫用，試用期的時數較少。"
 msgid "Troubleshoot"
 msgstr "疑難排解"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Trusted app"
+msgstr "受信任的應用程式"
+
 #: apps/mobile/app/(settings)/account.tsx
 #: apps/web/src/components/TrustedLinkSitesSettings.tsx
 msgid "Trusted sites"
@@ -10494,9 +10913,17 @@ msgid "Unassigned"
 msgstr "未分配"
 
 #: apps/mobile/components/change-undo.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/AskCard.tsx
+#: apps/web/src/components/SendUndoBar.tsx
+#: apps/web/src/pages/QueuePage.tsx
 msgid "Undo"
 msgstr "復原"
+
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/UndoPage.tsx
+msgid "Undo send"
+msgstr "復原傳送"
 
 #: apps/mobile/components/integration-detail.tsx
 #: apps/web/src/pages/plugins/connector-detail.tsx
@@ -10635,6 +11062,7 @@ msgstr "正在更新…"
 
 #: apps/mobile/app/computer.tsx
 #: apps/mobile/lib/run-error-presentation.ts
+#: apps/web/src/components/activation.tsx
 #: apps/web/src/pages/shell/composer-error.tsx
 #: apps/web/src/pages/shell/shell-sidebar.tsx
 #: apps/web/src/pages/shell/use-computer.tsx
@@ -10659,6 +11087,7 @@ msgid "URL"
 msgstr "網址"
 
 #: apps/mobile/app/(settings)/account.tsx
+#: apps/web/src/components/SidebarFooter.tsx
 #: apps/web/src/pages/settings-nav.ts
 msgid "Usage"
 msgstr "用量"
@@ -10695,6 +11124,11 @@ msgstr "使用自訂伺服器"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Use a found model"
 msgstr "使用找到的模型"
+
+#: apps/mobile/app/(settings)/billing.tsx
+#: apps/web/src/components/ModelCredits.tsx
+msgid "Use ALMA credits"
+msgstr "使用 ALMA 額度"
 
 #: apps/mobile/lib/endpoint.ts
 msgid "Use an http or https URL"
@@ -10746,11 +11180,6 @@ msgstr "使用我的訂閱或 API 金鑰"
 msgid "Use Protected input for passwords."
 msgstr "輸入密碼時，請使用受保護的輸入。"
 
-#: apps/mobile/app/(settings)/billing.tsx
-#: apps/web/src/components/ModelCredits.tsx
-msgid "Use ALMA credits"
-msgstr "使用 ALMA 額度"
-
 #: apps/mobile/components/space-bots-model.tsx
 msgid "Use space default"
 msgstr "使用空間預設模型"
@@ -10758,6 +11187,10 @@ msgstr "使用空間預設模型"
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Use up to 512 letters, digits, _ or -."
 msgstr "最多可使用 512 個英文字母、數字、_ 或 -。"
+
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Use your own Google client"
+msgstr "使用你自己的 Google 用戶端"
 
 #: apps/mobile/app/(settings)/model-connection.tsx
 msgid "Use your own key"
@@ -10863,14 +11296,14 @@ msgstr "檢視全部"
 msgid "View source"
 msgstr "檢視來源"
 
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "View usage"
+msgstr "查看用量"
+
 #: apps/mobile/app/(settings)/_layout.tsx
-#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/ai-data-sharing.tsx
-#: apps/mobile/app/(settings)/space.tsx
 #: apps/mobile/app/bot-settings.tsx
-#: apps/web/src/pages/settings-nav.ts
 #: apps/web/src/pages/shell/bot-settings-sections.tsx
-#: apps/web/src/pages/SpaceSettingOverrides.tsx
 #: apps/web/src/pages/VoiceSettingsOverlay.tsx
 msgid "Voice"
 msgstr "語音"
@@ -10922,6 +11355,10 @@ msgstr "喚醒"
 msgid "Wallet"
 msgstr "錢包"
 
+#: apps/web/src/pages/Shell.tsx
+msgid "We'll review this response."
+msgstr "我們會查看這則回覆。"
+
 #: apps/web/src/components/ModelCredits.tsx
 msgid "Web, desktop and mobile"
 msgstr "網頁、桌面與手機"
@@ -10956,7 +11393,9 @@ msgstr "工作日"
 msgid "Weekends"
 msgstr "週末"
 
+#: apps/mobile/app/(settings)/account.tsx
 #: apps/mobile/app/(settings)/spending-limit.tsx
+#: apps/web/src/components/PlanUsage.tsx
 #: apps/web/src/components/SpendingLimitSettings.tsx
 msgid "Weekly"
 msgstr "每週"
@@ -10979,9 +11418,19 @@ msgstr "此空間可以使用什麼？"
 msgid "What do you most want ALMA to help with?"
 msgstr "你最希望 ALMA 幫你做什麼？"
 
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "What do you want ALMA for first?"
+msgstr "你最先想用 ALMA 做什麼？"
+
 #: apps/web/src/pages/shell/message-cards.tsx
 msgid "What do you want me on first?"
 msgstr "你想讓我先做什麼？"
+
+#: apps/mobile/app/sector.tsx
+#: apps/web/src/pages/SectorStart.tsx
+msgid "What kind of work?"
+msgstr "哪種工作？"
 
 #: apps/web/src/components/teach/TeachComputerOverlay.tsx
 msgid "What result will you demonstrate?"
@@ -11056,10 +11505,6 @@ msgstr "機器人應在哪裡執行？"
 msgid "Where your bots pay from."
 msgstr "你的機器人從哪裡付款。"
 
-#: apps/web/src/pages/settings-nav.ts
-msgid "Which LLMs your bots use."
-msgstr "你的機器人使用哪些 LLM。"
-
 #: apps/web/src/components/pages/SharePopover.tsx
 msgid "Who can open this page"
 msgstr "誰可以開啟此頁面"
@@ -11096,7 +11541,11 @@ msgid "Won't do"
 msgstr "不處理"
 
 #: apps/mobile/app/(settings)/signup-survey.tsx
+#: apps/mobile/app/sector.tsx
+#: apps/mobile/lib/approval-queue.tsx
 #: apps/web/src/components/SignupSurvey.tsx
+#: apps/web/src/pages/QueuePage.tsx
+#: apps/web/src/pages/SectorStart.tsx
 msgid "Work"
 msgstr "工作"
 
@@ -11135,6 +11584,11 @@ msgstr "可使用你的 ChatGPT 或 Claude 方案。"
 #: apps/web/src/pages/memory-providers/HonchoSettingsForm.tsx
 msgid "Workspace"
 msgstr "工作空間"
+
+#: apps/mobile/components/thread/thread-screen.tsx
+#: apps/web/src/pages/Shell.tsx
+msgid "Write to the ALMA team. A person will reply here."
+msgstr "寫信給 ALMA 團隊。會有人在這裡回覆。"
 
 #: apps/mobile/app/routine.tsx
 msgid "Write what this routine should do."
@@ -11255,6 +11709,10 @@ msgstr "你的電子信箱"
 msgid "Your free trial has started"
 msgstr "你的免費試用已開始"
 
+#: apps/web/src/pages/GoogleWorkspaceSettings.tsx
+msgid "Your Google client"
+msgstr "你的 Google 用戶端"
+
 #. js-lingui-explicit-id
 #: packages/i18n/src/run-error.ts
 msgid "Your model provider"
@@ -11337,6 +11795,10 @@ msgstr "你的語音供應商額度已用完。"
 #: apps/web/src/lib/user-error.ts
 msgid "Your voice provider key was rejected."
 msgstr "你的語音供應商拒絕了該金鑰。"
+
+#: apps/web/src/components/SidebarFooter.tsx
+msgid "Your work"
+msgstr "你的工作"
 
 #: apps/mobile/components/vault-item-editor.tsx
 #: apps/web/src/components/vault/VaultItemEditor.tsx

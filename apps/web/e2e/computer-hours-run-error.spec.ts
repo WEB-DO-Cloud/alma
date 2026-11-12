@@ -1,7 +1,7 @@
 import type { Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { BillingStatus } from "@rakazo/contracts";
-import { captureScreenshot, completeOnboarding, signup } from "./helpers";
+import { captureScreenshot, completeOnboarding, readRouteJson, signup } from "./helpers";
 
 function billingStatus(overrides: Partial<BillingStatus>): BillingStatus {
   return {
@@ -24,8 +24,10 @@ function billingStatus(overrides: Partial<BillingStatus>): BillingStatus {
 }
 
 async function enableBilling(route: Route, path: "me" | "bootstrap") {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   const me = path === "me" ? body.json : (body.json?.me as Record<string, unknown> | undefined);
   if (me) me.billingEnabled = true;
   await route.fulfill({ response, json: body });
@@ -58,8 +60,10 @@ for (const plan of plans) {
     );
     await completeOnboarding(page);
     await page.route("**/api/auth/capabilities", async (route) => {
-      const response = await route.fetch();
-      await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+      const fetched = await readRouteJson(route);
+      if (!fetched) return;
+      const response = fetched.response;
+      await route.fulfill({ response, json: { ...fetched.body, billing: true } });
     });
     await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
     await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -67,8 +71,10 @@ for (const plan of plans) {
     await page.route("**/rpc/billing/status", (route) => route.fulfill({ json: { json: status } }));
     // The scripted runtime fails the run; the snapshot reports it as the computer allowance would.
     await page.route("**/rpc/threads/get", async (route) => {
-      const response = await route.fetch();
-      const body = (await response.json()) as { json?: { run?: { error?: string | null } } };
+      const fetched = await readRouteJson(route);
+      if (!fetched) return;
+      const response = fetched.response;
+      const body = fetched.body as { json?: { run?: { error?: string | null } } };
       if (body.json?.run?.error) body.json.run.error = "No computer hours left.";
       await route.fulfill({ response, json: body });
     });

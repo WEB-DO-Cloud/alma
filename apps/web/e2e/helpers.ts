@@ -1,4 +1,4 @@
-import type { Locator, Page, Route, TestInfo } from "@playwright/test";
+import type { APIResponse, Locator, Page, Route, TestInfo } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import { signupRequiresEmailVerification } from "@rakazo/core";
 
@@ -22,6 +22,26 @@ export function activeBotId(page: Page) {
   const id = new URL(page.url()).pathname.split("/").filter(Boolean).at(-1);
   if (!id || id === "app") throw new Error(`missing bot id in ${page.url()}`);
   return id;
+}
+
+/**
+ * The real response for a routed call, or null when the page already aborted it.
+ * Reading a disposed body fails the test even though a later request replaced it.
+ */
+export async function readRouteJson(
+  route: Route,
+): Promise<{ response: APIResponse; body: any } | null> {
+  try {
+    const response = await route.fetch();
+    return { response, body: await response.json() };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!/disposed|aborted|already handled|Target closed|Failed to find context/i.test(message)) {
+      throw error;
+    }
+    await route.abort().catch(() => undefined);
+    return null;
+  }
 }
 
 export async function rpc<T>(page: Page, procedure: string, body: unknown): Promise<T> {
@@ -92,7 +112,9 @@ export async function signupThroughForm(
   testInfo?: TestInfo,
 ) {
   await page.goto("/sign-up");
-  await expect(page.getByRole("heading", { name: "Create your ALMA" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Create your account", exact: true }),
+  ).toBeVisible();
   if (testInfo) await captureScreenshot(page, testInfo, "01-sign-up");
   await page.getByPlaceholder("Your name").fill(name);
   await page.getByPlaceholder("Your email address").fill(email);
@@ -365,16 +387,20 @@ export async function presentMainDeploymentDefault(page: Page, provider: string,
   await page.route("**/rpc/models/role", async (route) => {
     const { json } = route.request().postDataJSON() as { json: { role: string } };
     if (json.role !== "main") return route.continue();
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Record<string, unknown> };
     body.json.deploymentPrimary = { provider, modelId };
     await route.fulfill({ response, json: body });
   });
 }
 
 export async function makeAdmin(route: Route, path: "me" | "bootstrap") {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   const me = path === "me" ? body.json : (body.json?.me as Record<string, unknown> | undefined);
   if (me) me.isAdmin = true;
   await route.fulfill({ response, json: body });

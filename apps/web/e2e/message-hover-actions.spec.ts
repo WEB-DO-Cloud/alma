@@ -1,6 +1,12 @@
 import type { Locator, Page, TestInfo } from "@playwright/test";
 import { expect, test } from "@playwright/test";
-import { activeBotId, captureScreenshot, completeOnboarding, signup } from "./helpers";
+import {
+  activeBotId,
+  captureScreenshot,
+  completeOnboarding,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 /** Submit from the Send control so an in-flight prior send cannot swallow Enter. */
 async function sendComposerMessage(page: Page, composer: Locator, text: string) {
@@ -485,8 +491,10 @@ test("a reaction receipt refreshes live work and exposes Stop", async ({ page },
     await route.fulfill({ json: { json: { ok: true, runIds: ["reaction-run"] } } });
   });
   await page.route("**/rpc/threads/get", async (route) => {
-    const response = await route.fetch();
-    const body = await response.json();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body;
     if (reacted) {
       const run = {
         id: "reaction-run",

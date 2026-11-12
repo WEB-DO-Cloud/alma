@@ -1,7 +1,14 @@
 import type { Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { BillingStatus } from "@rakazo/contracts";
-import { captureScreenshot, completeOnboarding, openUserSettings, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openUserSettings,
+  readRouteJson,
+  rpc,
+  signup,
+} from "./helpers";
 
 const price = { amount: 1200, currency: "usd", interval: "month", intervalCount: 1 } as const;
 
@@ -23,8 +30,10 @@ function billingStatus(overrides: Partial<BillingStatus>): BillingStatus {
 }
 
 async function enableBilling(route: Route, path: "me" | "bootstrap") {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   const me = path === "me" ? body.json : (body.json?.me as Record<string, unknown> | undefined);
   if (me) me.billingEnabled = true;
   await route.fulfill({ response, json: body });
@@ -37,8 +46,10 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
   await signup(page, `credit-choice-${stamp}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -238,13 +249,58 @@ test("choose your own key or monthly credits, then add a one-time top-up", async
   expect(purchase).toEqual({ amountCents: 5000, monthly: false });
 });
 
+test("delete an unpaid organization from the plan choice", async ({ page }, testInfo) => {
+  await signup(page, `org-paywall-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
+  await completeOnboarding(page);
+  const work = await rpc<{ id: string; defaultSpaceId: string }>(page, "organizations/create", {
+    name: "Work",
+  });
+  await page.route("**/api/auth/capabilities", async (route) => {
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
+  });
+  await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
+  await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
+  // Only the new organization is unpaid.
+  await page.route("**/rpc/billing/status", async (route) => {
+    const unpaid = route.request().headers()["x-rakazo-space-id"] === work.defaultSpaceId;
+    await route.fulfill({
+      json: { json: billingStatus(unpaid ? {} : { access: true, state: "active" }) },
+    });
+  });
+  await page.evaluate(
+    (spaceId) => window.localStorage.setItem("rakazo:space-id", spaceId),
+    work.defaultSpaceId,
+  );
+  await page.reload();
+  await expect(page.getByTestId("billing-paywall")).toBeVisible();
+
+  await page.getByRole("button", { name: "Account", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Delete organization" }).click();
+  const confirm = page.getByRole("alertdialog", { name: "Delete Work?" });
+  await confirm.getByLabel("Type Work to confirm").fill("Work");
+  await captureScreenshot(page, testInfo, "billing-delete-organization");
+  await confirm.getByRole("button", { name: "Delete", exact: true }).click();
+  await expect(page.getByText("Chief").first()).toBeVisible();
+  const { organizations } = await rpc<{ organizations: Array<{ name: string }> }>(
+    page,
+    "organizations/list",
+    {},
+  );
+  expect(organizations.map((organization) => organization.name)).toEqual(["Personal"]);
+});
+
 test("start the own-key plan billed yearly", async ({ page }, testInfo) => {
   const stamp = Date.now();
   await signup(page, `byok-yearly-${stamp}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -282,8 +338,10 @@ test("end an own-key trial early to get full computer hours", async ({ page }, t
   await signup(page, `trial-end-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -329,8 +387,10 @@ test("a cancelled trial explains its missing computer hours and offers renewal",
   await signup(page, `trial-cancelled-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -370,8 +430,10 @@ test("switch a monthly own-key plan to yearly", async ({ page }, testInfo) => {
   await signup(page, `byok-switch-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -415,8 +477,10 @@ test("move an own-key plan to a bigger tier", async ({ page }, testInfo) => {
   await signup(page, `byok-tier-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
@@ -495,12 +559,16 @@ test("a no-card trial shows the countdown and the plan states the renewal", asyn
   await signup(page, `trial-clarity-${stamp}@rakazo.test`, "password12", "Trial Customer");
   await completeOnboarding(page);
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: Record<string, unknown> };
     if (body.json) {
       body.json.billingEnabled = true;
       body.json.onboardingV2 = true;
@@ -512,8 +580,10 @@ test("a no-card trial shows the countdown and the plan states the renewal", asyn
     await route.fulfill({ response, json: body });
   });
   await page.route("**/rpc/bootstrap", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { me?: Record<string, unknown> } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { me?: Record<string, unknown> } };
     if (body.json?.me) {
       body.json.me.billingEnabled = true;
       body.json.me.onboardingV2 = true;

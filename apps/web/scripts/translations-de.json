@@ -217,7 +217,7 @@
   "Create account": "Konto erstellen",
   "Create group": "Gruppe erstellen",
   "Create your first bot": "Ersten Bot erstellen",
-  "Create your ALMA": "Dein ALMA erstellen",
+  "Create your account": "Dein Konto erstellen",
   "Creating…": "Wird erstellt…",
   "Credential": "Zugangsdaten",
   "Credential saved": "Zugangsdaten gespeichert",
@@ -478,7 +478,6 @@
   "Show settings": "Einstellungen anzeigen",
   "Sign in": "Anmelden",
   "Sign in  →": "Anmelden  →",
-  "Sign in to ALMA": "Bei ALMA anmelden",
   "Sign up": "Registrieren",
   "Skill {0}": "Skill {0}",
   "Skip": "Überspringen",
@@ -579,5 +578,6 @@
   "Credentials are encrypted and never sent to the model.": "Zugangsdaten werden verschlüsselt und dem Modell nie gesendet.",
   "Rename section": "Abschnitt umbenennen",
   "Could not rename section": "Abschnitt konnte nicht umbenannt werden",
-  "{count, plural, one {# message with {peer}} other {# messages with {peer}}}": "{count, plural, one {# Nachricht mit {peer}} other {# Nachrichten mit {peer}}}"
+  "{count, plural, one {# message with {peer}} other {# messages with {peer}}}": "{count, plural, one {# Nachricht mit {peer}} other {# Nachrichten mit {peer}}}",
+  "No passkey found on this device. Sign in with your password, then add a passkey in your account.": "Kein Passkey auf diesem Gerät gefunden. Melde dich mit deinem Passwort an und füge danach einen Passkey in deinem Konto hinzu."
 }

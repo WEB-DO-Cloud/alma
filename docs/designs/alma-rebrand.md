@@ -19,7 +19,7 @@ Use this table. A later section does not override it.
 | Slot                                                                                                                                       | Exact text                                                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Icon label, PWA `name`, PWA `short_name`, desktop `productName`, a `<title>` or window title whose whole text is the product name          | `ALMA`                                                                                                                                                                                                        |
-| Sign-in title                                                                                                                              | `Sign in to ALMA`. Spanish catalog: `Inicia sesión en ALMA`.                                                                                                                                                  |
+| Sign-in and sign-up titles                                                                                                                 | `Sign in` and `Create your account`. Spanish catalog: `Iniciar sesión` and `Crea tu cuenta`. The logo already names ALMA.                                                                                     |
 | Other buttons and short titles                                                                                                             | Keep the sentence. The product token becomes `ALMA`.                                                                                                                                                          |
 | Web and marketing meta description, PWA `description`, `og:description`, the opening sentence of About, the opening sentence of the README | English: `ALMA AI prepares drafts for review.` Spanish page: `ALMA AI prepara borradores para revisión.` The web manifest has one description field. That field is the English sentence.                      |
 | A longer sentence that describes the product                                                                                               | Keep the other words. The product token becomes `ALMA AI`.                                                                                                                                                    |
@@ -179,7 +179,7 @@ Phone `bundleIdentifier` and Android `package` are already `do.alma.app`. Expo `
 -   `pnpm --filter @rakazo/api test` if API display strings change
 -   `pnpm --filter @rakazo/mobile test`
 -   The pull request runs the existing Bitrise `mobile-tests` workflow. Do not add a Bitrise config. The gate is that workflow finishing green.
--   Screenshots of `brand/alma-icon.svg`, the splash PNG, and the web sign-in screen whose title reads `Sign in to ALMA`.
+-   Screenshots of `brand/alma-icon.svg`, the splash PNG, and the web sign-in screen whose title reads `Sign in`.
 
 ## Drift check
 

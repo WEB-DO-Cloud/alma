@@ -5,6 +5,7 @@ import {
   captureScreenshot,
   completeOnboarding,
   openBotPanelTab,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -34,8 +35,10 @@ test("a retrying computer can be closed and keeps booting without a stale error 
   await routeScreen(page);
   let staleError = true;
   await page.route("**/rpc/threads/get", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { computer?: { state?: string } } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { computer?: { state?: string } } };
     if (staleError && body.json?.computer) body.json.computer.state = "error";
     await route.fulfill({ response, json: body });
   });
@@ -88,8 +91,10 @@ test("opening a computer refreshes a stale booting snapshot", async ({ page }, t
   await routeScreen(page);
   let stale = true;
   await page.route("**/rpc/threads/get", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { computer?: { state?: string } } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { computer?: { state?: string } } };
     if (stale && body.json?.computer) body.json.computer.state = "booting";
     await route.fulfill({ response, json: body });
   });
@@ -119,8 +124,10 @@ test("opening a computer the server reports as booting does not start a second b
   await completeOnboarding(page);
   // Another tab or the phone started this computer; the server reports it booting.
   await page.route("**/rpc/threads/get", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { computer?: { state?: string } } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { computer?: { state?: string } } };
     if (body.json?.computer) body.json.computer.state = "booting";
     await route.fulfill({ response, json: body });
   });

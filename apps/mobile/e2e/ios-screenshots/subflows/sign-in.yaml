@@ -3,18 +3,22 @@ appId: do.alma.app
 - runFlow: launch-app.yaml
 - runFlow:
     when:
-      visible: "Create your ALMA account"
+      visible: "Create your account"
     commands:
       - tapOn: "Sign in"
 - extendedWaitUntil:
-    visible: "Sign in to ALMA"
+    visible:
+      text: "^Sign in$"
+      above: "Email"
     timeout: 15000
 - tapOn: "Email"
 - inputText: ${RAKAZO_ACTIVE_EMAIL}
 - tapOn: "Password"
 - inputText: ${RAKAZO_SCREENSHOT_PASSWORD}
 - hideKeyboard
-- tapOn: "Sign in"
+- tapOn:
+    text: "^Sign in$"
+    below: "Password"
 - tapOn:
     text: "Not Now"
     optional: true

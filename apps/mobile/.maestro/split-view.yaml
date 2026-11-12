@@ -9,7 +9,7 @@ tags:
     permissions:
       notifications: deny
 - extendedWaitUntil:
-    visible: "Create your ALMA account|Pixel Launcher isn't responding"
+    visible: "Create your account|Pixel Launcher isn't responding"
     timeout: 60000
 - runFlow:
     when:
@@ -17,7 +17,7 @@ tags:
     commands:
       - tapOn: "Close app"
 - extendedWaitUntil:
-    visible: "Create your ALMA account"
+    visible: "Create your account"
     timeout: 30000
 - tapOn: "Sign in"
 - runFlow: helpers/server.yaml
@@ -26,7 +26,9 @@ tags:
 - tapOn: "Password"
 - inputText: ${RAKAZO_SCREENSHOT_PASSWORD}
 - hideKeyboard
-- tapOn: "Sign in"
+- tapOn:
+    text: "^Sign in$"
+    below: "Password"
 - tapOn:
     text: "Don’t allow"
     optional: true

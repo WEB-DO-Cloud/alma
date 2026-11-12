@@ -170,6 +170,8 @@ export interface AppEnv {
   mobileActionsEnabled: boolean;
   /** Exactly ALMA_GOOGLE_BYO_OAUTH=true. */
   googleByoOauth: boolean;
+  /** Exactly ALMA_COMPOSIO_INTEGRATIONS=true. */
+  composioIntegrations: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client ID. Otherwise absent. */
   googleOAuthClientId?: string;
   /** Exactly restricted, or limited for every other value. */
@@ -181,6 +183,9 @@ export interface AppEnv {
   slackClientSecret?: string;
   slackBotToken: string | undefined;
   slackSigningSecret: string | undefined;
+  teamsAppId?: string;
+  teamsAppPassword?: string;
+  teamsAppTenantId?: string;
   whatsappAccessToken: string | undefined;
   whatsappPhoneNumberId: string | undefined;
   whatsappAppSecret: string | undefined;
@@ -374,6 +379,9 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): AppEnv {
     slackClientSecret: optional(source.SLACK_CLIENT_SECRET),
     slackBotToken: optional(source.SLACK_BOT_TOKEN),
     slackSigningSecret: optional(source.SLACK_SIGNING_SECRET),
+    teamsAppId: optional(source.TEAMS_APP_ID),
+    teamsAppPassword: optional(source.TEAMS_APP_PASSWORD),
+    teamsAppTenantId: optional(source.TEAMS_APP_TENANT_ID),
     whatsappAccessToken: optional(source.WHATSAPP_ACCESS_TOKEN),
     whatsappPhoneNumberId: optional(source.WHATSAPP_PHONE_NUMBER_ID),
     whatsappAppSecret: optional(source.WHATSAPP_APP_SECRET),
@@ -517,6 +525,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     referralPromptEnabled: readReferralPromptConfig(source).enabled,
     mobileActionsEnabled: readMobileActionsConfig(source).enabled,
     googleByoOauth: flags.googleByoOauth,
+    composioIntegrations: flags.composioIntegrations,
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),

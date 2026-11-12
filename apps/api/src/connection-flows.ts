@@ -158,7 +158,12 @@ async function organizationGoogleAuthConfigs(
   provider: string,
 ): Promise<Record<string, string> | undefined> {
   const googleOAuthRemote = googleOAuthRemoteOf(connector);
-  if (!deps.env.googleByoOauth || !isGoogleToolkit(provider) || !googleOAuthRemote) {
+  if (
+    deps.env.composioIntegrations === true ||
+    !deps.env.googleByoOauth ||
+    !isGoogleToolkit(provider) ||
+    !googleOAuthRemote
+  ) {
     return undefined;
   }
   const service = new GoogleOAuthService({
