@@ -41,6 +41,110 @@ async function ico(input: Buffer, name: string, sizes: number[]) {
   await writeFile(path(name), Buffer.concat([header, ...frames]));
 }
 
+/** PNG-backed icns sizes. The OS applies the rounded-square mask. */
+const ICNS_TYPES: ReadonlyArray<readonly [string, number]> = [
+  ["icp4", 16],
+  ["icp5", 32],
+  ["icp6", 64],
+  ["ic07", 128],
+  ["ic08", 256],
+  ["ic09", 512],
+  ["ic10", 1024],
+  ["ic11", 32],
+  ["ic12", 64],
+  ["ic13", 256],
+  ["ic14", 512],
+];
+
+async function icns(input: Buffer, name: string) {
+  const chunks: Buffer[] = [];
+  for (const [type, size] of ICNS_TYPES) {
+    const png = size === ICON ? input : await sharp(input).resize(size, size).png().toBuffer();
+    const header = Buffer.alloc(8);
+    header.write(type, 0, "ascii");
+    header.writeUInt32BE(png.length + 8, 4);
+    chunks.push(header, png);
+  }
+  const body = Buffer.concat(chunks);
+  const fileHeader = Buffer.alloc(8);
+  fileHeader.write("icns", 0, "ascii");
+  fileHeader.writeUInt32BE(body.length + 8, 4);
+  await writeFile(path(name), Buffer.concat([fileHeader, body]));
+}
+
+function mixHex(from: string, toward: string, amount: number) {
+  const channel = (start: number) => {
+    const a = Number.parseInt(from.slice(start, start + 2), 16);
+    const b = Number.parseInt(toward.slice(start, start + 2), 16);
+    return Math.round(a + (b - a) * amount)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${channel(1)}${channel(3)}${channel(5)}`;
+}
+
+function extendedSrgb(hex: string) {
+  const component = (start: number) =>
+    (Number.parseInt(hex.slice(start, start + 2), 16) / 255).toFixed(5);
+  return `extended-srgb:${component(1)},${component(3)},${component(5)},1.00000`;
+}
+
+const ICON = 1024;
+/**
+ * The Icon Composer group used to translate the spark 90 points down (positive
+ * Y is down), which is the low star in the current DMG. Lift that by 4% of
+ * the icon height. Phone icons stay on the unshifted spark.
+ */
+const PREVIOUS_DESKTOP_SHIFT_DOWN = 90;
+const DESKTOP_STAR_LIFT = Math.round(ICON * 0.04);
+const DESKTOP_SHIFT_DOWN = PREVIOUS_DESKTOP_SHIFT_DOWN - DESKTOP_STAR_LIFT;
+
+async function desktopIcon(sparkImage: Buffer) {
+  const cropped = await sharp(sparkImage)
+    .extract({ left: 0, top: 0, width: ICON, height: ICON - DESKTOP_SHIFT_DOWN })
+    .png()
+    .toBuffer();
+  return sharp({
+    create: { width: ICON, height: ICON, channels: 3, background: NAVY },
+  })
+    .composite([{ input: cropped, left: 0, top: DESKTOP_SHIFT_DOWN }])
+    .png()
+    .toBuffer();
+}
+
+const DMG_WIDTH = 660;
+const DMG_HEIGHT = 400;
+
+function dmgBackgroundSvg(scale: number) {
+  const width = DMG_WIDTH * scale;
+  const height = DMG_HEIGHT * scale;
+  const px = (value: number) => (value * scale).toFixed(2);
+  const lighter = mixHex(NAVY, "#FFFFFF", 0.1);
+  const deeper = mixHex(NAVY, "#000000", 0.12);
+  const plate = "#F4F7FB";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${lighter}"/>
+      <stop offset="0.42" stop-color="${NAVY}"/>
+      <stop offset="1" stop-color="${deeper}"/>
+    </linearGradient>
+    <radialGradient id="label" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="${plate}"/>
+      <stop offset="0.68" stop-color="${plate}"/>
+      <stop offset="1" stop-color="${plate}" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="${width}" height="${height}" fill="url(#bg)"/>
+  <ellipse cx="${px(170)}" cy="${px(242)}" rx="${px(46)}" ry="${px(18)}" fill="url(#label)"/>
+  <ellipse cx="${px(490)}" cy="${px(242)}" rx="${px(74)}" ry="${px(18)}" fill="url(#label)"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="${px(2.75)}" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M${px(296)} ${px(175)} H${px(348)}"/>
+    <path d="M${px(336)} ${px(165)} L${px(360)} ${px(175)} L${px(336)} ${px(185)}"/>
+  </g>
+</svg>`;
+}
+
 const plate = await sharp(iconSvg).resize(1024, 1024).png().toBuffer();
 const spark = await sharp(sparkSvg).resize(1024, 1024).png().toBuffer();
 
@@ -127,6 +231,52 @@ await sharp({ create: { width: 1200, height: 630, channels: 3, background: NAVY 
   .png()
   .toFile(path("apps/www/public/og-image.png"));
 
-await pngFile(plate, "apps/desktop/assets/icon.png", 1024);
-await pngFile(plate, "apps/desktop/assets/icon-macos.png", 1024);
-await ico(plate, "apps/desktop/assets/icon.ico", [16, 32, 48, 64, 128, 256]);
+const desktop = await desktopIcon(spark);
+await sharp(desktop).toFile(path("apps/desktop/assets/icon.png"));
+await sharp(desktop).toFile(path("apps/desktop/assets/icon-macos.png"));
+await ico(desktop, "apps/desktop/assets/icon.ico", [16, 32, 48, 64, 128, 256]);
+await icns(desktop, "apps/desktop/assets/icon.icns");
+await sharp(Buffer.from(dmgBackgroundSvg(1)))
+  .png()
+  .toFile(path("apps/desktop/assets/background.png"));
+await sharp(Buffer.from(dmgBackgroundSvg(2)))
+  .png()
+  .toFile(path("apps/desktop/assets/background@2x.png"));
+
+const navyFill = { solid: extendedSrgb(NAVY) };
+await writeFile(
+  path("packages/ui-tokens/assets/Rakazo.icon/icon.json"),
+  `${JSON.stringify(
+    {
+      fill: navyFill,
+      "fill-specializations": [
+        { value: navyFill },
+        { appearance: "dark", value: navyFill },
+        { appearance: "tinted", value: navyFill },
+      ],
+      groups: [
+        {
+          layers: [
+            {
+              glass: false,
+              "image-name": "orange-bot.png",
+              name: "orange-bot",
+            },
+          ],
+          position: {
+            scale: 1,
+            "translation-in-points": [0, DESKTOP_SHIFT_DOWN],
+          },
+          shadow: { kind: "none", opacity: 0 },
+          translucency: { enabled: false, value: 0 },
+        },
+      ],
+      "supported-platforms": {
+        circles: ["watchOS"],
+        squares: "shared",
+      },
+    },
+    null,
+    2,
+  )}\n`,
+);

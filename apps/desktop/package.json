@@ -67,7 +67,7 @@
     },
     "mac": {
       "artifactName": "ALMA-mac.${ext}",
-      "icon": "../../packages/ui-tokens/assets/Rakazo.icon",
+      "icon": "assets/icon.icns",
       "category": "public.app-category.productivity",
       "x64ArchFiles": "{**/node_modules/@koromix/koffi-darwin-*/darwin_*/koffi.node,**/node_modules/@oxc-parser/binding-darwin-*/parser.darwin-*.node}",
       "entitlements": "assets/entitlements.mac.plist",
@@ -98,6 +98,7 @@
     },
     "dmg": {
       "artifactName": "ALMA-mac.${ext}",
+      "background": "background.png",
       "title": "${productName}",
       "iconSize": 100,
       "window": {

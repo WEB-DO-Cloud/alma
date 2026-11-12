@@ -1,8 +1,10 @@
 # App icon source
 
 `Rakazo.icon` is the macOS Icon Composer bundle. The directory name stays. The
-foreground image is the white ALMA spark. Open the bundle in Icon Composer with
-Xcode 26 or newer to recompile it. This tree does not recompile the bundle.
+foreground image is the white ALMA spark on a transparent field, and `icon.json`
+fills the plate with `#002D62`. Packaging uses `apps/desktop/assets/icon.icns`
+instead of compiling this bundle. Open it in Icon Composer with Xcode 26 or
+newer to recompile it. This tree does not recompile the bundle.
 
 `brand/alma-icon.svg` is the square icon: a white spark on `#002D62`.
 `brand/alma-logo.svg` is the navy wordmark. `brand/alma-logo-white.svg` is the
@@ -12,8 +14,10 @@ Run `pnpm --filter @rakazo/ui-tokens export:brand` to refresh the web and
 marketing favicons, the marketing mark, the Windows and Linux icons, the phone
 icon, the splash image, and `apps/www/public/og-image.png`.
 
-- `apps/desktop/assets/icon-macos.png`: Icon Composer's default appearance,
-  1024-pixel macOS pre-Tahoe export, including Dock margins for development launches.
+- `apps/desktop/assets/icon.png`, `icon-macos.png`, `icon.ico`, and `icon.icns`:
+  the same 1024-pixel white spark on `#002D62`, 49 pixels below the phone
+  icon and 41 pixels higher than the installed desktop icon. Phone icons are
+  not shifted. The files are full-bleed squares; each OS applies its own mask.
 - `apps/mobile/assets/icon.png`: opaque 1024-pixel square for the generic/legacy icon,
   with no rounded mask or Dock margins.
 - `apps/mobile/assets/adaptive-icon.png`: transparent 1024-pixel Android foreground;
