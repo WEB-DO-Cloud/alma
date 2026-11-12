@@ -129,7 +129,7 @@ async function googleByoOauthField(
   deps: RouterDeps,
   actor: Actor,
 ): Promise<{ googleByoOauth: true } | Record<string, never>> {
-  if (deps.env.googleByoOauth !== true) return {};
+  if (deps.env.googleByoOauth !== true || deps.env.composioIntegrations === true) return {};
   const space = await deps.prisma.space.findUnique({
     where: { id: actor.spaceId },
     select: { organizationId: true },

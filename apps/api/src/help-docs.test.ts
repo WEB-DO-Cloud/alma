@@ -7,6 +7,12 @@ describe("google workspace help", () => {
   it("hides the article unless the flag is exactly true, and never leaves the token", () => {
     expect(readHelpDoc("google-workspace", {})).toBeNull();
     expect(readHelpDoc("google-workspace", { ALMA_GOOGLE_BYO_OAUTH: "yes" })).toBeNull();
+    expect(
+      readHelpDoc("google-workspace", {
+        ALMA_GOOGLE_BYO_OAUTH: "true",
+        ALMA_COMPOSIO_INTEGRATIONS: "true",
+      }),
+    ).toBeNull();
     const hidden = helpIndexMarkdown({});
     expect(hidden).not.toContain("google-workspace");
 

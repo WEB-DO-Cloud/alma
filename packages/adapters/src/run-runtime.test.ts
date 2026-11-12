@@ -1,11 +1,20 @@
+import type { AdapterContext, SecretStore } from "@rakazo/adapter-kit";
 import { phoneCallSettings, resolveEncryptionKey, uploadSizeFromEnv } from "@rakazo/core";
+import type { PrismaClient, ThreadEvents } from "@rakazo/db";
 import { describe, expect, it } from "vitest";
+import { ComposioConnector } from "./composio-connector.js";
+import { FakeComposioClient } from "./composio-fake.js";
 import { resolveDeploymentModel } from "./deployment-model.js";
 import { deploymentGoogleClientId } from "./google-oauth.js";
 import { readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
+import { GoogleWorkspaceConnector } from "./google-workspace.js";
 import { mcpStdioOptionsFromEnv } from "./mcp-connector.js";
 import { parseMcpOAuthPresetClients } from "./mcp-oauth-presets.js";
-import { runRuntimeEnvFromProcess } from "./run-runtime.js";
+import {
+  createConnectorRuntime,
+  omitWorkspaceFromComposioCatalog,
+  runRuntimeEnvFromProcess,
+} from "./run-runtime.js";
 
 // What the worker read inline before it shared the runtime builder with the API.
 function previousWorkerValues(source: NodeJS.ProcessEnv) {
@@ -15,6 +24,7 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
+    composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),
@@ -69,7 +79,91 @@ describe("runRuntimeEnvFromProcess", () => {
     { NODE_ENV: "test", INBOUND_EMAIL_DOMAIN: "  ", PIPEDREAM_ENVIRONMENT: "staging" },
     { NODE_ENV: "test", ALMA_GOOGLE_BYO_OAUTH: "yes" },
     { NODE_ENV: "test", ALMA_GOOGLE_BYO_OAUTH: "true" },
+    { NODE_ENV: "test", ALMA_COMPOSIO_INTEGRATIONS: "yes" },
+    { NODE_ENV: "test", ALMA_COMPOSIO_INTEGRATIONS: "true" },
   ])("reads the values the worker read before (%#)", (source) => {
     expect(runRuntimeEnvFromProcess(source)).toEqual(previousWorkerValues(source));
+  });
+});
+
+const CLIENT_ID = "100-abc.apps.googleusercontent.com";
+
+function googleSignInEnv(extra: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
+  return {
+    NODE_ENV: "test",
+    WEB_ORIGIN: "https://app.alma.com.do",
+    ALMA_GOOGLE_OAUTH_CLIENT_ID: CLIENT_ID,
+    ALMA_GOOGLE_BYO_OAUTH: "true",
+    MCP_OAUTH_PRESET_CLIENTS: JSON.stringify({
+      "*.googleapis.com": { clientId: CLIENT_ID, clientSecret: "preset-secret-value" },
+    }),
+    ...extra,
+  };
+}
+
+const runtimeDeps = {
+  prisma: {} as PrismaClient,
+  secrets: {} as SecretStore,
+  events: {} as ThreadEvents,
+};
+
+const catalogContext: AdapterContext = {
+  operationId: "op",
+  traceId: "trace",
+  spaceId: "space-1",
+  userId: "user-1",
+  signal: new AbortController().signal,
+};
+
+describe("Composio integrations flag", () => {
+  it("keeps ALMA's Google connector registered until the flag is exactly true", () => {
+    const off = createConnectorRuntime(runRuntimeEnvFromProcess(googleSignInEnv()), runtimeDeps);
+    expect(off.google).toBeInstanceOf(GoogleWorkspaceConnector);
+    expect(off.stack.connector.managed("google")?.describe().id).toBe("google");
+    expect(
+      omitWorkspaceFromComposioCatalog(runRuntimeEnvFromProcess(googleSignInEnv()), true),
+    ).toBe(true);
+
+    const on = createConnectorRuntime(
+      runRuntimeEnvFromProcess(googleSignInEnv({ ALMA_COMPOSIO_INTEGRATIONS: "true" })),
+      runtimeDeps,
+    );
+    expect(on.google).toBeUndefined();
+    expect(on.stack.connector.managed("google")).toBeUndefined();
+    expect(
+      omitWorkspaceFromComposioCatalog(
+        runRuntimeEnvFromProcess(googleSignInEnv({ ALMA_COMPOSIO_INTEGRATIONS: "true" })),
+        true,
+      ),
+    ).toBe(false);
+    expect(
+      omitWorkspaceFromComposioCatalog(
+        runRuntimeEnvFromProcess(googleSignInEnv({ ALMA_COMPOSIO_INTEGRATIONS: "yes" })),
+        true,
+      ),
+    ).toBe(true);
+  });
+
+  it("lists Gmail, Calendar, and Drive from Composio when the flag is on", async () => {
+    const on = runRuntimeEnvFromProcess(googleSignInEnv({ ALMA_COMPOSIO_INTEGRATIONS: "true" }));
+    const off = runRuntimeEnvFromProcess(googleSignInEnv());
+    const shown = await new ComposioConnector({
+      client: new FakeComposioClient(),
+      omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(on, true),
+    }).catalog(catalogContext);
+    const hidden = await new ComposioConnector({
+      client: new FakeComposioClient(),
+      omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(off, true),
+    }).catalog(catalogContext);
+    expect(shown.map((item) => item.slug).sort()).toEqual([
+      "GITHUB",
+      "GMAIL",
+      "GOOGLECALENDAR",
+      "GOOGLEDRIVE",
+      "NOTION",
+      "SLACK",
+    ]);
+    expect(shown.every((item) => item.connectorId === "composio")).toBe(true);
+    expect(hidden.map((item) => item.slug).sort()).toEqual(["GITHUB", "NOTION", "SLACK"]);
   });
 });

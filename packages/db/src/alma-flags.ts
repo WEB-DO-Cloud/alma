@@ -9,6 +9,11 @@ export type AlmaFlags = {
   onboardingV2: boolean;
   /** Own Google OAuth client per organization. Off unless the value is exactly `true`. */
   googleByoOauth: boolean;
+  /**
+   * Apps connect through Composio, including Gmail, Calendar, and Drive.
+   * Off unless the value is exactly `true`.
+   */
+  composioIntegrations: boolean;
 };
 
 const DEFAULT_TRIAL_DAYS = 14;
@@ -33,6 +38,7 @@ export function readAlmaFlags(source: NodeJS.ProcessEnv = process.env): AlmaFlag
       : DEFAULT_TRIAL_MESSAGE_CAP,
     onboardingV2,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
+    composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
   };
 }
 

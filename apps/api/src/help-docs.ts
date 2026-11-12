@@ -34,7 +34,9 @@ const CLIENT_ID_UNSET = "The client ID is not set on this server.";
 const DOC_NAME = /^[a-z0-9-]+$/;
 
 function helpDocNames(env: NodeJS.ProcessEnv = process.env): readonly string[] {
-  if (env.ALMA_GOOGLE_BYO_OAUTH !== "true") return HELP_DOC_NAMES;
+  if (env.ALMA_GOOGLE_BYO_OAUTH !== "true" || env.ALMA_COMPOSIO_INTEGRATIONS === "true") {
+    return HELP_DOC_NAMES;
+  }
   return [...HELP_DOC_NAMES, GOOGLE_WORKSPACE_DOC];
 }
 

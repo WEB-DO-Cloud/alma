@@ -24,12 +24,19 @@ describe("loadEnv", () => {
       referralPromptEnabled: false,
       mobileActionsEnabled: false,
       googleByoOauth: false,
+      composioIntegrations: false,
       googleScopeMode: "limited",
       googlePicker: null,
     });
     expect(loadEnv({ ...base, ALMA_REFERRAL_REWARDS: "true" }).referralPromptEnabled).toBe(false);
     expect(loadEnv({ ...base, ALMA_GOOGLE_BYO_OAUTH: "yes" }).googleByoOauth).toBe(false);
     expect(loadEnv({ ...base, ALMA_GOOGLE_BYO_OAUTH: "true" }).googleByoOauth).toBe(true);
+    expect(loadEnv({ ...base, ALMA_COMPOSIO_INTEGRATIONS: "yes" }).composioIntegrations).toBe(
+      false,
+    );
+    expect(loadEnv({ ...base, ALMA_COMPOSIO_INTEGRATIONS: "true" }).composioIntegrations).toBe(
+      true,
+    );
     expect(
       loadEnv({
         ...base,

@@ -170,6 +170,8 @@ export interface AppEnv {
   mobileActionsEnabled: boolean;
   /** Exactly ALMA_GOOGLE_BYO_OAUTH=true. */
   googleByoOauth: boolean;
+  /** Exactly ALMA_COMPOSIO_INTEGRATIONS=true. */
+  composioIntegrations: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client ID. Otherwise absent. */
   googleOAuthClientId?: string;
   /** Exactly restricted, or limited for every other value. */
@@ -523,6 +525,7 @@ function almaFlags(source: NodeJS.ProcessEnv) {
     referralPromptEnabled: readReferralPromptConfig(source).enabled,
     mobileActionsEnabled: readMobileActionsConfig(source).enabled,
     googleByoOauth: flags.googleByoOauth,
+    composioIntegrations: flags.composioIntegrations,
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),

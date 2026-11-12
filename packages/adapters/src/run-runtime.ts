@@ -56,6 +56,8 @@ export interface RunRuntimeEnv extends PipedreamEnvironmentValues {
   composioApiKey: string | undefined;
   /** ALMA_GOOGLE_BYO_OAUTH is exactly true. Off leaves Google sign-in unchanged. */
   googleByoOauth?: boolean;
+  /** ALMA_COMPOSIO_INTEGRATIONS is exactly true. Off keeps ALMA's Google connector. */
+  composioIntegrations?: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client id. */
   googleOAuthClientId?: string;
   /** Exactly `restricted`, or `limited` for every other value. */
@@ -90,6 +92,7 @@ export function runRuntimeEnvFromProcess(source: NodeJS.ProcessEnv): RunRuntimeE
     encryptionKey: resolveEncryptionKey(source),
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
+    composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),
@@ -125,6 +128,14 @@ export interface ConnectorRuntimeOverrides {
   connectors?: ConnectorProvider[];
 }
 
+/** Gmail, Calendar, and Drive leave the Composio catalog only while ALMA's Google connector is registered. */
+export function omitWorkspaceFromComposioCatalog(
+  env: Pick<RunRuntimeEnv, "composioIntegrations">,
+  googleRegistered: boolean,
+): boolean {
+  return env.composioIntegrations === true ? false : googleRegistered;
+}
+
 /** MCP, installed and integration connectors, in the one registry runs use. */
 export function createConnectorRuntime(
   env: RunRuntimeEnv,
@@ -133,11 +144,15 @@ export function createConnectorRuntime(
 ) {
   const { prisma, secrets } = deps;
   const { network, composio } = overrides;
-  const workspace = googleWorkspaceClient({
-    clientId: env.googleOAuthClientId,
-    presets: env.mcpOAuthPresets ?? [],
-    webOrigin: env.webOrigin,
-  });
+  // Exactly ALMA_COMPOSIO_INTEGRATIONS=true uses upstream's Composio catalog for every app.
+  const composioCatalog = env.composioIntegrations === true;
+  const workspace = composioCatalog
+    ? null
+    : googleWorkspaceClient({
+        clientId: env.googleOAuthClientId,
+        presets: env.mcpOAuthPresets ?? [],
+        webOrigin: env.webOrigin,
+      });
   const google = workspace
     ? new GoogleWorkspaceConnector(prisma, secrets, workspace, {
         mode: env.googleScopeMode,
@@ -176,10 +191,11 @@ export function createConnectorRuntime(
     network,
     env.mcpAllowPrivateEndpoint,
   );
-  const authConfigIdsFor = env.googleByoOauth
-    ? (context: AdapterContext, toolkits: string[]) =>
-        googleRunAuthConfigs(prisma, secrets, context, toolkits)
-    : undefined;
+  const authConfigIdsFor =
+    composioCatalog || !env.googleByoOauth
+      ? undefined
+      : (context: AdapterContext, toolkits: string[]) =>
+          googleRunAuthConfigs(prisma, secrets, context, toolkits);
   const integrationSettings = new IntegrationProviderSettings(
     prisma,
     secrets,
@@ -191,7 +207,7 @@ export function createConnectorRuntime(
           ? new ComposioConnector({
               apiKey: env.composioApiKey,
               authConfigIdsFor,
-              omitWorkspaceCatalog: Boolean(google),
+              omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(env, Boolean(google)),
             })
           : undefined),
       pipedream,
