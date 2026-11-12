@@ -154,38 +154,11 @@ The 1440p presets are `landscape-1440p` (2560×1440), `portrait-1440p` (1440×25
 
 **Parametrized renders:** the composition declares its variables on the `<html>` root with **`data-composition-variables`** — a JSON **array of declarations** (`{id, type, label, default}` per entry) that defines the schema. Scripts inside read the resolved values via `window.__hyperframes.getVariables()`. The CLI `--variables '{"title":"Q4 Report"}'` is a JSON **object keyed by id** that overrides those declared defaults for one render; missing keys fall through, so the same composition runs unchanged in dev preview and in production. Sub-comp hosts can also override per-instance with `data-variable-values`. See `../../hyperframes/references/format.md` for the full pattern.
 
-### feedback (report after rendering)
+### feedback
 
-After a render is verified, send one feedback line per task. This is the maintainers' primary signal — a render that finishes silently tells them nothing.
+<!-- ALMA removed the instructions to submit feedback. See NOTICE beside these skills. -->
 
-```bash
-npx hyperframes feedback --rating 10                              # clean run, no notes
-npx hyperframes feedback --rating 6 --comment "bg <video> renders grey in multi-scene; worked around with --format png-sequence"
-```
-
-`--rating` is an integer from 0-10; `--comment` is free text. A `--comment` with no `--rating` is a ratingless report (`MISSING FEATURE:` and `HOST APP:` in `SKILL.md`) that never counts in the rating metric. Feedback is anonymous until the user signs in to HeyGen (then it is linked to their account) and attaches a `doctorSummary` (OS/Node/CPU/mem/ffmpeg) automatically, so don't repeat those fields. A clean run needs only a short result. Before sending any bug, workaround, or confusing behavior, collect this compact reproduction packet:
-
-```text
-REPRO COMMAND: <HF_*/PRODUCER_* env> npx hyperframes <exact command>   # run from the project directory; do NOT paste absolute paths
-EXPECTED / ACTUAL: <expected behavior> / <observed behavior and isolated trigger>
-EXACT ERROR: <verbatim error or warning; include frame/timestamp for visual defects>
-OUTCOME: <output correct | output corrupt | fallback succeeded | hard exit | command hung>
-WORKAROUND: <exact workaround, or none>
-COMPOSITION_STRUCTURE:
-  elements: video=<n> audio=<n> img=<n> svg=<n> canvas=<n> subComps=<n>
-  attributes: <comma-joined subset of clip-path, filter, mix-blend-mode, transform, mask, position:fixed, overflow:hidden, z-index, data-has-audio, data-duration, data-start, data-composition-src, background-image:url, mask-image:url — or "(none present)">
-  timeline: <flat | nested (<n> sub-comps)>; driver=<gsap | data-timeline | gsap+data-timeline | none>
-  delta: <what differs between the working workaround-render and the broken default render>
-  defect: <spatial location + frame index range, e.g. top-left / frames 0-30 — omit for non-visual defects>
-```
-
-`COMPOSITION_STRUCTURE:` is a privacy-preserving structural anatomy: counts + presence flags only, no file paths, no src URLs, no user text. It lets maintainers pattern-match the report against known bug families (e.g. "sub-comp mount + clip-path", "GSAP timeline + z-index") without receiving the composition ZIP. Required for any rating ≤ 7 that describes a visual defect (black frame, flicker, corrupt output, wrong frame, blank output, other visual anomaly); optional but appreciated on higher ratings. Agents on this skill can auto-fill the block by calling `buildCompositionCensus(html)` and `renderCompositionCensusBlock(census)` from `packages/cli/src/utils/compositionCensus.ts` against the composition HTML they already have access to — the human user does not fill this out by hand.
-
-**Feedback is submitted to a public channel — anonymize before sending.** Redact absolute paths (which leak user home directory + machine identity), any user or project names embedded in paths, secrets, and credentials. Path arguments in the command should stay relative to the project directory (`./renders/out.mp4`, not `/Users/<user>/Documents/…/out.mp4`; `.hf-tmp/`, not `/home/<user>/projects/<real-name>/.hf-tmp/`). Similarly strip absolute paths from `EXACT ERROR:` stack traces and log excerpts — keep the file basename and line number, drop the leading directory. Preserve flags and relevant `HF_*` / `PRODUCER_*` variables verbatim. If the failure no longer reproduces, include the last failing command and log excerpt (redacted the same way). Share a project link only when one is already available and safe to share.
-
-The `hyperframes feedback` command soft-warns when a non-10 `--comment` is missing `REPRO COMMAND:`, and when a rating-≤-7 visual-defect comment is missing `COMPOSITION_STRUCTURE:`. The warnings print above the submission ack and do not block — some legitimate reports (a one-line "cloudrun quota bumped yesterday, fine now") won't fit the mold. Fix the packet and rerun to silence them.
-
-Hit a reproducible bug? Add `--file-issue` (optionally `--dir <project>` and `--yes` for non-interactive shells) to also publish a minimal repro to a public URL and open a pre-filled GitHub `bug` issue draft for a maintainer to file. This publishes the project publicly, so it is opt-in and consent-gated; the issue is never auto-submitted.
+Do not run `npx hyperframes feedback` or `npx hyperframes events`. They send usage telemetry. Describe the render result in the conversation instead.
 
 ## publish
 
@@ -202,7 +175,7 @@ Uploads the project's source (HTML + assets) and returns a stable hosted URL tha
 
 Use cloud rendering when the user wants hosted rendering without local Chrome, FFmpeg, or AWS, and for the final render on a paid HyperFrames plan (`cloud.md`). Use Lambda only when AWS ownership is a requirement. Use Cloud Run only when GCP ownership is a requirement. Read the matching reference before running any cloud path.
 
-Skill attribution is automatic — the examples above need no `--skill`. A project scaffolded with `hyperframes init --skill=<slug>` records its owning skill in `hyperframes.json`, and every later render inherits it on usage telemetry: re-renders, `npm run render`, and `--batch` alike. Pass `--skill=<slug>` explicitly only to stamp a project that was not scaffolded with one (its first render then persists it).
+Do not pass `--skill`. It records the skill in the project so later renders are attributed on usage telemetry.
 
 ## Share a video for review
 

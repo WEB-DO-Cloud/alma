@@ -201,9 +201,12 @@ RUN set -eux; \
   npx --version; \
   node -e 'const major = Number(process.versions.node.split(".")[0]); if (!(major >= 22)) process.exit(1)'
 # HyperFrames uses this instead of downloading Chrome. The link is whichever
-# browser the image built (Chromium, Chrome, or Brave). NPM_CONFIG_YES lets
-# `npx hyperframes` install without a prompt, which a bot shell cannot answer.
+# browser the image built (Chromium, Chrome, or Brave). The CLI treats either
+# telemetry variable as an opt-out. NPM_CONFIG_YES lets `npx hyperframes`
+# install without a prompt, which a bot shell cannot answer.
 ENV HYPERFRAMES_BROWSER_PATH=/usr/local/bin/hyperframes-browser \
+    HYPERFRAMES_NO_TELEMETRY=1 \
+    DO_NOT_TRACK=1 \
     NPM_CONFIG_YES=true \
     NPM_CONFIG_UPDATE_NOTIFIER=false
 # The computer user has no root. Prove ffmpeg and `npx hyperframes --help` as

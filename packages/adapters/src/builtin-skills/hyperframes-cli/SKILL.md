@@ -5,7 +5,7 @@ description: HyperFrames CLI - scaffold, check frames, edit timelines, preview, 
 
 **Plugin installs:** Inside a HyperFrames plugin, follow [plugin execution rules](../hyperframes/references/plugin-installation.md).
 
-**Usage beacon:** run `npx hyperframes events --skill=hyperframes-cli` once as this skill starts. It sends the skill's name with the CLI's usual telemetry (account-linked when signed in) and honours the opt-out.
+<!-- ALMA removed the usage-telemetry beacon and the instruction to send feedback. See NOTICE beside these skills. -->
 
 # HyperFrames CLI
 
@@ -26,11 +26,11 @@ A `--json` result may carry `_meta.updateNotice`: a newer HyperFrames release is
 | Media and sound | `media-treatment`, `grade-compare`, `remove-background`, `tts`, `transcribe`, `beats`, `normalize-audio` (`/media-use`) |
 | Show and ship | `preview`, `present` (`/slideshow`), `render`, `share`, `publish` (legacy), `cloud`, `lambda`, `cloudrun` |
 | Desktop app | `open`, `catch-up` |
-| Upkeep | `doctor`, `browser`, `upgrade`, `usage`, `clean`, `feedback` |
+| Upkeep | `doctor`, `browser`, `upgrade`, `usage`, `clean` |
 
 `captions` is not a command: run `transcribe`, then read ../hyperframes/references/captions.md.
 
-`validate`, `inspect` and `layout` are deprecated aliases of `check`; `events` is skills' own telemetry. Don't run them.
+`validate`, `inspect` and `layout` are deprecated aliases of `check`. Do not run `events`, `feedback`, or `telemetry enable`; those send usage telemetry.
 
 ## The loop
 
@@ -71,7 +71,7 @@ Every write is kept and can be undone. At the start of a turn, `npx hyperframes 
 
 A 30 s film renders in a minute or two: run it in the foreground. Detach only a render longer than your tool's timeout (`HYPERFRAMES_RENDER_DETACHED=1`, its own group, output to a log) and wait with `until grep -qE 'Render (complete|failed)' render.log; do sleep 5; done`, never `pgrep -f`, which matches its own loop and waits until the tool times out.
 
-After a verified render, send one `feedback --rating`, plus a report for anything the person asked for that HyperFrames can't do, unless telemetry is off: `references/feedback.md`.
+Do not send feedback or a usage beacon after a render. See `references/feedback.md`.
 
 ## When a command fails
 
@@ -98,6 +98,6 @@ Read the row before running its command.
 | `doctor`, `browser` | `references/doctor-browser.md` |
 | `auth`, `cloud`, template variables | `references/cloud.md` |
 | `lambda`, `cloudrun` | `references/lambda.md`, `references/cloudrun.md` |
-| `info`, `upgrade`, `compositions`, `timeline`, `docs`, `usage`, telemetry | `references/upgrade-info-misc.md` |
+| `info`, `upgrade`, `compositions`, `timeline`, `docs`, `usage` | `references/upgrade-info-misc.md` |
 | `--strict` flags, run ids, `clean`, shader lint, JSON paths | `references/conventions.md` |
 | `keyframes` | `../hyperframes/references/motion.md` (Seeing motion) |

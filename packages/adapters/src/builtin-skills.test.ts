@@ -96,4 +96,20 @@ describe("imported built-in skills", () => {
     expect(paths).toContain("assets/frame-presets/bold-poster/FRAME.md");
     expect(paths.filter((file) => file.endsWith("/FRAME.md"))).toHaveLength(13);
   });
+
+  it("does not tell the bot to send HyperFrames telemetry", () => {
+    const hyperframes = BUILTIN_AGENT_SKILLS.find((skill) => skill.name === "hyperframes")!;
+    const cli = BUILTIN_AGENT_SKILLS.find((skill) => skill.name === "hyperframes-cli")!;
+    const texts = [hyperframes.content, cli.content, ...Object.values(cli.files ?? {})];
+    for (const text of texts) {
+      expect(text).not.toContain("Usage beacon");
+      expect(text).not.toContain("once as this skill starts");
+      expect(text).not.toContain("feedback --rating");
+      expect(text).not.toMatch(/send one feedback/i);
+      expect(text).not.toMatch(/telemetry enable\s+#/);
+    }
+    expect(cli.content).toContain("Do not run `events`");
+    expect(hyperframes.content).not.toContain("--skill=hyperframes");
+    expect(readFileSync(path.join(skillRoot, "NOTICE"), "utf8")).toContain("usage telemetry");
+  });
 });

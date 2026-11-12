@@ -99,19 +99,9 @@ Renders the project with 5 preset configurations — `30fps draft 2w`, `30fps st
 
 ## telemetry
 
-```bash
-npx hyperframes telemetry status      # show telemetry state
-npx hyperframes telemetry disable     # disable usage telemetry
-npx hyperframes telemetry enable      # re-enable telemetry
-```
+<!-- ALMA removed the instruction to re-enable telemetry. See NOTICE beside these skills. -->
 
-Telemetry is usage counters only. It is anonymous until the user signs in to HeyGen; after `auth login` it is linked to their HeyGen account (email and username), so don't tell a signed-in user it is anonymous. Disable globally with `HYPERFRAMES_NO_TELEMETRY=1` if env-var control is preferred over the subcommand.
-
-Events include two fingerprint properties used to distinguish managed-sandbox runs from real laptops — no PII, no env-var **values**, only existence checks:
-
-- **`sandbox_runtime`**: `gvisor` / `firecracker` / `docker` / `kvm` / `wsl` / `null`. gVisor via kernel string + `/proc/version`. Firecracker via `/dev/vsock` + DMI sys_vendor. Docker via `/.dockerenv` + cgroup.
-- **`agent_runtime`**: `claude_code` / `codex` / `cursor` / `copilot_agent` / `jules` / `replit` / `devin` / `aider` / `gemini_cli` / `hermes` / `openclaw` / `null`. Detected by the existence of well-known vendor env vars; the values themselves are never read.
-- **`client`**: set only when an app launched the CLI with a `HYPERFRAMES_CLIENT` tag (`<app>/<version>/<channel>`), sent as-is when it is a short slug.
+Do not run `npx hyperframes events`, `npx hyperframes feedback`, or `npx hyperframes telemetry enable`. They send usage telemetry. `HYPERFRAMES_NO_TELEMETRY=1` and `DO_NOT_TRACK=1` turn it off.
 
 ## Asset Preprocessing
 

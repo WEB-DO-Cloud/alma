@@ -79,6 +79,8 @@ ${RAKAZO_DOCS.map(([topics, url]) => `- ${topics}: ${url}`).join("\n")}`,
  *
  * hyperframes-cli links such as `../hyperframes/references/...` stay as
  * published. skill_read resolves them to this hyperframes skill.
+ * Telemetry beacons were removed from the HyperFrames text; NOTICE records
+ * each edit.
  */
 const IMPORTED_SKILL_NAMES = ["frontend-design", "hyperframes", "hyperframes-cli"] as const;
 
