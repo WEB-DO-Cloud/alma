@@ -1,12 +1,20 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, openUserSettings, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openUserSettings,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 test("bot style stays available when bootstrap omits the saved preference", async ({
   page,
 }, testInfo) => {
   await page.route("**/rpc/bootstrap", async (route) => {
-    const response = await route.fetch();
-    const body = await response.json();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body;
     delete body.json.me.botAvatarSet;
     await route.fulfill({ response, json: body });
   });

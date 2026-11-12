@@ -1,7 +1,13 @@
 import type { Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { McpServer } from "@rakazo/contracts";
-import { captureScreenshot, completeOnboarding, openIntegrationsAdd, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openIntegrationsAdd,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 const credentialsTemplate = `{
   "installed": {
@@ -12,8 +18,10 @@ const credentialsTemplate = `{
 
 // Only admins add stdio servers; the create below is stubbed, so the account only needs to read as one.
 async function asAdmin(route: Route, path: "me" | "bootstrap") {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   const me = path === "me" ? body.json : (body.json?.me as Record<string, unknown> | undefined);
   if (me) Object.assign(me, { isAdmin: true, mcpStdioEnabled: true });
   await route.fulfill({ response, json: body });

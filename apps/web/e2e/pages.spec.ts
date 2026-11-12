@@ -6,6 +6,7 @@ import {
   completeOnboarding,
   createNamedBot,
   openBotPanelTab,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -709,8 +710,10 @@ test("a page's failures, a deleted page's card, and the Library's Share, search 
 
   // A page that fails to draw says so instead of showing a blank sheet.
   await page.route("**/rpc/pages/get", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json?: { title?: string; code?: string } };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json?: { title?: string; code?: string } };
     if (body.json?.title === "Beta") {
       body.json.code = "exports.default = function Broken() { throw new Error('boom'); };";
     }

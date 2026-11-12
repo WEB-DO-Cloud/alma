@@ -11,6 +11,7 @@ import {
   captureScreenshot,
   completeOnboarding,
   openIntegrationsAdd,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -168,8 +169,10 @@ test("shows directly registered MCP servers in Integrations without catalog conn
     Slack: ["Disabled", (s) => ({ ...s, enabled: false })],
   };
   await page.route("**/rpc/mcp/servers/list", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: McpServer[] };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: McpServer[] };
     const [first] = body.json;
     const copies = Object.keys(states)
       .filter((name) => !body.json.some((server) => server.name === name))
@@ -193,8 +196,10 @@ test("shows directly registered MCP servers in Integrations without catalog conn
     await route.fulfill({ response, json: { ...body, json: [...json, ...plugins] } });
   });
   await page.route("**/rpc/capabilities/list", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: CapabilityInstall[] };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: CapabilityInstall[] };
     const plugins = ["notes", "docs", "empty"].map(
       (name): CapabilityInstall => ({
         id: `install-${name}`,

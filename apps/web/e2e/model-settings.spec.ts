@@ -12,6 +12,7 @@ import {
   openModelConnection,
   openUserSettings,
   pickReopenedModel,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -35,8 +36,10 @@ test.skip("model settings cleanup frames", { tag: "@nightly" }, async ({ page },
   // Hide the deployment default so the first frame exercises the empty-provider state.
   let providerConnected = false;
   await page.route("**/rpc/me", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Record<string, unknown> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Record<string, unknown> };
     body.json.needsModel = !providerConnected;
     await route.fulfill({ response, json: body });
   });
@@ -116,8 +119,10 @@ test.skip("model settings cleanup frames", { tag: "@nightly" }, async ({ page },
 
   // A bot that keeps its own model sits behind a small count by the Main model heading.
   await page.route("**/rpc/bots/list", async (route) => {
-    const response = await route.fetch();
-    const body = (await response.json()) as { json: Array<Record<string, unknown>> };
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body as { json: Array<Record<string, unknown>> };
     const [first, ...rest] = body.json;
     const pinned = first ? [{ ...first, modelProvider: "openrouter", modelId: firstModel }] : [];
     await route.fulfill({ response, json: { ...body, json: [...pinned, ...rest] } });
@@ -148,8 +153,10 @@ function readJsonBody(request: IncomingMessage): Promise<Record<string, unknown>
 }
 
 async function fulfillWithoutModelStep(route: Route) {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json: Record<string, unknown> };
   await route.fulfill({ response, json: { ...body, json: { ...body.json, needsModel: false } } });
 }
 

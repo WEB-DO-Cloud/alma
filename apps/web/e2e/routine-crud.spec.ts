@@ -6,6 +6,7 @@ import {
   captureScreenshot,
   completeOnboarding,
   openBotPanelTab,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -32,8 +33,10 @@ test("a delayed schedule is visible only while the routine is active", async ({
   });
   let scheduleDelayed = true;
   await page.route("**/rpc/routines/list", async (route) => {
-    const response = await route.fetch();
-    const body = await response.json();
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const body = fetched.body;
     body.json = body.json.map((item: Routine) =>
       item.id === routine.id ? { ...item, active: true, scheduleDelayed } : item,
     );

@@ -1,7 +1,13 @@
 import type { Route } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 import type { BillingStatus, PlanLimits } from "@rakazo/contracts";
-import { captureScreenshot, completeOnboarding, openUserSettings, signup } from "./helpers";
+import {
+  captureScreenshot,
+  completeOnboarding,
+  openUserSettings,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 const hours = (count: number) => new Date(Date.now() + count * 3_600_000).toISOString();
 
@@ -49,8 +55,10 @@ const summary = {
 };
 
 async function enableBilling(route: Route, path: "me" | "bootstrap") {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
+  const fetched = await readRouteJson(route);
+  if (!fetched) return;
+  const response = fetched.response;
+  const body = fetched.body as { json?: Record<string, unknown> };
   const me = path === "me" ? body.json : (body.json?.me as Record<string, unknown> | undefined);
   if (me) me.billingEnabled = true;
   await route.fulfill({ response, json: body });
@@ -107,8 +115,10 @@ test("account menu and Usage show allowances and credits only when present", asy
   await captureScreenshot(page, testInfo, "usage-limits-settings");
 
   await page.route("**/api/auth/capabilities", async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    await route.fulfill({ response, json: { ...fetched.body, billing: true } });
   });
   await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
   await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));

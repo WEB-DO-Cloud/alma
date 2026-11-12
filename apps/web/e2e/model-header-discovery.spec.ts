@@ -5,6 +5,7 @@ import {
   completeOnboarding,
   openModelConnection,
   openUserSettings,
+  readRouteJson,
   signup,
 } from "./helpers";
 
@@ -27,8 +28,10 @@ for (const surface of ["settings", "onboarding"] as const) {
       test.skip(surface === "settings", "ALMA does not show the Models settings screen");
       if (surface === "onboarding") {
         await page.route("**/rpc/me", async (route) => {
-          const response = await route.fetch();
-          const body = (await response.json()) as { json: Record<string, unknown> };
+          const fetched = await readRouteJson(route);
+          if (!fetched) return;
+          const response = fetched.response;
+          const body = fetched.body as { json: Record<string, unknown> };
           await route.fulfill({ response, json: { json: { ...body.json, needsModel: true } } });
         });
       }

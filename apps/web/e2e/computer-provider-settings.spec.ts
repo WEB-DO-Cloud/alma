@@ -23,7 +23,9 @@ async function editAccount(route: Route, change: (me: Record<string, unknown>) =
     await route.fulfill({ response, json: body });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    if (!/disposed|aborted|already handled|Target closed/i.test(message)) throw error;
+    if (!/disposed|aborted|already handled|Target closed|Failed to find context/i.test(message)) {
+      throw error;
+    }
     await route.abort().catch(() => undefined);
   }
 }

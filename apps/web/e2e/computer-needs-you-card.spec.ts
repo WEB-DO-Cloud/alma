@@ -5,6 +5,7 @@ import {
   captureScreenshot,
   completeOnboarding,
   createNamedBot,
+  readRouteJson,
   rpc,
   signup,
 } from "./helpers";
@@ -67,8 +68,10 @@ async function mockGroupComputerCard(page: Page, groupId: string, botId: string)
       await route.continue();
       return;
     }
-    const response = await route.fetch();
-    const parsed = (await response.json()) as {
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const parsed = fetched.body as {
       json?: { threadId: string; cursor: number; messages?: Array<{ id?: string }> };
     };
     const snap = parsed.json;

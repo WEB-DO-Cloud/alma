@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, signup } from "./helpers";
+import { captureScreenshot, completeOnboarding, readRouteJson, signup } from "./helpers";
 
 test.afterEach(async ({ page }) => {
   // Polling can leave a route.fetch response in use when the assertions finish.
@@ -121,8 +121,10 @@ test("messaging settings show linked chat apps, channels, connections, and team 
   );
 
   await page.route("**/rpc/spaces/list", async (route) => {
-    const response = await route.fetch();
-    const payload = (await response.json()) as {
+    const fetched = await readRouteJson(route);
+    if (!fetched) return;
+    const response = fetched.response;
+    const payload = fetched.body as {
       json?: {
         current?: {
           id: string;
