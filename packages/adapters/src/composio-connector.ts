@@ -49,9 +49,14 @@ export type ComposioClient = {
   sessions: { use(sessionId: string): Promise<ComposioSession> };
   connectedAccounts: Pick<Composio["connectedAccounts"], "list" | "waitForConnection" | "delete">;
   toolkits: {
-    get(query: {
-      limit?: number;
-    }): Promise<Array<{ slug: string; noAuth?: boolean; composioManagedAuthSchemes?: string[] }>>;
+    get(query: { limit?: number }): Promise<
+      Array<{
+        slug: string;
+        noAuth?: boolean;
+        composioManagedAuthSchemes?: string[];
+        meta?: { categories?: Array<{ name?: string | null } | string> };
+      }>
+    >;
   };
   authConfigs: {
     list(query: { limit?: number; cursor?: string }): Promise<{
@@ -153,6 +158,15 @@ function activeSlugs(toolkits: ToolkitConnection[]): string[] {
 
 function composioSlugKey(slug: string): string {
   return slug.trim().toLowerCase();
+}
+
+/** The toolkit index's category name, capped for the catalog contract. */
+function categoryFrom(toolkit: {
+  meta?: { categories?: Array<{ name?: string | null } | string> };
+}): string | undefined {
+  const first = toolkit.meta?.categories?.[0];
+  const name = (typeof first === "string" ? first : first?.name)?.trim();
+  return name ? name.slice(0, 80) : undefined;
 }
 
 function catalogSessionKey(userId: string, authConfigIds?: Record<string, string>): string {
@@ -585,32 +599,38 @@ export class ComposioConnector implements ComposioProvider {
 
   private async loadDirectory(): Promise<ToolkitDirectoryEntry[]> {
     const session = await this.sessionFor("__rakazo_catalog__");
-    const [toolkits, needsSetup] = await Promise.all([
+    const [toolkits, index] = await Promise.all([
       collectPages((cursor) => session.toolkits({ limit: 50, cursor })),
       // Without this lookup every app stays listed, as before.
-      this.toolkitsNeedingSignInSetup().catch((error: unknown) => {
+      this.toolkitIndex().catch((error: unknown) => {
         getLogger().warn("composio sign-in setup lookup failed", {
           error: sanitizeIntegrationError(error),
         });
-        return new Set<string>();
+        return { needsSetup: new Set<string>(), categories: new Map<string, string>() };
       }),
     ]);
-    return toolkits.map((toolkit) => ({
-      slug: toolkit.slug,
-      name: toolkit.name,
-      logo: toolkit.logo ?? null,
-      noAuth: Boolean(toolkit.isNoAuth),
-      ...(!toolkit.isNoAuth && needsSetup.has(composioSlugKey(toolkit.slug))
-        ? { needsSignInSetup: true }
-        : {}),
-    }));
+    return toolkits.map((toolkit) => {
+      const slug = composioSlugKey(toolkit.slug);
+      const category = index.categories.get(slug);
+      return {
+        slug: toolkit.slug,
+        name: toolkit.name,
+        logo: toolkit.logo ?? null,
+        noAuth: Boolean(toolkit.isNoAuth),
+        ...(category ? { category } : {}),
+        ...(!toolkit.isNoAuth && index.needsSetup.has(slug) ? { needsSignInSetup: true } : {}),
+      };
+    });
   }
 
   /**
-   * Apps Composio has no managed sign-in for (Shopify, Twitter) connect only
-   * once this project has its own auth config for them; until then hide them.
+   * Apps with no managed sign-in (Shopify, Twitter) connect only once this
+   * project has an auth config. The category names come from the same index.
    */
-  private async toolkitsNeedingSignInSetup(): Promise<Set<string>> {
+  private async toolkitIndex(): Promise<{
+    needsSetup: Set<string>;
+    categories: Map<string, string>;
+  }> {
     const composio = await this.sdk();
     const [toolkits, authConfigs] = await Promise.all([
       composio.toolkits.get({ limit: 1000 }),
@@ -624,13 +644,21 @@ export class ComposioConnector implements ComposioProvider {
         .filter((config) => config.status === "ENABLED")
         .map((config) => composioSlugKey(config.toolkit.slug)),
     );
-    return new Set(
-      toolkits
-        // A missing field is unknown, not "no managed sign-in".
-        .filter((toolkit) => !toolkit.noAuth && toolkit.composioManagedAuthSchemes?.length === 0)
-        .map((toolkit) => composioSlugKey(toolkit.slug))
-        .filter((slug) => !configured.has(slug)),
-    );
+    const categories = new Map<string, string>();
+    for (const toolkit of toolkits) {
+      const category = categoryFrom(toolkit);
+      if (category) categories.set(composioSlugKey(toolkit.slug), category);
+    }
+    return {
+      categories,
+      needsSetup: new Set(
+        toolkits
+          // A missing field is unknown, not "no managed sign-in".
+          .filter((toolkit) => !toolkit.noAuth && toolkit.composioManagedAuthSchemes?.length === 0)
+          .map((toolkit) => composioSlugKey(toolkit.slug))
+          .filter((slug) => !configured.has(slug)),
+      ),
+    };
   }
 
   async listConnectedSlugs(userId: string): Promise<string[]> {

@@ -14,8 +14,10 @@ import type { PluginCategory } from "@rakazo/core";
 import {
   buildFeaturedConnectorTiles,
   CONNECTION_CATALOG_PAGE_SIZE,
+  catalogCategoryNames,
   catalogItemAccounts,
   catalogItemKey,
+  catalogItemsInCategory,
   connectCatalogItem,
   filterConnectionCatalogItems,
   integrationCatalogsReady,
@@ -221,7 +223,6 @@ export default function Integrations() {
   const featuredTiles = useMemo(() => buildFeaturedConnectorTiles(catalog), [catalog]);
   const showFeatured = !query.trim();
   const catalogApps = useMemo(() => filterConnectionCatalogItems(catalog, query), [catalog, query]);
-  const renderedApps = catalogApps.slice(0, visibleCount);
   const { plugins, pluginForApp } = useMemo(
     () => browsablePlugins(pluginEntries, catalog),
     [pluginEntries, catalog],
@@ -231,7 +232,19 @@ export default function Integrations() {
     const entry = pluginForApp.get(catalogItemKey(item));
     return entry ? [{ item, entry }] : [];
   });
-  const categories = pluginCategories([...plugins, ...mergedBrands.map(({ entry }) => entry)]);
+  const pluginCategoryList = pluginCategories([
+    ...plugins,
+    ...mergedBrands.map(({ entry }) => entry),
+  ]);
+  const catalogCategories = catalogCategoryNames(catalog);
+  const categories = catalogCategories.length > 0 ? catalogCategories : pluginCategoryList;
+  const catalogCategorySelected = Boolean(category) && catalogCategories.includes(category);
+  const listedApps = catalogCategorySelected
+    ? catalogItemsInCategory(catalog, category, query)
+    : category
+      ? []
+      : catalogApps;
+  const renderedListed = listedApps.slice(0, visibleCount);
   const brandMatches = category
     ? mergedBrands.filter(
         ({ item, entry }) =>
@@ -1179,9 +1192,9 @@ export default function Integrations() {
                   >{t`Configure a plugin catalog on the server to connect apps.`}</Text>
                 ) : null}
 
-                {catalogReady && catalog.length > 0 && !category ? (
+                {catalogReady && catalog.length > 0 && (renderedListed.length > 0 || !category) ? (
                   <View style={catalogColumns === 2 ? styles.catalogGrid : styles.catalogStack}>
-                    {showFeatured
+                    {!category && showFeatured
                       ? featuredTiles.map((tile) => {
                           const item = tile.item;
                           const key = item ? catalogItemKey(item) : tile.id;
@@ -1213,7 +1226,7 @@ export default function Integrations() {
                           );
                         })
                       : null}
-                    {renderedApps.map((item) => renderCatalogTile(item, item.name))}
+                    {renderedListed.map((item) => renderCatalogTile(item, item.name))}
                   </View>
                 ) : null}
 
@@ -1226,7 +1239,7 @@ export default function Integrations() {
                   <Text style={styles.secondary}>{t`No apps match your search.`}</Text>
                 ) : null}
 
-                {!category && renderedApps.length < catalogApps.length ? (
+                {renderedListed.length < listedApps.length ? (
                   <NativeActionButton
                     label={t`Show more`}
                     onPress={() => setVisibleCount((count) => count + CONNECTION_CATALOG_PAGE_SIZE)}

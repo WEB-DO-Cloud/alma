@@ -289,6 +289,33 @@ describe("plugin detail", () => {
     expect(container.textContent).not.toContain("https://notes.example.test/mcp");
   });
 
+  it("hides the catalog connection once the plugin connector is installed", async () => {
+    const onConnect = vi.fn();
+    await act(async () =>
+      root.render(
+        <PluginDetail
+          selection={{ source, installedSource: source, name: "Gmail" }}
+          installs={[{ ...install, config: { ...preview, parts: ["connector"] } }]}
+          servers={[server]}
+          assigned={new Set()}
+          managed={{
+            name: "Gmail",
+            logo: null,
+            connected: false,
+            connecting: false,
+            onConnect,
+            onManage: vi.fn(),
+          }}
+          onBack={onBack}
+          onChanged={onChanged}
+        />,
+      ),
+    );
+    expect(container.textContent).toContain("https://notes.example.test/mcp");
+    expect(onConnect).not.toHaveBeenCalled();
+    expect(() => button("Connect")).toThrow();
+  });
+
   it("opens an installed plugin skill's saved instructions", async () => {
     api.skills.mockResolvedValue([
       { id: "skill-db-1", name: "skill-1", source: "plugin", description: "", readOnly: true },

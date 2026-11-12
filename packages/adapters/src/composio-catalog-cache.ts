@@ -3,6 +3,8 @@ export type ToolkitDirectoryEntry = {
   name: string;
   logo: string | null;
   noAuth: boolean;
+  /** Category name from the toolkit index, when it sent one. */
+  category?: string;
   /** No shared sign-in and no project setup for this app, so connecting it can only fail. */
   needsSignInSetup?: boolean;
 };
