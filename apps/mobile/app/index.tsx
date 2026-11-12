@@ -1,4 +1,4 @@
-import { ph, t } from "@lingui/core/macro";
+import { t } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import type { SpaceBot, SpaceGroup } from "@rakazo/contracts";
 import { accountDisplay, chatSnoozed } from "@rakazo/core";
@@ -91,6 +91,7 @@ import {
   subscribeSessionGeneration,
 } from "../lib/session";
 import { useSplitView } from "../lib/split-view";
+import { trialUsageLabel } from "../lib/trial-usage";
 import { confirmUnsentSendLoss } from "../lib/unsent-send-warning";
 import { useArchivedCount } from "../lib/use-archived-count";
 import { useCollapsedSections } from "../lib/use-collapsed-sections";
@@ -751,24 +752,25 @@ function Home({ embedded, onSelectSpace, onShareSelect }: InboxPaneProps & { emb
   // Headings of empty saved Spaces are not chats, so they do not hide the failure.
   const showLoadFailure = Boolean(loadFailure) && inboxHasNoChats(listData);
   const inlineError = error ?? (showLoadFailure ? null : (loadFailure?.message ?? null));
+  const trialLabel = trialBanner
+    ? trialUsageLabel(trialBanner.daysLeft, trialBanner.messagesLeft)
+    : null;
 
   // Folds are saved per account, so wait for it before offering them.
   const activityView = !onShareSelect && activityMode && Boolean(userId);
   const showActivity = activityView && !showLoadFailure;
   const rows = activityView || showLoadFailure ? [] : listData;
-  const hasListHeader = Boolean(inlineError || spaceRecoveryId || showActivity || trialBanner);
+  const hasListHeader = Boolean(inlineError || spaceRecoveryId || showActivity || trialLabel);
   const listHeader = (
     <>
       {inlineError ? <Text style={styles.error}>{inlineError}</Text> : null}
-      {trialBanner ? (
+      {trialLabel ? (
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/paywall")}
           style={styles.recoveryAction}
         >
-          <Text style={styles.spaceTitle}>
-            {t`${ph({ days: trialBanner.daysLeft })} days left · ${ph({ left: trialBanner.messagesLeft })} messages`}
-          </Text>
+          <Text style={styles.spaceTitle}>{trialLabel}</Text>
         </Pressable>
       ) : null}
       {spaceRecoveryId ? (
