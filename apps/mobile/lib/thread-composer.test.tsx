@@ -344,6 +344,7 @@ describe("thread composer isolation", () => {
     disk.full = false;
     disk.moveFails = false;
     appState.listeners.clear();
+    dictation.status = "idle";
     mentionApi.generation = 1;
     mentionApi.rpc.mockReset().mockResolvedValue([]);
     mentionApi.capture.mockReset().mockImplementation(async () => ({
@@ -1215,8 +1216,8 @@ describe("thread composer isolation", () => {
     expect(composer.current!.snapshot().skill).toBeNull();
   });
 
-  it("keeps Call on an empty draft and does not expose dictation", () => {
-    expect(container.querySelector('button[aria-label="Dictate"]')).toBeNull();
+  it("keeps Call and Dictate on an empty draft", () => {
+    expect(container.querySelector('button[aria-label="Dictate"]')).not.toBeNull();
     expect(container.querySelector('button[aria-label="Call"]')).not.toBeNull();
     expect("insertText" in (composer.current ?? {})).toBe(false);
   });
@@ -1229,6 +1230,48 @@ describe("thread composer isolation", () => {
     expect(container.querySelector('[data-testid="slash-picker"]')).toBeNull();
     press("Call");
     expect(props.startVoiceCall).toHaveBeenCalledOnce();
+  });
+
+  it("adds dictated words after the draft, and drops them once the draft is edited", () => {
+    type("Remind me");
+    press("Dictate");
+    expect(dictation.toggle).toHaveBeenCalledOnce();
+    act(() => dictation.onWords("to buy"));
+    act(() => dictation.onWords("to buy milk"));
+    expect(container.querySelector("input")!.value).toBe("Remind me to buy milk");
+    type("Remind me to buy milk!");
+    act(() => dictation.onWords("to buy milk and eggs"));
+    expect(container.querySelector("input")!.value).toBe("Remind me to buy milk!");
+  });
+
+  function sendButton() {
+    return container.querySelector<HTMLButtonElement>('button[aria-label="Send"]')!;
+  }
+
+  it("keeps Send disabled while a dictation is still recording", () => {
+    dictation.status = "listening";
+    type("Please check");
+    const send = sendButton();
+    expect(send.disabled).toBe(true);
+    act(() => send.click());
+    expect(props.send).not.toHaveBeenCalled();
+  });
+
+  it("keeps Send disabled while dictating a message that is only an attachment", () => {
+    dictation.status = "listening";
+    render({ attachmentIds: ["file-1"] });
+    const send = sendButton();
+    expect(send.disabled).toBe(true);
+    act(() => send.click());
+    expect(props.send).not.toHaveBeenCalled();
+  });
+
+  it("adds a provider's transcript after text typed while it recorded", () => {
+    type("Note");
+    press("Dictate");
+    type("Note:");
+    act(() => dictation.onWords("call the bank", true));
+    expect(container.querySelector("input")!.value).toBe("Note: call the bank");
   });
 
   it("hides the mic while a call has the microphone", () => {
