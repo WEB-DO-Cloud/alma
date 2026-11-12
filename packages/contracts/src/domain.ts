@@ -871,6 +871,8 @@ export const ConnectionCatalogItemSchema = z.object({
   notice: z.string().max(2000).optional(),
   /** The card can open the file chooser after this app is connected. */
   filePicker: z.boolean().optional(),
+  /** Category name from the app directory, when it has one. */
+  category: z.string().max(80).optional(),
 });
 export type ConnectionCatalogItem = z.infer<typeof ConnectionCatalogItemSchema>;
 

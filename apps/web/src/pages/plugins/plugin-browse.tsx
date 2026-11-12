@@ -50,11 +50,13 @@ export function PluginBrowse({
   const { catalogLoaded, catalog, pluginCatalog, pluginInstalls } = state;
   const {
     query,
+    visibleCount,
     setVisibleCount,
     category,
     setCategory,
     pluginCount,
     setPluginCount,
+    categoryItems,
     featuredTiles,
     showFeatured,
     visible,
@@ -131,13 +133,32 @@ export function PluginBrowse({
   }
 
   function renderPluginResults() {
+    const categorySlice = categoryItems.slice(0, visibleCount);
     if (category || searching)
-      return pluginMatches.length || brandMatches.length ? (
+      return pluginMatches.length || brandMatches.length || categorySlice.length ? (
         <section data-testid="plugin-results" className="mt-2">
-          <div className="grid grid-cols-2 gap-2">
-            {brandMatches.map(({ item }) => catalogTile(item, labelFor(item), item.logo))}
-            {pluginMatches.slice(0, pluginCount).map(renderPluginRow)}
-          </div>
+          {categorySlice.length ? (
+            <div className="grid grid-cols-2 gap-2">
+              {categorySlice.map((item) => catalogTile(item, labelFor(item), item.logo))}
+            </div>
+          ) : null}
+          {visibleCount < categoryItems.length ? (
+            <div className="mt-4 flex justify-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setVisibleCount((count) => count + CONNECTION_CATALOG_PAGE_SIZE)}
+              >
+                <Trans>Show more</Trans>
+              </Button>
+            </div>
+          ) : null}
+          {brandMatches.length || pluginMatches.length ? (
+            <div className={`grid grid-cols-2 gap-2 ${categorySlice.length ? "mt-2" : ""}`}>
+              {brandMatches.map(({ item }) => catalogTile(item, labelFor(item), item.logo))}
+              {pluginMatches.slice(0, pluginCount).map(renderPluginRow)}
+            </div>
+          ) : null}
           {pluginCount < pluginMatches.length ? (
             <div className="mt-4 flex justify-center">
               <Button
@@ -150,6 +171,10 @@ export function PluginBrowse({
             </div>
           ) : null}
         </section>
+      ) : category ? (
+        <p className="text-muted-foreground/80">
+          <Trans>No apps match your search.</Trans>
+        </p>
       ) : null;
     // A recommended brand this deployment already offers as a managed app is listed as that app.
     const recommended = catalogEntries
@@ -277,7 +302,8 @@ export function PluginBrowse({
       visible.length === 0 &&
       !showFeatured &&
       !pluginMatches.length &&
-      !brandMatches.length ? (
+      !brandMatches.length &&
+      !categoryItems.length ? (
         <p className="text-muted-foreground/80">
           <Trans>No apps match your search.</Trans>
         </p>

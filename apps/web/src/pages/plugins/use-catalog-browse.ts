@@ -4,7 +4,9 @@ import type { PluginCategory } from "@rakazo/core";
 import {
   buildFeaturedConnectorTiles,
   CONNECTION_CATALOG_PAGE_SIZE,
+  catalogCategoryNames,
   catalogItemKey,
+  catalogItemsInCategory,
   filterConnectionCatalogItems,
   integrationCatalogsReady,
   managedAppFor,
@@ -95,11 +97,18 @@ export function useCatalogBrowse({
     const entry = pluginForApp.get(catalogItemKey(item));
     return entry ? [{ item, entry }] : [];
   });
-  const categories: string[] = PLUGIN_CATEGORIES.filter(
+  const pluginCategories: string[] = PLUGIN_CATEGORIES.filter(
     (name) =>
       plugins.some((entry) => entry.category === name) ||
       mergedBrands.some(({ entry }) => entry.category === name),
   );
+  // Directory categories replace the plugin chips when the catalog sent any.
+  const catalogCategories = catalogCategoryNames(catalog);
+  const categories = catalogCategories.length > 0 ? catalogCategories : pluginCategories;
+  const categoryItems =
+    category && catalogCategories.includes(category)
+      ? catalogItemsInCategory(catalog, category, query)
+      : [];
   const brandMatches = category
     ? mergedBrands.filter(
         ({ item, entry }) =>
@@ -136,6 +145,7 @@ export function useCatalogBrowse({
     pluginForApp,
     categoryLabel,
     categories,
+    categoryItems,
     brandMatches,
     searching,
     pluginMatches,

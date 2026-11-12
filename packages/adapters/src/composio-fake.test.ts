@@ -98,6 +98,26 @@ describe("ComposioConnector over the fake Composio client", () => {
     );
   });
 
+  it("keeps a toolkit category and hides apps with no managed sign-in", async () => {
+    const fake = new FakeComposioClient([
+      {
+        slug: "GMAIL",
+        name: "Gmail",
+        logo: "https://example.test/gmail.svg",
+        noAuth: false,
+        category: "Communication",
+      },
+      { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
+      { slug: "LINEAR", name: "Linear", logo: null, noAuth: false },
+    ]);
+    const catalog = await new ComposioConnector({ client: fake }).catalog(context());
+    expect(catalog.map((item) => item.slug).sort()).toEqual(["GMAIL", "LINEAR"]);
+    expect(catalog.find((item) => item.slug === "GMAIL")).toMatchObject({
+      category: "Communication",
+      logo: "https://example.test/gmail.svg",
+    });
+  });
+
   it("lists every app when the sign-in lookup fails", async () => {
     const fake = new FakeComposioClient([
       { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
