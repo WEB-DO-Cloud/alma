@@ -305,6 +305,10 @@ msgstr "{count}u geleden"
 msgid "{count}m ago"
 msgstr "{count}m geleden"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {Nog # dag} other {Nog # dagen}} · {left, plural, one {# bericht} other {# berichten}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} dagen gratis"

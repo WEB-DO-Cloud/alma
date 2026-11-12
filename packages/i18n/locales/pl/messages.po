@@ -305,6 +305,10 @@ msgstr "{count} godz. temu"
 msgid "{count}m ago"
 msgstr "{count} min temu"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {Został # dzień} few {Zostały # dni} many {Zostało # dni} other {Zostało # dnia}} · {left, plural, one {# wiadomość} few {# wiadomości} many {# wiadomości} other {# wiadomości}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} dni bezpłatnie"

@@ -305,6 +305,10 @@ msgstr "há {count} h"
 msgid "{count}m ago"
 msgstr "há {count} min"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {Falta # dia} other {Faltam # dias}} · {left, plural, one {# mensagem} other {# mensagens}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} dias grátis"

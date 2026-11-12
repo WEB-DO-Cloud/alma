@@ -1,5 +1,10 @@
 const { getSentryExpoConfig } = require("@sentry/react-native/metro");
+const { ensureMessageTemplateSync, shouldExtractTemplate } = require("./message-template");
 const { resolveTypeScriptSource } = require("./metro-resolver");
+
+// A release bundle compiles catalogs while Metro is loading this file. Extract first so
+// those catalogs include strings the committed translations do not list yet.
+if (shouldExtractTemplate()) ensureMessageTemplateSync();
 
 const projectRoot = __dirname;
 const config = getSentryExpoConfig(projectRoot);
