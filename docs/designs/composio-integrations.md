@@ -35,7 +35,7 @@ Pipedream stays available when its four variables are set. That is upstream's be
 
 ## Production
 
-Leave the flag unset in this change. To turn it on later, set `ALMA_COMPOSIO_INTEGRATIONS=true` on the API and the worker and restart both. `COMPOSIO_API_KEY` is already the catalog. Do not print it. No migration runs. No column is added or dropped.
+Leave the flag unset in this change. To turn it on later, set `ALMA_COMPOSIO_INTEGRATIONS=true` on the API and the worker and restart both. The Compose stacks pass that variable into both processes. `COMPOSIO_API_KEY` is already the catalog. Do not print it. No migration runs. No column is added or dropped.
 
 ## What the open-source tree cannot show
 
