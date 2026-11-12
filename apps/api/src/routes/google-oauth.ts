@@ -46,7 +46,7 @@ const unavailable: GoogleOAuthRemote = {
 async function service(ctx: RouterContext): Promise<GoogleOAuthService> {
   const { deps } = ctx;
   const trustedClientId = deploymentGoogleClientId(deps.env.googleOAuthClientId);
-  if (deps.env.googleByoOauth !== true) {
+  if (deps.env.googleByoOauth !== true || deps.env.composioIntegrations === true) {
     return new GoogleOAuthService({
       enabled: false,
       trustedClientId,

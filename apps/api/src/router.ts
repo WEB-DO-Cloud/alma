@@ -164,6 +164,8 @@ export interface RouterDeps {
     mcpStdioEnabled?: boolean;
     phase2aEnabled?: boolean;
     googleByoOauth?: boolean;
+    /** Exactly ALMA_COMPOSIO_INTEGRATIONS=true. Hides ALMA's Google connector. */
+    composioIntegrations?: boolean;
     /** ALMA's Google OAuth client ID. Not the organization's. Absent when unset. */
     googleOAuthClientId?: string;
     notifyPolicyEnabled?: boolean;
