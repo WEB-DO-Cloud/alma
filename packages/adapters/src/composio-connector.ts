@@ -49,9 +49,14 @@ export type ComposioClient = {
   sessions: { use(sessionId: string): Promise<ComposioSession> };
   connectedAccounts: Pick<Composio["connectedAccounts"], "list" | "waitForConnection" | "delete">;
   toolkits: {
-    get(query: {
-      limit?: number;
-    }): Promise<Array<{ slug: string; noAuth?: boolean; composioManagedAuthSchemes?: string[] }>>;
+    get(query: { limit?: number }): Promise<
+      Array<{
+        slug: string;
+        noAuth?: boolean;
+        composioManagedAuthSchemes?: string[];
+        meta?: { categories?: Array<{ name?: string | null } | string> };
+      }>
+    >;
   };
   authConfigs: {
     list(query: { limit?: number; cursor?: string }): Promise<{
@@ -141,6 +146,8 @@ export type ComposioCatalogItem = Omit<ConnectorCatalogItem, "connectorId">;
 export interface ComposioProvider extends ManagedConnectorProvider {
   warmDirectory(): Promise<void>;
   listConnectedSlugs(userId: string): Promise<string[]>;
+  /** Directory apps, marked so a plugin connector for the same brand is not used. */
+  managedApps?(): Promise<Array<{ name: string; slug: string; replacesPluginConnector: true }>>;
 }
 
 type ToolkitConnection = Awaited<ReturnType<ComposioSession["toolkits"]>>["items"][number];
@@ -153,6 +160,15 @@ function activeSlugs(toolkits: ToolkitConnection[]): string[] {
 
 function composioSlugKey(slug: string): string {
   return slug.trim().toLowerCase();
+}
+
+/** The toolkit index's category name, capped for the catalog contract. */
+function categoryFrom(toolkit: {
+  meta?: { categories?: Array<{ name?: string | null } | string> };
+}): string | undefined {
+  const first = toolkit.meta?.categories?.[0];
+  const name = (typeof first === "string" ? first : first?.name)?.trim();
+  return name ? name.slice(0, 80) : undefined;
 }
 
 function catalogSessionKey(userId: string, authConfigIds?: Record<string, string>): string {
@@ -392,6 +408,8 @@ export class ComposioConnector implements ComposioProvider {
   ) => Promise<Record<string, string> | undefined>;
   /** Drop Gmail, Calendar, and Drive from catalog search. Stored connections still run. */
   private readonly omitWorkspaceCatalog: boolean;
+  /** List toolkits that have no connect flow, instead of hiding them. */
+  private readonly listAllToolkits: boolean;
   /** An injected client or a stored key has its own catalog, so it must not share the process-wide cache. */
   private readonly directoryCache: typeof composioToolkitDirectory;
 
@@ -404,12 +422,15 @@ export class ComposioConnector implements ComposioProvider {
         toolkits: string[],
       ) => Promise<Record<string, string> | undefined>;
       omitWorkspaceCatalog?: boolean;
+      /** ALMA_COMPOSIO_INTEGRATIONS: every toolkit the directory returns. */
+      listAllToolkits?: boolean;
     } = {},
   ) {
     this.apiKey = options.apiKey;
     this.client = options.client;
     this.authConfigIdsFor = options.authConfigIdsFor;
     this.omitWorkspaceCatalog = options.omitWorkspaceCatalog === true;
+    this.listAllToolkits = options.listAllToolkits === true;
     // The directory records which apps this project can sign in to, so each key needs its own.
     this.directoryCache =
       options.client || options.apiKey ? createToolkitDirectoryCache() : composioToolkitDirectory;
@@ -552,13 +573,30 @@ export class ComposioConnector implements ComposioProvider {
     // An expired account keeps its app listed so the user can still reconnect or remove it.
     const withAccount = toolkits.map((toolkit) => toolkit.slug);
     return filterCatalog(
-      mergeCatalogWithConnected(directory, activeSlugs(toolkits), withAccount),
+      mergeCatalogWithConnected(directory, activeSlugs(toolkits), withAccount, {
+        keepNeedsSignInSetup: this.listAllToolkits,
+      }),
       query ?? "",
     )
       .filter(
         (item) => !this.omitWorkspaceCatalog || !omitWorkspaceCatalogItem(item.slug, item.name),
       )
-      .map((item) => ({ ...item, connectorId: "composio" }));
+      .map((item) => ({
+        ...item,
+        connectorId: "composio",
+        ...(this.listAllToolkits ? { replacesPluginConnector: true } : {}),
+      }));
+  }
+
+  async managedApps(): Promise<
+    Array<{ name: string; slug: string; replacesPluginConnector: true }>
+  > {
+    const directory = await this.directory();
+    return directory.map((item) => ({
+      name: item.name,
+      slug: item.slug,
+      replacesPluginConnector: true,
+    }));
   }
 
   async warmDirectory(): Promise<void> {
@@ -585,32 +623,38 @@ export class ComposioConnector implements ComposioProvider {
 
   private async loadDirectory(): Promise<ToolkitDirectoryEntry[]> {
     const session = await this.sessionFor("__rakazo_catalog__");
-    const [toolkits, needsSetup] = await Promise.all([
+    const [toolkits, index] = await Promise.all([
       collectPages((cursor) => session.toolkits({ limit: 50, cursor })),
       // Without this lookup every app stays listed, as before.
-      this.toolkitsNeedingSignInSetup().catch((error: unknown) => {
+      this.toolkitIndex().catch((error: unknown) => {
         getLogger().warn("composio sign-in setup lookup failed", {
           error: sanitizeIntegrationError(error),
         });
-        return new Set<string>();
+        return { needsSetup: new Set<string>(), categories: new Map<string, string>() };
       }),
     ]);
-    return toolkits.map((toolkit) => ({
-      slug: toolkit.slug,
-      name: toolkit.name,
-      logo: toolkit.logo ?? null,
-      noAuth: Boolean(toolkit.isNoAuth),
-      ...(!toolkit.isNoAuth && needsSetup.has(composioSlugKey(toolkit.slug))
-        ? { needsSignInSetup: true }
-        : {}),
-    }));
+    return toolkits.map((toolkit) => {
+      const slug = composioSlugKey(toolkit.slug);
+      const category = index.categories.get(slug);
+      return {
+        slug: toolkit.slug,
+        name: toolkit.name,
+        logo: toolkit.logo ?? null,
+        noAuth: Boolean(toolkit.isNoAuth),
+        ...(category ? { category } : {}),
+        ...(!toolkit.isNoAuth && index.needsSetup.has(slug) ? { needsSignInSetup: true } : {}),
+      };
+    });
   }
 
   /**
-   * Apps Composio has no managed sign-in for (Shopify, Twitter) connect only
-   * once this project has its own auth config for them; until then hide them.
+   * Apps with no managed sign-in (Shopify, Twitter) connect only once this
+   * project has an auth config. The category names come from the same index.
    */
-  private async toolkitsNeedingSignInSetup(): Promise<Set<string>> {
+  private async toolkitIndex(): Promise<{
+    needsSetup: Set<string>;
+    categories: Map<string, string>;
+  }> {
     const composio = await this.sdk();
     const [toolkits, authConfigs] = await Promise.all([
       composio.toolkits.get({ limit: 1000 }),
@@ -624,13 +668,21 @@ export class ComposioConnector implements ComposioProvider {
         .filter((config) => config.status === "ENABLED")
         .map((config) => composioSlugKey(config.toolkit.slug)),
     );
-    return new Set(
-      toolkits
-        // A missing field is unknown, not "no managed sign-in".
-        .filter((toolkit) => !toolkit.noAuth && toolkit.composioManagedAuthSchemes?.length === 0)
-        .map((toolkit) => composioSlugKey(toolkit.slug))
-        .filter((slug) => !configured.has(slug)),
-    );
+    const categories = new Map<string, string>();
+    for (const toolkit of toolkits) {
+      const category = categoryFrom(toolkit);
+      if (category) categories.set(composioSlugKey(toolkit.slug), category);
+    }
+    return {
+      categories,
+      needsSetup: new Set(
+        toolkits
+          // A missing field is unknown, not "no managed sign-in".
+          .filter((toolkit) => !toolkit.noAuth && toolkit.composioManagedAuthSchemes?.length === 0)
+          .map((toolkit) => composioSlugKey(toolkit.slug))
+          .filter((slug) => !configured.has(slug)),
+      ),
+    };
   }
 
   async listConnectedSlugs(userId: string): Promise<string[]> {

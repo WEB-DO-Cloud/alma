@@ -289,6 +289,62 @@ describe("plugin detail", () => {
     expect(container.textContent).not.toContain("https://notes.example.test/mcp");
   });
 
+  it("keeps the catalog connection when an installed plugin connector would otherwise replace it", async () => {
+    const onConnect = vi.fn();
+    await act(async () =>
+      root.render(
+        <PluginDetail
+          selection={{ source, installedSource: source, name: "Gmail" }}
+          installs={[{ ...install, config: { ...preview, parts: ["connector"] } }]}
+          servers={[server]}
+          assigned={new Set()}
+          managed={{
+            name: "Gmail",
+            logo: null,
+            connected: false,
+            connecting: false,
+            replacesPluginConnector: true,
+            onConnect,
+            onManage: vi.fn(),
+          }}
+          onBack={onBack}
+          onChanged={onChanged}
+        />,
+      ),
+    );
+    expect(container.textContent).not.toContain("https://notes.example.test/mcp");
+    await click("Connect");
+    expect(onConnect).toHaveBeenCalled();
+    expect(api.parts).not.toHaveBeenCalled();
+  });
+
+  it("says when the catalog app cannot be connected", async () => {
+    await act(async () =>
+      root.render(
+        <PluginDetail
+          selection={{ source, installedSource: source, name: "Shopify" }}
+          installs={[]}
+          servers={[]}
+          assigned={new Set()}
+          managed={{
+            name: "Shopify",
+            logo: null,
+            connected: false,
+            connecting: false,
+            replacesPluginConnector: true,
+            signInUnavailable: true,
+            onConnect: vi.fn(),
+            onManage: vi.fn(),
+          }}
+          onBack={onBack}
+          onChanged={onChanged}
+        />,
+      ),
+    );
+    expect(container.textContent).toContain("Sign-in is not available for this app yet.");
+    expect(() => button("Connect")).toThrow();
+  });
+
   it("opens an installed plugin skill's saved instructions", async () => {
     api.skills.mockResolvedValue([
       { id: "skill-db-1", name: "skill-1", source: "plugin", description: "", readOnly: true },

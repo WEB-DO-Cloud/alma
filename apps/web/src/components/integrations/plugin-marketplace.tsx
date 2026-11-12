@@ -8,7 +8,7 @@ import type {
   PluginPreview,
 } from "@rakazo/contracts";
 import { mcpServerConnection, mcpServerNeedsSignIn, PluginPreviewSchema } from "@rakazo/contracts";
-import { installedPluginParts } from "@rakazo/core";
+import { installedPluginParts, visibleManagedApp } from "@rakazo/core";
 import { Button, Spinner } from "@rakazo/ui-web";
 import { ArrowUpRight, Check, ChevronLeft, FileText, Plug } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -144,6 +144,10 @@ export type ManagedAppLink = {
   connecting: boolean;
   onConnect: () => void;
   onManage: () => void;
+  /** This catalog row stays the connection even if a plugin connector is installed. */
+  replacesPluginConnector?: boolean;
+  /** Connect would fail until sign-in is set up for this app. */
+  signInUnavailable?: boolean;
 };
 
 export function PluginDetail({
@@ -286,8 +290,9 @@ export function PluginDetail({
       t`Could not enable tools`,
     );
 
-  // A plugin connector already installed stays manageable here until it is removed.
-  const managed = parts.includes("connector") ? undefined : managedApp;
+  // A plugin connector already installed stays manageable here until it is removed,
+  // unless the catalog row owns the brand.
+  const managed = visibleManagedApp(managedApp, parts);
   // Installed plugin skills are read-only, so their saved instructions open in place.
   async function toggleRecipe(name: string) {
     if (recipe?.name === name) return setRecipe(null);
@@ -330,6 +335,7 @@ export function PluginDetail({
   const ready = Boolean(detail) && (Boolean(install) || Boolean(preview));
 
   function headerAction() {
+    if (managed?.signInUnavailable && !managed.connected) return null;
     if (managed)
       return managed.connected ? (
         <Button variant="secondary" disabled={busy} onClick={managed.onManage}>
@@ -478,7 +484,11 @@ export function PluginDetail({
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-body-lg font-medium">{managed.name}</span>
                   <span className="block truncate text-body-sm text-muted-foreground">
-                    <Trans>Connector</Trans>
+                    {managed.signInUnavailable && !managed.connected ? (
+                      <Trans>Sign-in is not available for this app yet.</Trans>
+                    ) : (
+                      <Trans>Connector</Trans>
+                    )}
                   </span>
                 </span>
                 {managed.connected ? (

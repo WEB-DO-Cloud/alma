@@ -2,6 +2,8 @@ import type { ConnectionCatalogItem } from "@rakazo/contracts";
 import { describe, expect, it } from "vitest";
 import {
   buildFeaturedConnectorTiles,
+  catalogCategoryNames,
+  catalogItemsInCategory,
   featuredConnectorProvidersMatch,
   filterConnectionCatalogItems,
   integrationCatalogsReady,
@@ -113,5 +115,23 @@ describe("featured connectors", () => {
         ({ name }) => name,
       ),
     ).toEqual(["Outlook"]);
+  });
+
+  it("groups the directory by the category names it sent and searches them", () => {
+    const catalog = [
+      { ...item("gmail", "Gmail"), category: "Communication" },
+      { ...item("shopify", "Shopify"), category: "Commerce", signInUnavailable: true },
+      item("linear", "Linear"),
+    ];
+    expect(catalogCategoryNames(catalog)).toEqual(["Commerce", "Communication"]);
+    expect(catalogItemsInCategory(catalog, "Commerce", "").map(({ name }) => name)).toEqual([
+      "Shopify",
+    ]);
+    expect(
+      catalogItemsInCategory(catalog, "Communication", "gmail").map(({ slug }) => slug),
+    ).toEqual(["gmail"]);
+    expect(filterConnectionCatalogItems(catalog, "commerce").map(({ name }) => name)).toEqual([
+      "Shopify",
+    ]);
   });
 });

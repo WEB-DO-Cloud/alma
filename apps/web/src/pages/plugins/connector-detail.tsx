@@ -73,15 +73,17 @@ export function ConnectorDetail({
           )}
           <div className="truncate text-heading3 font-medium text-foreground">{item.name}</div>
         </div>
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          disabled={uninstalling || connecting}
-          onClick={() => void uninstall(item)}
-        >
-          {uninstalling ? <Trans>Removing…</Trans> : <Trans>Uninstall</Trans>}
-        </Button>
+        {item.signInUnavailable && accounts.length === 0 ? null : (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={uninstalling || connecting}
+            onClick={() => void uninstall(item)}
+          >
+            {uninstalling ? <Trans>Removing…</Trans> : <Trans>Uninstall</Trans>}
+          </Button>
+        )}
       </div>
 
       <section data-testid="connection-accounts" className="space-y-1">
@@ -121,17 +123,23 @@ export function ConnectorDetail({
             </Button>
           </div>
         ))}
-        <Button
-          type="button"
-          variant="ghost"
-          className="h-9 px-2 text-body text-muted-foreground"
-          size="sm"
-          disabled={connecting || uninstalling}
-          onClick={() => void connect(item)}
-        >
-          <Plus />
-          {connecting ? <Trans>Adding…</Trans> : <Trans>Add another</Trans>}
-        </Button>
+        {item.signInUnavailable && accounts.length === 0 ? (
+          <p className="px-2 text-body text-muted-foreground">
+            <Trans>Sign-in is not available for this app yet.</Trans>
+          </p>
+        ) : (
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-9 px-2 text-body text-muted-foreground"
+            size="sm"
+            disabled={connecting || uninstalling}
+            onClick={() => void connect(item)}
+          >
+            <Plus />
+            {connecting ? <Trans>Adding…</Trans> : <Trans>Add another</Trans>}
+          </Button>
+        )}
       </section>
 
       {toolsLoading || tools.length > 0 ? (

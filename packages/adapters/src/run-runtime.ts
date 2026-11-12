@@ -160,6 +160,25 @@ export function createConnectorRuntime(
         signingKey: env.encryptionKey,
       })
     : undefined;
+  const authConfigIdsFor =
+    composioCatalog || !env.googleByoOauth
+      ? undefined
+      : (context: AdapterContext, toolkits: string[]) =>
+          googleRunAuthConfigs(prisma, secrets, context, toolkits);
+  const composioConnector =
+    composio ??
+    (isComposioEnabled(env.composioApiKey)
+      ? new ComposioConnector({
+          apiKey: env.composioApiKey,
+          authConfigIdsFor,
+          omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(env, Boolean(google)),
+          listAllToolkits: composioCatalog,
+        })
+      : undefined);
+  const managedApps =
+    composioCatalog && composioConnector?.managedApps
+      ? composioConnector.managedApps.bind(composioConnector)
+      : undefined;
   const mcpOAuth = new McpOAuthBroker(
     prisma,
     secrets,
@@ -178,6 +197,7 @@ export function createConnectorRuntime(
       events: deps.events,
       allowPrivateEndpoint: env.mcpAllowPrivateEndpoint,
       blockWorkspacePreview: Boolean(google),
+      ...(managedApps ? { managedApps } : {}),
     },
     mcpOAuth,
   );
@@ -191,25 +211,12 @@ export function createConnectorRuntime(
     network,
     env.mcpAllowPrivateEndpoint,
   );
-  const authConfigIdsFor =
-    composioCatalog || !env.googleByoOauth
-      ? undefined
-      : (context: AdapterContext, toolkits: string[]) =>
-          googleRunAuthConfigs(prisma, secrets, context, toolkits);
   const integrationSettings = new IntegrationProviderSettings(
     prisma,
     secrets,
     env.encryptionKey,
     {
-      composio:
-        composio ??
-        (isComposioEnabled(env.composioApiKey)
-          ? new ComposioConnector({
-              apiKey: env.composioApiKey,
-              authConfigIdsFor,
-              omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(env, Boolean(google)),
-            })
-          : undefined),
+      composio: composioConnector,
       pipedream,
     },
     undefined,

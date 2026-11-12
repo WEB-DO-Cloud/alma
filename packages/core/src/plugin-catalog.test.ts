@@ -7,6 +7,8 @@ import {
   matchesPluginQuery,
   matchesWordPrefixes,
   pluginCategory,
+  pluginShadowsManagedApp,
+  visibleManagedApp,
 } from "./plugin-catalog.js";
 
 function entry(
@@ -96,6 +98,41 @@ describe("managedAppFor", () => {
     expect(managedAppFor(entry({ name: "vercel", displayName: "Vercel" }), apps)).toBe(apps[1]);
     expect(managedAppFor(entry({ name: "google-calendar" }), apps)).toBe(apps[0]);
     expect(managedAppFor(entry({ name: "calcom", displayName: "Calcom" }), apps)).toBeUndefined();
+  });
+
+  it("matches mail aliases only when the catalog app owns the brand", () => {
+    const owned = [{ name: "Gmail", slug: "gmail", replacesPluginConnector: true }];
+    const plain = [{ name: "Gmail", slug: "gmail" }];
+    expect(managedAppFor(entry({ name: "googlemail", displayName: "Google Mail" }), owned)).toBe(
+      owned[0],
+    );
+    expect(
+      managedAppFor(entry({ name: "googlemail", displayName: "Google Mail" }), plain),
+    ).toBeUndefined();
+  });
+});
+
+describe("visibleManagedApp", () => {
+  const managed = { name: "Gmail", replacesPluginConnector: true };
+  const plain = { name: "Gmail" };
+
+  it("keeps the catalog connection when the app owns the brand", () => {
+    expect(visibleManagedApp(managed, ["connector"])).toBe(managed);
+    expect(visibleManagedApp(plain, ["connector"])).toBeUndefined();
+    expect(visibleManagedApp(plain, ["skills"])).toBe(plain);
+    expect(visibleManagedApp(undefined, ["connector"])).toBeUndefined();
+  });
+});
+
+describe("pluginShadowsManagedApp", () => {
+  it("is true only for a plugin of an app that owns its brand", () => {
+    const apps = [
+      { name: "Gmail", slug: "gmail", replacesPluginConnector: true as const },
+      { name: "Notes", slug: "notes" },
+    ];
+    expect(pluginShadowsManagedApp({ name: "gmail" }, apps)).toBe(true);
+    expect(pluginShadowsManagedApp({ name: "google-calendar" }, apps)).toBe(false);
+    expect(pluginShadowsManagedApp({ name: "notes" }, apps)).toBe(false);
   });
 });
 

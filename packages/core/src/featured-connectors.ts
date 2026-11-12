@@ -103,8 +103,38 @@ export function filterConnectionCatalogItems(
       item.name.toLowerCase().includes(needle) ||
       item.slug.toLowerCase().includes(needle) ||
       item.connectorId.toLowerCase().includes(needle) ||
+      item.category?.toLowerCase().includes(needle) ||
       catalogItemMatchesQuery(item, needle),
   );
+}
+
+/** Category names the directory sent, in alphabetical order. Empty when none did. */
+export function catalogCategoryNames(catalog: readonly { category?: string | null }[]): string[] {
+  const names = new Set<string>();
+  for (const item of catalog) {
+    const category = item.category?.trim();
+    if (category) names.add(category);
+  }
+  return [...names].sort((a, b) => a.localeCompare(b));
+}
+
+/** Apps in one directory category, featured included, narrowed by the search box. */
+export function catalogItemsInCategory<T extends ConnectionCatalogItem>(
+  catalog: readonly T[],
+  category: string,
+  query: string,
+): T[] {
+  const needle = query.trim().toLowerCase();
+  return catalog.filter((item) => {
+    if (item.category !== category) return false;
+    if (!needle) return true;
+    return (
+      item.name.toLowerCase().includes(needle) ||
+      item.slug.toLowerCase().includes(needle) ||
+      item.connectorId.toLowerCase().includes(needle) ||
+      catalogItemMatchesQuery(item, needle)
+    );
+  });
 }
 
 /** Loading or unavailable catalogs cannot establish that there are no matching apps. */

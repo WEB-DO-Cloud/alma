@@ -278,6 +278,7 @@ export class FakeComposioClient implements ComposioClient {
         slug: entry.slug,
         noAuth: entry.noAuth,
         composioManagedAuthSchemes: entry.needsSignInSetup || entry.noAuth ? [] : ["OAUTH2"],
+        ...(entry.category ? { meta: { categories: [{ name: entry.category }] } } : {}),
       })),
   };
 
