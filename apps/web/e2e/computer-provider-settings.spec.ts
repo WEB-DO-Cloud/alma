@@ -5,15 +5,27 @@ import { computerProviderDescriptors } from "../../../packages/adapters/src/fake
 import { captureScreenshot, completeOnboarding, openUserSettings, signup } from "./helpers";
 
 async function adminComputers(route: Route) {
-  const response = await route.fetch();
-  const body = (await response.json()) as { json?: Record<string, unknown> };
-  const me = (body.json?.me ?? body.json) as Record<string, unknown> | undefined;
-  if (me) {
+  await editAccount(route, (me) => {
     me.sandboxProvider = "docker";
     me.isAdmin = true;
     me.computerSettingsEnabled = true;
+  });
+}
+
+// A reload can abort the profile request this handler already fetched. Reading that body throws,
+// and failing the test for the request the page gave up on hides the one that replaced it.
+async function editAccount(route: Route, change: (me: Record<string, unknown>) => void) {
+  try {
+    const response = await route.fetch();
+    const body = (await response.json()) as { json?: Record<string, unknown> };
+    const me = (body.json?.me ?? body.json) as Record<string, unknown> | undefined;
+    if (me) change(me);
+    await route.fulfill({ response, json: body });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!/disposed|aborted|already handled|Target closed/i.test(message)) throw error;
+    await route.abort().catch(() => undefined);
   }
-  await route.fulfill({ response, json: body });
 }
 
 test("an admin selects a computer provider and sees its fields", async ({ page }, testInfo) => {
@@ -59,16 +71,12 @@ for (const enabled of [undefined, false]) {
     await signup(page, `computer-hidden-${randomUUID()}@rakazo.test`, "password12", "Settings");
     await completeOnboarding(page);
     const disabledComputers = async (route: Route) => {
-      const response = await route.fetch();
-      const body = (await response.json()) as { json?: Record<string, unknown> };
-      const me = (body.json?.me ?? body.json) as Record<string, unknown> | undefined;
-      if (me) {
+      await editAccount(route, (me) => {
         me.sandboxProvider = "none";
         me.isAdmin = true;
         if (enabled === undefined) delete me.computerSettingsEnabled;
         else me.computerSettingsEnabled = enabled;
-      }
-      await route.fulfill({ response, json: body });
+      });
     };
     await page.route("**/rpc/me", disabledComputers);
     await page.route("**/rpc/bootstrap", disabledComputers);
