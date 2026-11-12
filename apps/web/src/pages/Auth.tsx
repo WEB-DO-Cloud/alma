@@ -63,9 +63,9 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     sent || codeStep ? (
       <Trans>Check your email</Trans>
     ) : mode === "in" ? (
-      <Trans>Sign in to ALMA</Trans>
+      <Trans>Sign in</Trans>
     ) : mode === "up" ? (
-      <Trans>Create your ALMA</Trans>
+      <Trans>Create your account</Trans>
     ) : (
       <Trans>Reset your password</Trans>
     );

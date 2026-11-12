@@ -4228,13 +4228,10 @@ msgstr "सेक्शन बनाएं"
 msgid "Create space"
 msgstr "स्पेस बनाएं"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "अपना ALMA बनाएं"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr ""
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "अपना खाता बनाएं"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "कोई OpenClaw, Hermes या एजेंट दस्तावे�
 msgid "No pages match “{query}”."
 msgstr "“{query}” से कोई पेज मेल नहीं खाता।"
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "इस डिवाइस पर कोई पासकी नहीं मिली. अपने पासवर्ड से साइन इन करें, फिर अपने खाते में पासकी जोड़ें."
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "फिर से साइन इन करें"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "<0>{0}</0> पर साइन इन करें, फिर कोड यहाँ पेस्ट करें।"
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "ALMA में साइन इन करें"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

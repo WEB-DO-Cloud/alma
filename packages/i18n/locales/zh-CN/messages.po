@@ -4228,13 +4228,10 @@ msgstr "创建分组"
 msgid "Create space"
 msgstr "创建空间"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "创建你的 ALMA"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr "创建你的 ALMA 账户"
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "创建你的账户"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "未找到 OpenClaw、Hermes 或智能体文档。"
 msgid "No pages match “{query}”."
 msgstr "没有与“{query}”匹配的页面。"
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "此设备上没有通行密钥。请用密码登录，然后在账户中添加通行密钥。"
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "重新登录"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "在 <0>{0}</0> 登录，然后将代码粘贴到这里。"
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "登录 ALMA"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

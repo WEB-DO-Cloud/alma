@@ -288,9 +288,9 @@ export default function SignIn() {
                 {resetSent || codeStep
                   ? t`Check your email`
                   : mode === "in"
-                    ? t`Sign in to ALMA`
+                    ? t`Sign in`
                     : mode === "up"
-                      ? t`Create your ALMA account`
+                      ? t`Create your account`
                       : t`Reset your password`}
               </Text>
               {resetSent ? (

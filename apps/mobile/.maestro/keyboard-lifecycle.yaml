@@ -10,7 +10,7 @@ tags:
 
 # A cold API 34 emulator can show a launcher ANR over the healthy app.
 - extendedWaitUntil:
-    visible: "Create your ALMA account|Pixel Launcher isn't responding"
+    visible: "Create your account|Pixel Launcher isn't responding"
     timeout: 60000
 - runFlow:
     when:
@@ -18,7 +18,7 @@ tags:
     commands:
       - tapOn: "Close app"
 - extendedWaitUntil:
-    visible: "Create your ALMA account"
+    visible: "Create your account"
     timeout: 30000
 - takeScreenshot: "02-sign-up"
 - tapOn: "Sign in"
@@ -27,7 +27,9 @@ tags:
       notVisible:
         id: "server-address"
     commands:
-      - assertVisible: "Sign in to ALMA"
+      - assertVisible:
+          text: "^Sign in$"
+          above: "Email"
       - takeScreenshot: "01-sign-in"
       - tapOn: "Use a custom server"
 - assertVisible: "Server"
@@ -39,7 +41,9 @@ tags:
 - tapOn: "Password"
 - inputText: ${RAKAZO_SCREENSHOT_PASSWORD}
 - hideKeyboard
-- tapOn: "Sign in"
+- tapOn:
+    text: "^Sign in$"
+    below: "Password"
 - tapOn:
     text: "Don’t allow"
     optional: true
@@ -86,14 +90,18 @@ tags:
     direction: DOWN
 - tapOn: "Sign out"
 - extendedWaitUntil:
-    visible: "Sign in to ALMA"
+    visible:
+      text: "^Sign in$"
+      above: "Email"
     timeout: 15000
 - tapOn: "Email"
 - inputText: ${RAKAZO_SCREENSHOT_EMAIL}
 - tapOn: "Password"
 - inputText: ${RAKAZO_SCREENSHOT_PASSWORD}
 - hideKeyboard
-- tapOn: "Sign in"
+- tapOn:
+    text: "^Sign in$"
+    below: "Password"
 - extendedWaitUntil:
     visible: "Researcher"
     timeout: 15000

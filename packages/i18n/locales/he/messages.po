@@ -4228,13 +4228,10 @@ msgstr "יצירת מקטע"
 msgid "Create space"
 msgstr "יצירת מרחב"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "יצירת ALMA משלך"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr ""
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "יצירת החשבון שלך"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "לא נמצאו קבצי OpenClaw, Hermes או מסמך סוכן."
 msgid "No pages match “{query}”."
 msgstr "אין דפים שתואמים ל-„{query}”."
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "לא נמצא מפתח גישה במכשיר זה. היכנס עם הסיסמה שלך, ואז הוסף מפתח גישה בחשבון שלך."
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "התחברות מחדש"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "התחברו ב-<0>{0}</0> והדביקו כאן את הקוד."
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "התחברות ל-ALMA"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

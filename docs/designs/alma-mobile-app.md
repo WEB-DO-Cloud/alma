@@ -276,7 +276,7 @@ This work is already on the branch. The steps below are the decisions a later ch
 #### 6. `apps/mobile/app/sign-in.tsx` and `apps/mobile/lib/locales/*.ts` (Modify)
 
 -   **Type / Scope**: Existing auth screen and catalogs.
--   **Proposed Changes**: English headings are `Sign in to ALMA` and `Create your ALMA account`. The other catalogs translate those headings. Settings strings that named the previous product now say ALMA.
+-   **Proposed Changes**: English headings are `Sign in` and `Create your account`. The logo already names ALMA. The other catalogs translate those headings. Settings strings that named the previous product now say ALMA.
 
 #### 7. `bitrise.yml`, `apps/mobile/fastlane/Fastfile`, `Appfile`, `Matchfile`, `Gemfile`, `docs/mobile-release.md` (Create or Modify)
 

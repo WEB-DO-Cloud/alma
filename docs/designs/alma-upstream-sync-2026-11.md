@@ -69,7 +69,7 @@ On surgical files, replace the visible product token only.
 | `expo.slug`                                                                                  | `alma`                                                       |
 | iOS `bundleIdentifier` and Android `applicationId`                                           | `do.alma.app`                                                |
 | Store listing title (`apps/mobile/fastlane/metadata/**/name.txt` and `title.txt`)            | `ALMA Asistente IA`                                          |
-| Sign-in title                                                                                | `Sign in to ALMA`. Spanish catalog: `Inicia sesión en ALMA`. |
+| Sign-in and sign-up titles                                                                   | `Sign in` and `Create your account`. Spanish catalog: `Iniciar sesión` and `Crea tu cuenta`. The logo already names ALMA. |
 | Splash `backgroundColor` in `apps/mobile/app.json`                                           | `#002D62`                                                    |
 
 `apps/mobile/app.json` `scheme` is `["alma", "rakazo"]`. Icons point at the ALMA rasters already used on ALMA `main`.
@@ -252,7 +252,7 @@ Web e2e for sign-in, chat, the connectors grid, the Call button, and billing run
 
 Screenshots, as pull-request artifacts:
 
--   Sign-in, with the title `Sign in to ALMA` or `Inicia sesión en ALMA`.
+-   Sign-in, with the title `Sign in` or `Iniciar sesión`. Sign-up reads `Create your account` or `Crea tu cuenta`.
 -   A chat thread.
 -   The connectors screen: search, category chips, the top row of Gmail, Google Calendar, Google Drive, Slack, and Notion, Recommended, and the per-category sections.
 -   The Call button on the composer.
