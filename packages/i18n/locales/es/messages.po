@@ -4228,13 +4228,10 @@ msgstr "Crear sección"
 msgid "Create space"
 msgstr "Crear space"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "Crea tu ALMA"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr ""
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "Crea tu cuenta"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "No se encontraron archivos de OpenClaw, Hermes ni un documento de agente
 msgid "No pages match “{query}”."
 msgstr "Ninguna página coincide con «{query}»."
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "No se encontró una llave de acceso en este dispositivo. Inicia sesión con tu contraseña y luego añade una llave de acceso en tu cuenta."
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "Vuelve a iniciar sesión"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "Inicia sesión en <0>{0}</0> y pega el código aquí."
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "Inicia sesión en ALMA"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

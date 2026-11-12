@@ -4228,13 +4228,10 @@ msgstr "섹션 만들기"
 msgid "Create space"
 msgstr "스페이스 만들기"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "ALMA 계정 만들기"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr ""
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "계정 만들기"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "OpenClaw, Hermes 또는 에이전트 문서를 찾지 못했습니다."
 msgid "No pages match “{query}”."
 msgstr "“{query}”과(와) 일치하는 페이지가 없습니다."
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "이 기기에 패스키가 없습니다. 비밀번호로 로그인한 다음 계정에 패스키를 추가하세요."
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "다시 로그인"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "<0>{0}</0>에서 로그인한 다음 코드를 여기에 붙여넣으세요."
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "ALMA 로그인"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

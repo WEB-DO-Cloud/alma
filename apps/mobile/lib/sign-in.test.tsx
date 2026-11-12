@@ -221,8 +221,7 @@ it.each(["in", "up"])(
     expect(submit.textContent).toBe(mode === "in" ? "Sign in" : "Sign up");
     const logo = host.querySelector("img");
     const title = [...host.querySelectorAll("span")].find(
-      (span) =>
-        span.textContent === (mode === "in" ? "Sign in to ALMA" : "Create your ALMA account"),
+      (span) => span.textContent === (mode === "in" ? "Sign in" : "Create your account"),
     );
     expect(logo?.getAttribute("alt")).toBe("ALMA");
     expect(title).toBeTruthy();

@@ -429,6 +429,8 @@ function LayoutContent() {
                     />
                     <Stack.Screen name="share" options={{ headerShown: false }} />
                     <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+                    {/* The question in the body is the title. An empty header keeps the back button without the route name. */}
+                    <Stack.Screen name="sector" options={{ title: "" }} />
                     <Stack.Screen
                       name="paywall"
                       options={{

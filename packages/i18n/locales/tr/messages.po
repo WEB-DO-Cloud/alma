@@ -4228,13 +4228,10 @@ msgstr "Bölüm oluştur"
 msgid "Create space"
 msgstr "Alan oluştur"
 
-#: apps/web/src/pages/Auth.tsx
-msgid "Create your ALMA"
-msgstr "ALMA hesabını oluştur"
-
 #: apps/mobile/app/sign-in.tsx
-msgid "Create your ALMA account"
-msgstr ""
+#: apps/web/src/pages/Auth.tsx
+msgid "Create your account"
+msgstr "Hesabını oluştur"
 
 #: apps/mobile/components/thread/message-bubble.tsx
 #: apps/web/src/components/AskCard.tsx
@@ -7185,6 +7182,10 @@ msgstr "OpenClaw, Hermes veya agent belgesi bulunamadı."
 msgid "No pages match “{query}”."
 msgstr "“{query}” ile eşleşen sayfa yok."
 
+#: apps/mobile/lib/passkey.ts
+msgid "No passkey found on this device. Sign in with your password, then add a passkey in your account."
+msgstr "Bu cihazda geçiş anahtarı bulunamadı. Parolanla oturum aç, sonra hesabına bir geçiş anahtarı ekle."
+
 #: apps/mobile/app/artifact.tsx
 #: apps/mobile/components/video-preview.tsx
 msgid "No preview for this file type."
@@ -9566,11 +9567,6 @@ msgstr "Yeniden giriş yap"
 #: apps/web/src/pages/onboarding/model-step.tsx
 msgid "Sign in at <0>{0}</0>, then paste the code here."
 msgstr "<0>{0}</0> adresinde oturum açın, ardından kodu buraya yapıştırın."
-
-#: apps/mobile/app/sign-in.tsx
-#: apps/web/src/pages/Auth.tsx
-msgid "Sign in to ALMA"
-msgstr "ALMA'da oturum aç"
 
 #: apps/mobile/lib/user-error.ts
 #: apps/web/src/lib/user-error.ts

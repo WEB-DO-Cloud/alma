@@ -3,6 +3,7 @@ import type { OutboundDraft, WorkContext } from "@rakazo/contracts";
 import { queueDraftActions, undoCountdown } from "@rakazo/core";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
+import { useMobileTokens } from "./native";
 
 const channels = ["email", "whatsapp", "other"] as const;
 
@@ -36,6 +37,18 @@ export function ApprovalQueue({
   sendUndo?: boolean;
 }) {
   const { t } = useLingui();
+  const tokens = useMobileTokens();
+  const labelStyle = { color: tokens.foreground, fontSize: 17 };
+  const fieldStyle = {
+    color: tokens.foreground,
+    backgroundColor: tokens.muted,
+    borderColor: tokens.border,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    fontSize: 17,
+  };
   const [name, setName] = useState("");
   const [recipient, setRecipient] = useState("");
   const [body, setBody] = useState("");
@@ -52,17 +65,24 @@ export function ApprovalQueue({
     }).compose;
   return (
     <View>
-      <Text>{t`Queue`}</Text>
+      <Text style={labelStyle}>{t`Queue`}</Text>
       {contexts.map((item) => (
         <Pressable
           key={item.id}
           accessibilityRole="button"
           onPress={() => onSelectContext(item.id)}
+          style={{ minHeight: 48, justifyContent: "center" }}
         >
-          <Text>{item.label}</Text>
+          <Text style={labelStyle}>{item.label}</Text>
         </Pressable>
       ))}
-      <TextInput accessibilityLabel={t`Name`} value={name} onChangeText={setName} />
+      <TextInput
+        accessibilityLabel={t`Name`}
+        placeholderTextColor={tokens.mutedForeground}
+        style={fieldStyle}
+        value={name}
+        onChangeText={setName}
+      />
       <Pressable
         accessibilityRole="button"
         onPress={() => {
@@ -70,8 +90,9 @@ export function ApprovalQueue({
           if (!label) return;
           onCreateContext("personal", label);
         }}
+        style={{ minHeight: 48, justifyContent: "center" }}
       >
-        <Text>{t`Personal`}</Text>
+        <Text style={labelStyle}>{t`Personal`}</Text>
       </Pressable>
       <Pressable
         accessibilityRole="button"
@@ -80,35 +101,50 @@ export function ApprovalQueue({
           if (!label) return;
           onCreateContext("work", label);
         }}
+        style={{ minHeight: 48, justifyContent: "center" }}
       >
-        <Text>{t`Work`}</Text>
+        <Text style={labelStyle}>{t`Work`}</Text>
       </Pressable>
       {compose ? (
         <View>
-          <Text>{t`New draft`}</Text>
+          <Text style={labelStyle}>{t`New draft`}</Text>
           <TextInput
             accessibilityLabel={t`Recipient`}
+            placeholderTextColor={tokens.mutedForeground}
+            style={fieldStyle}
             value={recipient}
             onChangeText={setRecipient}
           />
           {channels.map((value) => (
-            <Pressable key={value} accessibilityRole="button" onPress={() => setChannel(value)}>
-              <Text>{value}</Text>
+            <Pressable
+              key={value}
+              accessibilityRole="button"
+              onPress={() => setChannel(value)}
+              style={{ minHeight: 48, justifyContent: "center" }}
+            >
+              <Text style={labelStyle}>{value}</Text>
             </Pressable>
           ))}
-          <TextInput accessibilityLabel={t`Message`} value={body} onChangeText={setBody} />
+          <TextInput
+            accessibilityLabel={t`Message`}
+            placeholderTextColor={tokens.mutedForeground}
+            style={fieldStyle}
+            value={body}
+            onChangeText={setBody}
+          />
           <Pressable
             accessibilityRole="button"
             onPress={() => {
               if (!recipient.trim() || !body.trim()) return;
               onCreateDraft({ recipient: recipient.trim(), channel, body });
             }}
+            style={{ minHeight: 48, justifyContent: "center" }}
           >
-            <Text>{t`Save`}</Text>
+            <Text style={labelStyle}>{t`Save`}</Text>
           </Pressable>
         </View>
       ) : null}
-      {context && drafts.length === 0 ? <Text>{t`Nothing waiting`}</Text> : null}
+      {context && drafts.length === 0 ? <Text style={labelStyle}>{t`Nothing waiting`}</Text> : null}
       {context
         ? drafts.map((draft) => {
             const actions = queueDraftActions({
@@ -120,23 +156,35 @@ export function ApprovalQueue({
             });
             return (
               <View key={draft.id}>
-                <Text>
+                <Text style={labelStyle}>
                   {draft.recipient} · {draft.channel} · {draft.label}
                 </Text>
-                <Text>{draft.body}</Text>
+                <Text style={labelStyle}>{draft.body}</Text>
                 {actions.submit ? (
-                  <Pressable accessibilityRole="button" onPress={() => onSubmit(draft.id)}>
-                    <Text>{t`Submit`}</Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => onSubmit(draft.id)}
+                    style={{ minHeight: 48, justifyContent: "center" }}
+                  >
+                    <Text style={labelStyle}>{t`Submit`}</Text>
                   </Pressable>
                 ) : null}
                 {actions.approve ? (
-                  <Pressable accessibilityRole="button" onPress={() => onApprove(draft.id)}>
-                    <Text>{t`Approve`}</Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => onApprove(draft.id)}
+                    style={{ minHeight: 48, justifyContent: "center" }}
+                  >
+                    <Text style={labelStyle}>{t`Approve`}</Text>
                   </Pressable>
                 ) : null}
                 {actions.cancel ? (
-                  <Pressable accessibilityRole="button" onPress={() => onCancel(draft.id)}>
-                    <Text>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => onCancel(draft.id)}
+                    style={{ minHeight: 48, justifyContent: "center" }}
+                  >
+                    <Text style={labelStyle}>
                       {sendUndo && draft.status === "approved"
                         ? `${t`Undo`}${(() => {
                             const seconds = undoCountdown(draft.dispatchAfter, new Date());

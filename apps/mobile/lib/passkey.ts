@@ -57,12 +57,29 @@ export async function passkeysAvailable(
   return (await loadNative()) !== null;
 }
 
-/** Name and code from the native sheet, so a failed create or get can be diagnosed. */
+/** Text for a failed native sheet. A missing passkey gets account copy; other failures keep the native message. */
 function nativePasskeyError(error: unknown): Error {
-  const record = (error ?? {}) as { code?: unknown; name?: unknown; message?: unknown };
+  const record = (typeof error === "object" && error !== null ? error : {}) as {
+    code?: unknown;
+    name?: unknown;
+    message?: unknown;
+  };
   const name = typeof record.name === "string" ? record.name : "";
   const code = record.code == null || record.code === "" ? "" : String(record.code);
-  console.warn("passkey failed", { name, code, message: record.message });
+  const message =
+    typeof error === "string"
+      ? error.trim()
+      : typeof record.message === "string"
+        ? record.message.trim()
+        : "";
+  console.warn("passkey failed", { name, code, message });
+  // Credential Manager's NoCredentialException, and the same fact worded as a sentence.
+  if (/no[\s_-]?credentials/i.test(`${name} ${code} ${message}`)) {
+    return new Error(
+      t`No passkey found on this device. Sign in with your password, then add a passkey in your account.`,
+    );
+  }
+  if (message) return new Error(message);
   const detail = [name, code].filter(Boolean).join(" ");
   return new Error(detail ? `${t`Could not continue`} (${detail})` : t`Could not continue`);
 }
