@@ -72,6 +72,19 @@ async function icns(input: Buffer, name: string) {
   await writeFile(path(name), Buffer.concat([fileHeader, body]));
 }
 
+/** Biome keeps short primitive arrays on one line. JSON.stringify does not. */
+function formatIconJson(value: unknown) {
+  return JSON.stringify(value, null, 2).replace(
+    /\[(\n(?:[ \t]+(?:-?\d+(?:\.\d+)?|"(?:[^"\\]|\\.)*"),?\n)+)[ \t]*\]/g,
+    (match) => {
+      const items = [...match.matchAll(/-?\d+(?:\.\d+)?|"(?:[^"\\]|\\.)*"/g)].map(
+        (found) => found[0],
+      );
+      return `[${items.join(", ")}]`;
+    },
+  );
+}
+
 function extendedSrgb(hex: string) {
   const component = (start: number) =>
     (Number.parseInt(hex.slice(start, start + 2), 16) / 255).toFixed(5);
@@ -218,37 +231,33 @@ await sharp(Buffer.from(dmgBackgroundSvg(2)))
 const navyFill = { solid: extendedSrgb(NAVY) };
 await writeFile(
   path("packages/ui-tokens/assets/Rakazo.icon/icon.json"),
-  `${JSON.stringify(
-    {
-      fill: navyFill,
-      "fill-specializations": [
-        { value: navyFill },
-        { appearance: "dark", value: navyFill },
-        { appearance: "tinted", value: navyFill },
-      ],
-      groups: [
-        {
-          layers: [
-            {
-              glass: false,
-              "image-name": "orange-bot.png",
-              name: "orange-bot",
-            },
-          ],
-          position: {
-            scale: 1,
-            "translation-in-points": [0, DESKTOP_SHIFT_DOWN],
+  `${formatIconJson({
+    fill: navyFill,
+    "fill-specializations": [
+      { value: navyFill },
+      { appearance: "dark", value: navyFill },
+      { appearance: "tinted", value: navyFill },
+    ],
+    groups: [
+      {
+        layers: [
+          {
+            glass: false,
+            "image-name": "orange-bot.png",
+            name: "orange-bot",
           },
-          shadow: { kind: "none", opacity: 0 },
-          translucency: { enabled: false, value: 0 },
+        ],
+        position: {
+          scale: 1,
+          "translation-in-points": [0, DESKTOP_SHIFT_DOWN],
         },
-      ],
-      "supported-platforms": {
-        circles: ["watchOS"],
-        squares: "shared",
+        shadow: { kind: "none", opacity: 0 },
+        translucency: { enabled: false, value: 0 },
       },
+    ],
+    "supported-platforms": {
+      circles: ["watchOS"],
+      squares: "shared",
     },
-    null,
-    2,
-  )}\n`,
+  })}\n`,
 );
