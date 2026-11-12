@@ -83,42 +83,6 @@ describe("composio toolkit directory cache", () => {
     ]);
   });
 
-  it("keeps apps that need sign-in setup when the full directory is requested", () => {
-    const items = mergeCatalogWithConnected(
-      [
-        { slug: "shopify", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
-        {
-          slug: "gmail",
-          name: "Gmail",
-          logo: null,
-          noAuth: false,
-          category: "Communication",
-        },
-      ],
-      [],
-      [],
-      { keepNeedsSignInSetup: true },
-    );
-    expect(items).toEqual([
-      {
-        slug: "shopify",
-        name: "Shopify",
-        logo: null,
-        noAuth: false,
-        connected: false,
-        signInUnavailable: true,
-      },
-      {
-        slug: "gmail",
-        name: "Gmail",
-        logo: null,
-        noAuth: false,
-        category: "Communication",
-        connected: false,
-      },
-    ]);
-  });
-
   it("handles detached refresh rejection in a real Node process", async () => {
     const moduleUrl = new URL("./composio-catalog-cache.ts", import.meta.url).href;
     const { stdout } = await promisify(execFile)(

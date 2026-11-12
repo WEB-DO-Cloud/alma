@@ -98,7 +98,7 @@ describe("ComposioConnector over the fake Composio client", () => {
     );
   });
 
-  it("lists every toolkit when asked, and marks the ones with no connect flow", async () => {
+  it("keeps a toolkit category and hides apps with no managed sign-in", async () => {
     const fake = new FakeComposioClient([
       {
         slug: "GMAIL",
@@ -110,25 +110,12 @@ describe("ComposioConnector over the fake Composio client", () => {
       { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
       { slug: "LINEAR", name: "Linear", logo: null, noAuth: false },
     ]);
-    const catalog = await new ComposioConnector({
-      client: fake,
-      listAllToolkits: true,
-    }).catalog(context());
-    expect(catalog.map((item) => item.slug).sort()).toEqual(["GMAIL", "LINEAR", "SHOPIFY"]);
+    const catalog = await new ComposioConnector({ client: fake }).catalog(context());
+    expect(catalog.map((item) => item.slug).sort()).toEqual(["GMAIL", "LINEAR"]);
     expect(catalog.find((item) => item.slug === "GMAIL")).toMatchObject({
       category: "Communication",
       logo: "https://example.test/gmail.svg",
-      replacesPluginConnector: true,
     });
-    expect(catalog.find((item) => item.slug === "GMAIL")?.signInUnavailable).toBeUndefined();
-    expect(catalog.find((item) => item.slug === "SHOPIFY")).toMatchObject({
-      signInUnavailable: true,
-      replacesPluginConnector: true,
-    });
-    expect(catalog.find((item) => item.slug === "LINEAR")?.signInUnavailable).toBeUndefined();
-    await expect(
-      connect(new ComposioConnector({ client: fake, listAllToolkits: true }), "SHOPIFY"),
-    ).rejects.toBeInstanceOf(ConnectorAuthUnavailableError);
   });
 
   it("lists every app when the sign-in lookup fails", async () => {

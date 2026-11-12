@@ -120,7 +120,7 @@ describe("featured connectors", () => {
   it("groups the directory by the category names it sent and searches them", () => {
     const catalog = [
       { ...item("gmail", "Gmail"), category: "Communication" },
-      { ...item("shopify", "Shopify"), category: "Commerce", signInUnavailable: true },
+      { ...item("shopify", "Shopify"), category: "Commerce" },
       item("linear", "Linear"),
     ];
     expect(catalogCategoryNames(catalog)).toEqual(["Commerce", "Communication"]);

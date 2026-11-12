@@ -146,8 +146,6 @@ export type ComposioCatalogItem = Omit<ConnectorCatalogItem, "connectorId">;
 export interface ComposioProvider extends ManagedConnectorProvider {
   warmDirectory(): Promise<void>;
   listConnectedSlugs(userId: string): Promise<string[]>;
-  /** Directory apps, marked so a plugin connector for the same brand is not used. */
-  managedApps?(): Promise<Array<{ name: string; slug: string; replacesPluginConnector: true }>>;
 }
 
 type ToolkitConnection = Awaited<ReturnType<ComposioSession["toolkits"]>>["items"][number];
@@ -408,8 +406,6 @@ export class ComposioConnector implements ComposioProvider {
   ) => Promise<Record<string, string> | undefined>;
   /** Drop Gmail, Calendar, and Drive from catalog search. Stored connections still run. */
   private readonly omitWorkspaceCatalog: boolean;
-  /** List toolkits that have no connect flow, instead of hiding them. */
-  private readonly listAllToolkits: boolean;
   /** An injected client or a stored key has its own catalog, so it must not share the process-wide cache. */
   private readonly directoryCache: typeof composioToolkitDirectory;
 
@@ -422,15 +418,12 @@ export class ComposioConnector implements ComposioProvider {
         toolkits: string[],
       ) => Promise<Record<string, string> | undefined>;
       omitWorkspaceCatalog?: boolean;
-      /** ALMA_COMPOSIO_INTEGRATIONS: every toolkit the directory returns. */
-      listAllToolkits?: boolean;
     } = {},
   ) {
     this.apiKey = options.apiKey;
     this.client = options.client;
     this.authConfigIdsFor = options.authConfigIdsFor;
     this.omitWorkspaceCatalog = options.omitWorkspaceCatalog === true;
-    this.listAllToolkits = options.listAllToolkits === true;
     // The directory records which apps this project can sign in to, so each key needs its own.
     this.directoryCache =
       options.client || options.apiKey ? createToolkitDirectoryCache() : composioToolkitDirectory;
@@ -573,30 +566,13 @@ export class ComposioConnector implements ComposioProvider {
     // An expired account keeps its app listed so the user can still reconnect or remove it.
     const withAccount = toolkits.map((toolkit) => toolkit.slug);
     return filterCatalog(
-      mergeCatalogWithConnected(directory, activeSlugs(toolkits), withAccount, {
-        keepNeedsSignInSetup: this.listAllToolkits,
-      }),
+      mergeCatalogWithConnected(directory, activeSlugs(toolkits), withAccount),
       query ?? "",
     )
       .filter(
         (item) => !this.omitWorkspaceCatalog || !omitWorkspaceCatalogItem(item.slug, item.name),
       )
-      .map((item) => ({
-        ...item,
-        connectorId: "composio",
-        ...(this.listAllToolkits ? { replacesPluginConnector: true } : {}),
-      }));
-  }
-
-  async managedApps(): Promise<
-    Array<{ name: string; slug: string; replacesPluginConnector: true }>
-  > {
-    const directory = await this.directory();
-    return directory.map((item) => ({
-      name: item.name,
-      slug: item.slug,
-      replacesPluginConnector: true,
-    }));
+      .map((item) => ({ ...item, connectorId: "composio" }));
   }
 
   async warmDirectory(): Promise<void> {

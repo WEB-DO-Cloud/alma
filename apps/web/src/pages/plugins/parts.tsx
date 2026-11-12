@@ -154,7 +154,6 @@ function CatalogActions({ item, context }: { item: ConnectionCatalogItem; contex
   const key = catalogItemKey(item);
   const connected = connections.itemConnected(item);
   const connecting = connections.pending === key;
-  if (item.signInUnavailable && !connected) return null;
   if (connected) {
     return (
       <Button

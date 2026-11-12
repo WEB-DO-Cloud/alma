@@ -288,99 +288,84 @@ function PluginScreen() {
   const skillsOn = parts.includes("skills");
   const ready = loaded && Boolean(detail) && (installed || Boolean(preview));
   const managedConnected = managedApp ? isCatalogItemConnected(connections, managedApp) : false;
-  const signInUnavailable = Boolean(managedApp?.signInUnavailable && !managedConnected);
   const working = pending === "header";
-  const action = signInUnavailable
-    ? null
-    : managed
-      ? managedConnected
-        ? {
-            label: t`Added`,
-            onPress: () =>
-              router.navigate({
-                pathname: "/integrations",
-                params: { app: catalogItemKey(managedApp!) },
-              }),
-            destructive: false,
-          }
-        : {
-            label: working ? t`Connecting…` : t`Connect`,
-            onPress: () => void connectManaged(),
-            destructive: false,
-          }
-      : headerOn
-        ? {
-            label: working ? t`Removing…` : t`Remove`,
-            onPress: () =>
-              confirmRemove(t`Remove ${ph({ name: params.name })}?`, () => {
-                void setParts("header", toggle(headerPart, false), t`Could not remove plugin`);
-              }),
-            destructive: true,
-          }
-        : {
-            label: working
-              ? skillPack
-                ? t`Adding…`
-                : t`Connecting…`
-              : skillPack
-                ? t`Add`
-                : t`Connect`,
-            onPress: () =>
-              void setParts("header", toggle(headerPart, true), t`Could not install plugin`),
-            destructive: false,
-          };
+  const action = managed
+    ? managedConnected
+      ? {
+          label: t`Added`,
+          onPress: () =>
+            router.navigate({
+              pathname: "/integrations",
+              params: { app: catalogItemKey(managedApp!) },
+            }),
+          destructive: false,
+        }
+      : {
+          label: working ? t`Connecting…` : t`Connect`,
+          onPress: () => void connectManaged(),
+          destructive: false,
+        }
+    : headerOn
+      ? {
+          label: working ? t`Removing…` : t`Remove`,
+          onPress: () =>
+            confirmRemove(t`Remove ${ph({ name: params.name })}?`, () => {
+              void setParts("header", toggle(headerPart, false), t`Could not remove plugin`);
+            }),
+          destructive: true,
+        }
+      : {
+          label: working
+            ? skillPack
+              ? t`Adding…`
+              : t`Connecting…`
+            : skillPack
+              ? t`Add`
+              : t`Connect`,
+          onPress: () =>
+            void setParts("header", toggle(headerPart, true), t`Could not install plugin`),
+          destructive: false,
+        };
   const actionDisabled = busy || (managed ? !managedApp : !ready);
 
   // The header reads the latest action through a ref, so it only re-renders when it looks different.
   const actionRef = useRef(action);
   actionRef.current = action;
   useLayoutEffect(() => {
-    const current = actionRef.current;
     navigation.setOptions({
       title: params.name,
-      headerRight:
-        iosAtLeast(26) || !current
-          ? undefined
-          : () => (
-              <NativeActionButton
-                disabled={actionDisabled}
-                fill={false}
-                label={current.label}
-                onPress={() => void actionRef.current?.onPress()}
-                prominence={
-                  current.destructive ? "destructive" : managedConnected ? "secondary" : "primary"
-                }
-              />
-            ),
+      headerRight: iosAtLeast(26)
+        ? undefined
+        : () => (
+            <NativeActionButton
+              disabled={actionDisabled}
+              fill={false}
+              label={action.label}
+              onPress={() => void actionRef.current.onPress()}
+              prominence={
+                action.destructive ? "destructive" : managedConnected ? "secondary" : "primary"
+              }
+            />
+          ),
       ...(iosAtLeast(26)
         ? {
-            unstable_headerRightItems: () =>
-              current
-                ? [
-                    {
-                      type: "button" as const,
-                      label: current.label,
-                      ...(current.destructive
-                        ? { tintColor: mobileTokens().destructive }
-                        : managedConnected
-                          ? {}
-                          : { variant: "prominent" as const, tintColor: mobileTokens().primary }),
-                      disabled: actionDisabled,
-                      onPress: () => void actionRef.current?.onPress(),
-                    },
-                  ]
-                : [],
+            unstable_headerRightItems: () => [
+              {
+                type: "button" as const,
+                label: action.label,
+                ...(action.destructive
+                  ? { tintColor: mobileTokens().destructive }
+                  : managedConnected
+                    ? {}
+                    : { variant: "prominent" as const, tintColor: mobileTokens().primary }),
+                disabled: actionDisabled,
+                onPress: () => void actionRef.current.onPress(),
+              },
+            ],
           }
         : {}),
     } satisfies NativeStackNavigationOptions);
-  }, [
-    navigation,
-    params.name,
-    action?.label,
-    action?.destructive,
-    actionDisabled,
-    managedConnected,
-  ]);
+  }, [navigation, params.name, action.label, action.destructive, actionDisabled, managedConnected]);
 
   const description = detail?.description || params.description;
   const skills = detail?.skills ?? [];
@@ -461,9 +446,7 @@ function PluginScreen() {
                       {params.name}
                     </Text>
                     <Text numberOfLines={1} style={styles.secondary}>
-                      {signInUnavailable
-                        ? t`Sign-in is not available for this app yet.`
-                        : t`Connector`}
+                      {t`Connector`}
                     </Text>
                   </View>
                   {managedConnected ? <ConnectedMark label={t`Connected`} /> : null}

@@ -4,7 +4,7 @@
 - **Date:** 2026-11-12
 - **Upstream:** `elie222/rakazo` `main` at `b029a64` (2026-11-12). Compared with ALMA `main` at `7118c61b8`.
 
-`ALMA_COMPOSIO_INTEGRATIONS` stays exactly `true` or off. Off is unchanged. On, Integrations lists every toolkit the Composio API returns and connects each one through that catalog.
+`ALMA_COMPOSIO_INTEGRATIONS` stays exactly `true` or off. Off is unchanged. On, Integrations uses the same catalog rules as Rakazo Cloud.
 
 ## What Rakazo Cloud does
 
@@ -27,19 +27,12 @@ Mail search aliases (`packages/core/src/mail-connector-aliases.ts`) are ALMA-onl
 
 ## Flag on
 
-- The directory is still the live session list, paged until exhausted. Nothing is hardcoded. `toolkits.get` (limit 1000, the call that already exists) supplies each toolkit's category name when Composio sends `meta.categories[].name`, and which toolkits have no managed scheme.
-- Toolkits with a managed scheme (OAuth, API key, bearer, and the rest Composio puts on its connect link) keep **Add** / **Connect**. The link is still `session.authorize`. This server does not collect the key itself.
-- Toolkits with no managed scheme and no enabled auth config are listed, not dropped. The app page says "Sign-in is not available for this app yet." and does not start a connect. An enabled auth config in the Composio project removes the sentence on the next catalog load, which is the existing rule for making that app connectable.
-- Featured apps stay the five pins. Search matches name, slug, category, and the mail aliases. Category chips are the category names Composio sent, with the rest under **More**. The grid still grows by 60. Logos stay the toolkit logo.
-- A plugin whose brand is one of those apps is not a second connector. Skills still attach to the brand. On the web, an installed plugin connector no longer hides **Connect**. The phone already kept it.
-- While the flag is on, MCP servers that belong to those plugin installs are omitted from the agent and from the connected-apps list. The install rows stay. There is no migration and nothing is deleted. Turning the flag off uses those servers again.
+Same connect rules as Cloud:
+
+- The directory is the live session list, paged until exhausted. Nothing is hardcoded. Toolkits with no managed sign-in and no enabled auth config are dropped, unless the person already has an account. OAuth, API key, and the other schemes on Composio's connect link stay. **Connect** is still `session.authorize`. This server does not collect the key.
+- `toolkits.get` (the lookup Cloud already makes) also supplies a category name when Composio sends `meta.categories[].name`. Search matches that name. When any app has one, the category chips are those names, with the rest under **More**. Featured apps stay the five pins. The grid still grows by 60. Logos stay the toolkit logo.
+- A plugin whose brand is one of those apps is not a second row. Skills still attach to the brand. On the web, an installed plugin connector hides the catalog **Connect** button and the page shows that plugin's MCP server, the same line as `plugin-marketplace.tsx` upstream. Those servers stay available to the agent. There is no migration.
 
 ## Flag off
 
-No catalog field is set, hidden toolkits stay hidden, the Google connector stays, and an installed plugin connector still replaces the managed row on the web.
-
-## Copy
-
-"Sign-in is not available for this app yet."
-
-It is the only new sentence. It appears on an app that Composio cannot connect, in place of **Connect**. Removing it would either hide the app or offer a connect that fails. A list-wide explanation would repeat it for every other app.
+The Google connector stays, Gmail, Calendar, and Drive leave the Composio catalog, and an installed plugin connector still replaces the managed row on the web.

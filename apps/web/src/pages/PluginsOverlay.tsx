@@ -12,7 +12,6 @@ import {
   catalogItemKey,
   installedPluginParts,
   managedAppFor,
-  pluginShadowsManagedApp,
 } from "@rakazo/core";
 import {
   Button,
@@ -146,10 +145,8 @@ export function PluginsOverlay({
   const standaloneServers = mcpServers.filter((server) => !server.installId);
   const connectedItems = catalog.filter((item) => itemConnected(item));
   // Skills live in their own dialog, so only installs with a connector count as apps here.
-  const connectorInstalls = pluginInstalls.filter(
-    (install) =>
-      installedPluginParts(install.config).includes("connector") &&
-      !pluginShadowsManagedApp(install, catalog),
+  const connectorInstalls = pluginInstalls.filter((install) =>
+    installedPluginParts(install.config).includes("connector"),
   );
   const appCount =
     connectedItems.length + standaloneServers.length + sources.length + connectorInstalls.length;
@@ -210,8 +207,6 @@ export function PluginsOverlay({
       logo: item.logo,
       connected: itemConnected(item),
       connecting: pending === catalogItemKey(item),
-      replacesPluginConnector: item.replacesPluginConnector,
-      signInUnavailable: item.signInUnavailable,
       onConnect: () => void connect(item),
       onManage: () => {
         setPlugin(null);

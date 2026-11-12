@@ -69,22 +69,18 @@ export function IntegrationDetail({
             {item.name}
           </Text>
         </View>
-        {item.signInUnavailable && accounts.length === 0 ? null : (
-          <NativeActionButton
-            accessibilityLabel={t`Uninstall`}
-            disabled={uninstalling || connecting}
-            fill={false}
-            label={uninstalling ? t`Working…` : t`Uninstall`}
-            onPress={onUninstall}
-            prominence="destructive"
-          />
-        )}
+        <NativeActionButton
+          accessibilityLabel={t`Uninstall`}
+          disabled={uninstalling || connecting}
+          fill={false}
+          label={uninstalling ? t`Working…` : t`Uninstall`}
+          onPress={onUninstall}
+          prominence="destructive"
+        />
       </View>
 
       <View style={styles.card}>
-        {item.signInUnavailable && accounts.length === 0 ? null : (
-          <Text style={styles.section}>{t`Accounts`}</Text>
-        )}
+        <Text style={styles.section}>{t`Accounts`}</Text>
         {accounts.map((row) => (
           <View key={row.id} style={styles.accountRow}>
             <TextInput
@@ -107,56 +103,50 @@ export function IntegrationDetail({
             />
           </View>
         ))}
-        {item.signInUnavailable && accounts.length === 0 ? (
-          <Text style={styles.secondary}>{t`Sign-in is not available for this app yet.`}</Text>
-        ) : (
-          <NativeActionButton
-            accessibilityLabel={t`Add another ${ph({ name: item.name })}`}
-            disabled={connecting || uninstalling}
-            label={connecting ? t`Working…` : t`Add another`}
-            onPress={onConnect}
-            prominence="secondary"
-          />
-        )}
+        <NativeActionButton
+          accessibilityLabel={t`Add another ${ph({ name: item.name })}`}
+          disabled={connecting || uninstalling}
+          label={connecting ? t`Working…` : t`Add another`}
+          onPress={onConnect}
+          prominence="secondary"
+        />
       </View>
 
-      {item.signInUnavailable && accounts.length === 0 ? null : (
-        <View style={styles.card}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityState={{ expanded: toolsOpen }}
-            onPress={() => setToolsOpen((open) => !open)}
-            style={styles.toolsToggle}
-          >
-            <Text style={styles.title}>
-              {toolsLoading
-                ? t`Tools`
-                : toolCount === 1
-                  ? t`1 tool`
-                  : t`${ph({ count: toolCount })} tools`}
-            </Text>
-            <Chevron expanded={toolsOpen} />
-          </Pressable>
-          {toolsOpen ? (
-            <View style={styles.toolsBody}>
-              {toolsLoading ? (
-                <ActivityIndicator
-                  color={native.secondaryLabel}
-                  accessibilityLabel={t`Loading tools…`}
-                />
-              ) : tools.length === 0 ? (
-                <Text style={styles.secondary}>{t`No tools available.`}</Text>
-              ) : (
-                tools.map((tool) => (
-                  <Text key={tool.name} style={styles.toolName}>
-                    {humanizeToolName(tool.name)}
-                  </Text>
-                ))
-              )}
-            </View>
-          ) : null}
-        </View>
-      )}
+      <View style={styles.card}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded: toolsOpen }}
+          onPress={() => setToolsOpen((open) => !open)}
+          style={styles.toolsToggle}
+        >
+          <Text style={styles.title}>
+            {toolsLoading
+              ? t`Tools`
+              : toolCount === 1
+                ? t`1 tool`
+                : t`${ph({ count: toolCount })} tools`}
+          </Text>
+          <Chevron expanded={toolsOpen} />
+        </Pressable>
+        {toolsOpen ? (
+          <View style={styles.toolsBody}>
+            {toolsLoading ? (
+              <ActivityIndicator
+                color={native.secondaryLabel}
+                accessibilityLabel={t`Loading tools…`}
+              />
+            ) : tools.length === 0 ? (
+              <Text style={styles.secondary}>{t`No tools available.`}</Text>
+            ) : (
+              tools.map((tool) => (
+                <Text key={tool.name} style={styles.toolName}>
+                  {humanizeToolName(tool.name)}
+                </Text>
+              ))
+            )}
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }

@@ -11,8 +11,6 @@ export type ToolkitDirectoryEntry = {
 
 export type ToolkitCatalogEntry = Omit<ToolkitDirectoryEntry, "needsSignInSetup"> & {
   connected: boolean;
-  /** Listed, but Connect would fail until the project can sign this app in. */
-  signInUnavailable?: boolean;
 };
 
 export const COMPOSIO_DIRECTORY_TTL_MS = 60 * 60 * 1000;
@@ -22,23 +20,14 @@ export function mergeCatalogWithConnected(
   connectedSlugs: Iterable<string>,
   /** Slugs with any account, active or not; these stay listed even when sign-in needs setup. */
   accountSlugs: Iterable<string> = [],
-  options?: { keepNeedsSignInSetup?: boolean },
 ): ToolkitCatalogEntry[] {
   const key = (slug: string) => slug.trim().toLowerCase();
   const connected = new Set([...connectedSlugs].map(key));
   const withAccount = new Set([...accountSlugs].map(key));
   return directory.flatMap(({ needsSignInSetup, ...item }) => {
     const isConnected = connected.has(key(item.slug));
-    const unavailable =
-      Boolean(needsSignInSetup) && !isConnected && !withAccount.has(key(item.slug));
-    if (unavailable && !options?.keepNeedsSignInSetup) return [];
-    return [
-      {
-        ...item,
-        connected: isConnected,
-        ...(unavailable ? { signInUnavailable: true } : {}),
-      },
-    ];
+    if (needsSignInSetup && !isConnected && !withAccount.has(key(item.slug))) return [];
+    return [{ ...item, connected: isConnected }];
   });
 }
 

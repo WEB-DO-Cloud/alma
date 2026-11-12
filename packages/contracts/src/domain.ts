@@ -873,13 +873,6 @@ export const ConnectionCatalogItemSchema = z.object({
   filePicker: z.boolean().optional(),
   /** Category name from the app directory, when it has one. */
   category: z.string().max(80).optional(),
-  /** The app is listed, and Connect would fail until sign-in is set up for it. */
-  signInUnavailable: z.boolean().optional(),
-  /**
-   * This catalog row is the connection for its brand. An installed plugin
-   * connector does not replace it.
-   */
-  replacesPluginConnector: z.boolean().optional(),
 });
 export type ConnectionCatalogItem = z.infer<typeof ConnectionCatalogItemSchema>;
 

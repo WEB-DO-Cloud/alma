@@ -172,13 +172,8 @@ export function createConnectorRuntime(
           apiKey: env.composioApiKey,
           authConfigIdsFor,
           omitWorkspaceCatalog: omitWorkspaceFromComposioCatalog(env, Boolean(google)),
-          listAllToolkits: composioCatalog,
         })
       : undefined);
-  const managedApps =
-    composioCatalog && composioConnector?.managedApps
-      ? composioConnector.managedApps.bind(composioConnector)
-      : undefined;
   const mcpOAuth = new McpOAuthBroker(
     prisma,
     secrets,
@@ -197,7 +192,6 @@ export function createConnectorRuntime(
       events: deps.events,
       allowPrivateEndpoint: env.mcpAllowPrivateEndpoint,
       blockWorkspacePreview: Boolean(google),
-      ...(managedApps ? { managedApps } : {}),
     },
     mcpOAuth,
   );

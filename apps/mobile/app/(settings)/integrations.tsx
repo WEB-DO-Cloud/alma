@@ -25,7 +25,6 @@ import {
   matchesWordPrefixes,
   newClientId,
   OTHER_PLUGINS,
-  pluginShadowsManagedApp,
 } from "@rakazo/core";
 import type { NativeStackNavigationOptions } from "expo-router";
 import { useFocusEffect, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
@@ -264,9 +263,7 @@ export default function Integrations() {
           matchesWordPrefixes(`${server.name} ${server.description}`, query),
         )
       : [];
-  const connectorPlugins = pluginInstalls.filter(
-    (install) => hasPluginConnector(install) && !pluginShadowsManagedApp(install, catalog),
-  );
+  const connectorPlugins = pluginInstalls.filter(hasPluginConnector);
 
   const detailItem = useMemo(() => {
     if (!detailKey) return null;
@@ -954,7 +951,6 @@ export default function Integrations() {
         />
       );
     }
-    if (item.signInUnavailable) return null;
     return (
       <NativeActionButton
         accessibilityLabel={t`Add ${ph({ name: label })}`}

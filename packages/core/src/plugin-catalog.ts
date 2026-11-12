@@ -1,6 +1,5 @@
 import type { PluginMarketplaceEntry, PluginPart } from "@rakazo/contracts";
 import { PluginPartSchema } from "@rakazo/contracts";
-import { featuredConnectorProvidersMatch } from "./featured-connectors.js";
 
 export const PLUGIN_CATEGORIES = [
   "productivity",
@@ -242,49 +241,13 @@ function brandKey(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-type ManagedBrand = { name: string; slug: string; replacesPluginConnector?: boolean };
-
 /** The managed app a plugin is for, matched by name, so one brand is listed once. */
-export function managedAppFor<T extends ManagedBrand>(
+export function managedAppFor<T extends { name: string; slug: string }>(
   entry: Pick<PluginMarketplaceEntry, "name" | "displayName">,
   apps: readonly T[],
 ): T | undefined {
-  const names = [entry.displayName, entry.name];
-  const keys = new Set(names.map(brandKey));
-  return apps.find((app) => {
-    if (keys.has(brandKey(app.name)) || keys.has(brandKey(app.slug))) return true;
-    // Featured aliases (googlemail, gcal) apply only when this row owns the brand.
-    if (app.replacesPluginConnector !== true) return false;
-    return names.some(
-      (name) =>
-        featuredConnectorProvidersMatch(name, app.name) ||
-        featuredConnectorProvidersMatch(name, app.slug),
-    );
-  });
-}
-
-/**
- * The catalog connection stays on screen when this app owns its brand.
- * Otherwise an installed plugin connector takes the page, as before.
- */
-export function visibleManagedApp<T extends { name?: string; replacesPluginConnector?: boolean }>(
-  managed: T | undefined,
-  parts: readonly string[],
-): T | undefined {
-  if (!managed) return undefined;
-  if (managed.replacesPluginConnector === true) return managed;
-  return parts.includes("connector") ? undefined : managed;
-}
-
-/** True when a plugin install's connector would duplicate a catalog app that owns its brand. */
-export function pluginShadowsManagedApp(
-  plugin: { name: string; displayName?: string },
-  apps: readonly ManagedBrand[],
-): boolean {
-  return (
-    managedAppFor({ name: plugin.name, displayName: plugin.displayName ?? plugin.name }, apps)
-      ?.replacesPluginConnector === true
-  );
+  const keys = new Set([brandKey(entry.displayName), brandKey(entry.name)]);
+  return apps.find((app) => keys.has(brandKey(app.name)) || keys.has(brandKey(app.slug)));
 }
 
 /** Installs from before parts could be chosen added everything they had. */

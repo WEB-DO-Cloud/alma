@@ -26,7 +26,6 @@ import {
   resolveMcpOAuthEnv,
   resolveMcpOAuthFileTemplate,
 } from "@rakazo/contracts";
-import { pluginShadowsManagedApp } from "@rakazo/core";
 import type { McpServer, PrismaClient, ThreadEvents } from "@rakazo/db";
 import { availableInSpace, itemSecretIn } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";
@@ -238,13 +237,6 @@ export type McpConnectorOptions = {
   discoveryTimeoutMs?: number;
   /** Do not dial the Workspace Developer Preview MCP hosts. */
   blockWorkspacePreview?: boolean;
-  /**
-   * Catalog apps that own their brand. Plugin MCP servers for those apps are
-   * not listed or called.
-   */
-  managedApps?: () => Promise<
-    readonly { name: string; slug: string; replacesPluginConnector?: boolean }[]
-  >;
 };
 
 function positiveInteger(value: string | undefined, allowZero = false): number | undefined {
@@ -450,25 +442,6 @@ export class McpConnector implements ConnectorProvider {
     return resolveCatalogCall(call, catalogEntries(await this.authorizedTools(context)));
   }
 
-  /** Plugin installs whose connector duplicates a catalog app that owns the brand. */
-  private async shadowedInstallIds(
-    installIds: readonly (string | null | undefined)[],
-  ): Promise<Set<string>> {
-    if (!this.options.managedApps) return new Set();
-    const ids = [...new Set(installIds.filter((id): id is string => Boolean(id)))];
-    if (ids.length === 0) return new Set();
-    const [apps, installs] = await Promise.all([
-      this.options.managedApps(),
-      this.prisma.capabilityInstall.findMany({
-        where: { id: { in: ids }, kind: "plugin" },
-        select: { id: true, name: true },
-      }),
-    ]);
-    return new Set(
-      installs.filter((row) => pluginShadowsManagedApp(row, apps)).map((row) => row.id),
-    );
-  }
-
   private async authorizedTools(context: AdapterContext): Promise<ConnectorTool[]> {
     if (!context.botId) return [];
     const usable = { enabled: true, ...availableInSpace(context) };
@@ -488,12 +461,10 @@ export class McpConnector implements ConnectorProvider {
       }),
     ]);
     const assignments = [...assigned, ...shared.map(sharedAssignment)];
-    const shadowed = await this.shadowedInstallIds(assignments.map((row) => row.server.installId));
     const groups = await Promise.all(
       assignments.map(async (assignment): Promise<ConnectorTool[]> => {
         const startedAt = Date.now();
         const server = assignment.server;
-        if (server.installId && shadowed.has(server.installId)) return [];
         const key = this.sessionKey(server, context);
         const live = this.sessions.get(key)?.revision === server.revision;
         // A package still installing finishes in the background; this run goes on without it.
@@ -723,11 +694,6 @@ export class McpConnector implements ConnectorProvider {
     }
     if (this.options.blockWorkspacePreview && isWorkspacePreviewHost(assignment.server.endpoint)) {
       yield { type: "error", message: WORKSPACE_PREVIEW_MESSAGE };
-      return;
-    }
-    const shadowed = await this.shadowedInstallIds([assignment.server.installId]);
-    if (assignment.server.installId && shadowed.has(assignment.server.installId)) {
-      yield { type: "error", message: "This connector is not available." };
       return;
     }
     // Capture material before callTool so a concurrent eviction/replace cannot
