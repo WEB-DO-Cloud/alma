@@ -53,10 +53,7 @@ test("the mailbox form shows detected servers, manual servers, and a password er
   });
 
   await page.getByRole("button", { name: "Connect apps", exact: true }).click();
-  const row = page
-    .locator("div.flex.items-center")
-    .filter({ hasText: "Email (IMAP/SMTP)" })
-    .last();
+  const row = page.locator("div.flex.items-center").filter({ hasText: "Email (IMAP/SMTP)" }).last();
   await row.getByRole("button", { name: "Add", exact: true }).click();
   const form = page.getByTestId("email-imap-form");
   await expect(form.getByLabel("Email")).toBeVisible();
@@ -75,7 +72,7 @@ test("the mailbox form shows detected servers, manual servers, and a password er
 
   await form.getByLabel("Incoming server").fill("imap.example.test");
   await form.getByLabel("Outgoing server").fill("smtp.example.test");
-  await form.getByLabel("Password").fill("secret");
+  await form.getByLabel("Password", { exact: true }).fill("secret");
   await form.getByRole("button", { name: "Test connection" }).click();
   await expect(form.getByText("The password was not accepted.")).toBeVisible();
   await captureScreenshot(page, testInfo, "email-imap-error");
