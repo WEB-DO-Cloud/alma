@@ -305,6 +305,10 @@ msgstr "{count} sa önce"
 msgid "{count}m ago"
 msgstr "{count} dk önce"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, other {# gün kaldı}} · {left, plural, other {# mesaj}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} gün ücretsiz"

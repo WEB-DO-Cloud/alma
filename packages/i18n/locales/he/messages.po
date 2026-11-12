@@ -305,6 +305,10 @@ msgstr "לפני {count} שע׳"
 msgid "{count}m ago"
 msgstr "לפני {count} דק׳"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {נותר יום אחד} two {נותרו יומיים} other {נותרו # ימים}} · {left, plural, one {הודעה אחת} two {# הודעות} other {# הודעות}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} ימים בחינם"

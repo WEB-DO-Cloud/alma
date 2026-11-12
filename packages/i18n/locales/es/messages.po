@@ -305,6 +305,10 @@ msgstr "hace {count} h"
 msgid "{count}m ago"
 msgstr "hace {count} min"
 
+#: apps/mobile/lib/trial-usage.ts
+msgid "{days, plural, one {# day left} other {# days left}} · {left, plural, one {# message} other {# messages}}"
+msgstr "{days, plural, one {Quedan # día} other {Quedan # días}} · {left, plural, one {# mensaje} other {# mensajes}}"
+
 #: apps/mobile/app/paywall.tsx
 msgid "{days} days free"
 msgstr "{days} días gratis"
