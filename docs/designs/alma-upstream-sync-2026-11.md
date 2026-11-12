@@ -63,14 +63,14 @@ Finish the merge only when `git status` shows no unmerged paths. `git add -A` in
 
 On surgical files, replace the visible product token only.
 
-| Slot                                                                                         | Text                                                         |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `expo.name`, PWA `name`, desktop `productName`, a title whose whole text is the product name | `ALMA`                                                       |
-| `expo.slug`                                                                                  | `alma`                                                       |
-| iOS `bundleIdentifier` and Android `applicationId`                                           | `do.alma.app`                                                |
-| Store listing title (`apps/mobile/fastlane/metadata/**/name.txt` and `title.txt`)            | `ALMA Asistente IA`                                          |
+| Slot                                                                                         | Text                                                                                                                      |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `expo.name`, PWA `name`, desktop `productName`, a title whose whole text is the product name | `ALMA`                                                                                                                    |
+| `expo.slug`                                                                                  | `alma`                                                                                                                    |
+| iOS `bundleIdentifier` and Android `applicationId`                                           | `do.alma.app`                                                                                                             |
+| Store listing title (`apps/mobile/fastlane/metadata/**/name.txt` and `title.txt`)            | `ALMA Asistente IA`                                                                                                       |
 | Sign-in and sign-up titles                                                                   | `Sign in` and `Create your account`. Spanish catalog: `Iniciar sesión` and `Crea tu cuenta`. The logo already names ALMA. |
-| Splash `backgroundColor` in `apps/mobile/app.json`                                           | `#002D62`                                                    |
+| Splash `backgroundColor` in `apps/mobile/app.json`                                           | `#002D62`                                                                                                                 |
 
 `apps/mobile/app.json` `scheme` is `["alma", "rakazo"]`. Icons point at the ALMA rasters already used on ALMA `main`.
 
