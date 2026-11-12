@@ -124,6 +124,37 @@ async function findOwnedSkill(
   return null;
 }
 
+/**
+ * Published HyperFrames links point at a sibling skill (`../hyperframes/references/…`,
+ * sometimes with an extra `../` and a `#anchor` because the link was written from a
+ * nested reference). Built-in skills resolve those to the other built-in's stored
+ * file. Anything else with `..` stays unresolved, so a path cannot leave the catalog.
+ */
+function resolveBuiltinSkillFile(
+  files: Readonly<Record<string, string>>,
+  wanted: string,
+): { file: string; content: string } | undefined {
+  const hash = wanted.indexOf("#");
+  const bare = hash === -1 ? wanted : wanted.slice(0, hash);
+  if (Object.hasOwn(files, bare)) return { file: bare, content: files[bare]! };
+  const match = /^(?:\.\.\/)+([^/]+)\/(.+)$/.exec(bare);
+  const otherName = match?.[1];
+  const rest = match?.[2];
+  if (!otherName || !rest) return undefined;
+  if (rest.split("/").some((part) => part === "" || part === "." || part === ".."))
+    return undefined;
+  const other = BUILTIN_AGENT_SKILLS.find((skill) => skill.name === otherName);
+  const content = other?.files?.[rest];
+  if (content === undefined) return undefined;
+  return { file: bare, content };
+}
+
+function filesForBuiltin(name: string): Readonly<Record<string, string>> {
+  const skill = BUILTIN_AGENT_SKILLS.find((item) => item.name === name);
+  if (!skill?.files) return {};
+  return skill.files;
+}
+
 /** The text files stored beside a skill's SKILL.md, keyed by relative path. */
 export function skillFiles(value: unknown): Record<string, string> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
@@ -141,20 +172,28 @@ export async function skillReadFromTool(
 ): Promise<Record<string, unknown>> {
   const skill = await findOwnedSkill(prisma, owner, input);
   if (!skill) return { error: "Skill not found." };
-  const row = skill.id.startsWith("builtin:")
+  const builtin = skill.id.startsWith("builtin:");
+  const row = builtin
     ? null
     : await prisma.agentSkill.findFirst({
         where: { id: skill.id, ...availableInSpace(owner) },
         select: { files: true },
       });
-  const files = skillFiles(row?.files);
+  const files = builtin ? filesForBuiltin(skill.name) : skillFiles(row?.files);
   const paths = Object.keys(files).sort();
   const wanted = input.file?.trim().replace(/^\.\//, "");
   if (wanted) {
-    // Only exact stored paths resolve, so no path can reach outside the skill.
-    const text = files[wanted];
-    if (text === undefined) return { error: `No file "${wanted}" in this skill.`, files: paths };
-    return { name: skill.name, file: wanted, content: text };
+    // User skills resolve only an exact stored path. Built-ins also accept a
+    // published sibling link; see resolveBuiltinSkillFile.
+    if (builtin) {
+      const resolved = resolveBuiltinSkillFile(files, wanted);
+      if (!resolved) return { error: `No file "${wanted}" in this skill.`, files: paths };
+      return { name: skill.name, file: resolved.file, content: resolved.content };
+    }
+    if (!Object.hasOwn(files, wanted)) {
+      return { error: `No file "${wanted}" in this skill.`, files: paths };
+    }
+    return { name: skill.name, file: wanted, content: files[wanted]! };
   }
   return {
     name: skill.name,

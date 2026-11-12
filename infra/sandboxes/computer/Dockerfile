@@ -49,6 +49,7 @@ RUN /tmp/apt-security.sh
 # with no privilege escalation, so nothing can be installed at runtime.
 # Compilers stay in the builder stage; heavier toolchains are a separate call.
 # Debian names fd-find's binary fdfind, so the image links it as fd.
+# ffmpeg is pinned to the Bookworm package (ffprobe comes with it) for HyperFrames.
 ARG BROWSER
 RUN apt-get update && apt-get install -y --no-install-recommends \
     xvfb \
@@ -91,6 +92,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fd-find \
     file \
     sqlite3 \
+    ffmpeg=7:5.1.9-0+deb12u1 \
   && rm -rf /var/lib/apt/lists/* \
   && pdftotext -v \
   && pdfinfo -v \
@@ -101,6 +103,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && fd --version \
   && file --version \
   && sqlite3 --version \
+  && ffmpeg -version \
+  && ffprobe -version \
+  && ffmpeg -hide_banner -encoders | grep -q libx264 \
   && groupadd --gid 1000 rakazo \
   && useradd --uid 1000 --gid rakazo --create-home --shell /bin/bash rakazo \
   && mkdir -p /etc/rakazo/fluxbox /etc/chromium/policies/managed /etc/brave/policies/managed /etc/opt/chrome/policies/managed \
@@ -115,7 +120,7 @@ COPY --from=chrome-keyring /google-chrome.gpg /usr/share/keyrings/google-chrome.
 RUN set -eux; \
     [ "$BROWSER" = chrome ] || rm /usr/share/keyrings/google-chrome.gpg; \
     case "$BROWSER" in \
-      chromium) ;; \
+      chromium) ln -sfn /usr/bin/chromium /usr/local/bin/hyperframes-browser ;; \
       chrome) \
         echo "deb [signed-by=/usr/share/keyrings/google-chrome.gpg arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" \
           > /etc/apt/sources.list.d/google-chrome.list; \
@@ -123,7 +128,8 @@ RUN set -eux; \
         apt-get update; \
         apt-get install -y --no-install-recommends google-chrome-stable; \
         rm -rf /var/lib/apt/lists/*; \
-        google-chrome-stable --version ;; \
+        google-chrome-stable --version; \
+        ln -sfn /usr/bin/google-chrome-stable /usr/local/bin/hyperframes-browser ;; \
       brave) \
         keyring=/usr/share/keyrings/brave-browser-archive-keyring.gpg; \
         curl -fsSLo "$keyring" https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
@@ -140,7 +146,8 @@ RUN set -eux; \
           '  "BraveVPNDisabled": true,' \
           '  "BraveNewsDisabled": true,' \
           '  "BraveTalkDisabled": true' \
-          '}' > /etc/brave/policies/managed/rakazo.json ;; \
+          '}' > /etc/brave/policies/managed/rakazo.json; \
+        ln -sfn /usr/bin/brave-browser /usr/local/bin/hyperframes-browser ;; \
       *) echo "unsupported BROWSER: $BROWSER (use chromium, chrome or brave)" >&2; exit 1 ;; \
     esac
 RUN ln -s "$(dpkg -L libnss-wrapper | grep '/libnss_wrapper.so$')" /usr/local/lib/libnss_wrapper.so
@@ -173,6 +180,39 @@ RUN set -eux; \
   tar -xzf "$archive" -C /usr/local/bin --strip-components=2 "gh_${GH_VERSION}_linux_${gh_arch}/bin/gh"; \
   rm -f "$archive"; \
   gh --version
+# Node.js 22 for HyperFrames (`npx hyperframes`). Bookworm's nodejs package is
+# older. Official tarball, sha256-pinned like uv and gh; npm and npx ship in it.
+# Headers and manuals are dropped so the layer stays the runtime only.
+ARG NODE_VERSION=22.23.5
+RUN set -eux; \
+  case "$TARGETARCH" in \
+    amd64) node_arch=x64; node_sha256=c54118104acc524633b5abe106bbf44a53126ec8b4e5fa105cb92b5d7de8a1a1 ;; \
+    arm64) node_arch=arm64; node_sha256=8bd3dc69eee8f3f226315a80d7d1d4faccf217a4c8fae500168ac2e38f3bdba3 ;; \
+    *) echo "unsupported TARGETARCH: $TARGETARCH" >&2; exit 1 ;; \
+  esac; \
+  archive="$(mktemp)"; \
+  curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${node_arch}.tar.gz" -o "$archive"; \
+  echo "$node_sha256  $archive" | sha256sum -c -; \
+  tar -xzf "$archive" -C /usr/local --strip-components=1; \
+  rm -f "$archive"; \
+  rm -rf /usr/local/include/node /usr/local/share/doc /usr/local/share/man /usr/local/CHANGELOG.md /usr/local/README.md; \
+  node --version; \
+  npm --version; \
+  npx --version; \
+  node -e 'const major = Number(process.versions.node.split(".")[0]); if (!(major >= 22)) process.exit(1)'
+# HyperFrames uses this instead of downloading Chrome. The link is whichever
+# browser the image built (Chromium, Chrome, or Brave). NPM_CONFIG_YES lets
+# `npx hyperframes` install without a prompt, which a bot shell cannot answer.
+ENV HYPERFRAMES_BROWSER_PATH=/usr/local/bin/hyperframes-browser \
+    NPM_CONFIG_YES=true \
+    NPM_CONFIG_UPDATE_NOTIFIER=false
+# The computer user has no root. Prove ffmpeg and `npx hyperframes --help` as
+# uid 1000. The download goes to a throwaway cache this layer deletes: the home
+# volume hides /home/rakazo, and checkpoints skip .npm, so a live computer
+# fetches the CLI again the first time it is used.
+RUN set -eux; \
+  su -s /bin/bash rakazo -c 'export HOME=/tmp/hf-home NPM_CONFIG_CACHE=/tmp/hf-home/npm NPM_CONFIG_YES=true PATH="/usr/local/bin:$PATH"; mkdir -p "$HOME"; test "$(id -u)" = 1000; node --version; ffmpeg -version; ffprobe -version; test -x "$HYPERFRAMES_BROWSER_PATH"; npx hyperframes --help'; \
+  rm -rf /tmp/hf-home
 # The page browser drives the visible Chromium through agent-browser, pinned and checked by sha256.
 COPY --chmod=755 install-agent-browser.sh /tmp/install-agent-browser.sh
 RUN /tmp/install-agent-browser.sh /usr/local/bin && rm /tmp/install-agent-browser.sh \

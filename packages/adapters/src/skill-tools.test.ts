@@ -261,8 +261,9 @@ describe("skill tools", () => {
     for (const skill of BUILTIN_AGENT_SKILLS) {
       const parsed = parseSkillMd(skill.content);
       expect(parsed).toMatchObject({ name: skill.name, description: skill.description });
-      // / picker truncates at 72; keep descriptions short so "review only" stays visible.
-      expect(skill.description.length).toBeLessThanOrEqual(72);
+      // The / picker truncates at 72. Skills written here stay inside that so the
+      // ending stays visible. Imported skills keep their published description.
+      expect(skill.description.length).toBeLessThanOrEqual(skill.files ? 2000 : 72);
     }
 
     const records = await listAgentSkillRecords(prisma as never, owner);
@@ -294,6 +295,87 @@ describe("skill tools", () => {
     ).toEqual({ error: "Builtin and plugin skills are read-only." });
     expect(await skillDeleteFromTool(prisma as never, owner, { name: "Interrogate" })).toEqual({
       error: "Builtin and plugin skills are read-only.",
+    });
+  });
+
+  it("reads built-in reference files, including hyperframes links from the CLI skill", async () => {
+    const hyperframes = BUILTIN_AGENT_SKILLS.find((skill) => skill.name === "hyperframes");
+    const cli = BUILTIN_AGENT_SKILLS.find((skill) => skill.name === "hyperframes-cli");
+    expect(hyperframes?.files?.["references/plugin-installation.md"]).toBeTruthy();
+    expect(cli?.files?.["references/doctor-browser.md"]).toBeTruthy();
+
+    const listed = await skillReadFromTool(prisma as never, owner, { name: "hyperframes-cli" });
+    expect(listed).toMatchObject({ name: "hyperframes-cli", source: "builtin", readOnly: true });
+    expect(listed.files).toEqual(Object.keys(cli?.files ?? {}).sort());
+    expect(prisma.agentSkill.findFirst).not.toHaveBeenCalled();
+
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "hyperframes-cli",
+        file: "references/doctor-browser.md",
+      }),
+    ).toEqual({
+      name: "hyperframes-cli",
+      file: "references/doctor-browser.md",
+      content: cli?.files?.["references/doctor-browser.md"],
+    });
+    // Published links are relative to the HyperFrames repo. skill_read resolves
+    // them onto the hyperframes built-in and drops a markdown anchor.
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "hyperframes-cli",
+        file: "../hyperframes/references/plugin-installation.md",
+      }),
+    ).toEqual({
+      name: "hyperframes-cli",
+      file: "../hyperframes/references/plugin-installation.md",
+      content: hyperframes?.files?.["references/plugin-installation.md"],
+    });
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "hyperframes-cli",
+        file: "../../hyperframes/references/format.md#variables",
+      }),
+    ).toEqual({
+      name: "hyperframes-cli",
+      file: "../../hyperframes/references/format.md",
+      content: hyperframes?.files?.["references/format.md"],
+    });
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "hyperframes-cli",
+        file: "../hyperframes/../hyperframes-cli/LICENSE",
+      }),
+    ).toMatchObject({ error: expect.stringContaining("No file") });
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "hyperframes-cli",
+        file: "../../../etc/passwd",
+      }),
+    ).toMatchObject({ error: expect.stringContaining("No file") });
+  });
+
+  it("does not follow ../ from a user skill into a built-in file", async () => {
+    prisma = makePrisma([
+      {
+        id: "skill-1",
+        spaceId: owner.spaceId,
+        userId: owner.userId,
+        name: "notes",
+        description: "local notes",
+        content: buildSkillMd({ name: "notes", description: "local notes", body: "steps" }),
+        source: "user",
+        files: { "readme.md": "local" },
+      },
+    ]);
+    expect(
+      await skillReadFromTool(prisma as never, owner, {
+        name: "notes",
+        file: "../hyperframes/references/format.md",
+      }),
+    ).toEqual({
+      error: 'No file "../hyperframes/references/format.md" in this skill.',
+      files: ["readme.md"],
     });
   });
 
