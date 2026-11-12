@@ -339,6 +339,8 @@ x-app-environment: &app-environment # Runtime
   ALMA_GOOGLE_BYO_OAUTH:
   # Every app, including Gmail, Calendar, and Drive, connects through Composio. Off unless exactly true.
   ALMA_COMPOSIO_INTEGRATIONS:
+  # Self-hosted mailbox connector. Off unless exactly true. The API and the worker both read it.
+  ALMA_EMAIL_IMAP_CONNECTOR:
   # The worker refreshes Gmail, Calendar, and Drive tokens, so it needs the same client, origin, and scope mode.
   ALMA_GOOGLE_OAUTH_CLIENT_ID:
   ALMA_GOOGLE_SCOPE_MODE:

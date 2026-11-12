@@ -47,6 +47,7 @@ import { connectionsRoutes } from "./routes/connections.js";
 import { contentRoutes } from "./routes/content.js";
 import { createRouterContext } from "./routes/context.js";
 import { digestRoutes } from "./routes/digest.js";
+import { emailImapRoutes } from "./routes/email-imap.js";
 import { googleOAuthRoutes } from "./routes/google-oauth.js";
 import { mcpRoutes } from "./routes/mcp.js";
 import { memoryRoutes } from "./routes/memory.js";
@@ -166,6 +167,8 @@ export interface RouterDeps {
     googleByoOauth?: boolean;
     /** Exactly ALMA_COMPOSIO_INTEGRATIONS=true. Hides ALMA's Google connector. */
     composioIntegrations?: boolean;
+    /** Exactly ALMA_EMAIL_IMAP_CONNECTOR=true. */
+    emailImapConnector?: boolean;
     /** ALMA's Google OAuth client ID. Not the organization's. Absent when unset. */
     googleOAuthClientId?: string;
     notifyPolicyEnabled?: boolean;
@@ -201,6 +204,7 @@ export function createRouter(deps: RouterDeps) {
     ...mcpRoutes(ctx),
     ...onboardingRoutes(ctx),
     ...availabilityRoutes(ctx),
+    ...emailImapRoutes(ctx),
     ...connectionsRoutes(ctx),
     ...messagingRoutes(ctx),
     ...contentRoutes(ctx),

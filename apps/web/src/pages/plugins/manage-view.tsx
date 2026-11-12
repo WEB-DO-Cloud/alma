@@ -1,6 +1,6 @@
-import { Plural, Trans } from "@lingui/react/macro";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import type { CapabilityInstall, ConnectionCatalogItem, McpServer } from "@rakazo/contracts";
-import { mcpServerNeedsSignIn } from "@rakazo/contracts";
+import { catalogItemLabel, mcpServerNeedsSignIn } from "@rakazo/contracts";
 import { catalogItemKey } from "@rakazo/core";
 import { Button } from "@rakazo/ui-web";
 import type { PluginSelection } from "../../components/integrations/plugin-marketplace";
@@ -51,6 +51,7 @@ export function ManageView({
   onOpenPlugin: (selection: PluginSelection) => void;
   onBack: () => void;
 }) {
+  const { i18n } = useLingui();
   const { mcpError, mcpQuery, sources, pending, refresh } = state;
   const appPlugins = connectorInstalls;
   const hasApps = appCount > 0 || Boolean(mcpError);
@@ -88,7 +89,7 @@ export function ManageView({
               <CatalogTile
                 key={catalogItemKey(item)}
                 item={item}
-                label={item.name}
+                label={catalogItemLabel(item, i18n.locale)}
                 logo={item.logo}
                 tileTestId={false}
                 context={tileContext}

@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { ComposioConnector } from "./composio-connector.js";
 import { FakeComposioClient } from "./composio-fake.js";
 import { resolveDeploymentModel } from "./deployment-model.js";
+import { EmailImapConnector } from "./email-imap-connector.js";
 import { deploymentGoogleClientId } from "./google-oauth.js";
 import { readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import { GoogleWorkspaceConnector } from "./google-workspace.js";
@@ -25,6 +26,7 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
+    emailImapConnector: source.ALMA_EMAIL_IMAP_CONNECTOR === "true",
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),
@@ -165,5 +167,22 @@ describe("Composio integrations flag", () => {
     ]);
     expect(shown.every((item) => item.connectorId === "composio")).toBe(true);
     expect(hidden.map((item) => item.slug).sort()).toEqual(["GITHUB", "NOTION", "SLACK"]);
+  });
+});
+
+describe("email IMAP connector flag", () => {
+  it("registers the mailbox connector only when the flag is exactly true, beside Composio", () => {
+    const off = createConnectorRuntime(runRuntimeEnvFromProcess({ NODE_ENV: "test" }), runtimeDeps);
+    expect(off.stack.connector.managed("email-imap")).toBeUndefined();
+    const on = createConnectorRuntime(
+      runRuntimeEnvFromProcess({
+        NODE_ENV: "test",
+        ALMA_EMAIL_IMAP_CONNECTOR: "true",
+        ALMA_COMPOSIO_INTEGRATIONS: "true",
+      }),
+      runtimeDeps,
+    );
+    expect(on.stack.connector.managed("email-imap")).toBeInstanceOf(EmailImapConnector);
+    expect(on.google).toBeUndefined();
   });
 });

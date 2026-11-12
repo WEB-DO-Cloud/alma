@@ -19,6 +19,7 @@ import { createIdleComputerSweeper } from "./computer-idle.js";
 import { reconcileComputerUpdates } from "./computer-update.js";
 import { createConnectorStack } from "./connector-registry.js";
 import { deploymentModelUsageLookup, resolveDeploymentModel } from "./deployment-model.js";
+import { EmailImapConnector } from "./email-imap-connector.js";
 import { createRunExecutor } from "./executor.js";
 import type { ExecutorDeps } from "./executor-deps.js";
 import { ExpoPushProvider } from "./expo-push.js";
@@ -58,6 +59,8 @@ export interface RunRuntimeEnv extends PipedreamEnvironmentValues {
   googleByoOauth?: boolean;
   /** ALMA_COMPOSIO_INTEGRATIONS is exactly true. Off keeps ALMA's Google connector. */
   composioIntegrations?: boolean;
+  /** ALMA_EMAIL_IMAP_CONNECTOR is exactly true. Off hides the mailbox connector. */
+  emailImapConnector?: boolean;
   /** ALMA_GOOGLE_OAUTH_CLIENT_ID when it is a Google client id. */
   googleOAuthClientId?: string;
   /** Exactly `restricted`, or `limited` for every other value. */
@@ -93,6 +96,7 @@ export function runRuntimeEnvFromProcess(source: NodeJS.ProcessEnv): RunRuntimeE
     composioApiKey: source.COMPOSIO_API_KEY,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
+    emailImapConnector: source.ALMA_EMAIL_IMAP_CONNECTOR === "true",
     googleOAuthClientId: deploymentGoogleClientId(source.ALMA_GOOGLE_OAUTH_CLIENT_ID) ?? undefined,
     googleScopeMode: readGoogleScopeMode(source),
     googlePicker: readGooglePickerEnv(source),
@@ -215,8 +219,10 @@ export function createConnectorRuntime(
     undefined,
     authConfigIdsFor,
   );
+  const emailImap = env.emailImapConnector ? new EmailImapConnector(prisma, secrets) : undefined;
   const stack = createConnectorStack(composio, [
     ...(google ? [google] : []),
+    ...(emailImap ? [emailImap] : []),
     installed,
     ...integrationSettings
       .providers()

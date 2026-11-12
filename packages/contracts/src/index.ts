@@ -21,6 +21,7 @@ export * from "./computer.js";
 export * from "./connector-errors.js";
 export * from "./desktop.js";
 export * from "./domain.js";
+export * from "./email-imap.js";
 export * from "./events.js";
 export * from "./google-oauth.js";
 export * from "./history.js";

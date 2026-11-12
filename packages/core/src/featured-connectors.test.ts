@@ -113,5 +113,15 @@ describe("featured connectors", () => {
         ({ name }) => name,
       ),
     ).toEqual(["Outlook"]);
+    const mailbox = {
+      ...item("email", "Email (IMAP/SMTP)"),
+      connectorId: "email-imap",
+    };
+    expect(
+      filterConnectionCatalogItems([...catalog, mailbox], "correo").map(({ slug }) => slug),
+    ).toEqual(["gmail", "email"]);
+    expect(filterConnectionCatalogItems([mailbox], "imap").map(({ slug }) => slug)).toEqual([
+      "email",
+    ]);
   });
 });

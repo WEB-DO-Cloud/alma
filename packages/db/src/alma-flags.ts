@@ -14,6 +14,8 @@ export type AlmaFlags = {
    * Off unless the value is exactly `true`.
    */
   composioIntegrations: boolean;
+  /** Self-hosted mailbox connector. Off unless the value is exactly `true`. */
+  emailImapConnector: boolean;
 };
 
 const DEFAULT_TRIAL_DAYS = 14;
@@ -39,6 +41,7 @@ export function readAlmaFlags(source: NodeJS.ProcessEnv = process.env): AlmaFlag
     onboardingV2,
     googleByoOauth: source.ALMA_GOOGLE_BYO_OAUTH === "true",
     composioIntegrations: source.ALMA_COMPOSIO_INTEGRATIONS === "true",
+    emailImapConnector: source.ALMA_EMAIL_IMAP_CONNECTOR === "true",
   };
 }
 

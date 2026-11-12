@@ -1,6 +1,6 @@
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import type { ConnectionCatalogItem } from "@rakazo/contracts";
-import { CONNECTION_LABEL_MAX_LENGTH } from "@rakazo/contracts";
+import { CONNECTION_LABEL_MAX_LENGTH, catalogItemLabel } from "@rakazo/contracts";
 import { catalogItemAccounts, catalogItemKey, humanizeToolName } from "@rakazo/core";
 import { Badge, Button, Disclosure, Input } from "@rakazo/ui-web";
 import { ChevronLeft, Plus } from "lucide-react";
@@ -20,12 +20,16 @@ export function ConnectorDetail({
   item,
   state,
   onBack,
+  onAdd,
 }: {
   item: ConnectionCatalogItem;
   state: PluginConnections;
   onBack: () => void;
+  /** When set, Add another opens this instead of the browser sign-in. */
+  onAdd?: () => void;
 }) {
-  const { t } = useLingui();
+  const { i18n, t } = useLingui();
+  const name = catalogItemLabel(item, i18n.locale);
   const {
     connections,
     pending,
@@ -68,10 +72,10 @@ export function ConnectorDetail({
             />
           ) : (
             <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-body font-semibold text-foreground">
-              {item.name[0]}
+              {name[0]}
             </div>
           )}
-          <div className="truncate text-heading3 font-medium text-foreground">{item.name}</div>
+          <div className="truncate text-heading3 font-medium text-foreground">{name}</div>
         </div>
         <Button
           type="button"
@@ -127,7 +131,7 @@ export function ConnectorDetail({
           className="h-9 px-2 text-body text-muted-foreground"
           size="sm"
           disabled={connecting || uninstalling}
-          onClick={() => void connect(item)}
+          onClick={() => (onAdd ? onAdd() : void connect(item))}
         >
           <Plus />
           {connecting ? <Trans>Adding…</Trans> : <Trans>Add another</Trans>}
