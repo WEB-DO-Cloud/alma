@@ -15,8 +15,8 @@ marketing favicons, the marketing mark, the Windows and Linux icons, the phone
 icon, the splash image, and `apps/www/public/og-image.png`.
 
 - `apps/desktop/assets/icon.png`, `icon-macos.png`, `icon.ico`, and `icon.icns`:
-  the same 1024-pixel white spark on `#002D62`, 49 pixels below the phone
-  icon and 41 pixels higher than the installed desktop icon. Phone icons are
+  the same 1024-pixel white spark on `#002D62`, 8 pixels below the phone
+  icon and 82 pixels higher than the installed desktop icon. Phone icons are
   not shifted. The files are full-bleed squares; each OS applies its own mask.
 - `apps/mobile/assets/icon.png`: opaque 1024-pixel square for the generic/legacy icon,
   with no rounded mask or Dock margins.

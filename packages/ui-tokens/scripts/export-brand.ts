@@ -72,17 +72,6 @@ async function icns(input: Buffer, name: string) {
   await writeFile(path(name), Buffer.concat([fileHeader, body]));
 }
 
-function mixHex(from: string, toward: string, amount: number) {
-  const channel = (start: number) => {
-    const a = Number.parseInt(from.slice(start, start + 2), 16);
-    const b = Number.parseInt(toward.slice(start, start + 2), 16);
-    return Math.round(a + (b - a) * amount)
-      .toString(16)
-      .padStart(2, "0");
-  };
-  return `#${channel(1)}${channel(3)}${channel(5)}`;
-}
-
 function extendedSrgb(hex: string) {
   const component = (start: number) =>
     (Number.parseInt(hex.slice(start, start + 2), 16) / 255).toFixed(5);
@@ -92,11 +81,11 @@ function extendedSrgb(hex: string) {
 const ICON = 1024;
 /**
  * The Icon Composer group used to translate the spark 90 points down (positive
- * Y is down), which is the low star in the current DMG. Lift that by 4% of
+ * Y is down), which is the low star in the current DMG. Lift that by 8% of
  * the icon height. Phone icons stay on the unshifted spark.
  */
 const PREVIOUS_DESKTOP_SHIFT_DOWN = 90;
-const DESKTOP_STAR_LIFT = Math.round(ICON * 0.04);
+const DESKTOP_STAR_LIFT = Math.round(ICON * 0.08);
 const DESKTOP_SHIFT_DOWN = PREVIOUS_DESKTOP_SHIFT_DOWN - DESKTOP_STAR_LIFT;
 
 async function desktopIcon(sparkImage: Buffer) {
@@ -119,26 +108,9 @@ function dmgBackgroundSvg(scale: number) {
   const width = DMG_WIDTH * scale;
   const height = DMG_HEIGHT * scale;
   const px = (value: number) => (value * scale).toFixed(2);
-  const lighter = mixHex(NAVY, "#FFFFFF", 0.1);
-  const deeper = mixHex(NAVY, "#000000", 0.12);
-  const plate = "#F4F7FB";
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${lighter}"/>
-      <stop offset="0.42" stop-color="${NAVY}"/>
-      <stop offset="1" stop-color="${deeper}"/>
-    </linearGradient>
-    <radialGradient id="label" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="${plate}"/>
-      <stop offset="0.68" stop-color="${plate}"/>
-      <stop offset="1" stop-color="${plate}" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="${width}" height="${height}" fill="url(#bg)"/>
-  <ellipse cx="${px(170)}" cy="${px(242)}" rx="${px(46)}" ry="${px(18)}" fill="url(#label)"/>
-  <ellipse cx="${px(490)}" cy="${px(242)}" rx="${px(74)}" ry="${px(18)}" fill="url(#label)"/>
-  <g fill="none" stroke="#FFFFFF" stroke-width="${px(2.75)}" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="${width}" height="${height}" fill="#FFFFFF"/>
+  <g fill="none" stroke="${NAVY}" stroke-width="${px(2.75)}" stroke-linecap="round" stroke-linejoin="round">
     <path d="M${px(296)} ${px(175)} H${px(348)}"/>
     <path d="M${px(336)} ${px(165)} L${px(360)} ${px(175)} L${px(336)} ${px(185)}"/>
   </g>

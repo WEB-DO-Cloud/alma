@@ -10,8 +10,8 @@ const iconJson = path.resolve(
   "../../../packages/ui-tokens/assets/Rakazo.icon/icon.json",
 );
 
-/** Previous Icon Composer shift was 90 points down. The desktop star is 4% of 1024 higher. */
-const DESKTOP_SHIFT_DOWN = 90 - Math.round(1024 * 0.04);
+/** Previous Icon Composer shift was 90 points down. The desktop star is 8% of 1024 higher. */
+const DESKTOP_SHIFT_DOWN = 90 - Math.round(1024 * 0.08);
 
 type Raster = { width: number; height: number; pixels: Buffer };
 
@@ -173,34 +173,24 @@ describe("desktop install artwork", () => {
     expect(ico.readUInt16LE(4)).toBeGreaterThanOrEqual(6);
   });
 
-  it("paints the DMG window as an ALMA blue gradient with a light arrow and label plates", () => {
+  it("paints the DMG window white with an ALMA blue arrow and no label plates", () => {
     const background = readPng(path.join(assets, "background.png"));
     const retina = readPng(path.join(assets, "background@2x.png"));
     expect(background.width).toBe(660);
     expect(background.height).toBe(400);
     expect(retina.width).toBe(1320);
     expect(retina.height).toBe(800);
-    const top = pixel(background, 20, 0);
-    const field = pixel(background, 20, 168);
-    const bottom = pixel(background, 20, 399);
-    for (const sample of [top, field, bottom]) {
-      expect(sample[2]).toBeGreaterThan(sample[0] ?? 0);
-      expect(sample[0]).toBeLessThan(80);
-    }
-    expect(Math.abs((field[1] ?? 0) - 45)).toBeLessThan(8);
-    expect(Math.abs((field[2] ?? 0) - 98)).toBeLessThan(12);
-    expect((top[1] ?? 0) > (field[1] ?? 0)).toBe(true);
-    expect((bottom[1] ?? 0) < (field[1] ?? 0)).toBe(true);
-    expect(pixel(background, 329, 175).every((channel) => (channel ?? 0) > 250)).toBe(true);
-    expect(pixel(retina, 658, 350).every((channel) => (channel ?? 0) > 250)).toBe(true);
     for (const [x, y] of [
+      [0, 0],
+      [20, 200],
       [170, 242],
       [490, 242],
+      [659, 399],
     ] as const) {
-      const plate = pixel(background, x, y);
-      expect(plate[0]).toBeGreaterThan(230);
-      expect(plate[1]).toBeGreaterThan(230);
-      expect(plate[2]).toBeGreaterThan(230);
+      expect(pixel(background, x, y)).toEqual([255, 255, 255]);
     }
+    expect(pixel(background, 329, 175)).toEqual([0, 45, 98]);
+    expect(pixel(retina, 658, 350)).toEqual([0, 45, 98]);
+    expect(pixel(retina, 40, 400)).toEqual([255, 255, 255]);
   });
 });
