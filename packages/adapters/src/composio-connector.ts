@@ -21,6 +21,7 @@ import {
   composioToolkitDirectory,
   createToolkitDirectoryCache,
   mergeCatalogWithConnected,
+  signInSetupSlugs,
 } from "./composio-catalog-cache.js";
 import { collectPages, filterCatalog } from "./connector-catalog.js";
 import type { GoogleOAuthRemote } from "./google-oauth.js";
@@ -49,12 +50,16 @@ export type ComposioClient = {
   sessions: { use(sessionId: string): Promise<ComposioSession> };
   connectedAccounts: Pick<Composio["connectedAccounts"], "list" | "waitForConnection" | "delete">;
   toolkits: {
-    get(query: { limit?: number }): Promise<
+    get(query: { limit?: number; cursor?: string }): Promise<
       Array<{
         slug: string;
+        name?: string;
         noAuth?: boolean;
-        composioManagedAuthSchemes?: string[];
-        meta?: { categories?: Array<{ name?: string | null } | string> };
+        composioManagedAuthSchemes?: string[] | null;
+        meta?: {
+          logo?: string | null;
+          categories?: Array<{ name?: string | null } | string>;
+        };
       }>
     >;
   };
@@ -63,6 +68,10 @@ export type ComposioClient = {
       items: Array<{ toolkit: { slug: string }; status: string }>;
       nextCursor: string | null;
     }>;
+    create?(
+      slug: string,
+      config: { type: "use_composio_managed_auth"; name: string },
+    ): Promise<{ id: string }>;
   };
 };
 
@@ -167,6 +176,61 @@ function categoryFrom(toolkit: {
   const first = toolkit.meta?.categories?.[0];
   const name = (typeof first === "string" ? first : first?.name)?.trim();
   return name ? name.slice(0, 80) : undefined;
+}
+
+type DirectoryToolkit = {
+  slug: string;
+  name: string;
+  logo?: string | null;
+  isNoAuth?: boolean;
+  composioManagedAuthSchemes?: string[];
+};
+
+type ToolkitIndex = {
+  categories: Map<string, string>;
+  configured: Set<string>;
+  schemes: Map<string, string[]>;
+  apps: DirectoryToolkit[];
+};
+
+type RawToolkitPage = {
+  items?: Array<Record<string, unknown>>;
+  next_cursor?: string | null;
+  nextCursor?: string | null;
+};
+
+function emptyToolkitIndex(): ToolkitIndex {
+  return {
+    categories: new Map(),
+    configured: new Set(),
+    schemes: new Map(),
+    apps: [],
+  };
+}
+
+function stringList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.filter((item): item is string => typeof item === "string");
+}
+
+function directoryToolkitFromRaw(item: Record<string, unknown>): DirectoryToolkit[] {
+  const slug = typeof item.slug === "string" ? item.slug.trim() : "";
+  if (!slug) return [];
+  const name = typeof item.name === "string" && item.name.trim() ? item.name : slug;
+  const meta = item.meta && typeof item.meta === "object" ? (item.meta as { logo?: unknown }) : {};
+  const logo =
+    typeof item.logo === "string" ? item.logo : typeof meta.logo === "string" ? meta.logo : null;
+  const schemes =
+    stringList(item.composio_managed_auth_schemes) ?? stringList(item.composioManagedAuthSchemes);
+  return [
+    {
+      slug,
+      name,
+      logo,
+      isNoAuth: Boolean(item.is_no_auth ?? item.isNoAuth),
+      ...(schemes !== undefined ? { composioManagedAuthSchemes: schemes } : {}),
+    },
+  ];
 }
 
 function catalogSessionKey(userId: string, authConfigIds?: Record<string, string>): string {
@@ -408,6 +472,12 @@ export class ComposioConnector implements ComposioProvider {
   private readonly omitWorkspaceCatalog: boolean;
   /** An injected client or a stored key has its own catalog, so it must not share the process-wide cache. */
   private readonly directoryCache: typeof composioToolkitDirectory;
+  /**
+   * Managed schemes from the last directory load, keyed by slug.
+   * An empty array is meaningful only while `managedAuthIndexTrusted` is set.
+   */
+  private managedSchemesBySlug = new Map<string, string[]>();
+  private managedAuthIndexTrusted = false;
 
   constructor(
     options: {
@@ -599,38 +669,132 @@ export class ComposioConnector implements ComposioProvider {
 
   private async loadDirectory(): Promise<ToolkitDirectoryEntry[]> {
     const session = await this.sessionFor("__rakazo_catalog__");
-    const [toolkits, index] = await Promise.all([
-      collectPages((cursor) => session.toolkits({ limit: 50, cursor })),
+    const [listed, index] = await Promise.all([
+      this.listDirectoryToolkits(session),
       // Without this lookup every app stays listed, as before.
       this.toolkitIndex().catch((error: unknown) => {
         getLogger().warn("composio sign-in setup lookup failed", {
           error: sanitizeIntegrationError(error),
         });
-        return { needsSetup: new Set<string>(), categories: new Map<string, string>() };
+        return emptyToolkitIndex();
       }),
     ]);
-    return toolkits.map((toolkit) => {
+    const source = listed.length > 0 ? listed : index.apps;
+    const rows = source.map((toolkit) => {
       const slug = composioSlugKey(toolkit.slug);
-      const category = index.categories.get(slug);
+      const fromList = Array.isArray(toolkit.composioManagedAuthSchemes)
+        ? toolkit.composioManagedAuthSchemes
+        : index.schemes.get(slug);
       return {
+        slug: toolkit.slug,
+        name: toolkit.name || toolkit.slug,
+        logo: toolkit.logo ?? null,
+        noAuth: Boolean(toolkit.isNoAuth),
+        schemes: Array.isArray(fromList) ? fromList : undefined,
+        category: index.categories.get(slug),
+      };
+    });
+    const decision = signInSetupSlugs(
+      rows.map((row) => ({
+        slug: row.slug,
+        noAuth: row.noAuth,
+        ...(row.schemes !== undefined ? { composioManagedAuthSchemes: row.schemes } : {}),
+      })),
+      index.configured,
+    );
+    this.managedAuthIndexTrusted = decision.trusted;
+    this.managedSchemesBySlug = new Map(
+      rows.flatMap((row) =>
+        row.schemes !== undefined ? [[composioSlugKey(row.slug), row.schemes] as const] : [],
+      ),
+    );
+    return rows.map((row) => ({
+      slug: row.slug,
+      name: row.name,
+      logo: row.logo,
+      noAuth: row.noAuth,
+      ...(row.category ? { category: row.category } : {}),
+      ...(!row.noAuth && decision.needsSetup.has(composioSlugKey(row.slug))
+        ? { needsSignInSetup: true }
+        : {}),
+    }));
+  }
+
+  /**
+   * The session list is the directory. Its raw payload carries
+   * `composio_managed_auth_schemes`, which the SDK's mapped `session.toolkits`
+   * drops. The toolkit index is the fallback when that list is empty.
+   */
+  private async listDirectoryToolkits(session: ComposioSession): Promise<DirectoryToolkit[]> {
+    try {
+      const raw = await this.rawDirectoryPages(session);
+      if (raw.length > 0) return raw;
+    } catch (error) {
+      getLogger().warn("composio session directory failed", {
+        error: sanitizeIntegrationError(error),
+      });
+    }
+    try {
+      const items = await collectPages((cursor) => session.toolkits({ limit: 50, cursor }));
+      return items.map((toolkit) => ({
         slug: toolkit.slug,
         name: toolkit.name,
         logo: toolkit.logo ?? null,
-        noAuth: Boolean(toolkit.isNoAuth),
-        ...(category ? { category } : {}),
-        ...(!toolkit.isNoAuth && index.needsSetup.has(slug) ? { needsSignInSetup: true } : {}),
+        isNoAuth: Boolean(toolkit.isNoAuth),
+      }));
+    } catch (error) {
+      getLogger().warn("composio session directory failed", {
+        error: sanitizeIntegrationError(error),
+      });
+      return [];
+    }
+  }
+
+  private rawSessionToolkitList():
+    | ((sessionId: string, cursor?: string) => Promise<RawToolkitPage>)
+    | undefined {
+    const owner = this.client as { getClient?: () => unknown } | undefined;
+    if (!owner || typeof owner.getClient !== "function") return undefined;
+    let raw: {
+      toolRouter?: {
+        session?: { toolkits?: (sessionId: string, query: object) => Promise<unknown> };
+      };
+    };
+    try {
+      raw = owner.getClient() as typeof raw;
+    } catch {
+      return undefined;
+    }
+    const list = raw?.toolRouter?.session?.toolkits;
+    const sessionApi = raw?.toolRouter?.session;
+    if (!sessionApi || typeof list !== "function") return undefined;
+    return (sessionId, cursor) =>
+      list.call(sessionApi, sessionId, {
+        limit: 50,
+        ...(cursor ? { cursor } : {}),
+      }) as Promise<RawToolkitPage>;
+  }
+
+  private async rawDirectoryPages(session: ComposioSession): Promise<DirectoryToolkit[]> {
+    const list = this.rawSessionToolkitList();
+    if (!list) return [];
+    return collectPages(async (cursor) => {
+      const page = await list(session.sessionId, cursor);
+      const items = Array.isArray(page?.items) ? page.items : [];
+      return {
+        items: items.flatMap((item) => directoryToolkitFromRaw(item)),
+        cursor: page?.next_cursor ?? page?.nextCursor ?? undefined,
       };
     });
   }
 
   /**
-   * Apps with no managed sign-in (Shopify, Twitter) connect only once this
-   * project has an auth config. The category names come from the same index.
+   * Category names, and managed schemes when the session list does not carry them.
+   * Shopify and X stay hidden once the index names an app Composio can sign in.
+   * A project with no auth configs, whose every scheme list is empty, does not:
+   * that answer is how a new project describes Gmail too.
    */
-  private async toolkitIndex(): Promise<{
-    needsSetup: Set<string>;
-    categories: Map<string, string>;
-  }> {
+  private async toolkitIndex(): Promise<ToolkitIndex> {
     const composio = await this.sdk();
     const [toolkits, authConfigs] = await Promise.all([
       composio.toolkits.get({ limit: 1000 }),
@@ -645,20 +809,27 @@ export class ComposioConnector implements ComposioProvider {
         .map((config) => composioSlugKey(config.toolkit.slug)),
     );
     const categories = new Map<string, string>();
+    const schemes = new Map<string, string[]>();
+    const apps: DirectoryToolkit[] = [];
     for (const toolkit of toolkits) {
+      const slug = composioSlugKey(toolkit.slug);
+      if (!slug) continue;
       const category = categoryFrom(toolkit);
-      if (category) categories.set(composioSlugKey(toolkit.slug), category);
+      if (category) categories.set(slug, category);
+      if (Array.isArray(toolkit.composioManagedAuthSchemes)) {
+        schemes.set(slug, toolkit.composioManagedAuthSchemes);
+      }
+      apps.push({
+        slug: toolkit.slug,
+        name: toolkit.name?.trim() || toolkit.slug,
+        logo: toolkit.meta?.logo ?? null,
+        isNoAuth: Boolean(toolkit.noAuth),
+        ...(Array.isArray(toolkit.composioManagedAuthSchemes)
+          ? { composioManagedAuthSchemes: toolkit.composioManagedAuthSchemes }
+          : {}),
+      });
     }
-    return {
-      categories,
-      needsSetup: new Set(
-        toolkits
-          // A missing field is unknown, not "no managed sign-in".
-          .filter((toolkit) => !toolkit.noAuth && toolkit.composioManagedAuthSchemes?.length === 0)
-          .map((toolkit) => composioSlugKey(toolkit.slug))
-          .filter((slug) => !configured.has(slug)),
-      ),
-    };
+    return { categories, configured, schemes, apps };
   }
 
   async listConnectedSlugs(userId: string): Promise<string[]> {
@@ -768,6 +939,14 @@ export class ComposioConnector implements ComposioProvider {
     request: { provider: string; redirectUrl: string; authConfigIds?: Record<string, string> },
     context: AdapterContext,
   ): Promise<{ authorizationUrl: string | null; state: string }> {
+    return this.authorizeProvider(request, context, false);
+  }
+
+  private async authorizeProvider(
+    request: { provider: string; redirectUrl: string; authConfigIds?: Record<string, string> },
+    context: AdapterContext,
+    retried: boolean,
+  ): Promise<{ authorizationUrl: string | null; state: string }> {
     const session = await this.sessionFor(context.userId, request.authConfigIds);
     try {
       const connectionRequest = await session.authorize(request.provider, {
@@ -789,9 +968,58 @@ export class ComposioConnector implements ComposioProvider {
         return { authorizationUrl: null, state: request.provider };
       }
       if (isNoManagedAuthError(error)) {
+        const schemes = this.managedSchemesBySlug.get(composioSlugKey(request.provider));
+        const unmanaged = this.managedAuthIndexTrusted && schemes?.length === 0;
+        if (!unmanaged && !retried && (await this.ensureManagedAuthConfig(request.provider))) {
+          this.catalogSessions.delete(catalogSessionKey(context.userId, request.authConfigIds));
+          return this.authorizeProvider(request, context, true);
+        }
         throw new ConnectorAuthUnavailableError({ cause: sanitizeIntegrationError(error) });
       }
       throw new Error(sanitizeIntegrationError(error));
+    }
+  }
+
+  /**
+   * A new Composio project has no auth configs. Session link then refuses Gmail
+   * even though Composio manages its OAuth. Creating the managed config is what
+   * a connect does, and the next authorize opens the provider.
+   */
+  private async ensureManagedAuthConfig(slug: string): Promise<boolean> {
+    const composio = await this.sdk();
+    const create = (
+      composio.authConfigs as {
+        create?: (
+          toolkit: string,
+          config: { type: "use_composio_managed_auth"; name: string },
+        ) => Promise<{ id?: string }>;
+      }
+    ).create;
+    if (typeof create !== "function") return false;
+    const key = composioSlugKey(slug);
+    try {
+      const configs = await collectPages(async (cursor) => {
+        const page = await composio.authConfigs.list({ limit: 100, cursor });
+        return { items: page.items, cursor: page.nextCursor ?? undefined };
+      });
+      if (
+        configs.some(
+          (config) => config.status === "ENABLED" && composioSlugKey(config.toolkit.slug) === key,
+        )
+      ) {
+        return false;
+      }
+      await create.call(composio.authConfigs, slug, {
+        type: "use_composio_managed_auth",
+        name: slug,
+      });
+      this.directoryCache.invalidate();
+      return true;
+    } catch (error) {
+      getLogger().warn("composio managed auth config was not created", {
+        error: sanitizeIntegrationError(error),
+      });
+      return false;
     }
   }
 

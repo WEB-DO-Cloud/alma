@@ -74,6 +74,21 @@ const app = {
   noAuth: false,
 };
 
+it("keeps a Cursor plugin that is not a Composio app, and does not list Gmail twice", () => {
+  const gmail = entry({
+    id: "cursor-gmail",
+    name: "gmail",
+    displayName: "Gmail",
+    skillCount: 1,
+    source: "https://github.com/cursor/plugins#third_party/gmail",
+  });
+  const linear = entry({ id: "cursor-linear", name: "linear", displayName: "Linear" });
+  const composioGmail = { ...app, slug: "GMAIL", name: "Gmail" };
+  const { plugins, pluginForApp } = browsablePlugins([gmail, linear], [composioGmail]);
+  expect(plugins.map((row) => row.id)).toEqual(["cursor-linear"]);
+  expect([...pluginForApp.values()].map((row) => row.id)).toEqual(["cursor-gmail"]);
+});
+
 it("lends a managed app its brand's skills and keeps skill packs out of Integrations", () => {
   const vercel = entry({ id: "vercel", name: "vercel", displayName: "Vercel", skillCount: 3 });
   const sentry = entry({ id: "sentry", displayName: "Sentry" });

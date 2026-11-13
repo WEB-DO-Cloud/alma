@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createToolkitDirectoryCache,
   mergeCatalogWithConnected,
+  signInSetupSlugs,
 } from "./composio-catalog-cache.js";
 
 describe("composio toolkit directory cache", () => {
@@ -65,6 +66,28 @@ describe("composio toolkit directory cache", () => {
     );
     expect(items.find((item) => item.slug === "github")?.connected).toBe(false);
     expect(items.find((item) => item.slug === "hackernews")?.connected).toBe(true);
+  });
+
+  it("does not hide the directory when a project with no auth configs reports no managed sign-in", () => {
+    const toolkits = [
+      { slug: "GMAIL", composioManagedAuthSchemes: [] },
+      { slug: "SLACK", composioManagedAuthSchemes: [] },
+      { slug: "HACKERNEWS", noAuth: true, composioManagedAuthSchemes: [] },
+    ];
+    expect(signInSetupSlugs(toolkits, []).trusted).toBe(false);
+    expect(signInSetupSlugs(toolkits, []).needsSetup.size).toBe(0);
+    // One app Composio can sign in, and one it cannot: only the latter waits for a project config.
+    const mixed = signInSetupSlugs(
+      [
+        { slug: "GMAIL", composioManagedAuthSchemes: ["OAUTH2"] },
+        { slug: "SHOPIFY", composioManagedAuthSchemes: [] },
+        { slug: "LINEAR" },
+      ],
+      [],
+    );
+    expect(mixed.trusted).toBe(true);
+    expect([...mixed.needsSetup]).toEqual(["shopify"]);
+    expect([...signInSetupSlugs(toolkits, ["slack"]).needsSetup]).toEqual(["gmail"]);
   });
 
   it("drops apps that need sign-in setup unless the user has an account for them", () => {
