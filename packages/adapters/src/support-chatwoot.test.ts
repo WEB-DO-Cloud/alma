@@ -4,6 +4,7 @@ import { createLogger, createTestSink, getLogger, installLogger } from "@rakazo/
 import { describe, expect, it, vi } from "vitest";
 import {
   acceptSupportReply,
+  createChatwootClient,
   loadSupportChatwootConfig,
   readInboundReply,
   supportBotActive,
@@ -257,5 +258,124 @@ describe("support chat webhook checks", () => {
     });
     expect(supportBotActive(on, "user-a")).toBe(true);
     expect(supportBotActive(on, "user-c")).toBe(false);
+  });
+});
+
+function chatwootConfig(hmacKey?: string) {
+  return {
+    baseUrl: "https://app.chatwoot.com",
+    accountId: "1",
+    inboxId: "2",
+    inboxIdentifier: "inbox",
+    apiToken: "token",
+    urlSecret: "secret",
+    enabled: true,
+    allowlist: null as readonly string[] | null,
+    ...(hmacKey ? { hmacKey } : {}),
+  };
+}
+
+function mockChatwoot() {
+  const calls: Array<{
+    path: string;
+    json?: unknown;
+    form?: {
+      content: string;
+      echo_id: string;
+      message_type: string;
+      identifier_hash: string | null;
+    };
+  }> = [];
+  const fetchImpl = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+    const path = new URL(String(url)).pathname;
+    const raw = init?.body;
+    if (raw instanceof FormData) {
+      const hash = raw.get("identifier_hash");
+      calls.push({
+        path,
+        form: {
+          content: String(raw.get("content")),
+          echo_id: String(raw.get("echo_id")),
+          message_type: String(raw.get("message_type")),
+          identifier_hash: hash === null ? null : String(hash),
+        },
+      });
+    } else {
+      calls.push({ path, json: JSON.parse(String(raw)) });
+    }
+    return new Response(JSON.stringify({ id: 42 }));
+  });
+  return { calls, fetchImpl: fetchImpl as typeof fetch };
+}
+
+const incoming = {
+  sourceId: "source-1",
+  conversationId: "42",
+  content: "hello",
+  echoId: "msg-1",
+  userId: "user-1",
+  attachments: [] as Array<{ name: string; mimeType: string; bytes: Uint8Array }>,
+};
+
+describe("chatwoot public api identifier hash", () => {
+  it("sends the user hash when creating a conversation and posting a message", async () => {
+    const { calls, fetchImpl } = mockChatwoot();
+    const client = createChatwootClient(chatwootConfig("hmac-key"), fetchImpl);
+    const hash = supportIdentifierHash("hmac-key", "user-1");
+    await expect(client.createConversation("source-1", "user-1")).resolves.toBe("42");
+    await client.postIncoming(incoming);
+    await client.postIncoming({
+      ...incoming,
+      content: "with file",
+      echoId: "msg-2",
+      attachments: [{ name: "note.txt", mimeType: "text/plain", bytes: new Uint8Array([1]) }],
+    });
+
+    expect(calls[0]).toEqual({
+      path: "/public/api/v1/inboxes/inbox/contacts/source-1/conversations",
+      json: { identifier_hash: hash },
+    });
+    expect(calls[1]).toEqual({
+      path: "/public/api/v1/inboxes/inbox/contacts/source-1/conversations/42/messages",
+      json: {
+        content: "hello",
+        echo_id: "msg-1",
+        message_type: "incoming",
+        identifier_hash: hash,
+      },
+    });
+    expect(calls[2]).toEqual({
+      path: "/public/api/v1/inboxes/inbox/contacts/source-1/conversations/42/messages",
+      form: {
+        content: "with file",
+        echo_id: "msg-2",
+        message_type: "incoming",
+        identifier_hash: hash,
+      },
+    });
+  });
+
+  it("omits the hash when no hmac key is configured", async () => {
+    const { calls, fetchImpl } = mockChatwoot();
+    const client = createChatwootClient(chatwootConfig(), fetchImpl);
+    await client.createConversation("source-1", "user-1");
+    await client.postIncoming(incoming);
+    await client.postIncoming({
+      ...incoming,
+      attachments: [{ name: "note.txt", mimeType: "text/plain", bytes: new Uint8Array([1]) }],
+    });
+
+    expect(calls[0]?.json).toEqual({});
+    expect(calls[1]?.json).toEqual({
+      content: "hello",
+      echo_id: "msg-1",
+      message_type: "incoming",
+    });
+    expect(calls[2]?.form).toEqual({
+      content: "hello",
+      echo_id: "msg-1",
+      message_type: "incoming",
+      identifier_hash: null,
+    });
   });
 });

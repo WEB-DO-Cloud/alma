@@ -30,7 +30,7 @@ export interface SupportChatwootConfig {
   apiToken: string;
   /** Signs X-Chatwoot-Signature. Absent means the URL secret is the only check. */
   inboxWebhookSecret?: string;
-  /** Optional identity validation key for contact identifier_hash. */
+  /** When set, public inbox calls send identifier_hash for this user. */
   hmacKey?: string;
   /** Secret embedded in the webhook URL path. */
   urlSecret: string;
@@ -246,10 +246,12 @@ export function createChatwootClient(config: SupportChatwootConfig, fetchImpl: F
       return found;
     },
 
-    async createConversation(sourceId: string): Promise<string> {
+    async createConversation(sourceId: string, userId: string): Promise<string> {
+      const body: Record<string, string> = {};
+      if (config.hmacKey) body.identifier_hash = supportIdentifierHash(config.hmacKey, userId);
       const created = (await request(
         `${config.baseUrl}/public/api/v1/inboxes/${encodeURIComponent(config.inboxIdentifier)}/contacts/${encodeURIComponent(sourceId)}/conversations`,
-        { method: "POST", body: JSON.stringify({}) },
+        { method: "POST", body: JSON.stringify(body) },
       )) as { id?: number | string };
       if (created.id === undefined)
         throw new ChatwootRequestError(502, "Chatwoot conversation id missing");
@@ -280,9 +282,13 @@ export function createChatwootClient(config: SupportChatwootConfig, fetchImpl: F
       conversationId: string;
       content: string;
       echoId: string;
+      userId: string;
       attachments: Array<{ name: string; mimeType: string; bytes: Uint8Array }>;
     }): Promise<void> {
       const url = `${config.baseUrl}/public/api/v1/inboxes/${encodeURIComponent(config.inboxIdentifier)}/contacts/${encodeURIComponent(input.sourceId)}/conversations/${encodeURIComponent(input.conversationId)}/messages`;
+      const identifierHash = config.hmacKey
+        ? supportIdentifierHash(config.hmacKey, input.userId)
+        : undefined;
       if (input.attachments.length === 0) {
         await request(url, {
           method: "POST",
@@ -290,6 +296,7 @@ export function createChatwootClient(config: SupportChatwootConfig, fetchImpl: F
             content: input.content,
             echo_id: input.echoId,
             message_type: "incoming",
+            ...(identifierHash ? { identifier_hash: identifierHash } : {}),
           }),
         });
         return;
@@ -298,6 +305,7 @@ export function createChatwootClient(config: SupportChatwootConfig, fetchImpl: F
       form.set("content", input.content);
       form.set("echo_id", input.echoId);
       form.set("message_type", "incoming");
+      if (identifierHash) form.set("identifier_hash", identifierHash);
       for (const file of input.attachments) {
         form.append(
           "attachments[]",
@@ -458,7 +466,7 @@ export async function forwardSupportMessage(
         else if (status === "resolved") await client.reopen(conversationId);
       }
       if (!conversationId) {
-        conversationId = await client.createConversation(link.chatwootSourceId!);
+        conversationId = await client.createConversation(link.chatwootSourceId!, thread.userId);
         await deps.prisma.supportLink.update({
           where: { userId: thread.userId },
           data: { chatwootConversationId: conversationId },
@@ -485,6 +493,7 @@ export async function forwardSupportMessage(
         conversationId,
         content: text,
         echoId: messageId,
+        userId: thread.userId,
         attachments,
       });
       await markDelivery(deps.prisma, messageId, blocks, "sent");
