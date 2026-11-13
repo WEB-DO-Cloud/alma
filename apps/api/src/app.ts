@@ -799,6 +799,7 @@ async function buildApp(overrides: CreateAppOverrides): Promise<AppHandles> {
       phase2aEnabled: env.phase2aEnabled,
       googleByoOauth: env.googleByoOauth,
       composioIntegrations: env.composioIntegrations,
+      emailImapConnector: env.emailImapConnector,
       googleOAuthClientId: env.googleOAuthClientId,
       notifyPolicyEnabled: env.notifyPolicyEnabled,
       sendUndoEnabled: env.sendUndoEnabled,
