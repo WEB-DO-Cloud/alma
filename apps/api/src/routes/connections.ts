@@ -130,7 +130,10 @@ export function connectionsRoutes(ctx: RouterContext) {
                 });
               }
               return items;
-            } catch {
+            } catch (error) {
+              getLogger().warn(`${provider.describe().id} catalog failed`, {
+                "error.message": error instanceof Error ? error.name : "Error",
+              });
               return [];
             }
           }),

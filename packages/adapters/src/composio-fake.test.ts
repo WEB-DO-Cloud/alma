@@ -118,6 +118,109 @@ describe("ComposioConnector over the fake Composio client", () => {
     });
   });
 
+  it("lists every app when a project with no auth configs reports no managed sign-in", async () => {
+    const fake = new FakeComposioClient([
+      { slug: "GMAIL", name: "Gmail", logo: null, noAuth: false, needsSignInSetup: true },
+      { slug: "SLACK", name: "Slack", logo: null, noAuth: false, needsSignInSetup: true },
+      { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
+    ]);
+    const catalog = await new ComposioConnector({ client: fake }).catalog(context());
+    expect(catalog.map((item) => item.slug).sort()).toEqual(["GMAIL", "SHOPIFY", "SLACK"]);
+  });
+
+  it("trusts the session directory when the toolkit list says nothing has managed auth", async () => {
+    const fake = new FakeComposioClient([
+      { slug: "GMAIL", name: "Gmail", logo: null, noAuth: false, needsSignInSetup: true },
+      { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
+    ]);
+    const withSessionSchemes = Object.assign(fake, {
+      getClient: () => ({
+        toolRouter: {
+          session: {
+            toolkits: async () => ({
+              items: [
+                {
+                  slug: "GMAIL",
+                  name: "Gmail",
+                  is_no_auth: false,
+                  composio_managed_auth_schemes: ["OAUTH2"],
+                  meta: { logo: "https://example.test/gmail.svg" },
+                },
+                {
+                  slug: "SHOPIFY",
+                  name: "Shopify",
+                  is_no_auth: false,
+                  composio_managed_auth_schemes: [],
+                  meta: {},
+                },
+              ],
+              next_cursor: null,
+            }),
+          },
+        },
+      }),
+    });
+    const catalog = await new ComposioConnector({ client: withSessionSchemes }).catalog(context());
+    expect(catalog.map((item) => item.slug)).toEqual(["GMAIL"]);
+    expect(catalog[0]).toMatchObject({
+      name: "Gmail",
+      logo: "https://example.test/gmail.svg",
+      connectorId: "composio",
+    });
+  });
+
+  it("creates a managed auth config and retries when connect starts with none", async () => {
+    const { fake, connector } = setup();
+    let attempts = 0;
+    const create = fake.create.bind(fake);
+    fake.create = async (userId, config) => {
+      const session = await create(userId, config);
+      const authorize = session.authorize.bind(session);
+      session.authorize = async (toolkit, options) => {
+        attempts += 1;
+        if (attempts === 1) {
+          throw new Error(
+            '400 {"error":{"message":"Composio does not manage auth for toolkit gmail.","code":4308,"slug":"ToolRouterV2_NoManagedAuth","status":400}}',
+          );
+        }
+        return authorize(toolkit, options);
+      };
+      return session;
+    };
+    const created: Array<{ slug: string; type: string }> = [];
+    fake.authConfigs.create = async (slug, config) => {
+      created.push({ slug, type: config.type });
+      return { id: "ac_gmail" };
+    };
+
+    const result = await connector.begin(
+      { provider: "GMAIL", redirectUrl: "http://example.test/callback" },
+      context(),
+    );
+
+    expect(created).toEqual([{ slug: "GMAIL", type: "use_composio_managed_auth" }]);
+    expect(result.state).toMatch(/^ca_/);
+    expect(attempts).toBe(2);
+  });
+
+  it("does not create an auth config for an app the directory says has no managed sign-in", async () => {
+    const fake = new FakeComposioClient([
+      { slug: "GMAIL", name: "Gmail", logo: null, noAuth: false },
+      { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },
+    ]);
+    let created = 0;
+    fake.authConfigs.create = async () => {
+      created += 1;
+      return { id: "ac_shopify" };
+    };
+    const connector = new ComposioConnector({ client: fake });
+    await connector.catalog(context());
+    await expect(connect(connector, "SHOPIFY")).rejects.toBeInstanceOf(
+      ConnectorAuthUnavailableError,
+    );
+    expect(created).toBe(0);
+  });
+
   it("lists every app when the sign-in lookup fails", async () => {
     const fake = new FakeComposioClient([
       { slug: "SHOPIFY", name: "Shopify", logo: null, noAuth: false, needsSignInSetup: true },

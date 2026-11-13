@@ -261,6 +261,39 @@ describe("plugin detail", () => {
     );
   });
 
+  it("keeps managed Connect enabled when the plugin preview fails", async () => {
+    api.preview.mockRejectedValue(new Error("preview down"));
+    const onConnect = vi.fn();
+    await act(async () =>
+      root.render(
+        <PluginDetail
+          selection={{ source, installedSource: source, name: "Gmail" }}
+          installs={[]}
+          servers={[]}
+          assigned={new Set()}
+          managed={{
+            name: "Gmail",
+            logo: null,
+            connected: false,
+            connecting: false,
+            onConnect,
+            onManage: vi.fn(),
+          }}
+          onBack={onBack}
+          onChanged={onChanged}
+        />,
+      ),
+    );
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(container.textContent).toContain("preview down");
+    expect((button("Connect") as HTMLButtonElement).disabled).toBe(false);
+    await click("Connect");
+    expect(onConnect).toHaveBeenCalled();
+    expect(api.install).not.toHaveBeenCalled();
+  });
+
   it("connects the managed app of the same brand instead of the plugin's connector", async () => {
     const onConnect = vi.fn();
     await act(async () =>

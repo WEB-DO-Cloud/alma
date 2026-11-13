@@ -15,6 +15,48 @@ export type ToolkitCatalogEntry = Omit<ToolkitDirectoryEntry, "needsSignInSetup"
 
 export const COMPOSIO_DIRECTORY_TTL_MS = 60 * 60 * 1000;
 
+export type ManagedAuthToolkit = {
+  slug: string;
+  noAuth?: boolean;
+  /**
+   * Schemes Composio can sign the user in with. Missing means the directory did not say.
+   * An empty array means this app has no managed sign-in.
+   */
+  composioManagedAuthSchemes?: string[] | null;
+};
+
+/**
+ * Apps that stay hidden until this project has its own auth config.
+ * A project with no auth configs, whose index says that about every app, is not
+ * evidence: that is how a new project describes Gmail too. Composio still opens
+ * its connect link and creates the managed config then.
+ */
+export function signInSetupSlugs(
+  toolkits: readonly ManagedAuthToolkit[],
+  configuredSlugs: Iterable<string>,
+): { needsSetup: Set<string>; trusted: boolean } {
+  const key = (slug: string) => slug.trim().toLowerCase();
+  const configured = new Set([...configuredSlugs].map(key).filter(Boolean));
+  const candidates = toolkits.filter((toolkit) => !toolkit.noAuth && key(toolkit.slug));
+  const known = candidates.filter((toolkit) => Array.isArray(toolkit.composioManagedAuthSchemes));
+  const trusted = !(
+    configured.size === 0 &&
+    known.length > 0 &&
+    known.length === candidates.length &&
+    known.every((toolkit) => toolkit.composioManagedAuthSchemes?.length === 0)
+  );
+  if (!trusted) return { needsSetup: new Set(), trusted };
+  return {
+    trusted,
+    needsSetup: new Set(
+      known
+        .filter((toolkit) => toolkit.composioManagedAuthSchemes?.length === 0)
+        .map((toolkit) => key(toolkit.slug))
+        .filter((slug) => !configured.has(slug)),
+    ),
+  };
+}
+
 export function mergeCatalogWithConnected(
   directory: ToolkitDirectoryEntry[],
   connectedSlugs: Iterable<string>,
