@@ -20,10 +20,10 @@ export const JA_MESSAGES: Record<string, string> = {
     "アカウントを削除するには、ALMAで次のコードを入力してください:",
   "This code expires in ten minutes. If you did not request deletion, ignore this email.":
     "このコードの有効期限は10分です。削除をリクエストした覚えがない場合は、このメールを無視してください。",
-  "Your ALMA confirmation code": "Rakazoの確認コード",
+  "Your ALMA confirmation code": "ALMAの確認コード",
   "Enter this code in ALMA to confirm it's you:":
-    "ご本人であることを確認するには、Rakazoで次のコードを入力してください:",
-  "Welcome to ALMA": "Rakazoへようこそ",
+    "ご本人であることを確認するには、ALMAで次のコードを入力してください:",
+  "Welcome to ALMA": "ALMAへようこそ",
   "Welcome to ALMA. The people who get the most out of it do three things:":
     "ALMA へようこそ。ALMA を最大限に活用している人は、次の 3 つをしています。",
   "Get the apps": "アプリを入手する",
@@ -44,9 +44,9 @@ export const JA_MESSAGES: Record<string, string> = {
     "友だちをALMAに招待しましょう。友だちは{weeks}週間無料で使え、新しいカードで対象のサブスクリプションを始めると、あなたは1か月無料になります。",
   "Open ALMA": "ALMAを開き",
   "and choose Invite friends for your link.": "「友だちを招待」を選ぶとリンクを取得できます。",
-  "We received your ALMA plugin": "Rakazoプラグインを受け付けました",
+  "We received your ALMA plugin": "ALMAプラグインを受け付けました",
   "Thanks for submitting a plugin to the ALMA marketplace.":
-    "Rakazoマーケットプレイスにプラグインを申請いただきありがとうございます。",
+    "ALMAマーケットプレイスにプラグインを申請いただきありがとうございます。",
   "We review every submission and will email you when it's done.":
     "すべての申請を審査し、完了したらメールでお知らせします。",
   "If you did not submit a plugin, ignore this email.":
@@ -73,16 +73,23 @@ export const JA_MESSAGES: Record<string, string> = {
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "プランを選択しない場合、保存されたコンピューターのファイルは{date}に削除されます。",
   "{inviter} invited you to {organization} on ALMA":
-    "{inviter}さんがRakazoの{organization}にあなたを招待しました",
+    "{inviter}さんがALMAの{organization}にあなたを招待しました",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter}さんがALMAの{organization}にあなたを招待しました",
   "{inviter} invited you to join {organization} on ALMA.":
-    "{inviter}さんがRakazoの{organization}への参加にあなたを招待しました。",
+    "{inviter}さんがALMAの{organization}への参加にあなたを招待しました。",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter}さんがALMAの{organization}への参加にあなたを招待しました。",
   "Join {organization}": "{organization}に参加",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "この招待は7日後に期限切れになります。承諾するには、このメールアドレスでサインインしてください。",
-  "{inviter} invited you to {space} on ALMA":
-    "{inviter}さんがRakazoの{space}にあなたを招待しました",
+  "{inviter} invited you to {space} on ALMA": "{inviter}さんがALMAの{space}にあなたを招待しました",
+  "{inviter} invited you to {space} on Rakazo":
+    "{inviter}さんがALMAの{space}にあなたを招待しました",
   "{inviter} invited you to join {space} on ALMA.":
-    "{inviter}さんがRakazoの{space}への参加にあなたを招待しました。",
+    "{inviter}さんがALMAの{space}への参加にあなたを招待しました。",
+  "{inviter} invited you to join {space} on Rakazo.":
+    "{inviter}さんがALMAの{space}への参加にあなたを招待しました。",
   "Join {space}": "{space}に参加",
   "This invitation expires in 7 days.": "この招待は7日後に期限切れになります。",
 };

@@ -7,8 +7,8 @@ import {
   changeMessageBlocks,
   createThreadMessageInTransaction,
   IsolationError,
-  storedMessageBlocks,
   readAlmaFlags,
+  storedMessageBlocks,
   THREAD_LOCK_TRANSACTION_OPTIONS,
 } from "@rakazo/db";
 import { requireBotThread } from "./bot-thread.js";

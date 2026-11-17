@@ -11,8 +11,9 @@ import {
   hasActiveComputerControl,
   importedLoginValue,
   isSecretAlreadySaved,
-  listBotSecretMetadata,
+  LoginAlreadySavedError,
   listVaultItems,
+  listVaultItemUses,
   loadSupportChatwootConfig,
   managedModelActive,
   newVaultItemName,
@@ -49,7 +50,13 @@ import {
   vaultImportLogin,
   vaultImportOrigin,
 } from "@rakazo/contracts";
-import { ACTIVE_RUN_STATUSES, ClientError, computerUsingRuns, displayName } from "@rakazo/core";
+import {
+  ACTIVE_RUN_STATUSES,
+  ClientError,
+  computerUsingRuns,
+  displayName,
+  resolveModelId,
+} from "@rakazo/core";
 import type { Prisma } from "@rakazo/db";
 import {
   botProfileLabelsChanged,
@@ -76,6 +83,11 @@ import { botIntroPrompt } from "../hidden-turns.prompt.js";
 import { requireIdentityConfirmation } from "../identity-confirmation.js";
 import { managedAppCatalog } from "../onboarding.js";
 import type { RouterDeps } from "../router.js";
+import {
+  rejectSupportBotLock,
+  SupportBotLockedError,
+  supportBotMutationLocked,
+} from "../support-chatwoot-lock.js";
 import { purgeClearedThreadMemory } from "../thread-memory.js";
 import { loadMessagePage } from "../thread-message-pages.js";
 import type { RouterContext } from "./context.js";
@@ -661,10 +673,15 @@ export function botsRoutes(ctx: RouterContext) {
         return { ok: true as const };
       }),
       remove: authed.bots.remove.handler(async ({ context, input }) => {
-        const result = await removeBot(context.actor, input.botId, {
-          deleteMemories: input.deleteMemories,
-        });
-        return { ok: true as const, ...result };
+        try {
+          const result = await removeBot(context.actor, input.botId, {
+            deleteMemories: input.deleteMemories,
+          });
+          return { ok: true as const, ...result };
+        } catch (error) {
+          if (error instanceof SupportBotLockedError) rejectSupportBotLock();
+          throw error;
+        }
       }),
       removePreview: authed.bots.removePreview.handler(async ({ context, input }) => {
         const bot = await loadBotForRemoval(deps.prisma, repos, context.actor, input.botId);

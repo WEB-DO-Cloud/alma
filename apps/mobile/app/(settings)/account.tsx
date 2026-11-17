@@ -4,6 +4,10 @@ import type { PlanLimits, UsageSummary } from "@rakazo/contracts";
 import { hasLab, modelCreditsUsd } from "@rakazo/contracts";
 import { accountDisplay, formatTimeUntil } from "@rakazo/core";
 import type { Href } from "expo-router";
+
+type Icon = Pick<ComponentProps<typeof NativeSymbol>, "ios" | "android">;
+type SettingsLink = { title: string; href: Href; icon: Icon };
+
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import type { ComponentProps } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";

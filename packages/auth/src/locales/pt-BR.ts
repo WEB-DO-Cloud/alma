@@ -75,13 +75,20 @@ export const PT_BR_MESSAGES: Record<string, string> = {
     "Os arquivos salvos do seu computador serão excluídos em {date}, a menos que você escolha um plano.",
   "{inviter} invited you to {organization} on ALMA":
     "{inviter} convidou você para {organization} no ALMA",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} convidou você para {organization} no ALMA",
   "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} convidou você para participar de {organization} no ALMA.",
+  "{inviter} invited you to join {organization} on Rakazo.":
     "{inviter} convidou você para participar de {organization} no ALMA.",
   "Join {organization}": "Participar de {organization}",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "Este convite expira em 7 dias. Entre com este endereço de e-mail para aceitá-lo.",
   "{inviter} invited you to {space} on ALMA": "{inviter} convidou você para {space} no ALMA",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} convidou você para {space} no ALMA",
   "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} convidou você para participar de {space} no ALMA.",
+  "{inviter} invited you to join {space} on Rakazo.":
     "{inviter} convidou você para participar de {space} no ALMA.",
   "Join {space}": "Participar de {space}",
   "This invitation expires in 7 days.": "Este convite expira em 7 dias.",

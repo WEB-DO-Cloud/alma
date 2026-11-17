@@ -63,7 +63,7 @@ export function ConnectorDetail({
             />
           ) : (
             <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-accent text-body font-semibold text-foreground">
-              {name[0]}
+              {Array.from(name)[0]}
             </div>
           )}
           <div className="truncate text-heading3 font-medium text-foreground">{name}</div>

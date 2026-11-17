@@ -93,6 +93,9 @@ vi.mock("react-native", () => {
         {children}
       </button>
     ),
+    Image: ({ accessibilityLabel }: { accessibilityLabel?: string }) => (
+      <img alt={accessibilityLabel ?? ""} />
+    ),
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
   };
 });

@@ -30,7 +30,16 @@ import {
   OPENAI_COMPATIBLE_PROVIDER_ID,
   usableModelId,
 } from "@rakazo/contracts";
-import { ClientError, clampCatalogThinkingLevel } from "@rakazo/core";
+import {
+  ClientError,
+  clampCatalogThinkingLevel,
+  presentCredential,
+  presentModelId,
+  publicProviderLabel,
+  resolveModelId,
+  sanitizeUserModelError,
+  upstreamModelChoice,
+} from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   appliedModelRole,

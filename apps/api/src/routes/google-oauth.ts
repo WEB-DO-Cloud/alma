@@ -58,7 +58,7 @@ async function service(ctx: RouterContext): Promise<GoogleOAuthService> {
   }
   const connector = deps.integrationSettings
     ? await deps.integrationSettings.resolve("composio")
-    : deps.composio;
+    : undefined;
   if (!(connector instanceof ComposioConnector)) {
     return new GoogleOAuthService({
       enabled: true,

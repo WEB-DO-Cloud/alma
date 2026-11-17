@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import {
   captureScreenshot,
   completeOnboarding,
-  openBotPanelTab,
+  openBotPanel,
   readRouteJson,
   signup,
 } from "./helpers";

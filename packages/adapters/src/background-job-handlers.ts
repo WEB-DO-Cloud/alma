@@ -43,9 +43,9 @@ import { pollMediaVideo } from "./media-video-poll.js";
 import type { MemoryProviderResolver } from "./memory-provider-factory.js";
 import type { MessagingDelivery } from "./messaging-delivery.js";
 import { pollPurchase } from "./purchase-poll.js";
-import { forwardSupportMessage } from "./support-chatwoot.js";
 import { expireRunSecrets } from "./run-secrets-expiry.js";
 import { retrySecretCleanup } from "./secret-cleanup.js";
+import { forwardSupportMessage } from "./support-chatwoot.js";
 import { expireTaughtSkillTeaching } from "./teaching-session.js";
 import type { TeamChat } from "./team-chat.js";
 

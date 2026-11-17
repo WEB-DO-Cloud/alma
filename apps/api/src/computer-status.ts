@@ -5,7 +5,6 @@ import {
   sandboxKindCapabilities,
 } from "@rakazo/adapters";
 import type { ComputerStatus } from "@rakazo/contracts";
-import { SandboxKind } from "@rakazo/contracts";
 import { ACTIVE_RUN_STATUSES } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 
@@ -70,9 +69,6 @@ export function toComputerStatus(
   shared = false,
   viewerId?: string,
 ): ComputerStatus {
-  const parsedKind = SandboxKind.safeParse(computer?.kind ?? "fake");
-  const kind = (parsedKind.success ? parsedKind.data : "fake") as ComputerStatus["kind"];
-  const providerKnown = parsedKind.success;
   const controlledByOther = Boolean(
     viewerId && computer?.controlHolder === "user" && !holdsUserControl(computer, viewerId),
   );

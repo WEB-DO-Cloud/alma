@@ -16,15 +16,6 @@ import { ConnectorAuthUnavailableError } from "@rakazo/adapter-kit";
 import { humanizeToolName } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
 import { collectPages, filterCatalog } from "../../../connector-catalog.js";
-import { isVitestRuntime } from "../../../test-runtime.js";
-import { COMPOSIO_MULTI_EXECUTE_TOOL, composioToolBatch } from "./composio-batch.js";
-import type { ToolkitDirectoryEntry } from "./composio-catalog-cache.js";
-import {
-  composioToolkitDirectory,
-  createToolkitDirectoryCache,
-  mergeCatalogWithConnected,
-  signInSetupSlugs,
-} from "./composio-catalog-cache.js";
 import type { GoogleOAuthRemote } from "../../../google-oauth.js";
 import { isGoogleToolkit } from "../../../google-oauth.js";
 import type { GoogleAuthRemoteClient } from "../../../google-oauth-remote.js";
@@ -36,6 +27,15 @@ import {
   upsertGoogleAuthConfig,
 } from "../../../google-oauth-remote.js";
 import { omitWorkspaceCatalogItem } from "../../../google-workspace.js";
+import { isVitestRuntime } from "../../../test-runtime.js";
+import { COMPOSIO_MULTI_EXECUTE_TOOL, composioToolBatch } from "./composio-batch.js";
+import type { ToolkitDirectoryEntry } from "./composio-catalog-cache.js";
+import {
+  composioToolkitDirectory,
+  createToolkitDirectoryCache,
+  mergeCatalogWithConnected,
+  signInSetupSlugs,
+} from "./composio-catalog-cache.js";
 
 type SdkSession = Awaited<ReturnType<Composio["create"]>>;
 
@@ -906,6 +906,7 @@ export class ComposioConnector implements ComposioProvider {
       const { session, reconnect, connectedAccounts } = await this.sessionForExecute(
         context.userId,
         connections,
+        context,
       );
       const toolkits = connections.map((connection) => connection.externalId);
       const stale = reconnect.find((toolkit) => callUsesToolkit(call, toolkit, toolkits));

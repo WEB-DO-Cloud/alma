@@ -1,10 +1,12 @@
 import { ORPCError } from "@orpc/server";
-import { runContinueJob, runJobKey } from "@rakazo/adapter-kit";
+import { createAdapterContext, runJobKey } from "@rakazo/adapter-kit";
 import {
+  getActiveTeachingSession,
   loadSupportChatwootConfig,
   managedModelActive,
   retrySupportDelivery,
   settleCallRequest,
+  wakeRun,
 } from "@rakazo/adapters";
 import type { Actor } from "@rakazo/contracts";
 import { TRIAL_LIMIT_ERROR } from "@rakazo/contracts";
@@ -35,6 +37,7 @@ import {
 import { getLogger } from "@rakazo/logging";
 import { answerComputerRequest } from "../computer-control.js";
 import { HANG_UP_PROMPT } from "../hidden-turns.prompt.js";
+import { reportAssistantMessage } from "../message-report.js";
 import type { RouterDeps } from "../router.js";
 import { createRoutineTestRun, routineTestRunNonce, routineTestTarget } from "../routines.js";
 import { forwardSupportSend } from "../support-chatwoot-send.js";

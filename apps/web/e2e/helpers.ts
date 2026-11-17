@@ -28,9 +28,12 @@ export function activeBotId(page: Page) {
  * The real response for a routed call, or null when the page already aborted it.
  * Reading a disposed body fails the test even though a later request replaced it.
  */
-export async function readRouteJson(
-  route: Route,
-): Promise<{ response: APIResponse; body: any } | null> {
+export async function readRouteJson(route: Route): Promise<{
+  response: APIResponse;
+  // Callers spread this JSON; its shape belongs to the route they stubbed.
+  // biome-ignore lint/suspicious/noExplicitAny: route body is caller-shaped
+  body: any;
+} | null> {
   try {
     const response = await route.fetch();
     return { response, body: await response.json() };
@@ -121,9 +124,8 @@ export async function signupThroughForm(
   testInfo?: TestInfo,
 ) {
   await page.goto("/sign-up");
-  await expect(
-    page.getByRole("heading", { name: "Create your account", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
+  await openEmailSignIn(page);
   if (testInfo) await captureScreenshot(page, testInfo, "01-sign-up");
   await page.getByPlaceholder("Your name").fill(name);
   await page.getByPlaceholder("Your email address").fill(email);

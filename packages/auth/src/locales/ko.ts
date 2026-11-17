@@ -22,19 +22,19 @@ export const KO_MESSAGES: Record<string, string> = {
     "이 코드는 10분 후에 만료됩니다. 삭제를 요청하지 않았다면 이 이메일을 무시하세요.",
   "Your ALMA confirmation code": "ALMA 확인 코드",
   "Enter this code in ALMA to confirm it's you:":
-    "본인임을 확인하려면 Rakazo에서 이 코드를 입력하세요:",
-  "Welcome to ALMA": "Rakazo에 오신 것을 환영합니다",
+    "본인임을 확인하려면 ALMA에서 이 코드를 입력하세요:",
+  "Welcome to ALMA": "ALMA에 오신 것을 환영합니다",
   "Welcome to ALMA. The people who get the most out of it do three things:":
-    "Rakazo에 오신 것을 환영합니다. Rakazo를 가장 잘 활용하는 사람들은 세 가지를 합니다.",
+    "ALMA에 오신 것을 환영합니다. ALMA를 가장 잘 활용하는 사람들은 세 가지를 합니다.",
   "Get the apps": "앱 받기",
   "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
-    "Rakazo는 {platforms}에서 실행되므로 봇이 어디서든 연락할 수 있습니다.",
+    "ALMA는 {platforms}에서 실행되므로 봇이 어디서든 연락할 수 있습니다.",
   "Join the community": "커뮤니티 참여하기",
   "See what others are building, get help fast, and tell us what to build next on {discord}.":
     "{discord}에서 다른 사람들이 만드는 것을 보고, 빠르게 도움을 받고, 다음에 만들 것을 알려 주세요.",
   "Star us on GitHub": "GitHub에서 스타 누르기",
   "ALMA is open source. {star} helps more people find it.":
-    "Rakazo는 오픈 소스입니다. {star}는 더 많은 사람이 Rakazo를 찾는 데 도움이 됩니다.",
+    "ALMA는 오픈 소스입니다. {star}는 더 많은 사람이 ALMA를 찾는 데 도움이 됩니다.",
   "A star on GitHub": "GitHub 스타",
   "Questions? Just reply. I read every one.":
     "질문이 있으신가요? 답장만 보내 주세요. 모두 읽습니다.",
@@ -73,15 +73,22 @@ export const KO_MESSAGES: Record<string, string> = {
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "플랜을 선택하지 않으면 저장된 컴퓨터 파일이 {date}에 삭제됩니다.",
   "{inviter} invited you to {organization} on ALMA":
-    "{inviter}님이 Rakazo의 {organization}에 초대했습니다",
+    "{inviter}님이 ALMA의 {organization}에 초대했습니다",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter}님이 ALMA의 {organization}에 초대했습니다",
   "{inviter} invited you to join {organization} on ALMA.":
-    "{inviter}님이 Rakazo의 {organization}에 참여하도록 초대했습니다.",
+    "{inviter}님이 ALMA의 {organization}에 참여하도록 초대했습니다.",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter}님이 ALMA의 {organization}에 참여하도록 초대했습니다.",
   "Join {organization}": "{organization} 참여하기",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "이 초대는 7일 후에 만료됩니다. 수락하려면 이 이메일 주소로 로그인하세요.",
-  "{inviter} invited you to {space} on ALMA": "{inviter}님이 Rakazo의 {space}에 초대했습니다",
+  "{inviter} invited you to {space} on ALMA": "{inviter}님이 ALMA의 {space}에 초대했습니다",
+  "{inviter} invited you to {space} on Rakazo": "{inviter}님이 ALMA의 {space}에 초대했습니다",
   "{inviter} invited you to join {space} on ALMA.":
-    "{inviter}님이 Rakazo의 {space}에 참여하도록 초대했습니다.",
+    "{inviter}님이 ALMA의 {space}에 참여하도록 초대했습니다.",
+  "{inviter} invited you to join {space} on Rakazo.":
+    "{inviter}님이 ALMA의 {space}에 참여하도록 초대했습니다.",
   "Join {space}": "{space} 참여하기",
   "This invitation expires in 7 days.": "이 초대는 7일 후에 만료됩니다.",
 };

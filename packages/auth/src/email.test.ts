@@ -13,10 +13,7 @@ import {
   verificationEmail,
 } from "./email.js";
 import { homeDeletionEmail } from "./home-deletion-email.js";
-import {
-  organizationInvitationEmail,
-  spaceInvitationEmail,
-} from "./organization-invitation-email.js";
+import { organizationInvitationEmail } from "./organization-invitation-email.js";
 import {
   integrationClaimConfirmEmail,
   pluginSubmissionAdminEmail,
@@ -242,7 +239,7 @@ describe("email languages", () => {
     const english = await welcomeEmail(user, "https://example.test/u");
     expect(english.subject).toBe("Welcome to ALMA");
     expect(english.text).toContain("Hi Ana,");
-    expect(english.text).toContain("ALMA also has apps for iPhone");
+    expect(english.text).toContain("ALMA runs on iPhone");
   });
 
   it.each(Object.entries(CATALOGS))(

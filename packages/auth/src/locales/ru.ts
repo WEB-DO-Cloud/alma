@@ -75,13 +75,20 @@ export const RU_MESSAGES: Record<string, string> = {
     "Сохранённые файлы вашего компьютера будут удалены {date}, если вы не выберете тариф.",
   "{inviter} invited you to {organization} on ALMA":
     "{inviter} приглашает вас в {organization} в ALMA",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} приглашает вас в {organization} в ALMA",
   "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} приглашает вас присоединиться к {organization} в ALMA.",
+  "{inviter} invited you to join {organization} on Rakazo.":
     "{inviter} приглашает вас присоединиться к {organization} в ALMA.",
   "Join {organization}": "Присоединиться к {organization}",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "Приглашение действует 7 дней. Чтобы принять его, войдите с этим адресом электронной почты.",
   "{inviter} invited you to {space} on ALMA": "{inviter} приглашает вас в {space} в ALMA",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} приглашает вас в {space} в ALMA",
   "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} приглашает вас присоединиться к {space} в ALMA.",
+  "{inviter} invited you to join {space} on Rakazo.":
     "{inviter} приглашает вас присоединиться к {space} в ALMA.",
   "Join {space}": "Присоединиться к {space}",
   "This invitation expires in 7 days.": "Приглашение действует 7 дней.",

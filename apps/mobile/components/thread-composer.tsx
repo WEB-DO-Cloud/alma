@@ -292,6 +292,12 @@ export function ThreadComposer({
       ? composerSlashOptions(slashQuery, agentSkills, (action) => slashActionLabel(action.id))
       : { skills: [], actions: [] };
   function updatePickerQueries(value: string, start: number, end = start) {
+    // Support chat is a person on the other end, so it has no mentions or slash commands.
+    if (supportChat) {
+      setSlashQuery(null);
+      setMentionQuery(null);
+      return;
+    }
     // One skill per message: a chosen skill keeps the slash menu closed.
     setSlashQuery(
       selectedSkill ? null : composerSlashQuery(value, start, end, bindingsRef.current),
@@ -642,12 +648,14 @@ export function ThreadComposer({
                   onPress={() => {
                     setSelectedSkill(null);
                     setSlashQuery(
-                      composerSlashQuery(
-                        draftRef.current,
-                        nativeSelection.current.start,
-                        nativeSelection.current.end,
-                        bindingsRef.current,
-                      ),
+                      supportChat
+                        ? null
+                        : composerSlashQuery(
+                            draftRef.current,
+                            nativeSelection.current.start,
+                            nativeSelection.current.end,
+                            bindingsRef.current,
+                          ),
                     );
                   }}
                 >

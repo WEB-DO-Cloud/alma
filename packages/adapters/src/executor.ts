@@ -1,6 +1,8 @@
+import type { AgentRunRequest, AgentRuntime } from "@rakazo/adapter-kit";
 import { DEFAULT_CONTEXT_STRATEGY } from "@rakazo/adapter-kit";
 import type { ThreadEvents } from "@rakazo/db";
 import { retryWhileDatabaseUnavailable } from "@rakazo/db";
+import { almaAssistantCopy, assistantFacingTools } from "./alma-assistant-copy.js";
 import { createBrowserProvider } from "./browser-provider-factory.js";
 import type { ExecutorDeps } from "./executor-deps.js";
 import { createMediaGenerationProvider } from "./media-generation-factory.js";
@@ -52,7 +54,11 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
       return result;
     },
   };
-  const baseDeps: ExecutorDeps = { ...executorDeps, events };
+  const baseDeps: ExecutorDeps = {
+    ...executorDeps,
+    events,
+    runtime: withAlmaProductCopy(executorDeps.runtime),
+  };
   const services: RunExecutorServices = {
     executorDeps,
     contextStrategy,
@@ -109,5 +115,22 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
         await releaseRunHold(hold, endRunConnectorState);
       }
     },
+  };
+}
+
+/** Product copy the model can repeat. Tool names and the request's other fields stay as given. */
+function withAlmaProductCopy(runtime: AgentRuntime): AgentRuntime {
+  return {
+    describe: () => runtime.describe(),
+    abort: (runId) => runtime.abort(runId),
+    run: (request, context) => runtime.run(almaRunRequest(request), context),
+  };
+}
+
+function almaRunRequest(request: AgentRunRequest): AgentRunRequest {
+  return {
+    ...request,
+    instructions: almaAssistantCopy(request.instructions).replace(/\ba ALMA\b/g, "an ALMA"),
+    tools: assistantFacingTools(request.tools),
   };
 }

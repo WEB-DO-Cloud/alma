@@ -593,18 +593,6 @@ export function mcpRoutes(ctx: RouterContext) {
             );
           }
           try {
-            // Router tests build a partial deps object with no connector registry.
-            const google = deps.connectors?.managed("google");
-            if (google instanceof GoogleWorkspaceConnector) {
-              const finished = await google.finishCallback({
-                state: input.state,
-                code: input.code,
-                spaceId: context.actor.spaceId,
-                userId: context.actor.userId,
-                signal: context.signal ?? new AbortController().signal,
-              });
-              if (finished) return { ok: true as const };
-            }
             return await mcpOAuth.begin({
               ...input,
               redirectUri: expectedRedirect,
@@ -623,6 +611,18 @@ export function mcpRoutes(ctx: RouterContext) {
           }
         }),
         complete: authed.mcp.oauth.complete.handler(async ({ context, input }) => {
+          // Router tests build a partial deps object with no connector registry.
+          const google = deps.connectors?.managed("google");
+          if (google instanceof GoogleWorkspaceConnector) {
+            const finished = await google.finishCallback({
+              state: input.state,
+              code: input.code,
+              spaceId: context.actor.spaceId,
+              userId: context.actor.userId,
+              signal: context.signal ?? new AbortController().signal,
+            });
+            if (finished) return { ok: true as const };
+          }
           const { serverId, revision } = await mcpOAuth.complete({
             ...input,
             spaceId: context.actor.spaceId,

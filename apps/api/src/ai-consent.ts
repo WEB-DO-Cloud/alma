@@ -4,9 +4,9 @@ import {
   aiRecipient,
   cloudAgentForActor,
   cloudAgentsEnabled,
+  cloudAgentsForActor,
   managedChatModel,
   managedModelActive,
-  cloudAgentsForActor,
   parseModelSecret,
   resolveMemberMainModel,
   selectConfiguredModel,
@@ -263,12 +263,14 @@ export async function aiConsentStatus(
   for (const voice of voices) {
     // A self-hosted server is disclosed by its own origin, like a custom model endpoint.
     const server = await voiceCredentialServer(deps, actor, voice.credential);
+    const voiceAccepted = operatorAcceptedVoice(voice.credential.provider);
     add(
       aiRecipient({
         provider: voice.credential.provider,
         use: "voice",
         ...(server?.endpoint ? { baseUrl: server.endpoint } : {}),
       }),
+      voiceAccepted,
     );
     if (server?.sttEndpoint) {
       add(
@@ -277,6 +279,7 @@ export async function aiConsentStatus(
           use: "voice",
           baseUrl: server.sttEndpoint,
         }),
+        voiceAccepted,
       );
     }
   }
@@ -311,7 +314,6 @@ export async function aiConsentStatus(
         use: "model",
         baseUrl: cloudAgent.baseUrl,
       }),
-      operatorAcceptedVoice(voice.credential.provider),
     );
   }
   return {

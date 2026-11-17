@@ -531,16 +531,18 @@ describeWithDatabase("Composio catalog reconciliation", () => {
     const answer = { state: "" };
     let attempt: unknown;
     const begin = connector.begin.bind(connector);
-    vi.spyOn(connector, "begin").mockImplementationOnce(async (request, context) => {
-      const started = await begin(request, context);
-      answer.state = started.state;
-      const row = await rows.findFirstOrThrow({ where: { ...own, status: "pending" } });
-      attempt = (row.metadata as { attempt?: unknown }).attempt;
-      // Taking the row for a moment makes the save record the lost race, which then fails it.
-      await rows.updateMany({ where: own, data: { status: "revoked" } });
-      // A browser authorization: a saved row stays pending until the user has authorized.
-      return { ...started, authorizationUrl: "https://provider.example.test/authorize" };
-    });
+    vi.spyOn(connector, "begin").mockImplementationOnce(
+      async (request: Parameters<typeof begin>[0], context: Parameters<typeof begin>[1]) => {
+        const started = await begin(request, context);
+        answer.state = started.state;
+        const row = await rows.findFirstOrThrow({ where: { ...own, status: "pending" } });
+        attempt = (row.metadata as { attempt?: unknown }).attempt;
+        // Taking the row for a moment makes the save record the lost race, which then fails it.
+        await rows.updateMany({ where: own, data: { status: "revoked" } });
+        // A browser authorization: a saved row stays pending until the user has authorized.
+        return { ...started, authorizationUrl: "https://provider.example.test/authorize" };
+      },
+    );
     vi.spyOn(handles.jobs, "enqueueIn").mockImplementationOnce(async () => {
       await rows.updateMany({
         where: own,

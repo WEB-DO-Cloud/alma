@@ -403,7 +403,7 @@ test("start a bigger tier's trial from the tiers layout", async ({ page }, testI
     page.waitForURL(/[?&]paid/),
     page.getByRole("button", { name: "Start Pro trial", exact: true }).click(),
   ]);
-  await expect(page.getByRole("heading", { name: "Choose how to use Rakazo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose how to use ALMA" })).toBeVisible();
   expect(selected).toEqual({ funding: "byok", interval: "year", tier: "pro" });
 });
 
@@ -422,7 +422,7 @@ test("end an own-key trial early to get full computer hours", async ({ page }, t
     access: true,
     trialAvailable: false,
     creditPurchasesEnabled: true,
-    byokPriceCents: 1000,
+    byokPriceCents: 5900,
     funding: "byok",
     balanceUsd: 0,
     monthlyAmountCents: null,
@@ -448,7 +448,7 @@ test("end an own-key trial early to get full computer hours", async ({ page }, t
   await captureScreenshot(page, testInfo, "billing-trial-computer-hours");
   await settings.getByRole("button", { name: "Start plan now", exact: true }).click();
   const confirm = page.getByRole("alertdialog", { name: "Start your plan now?" });
-  await expect(confirm.getByText(/charged \$10(\.00)? today/)).toBeVisible();
+  await expect(confirm.getByText(/charged \$59(\.00)? today/)).toBeVisible();
   await captureScreenshot(page, testInfo, "billing-end-trial-confirm");
   await confirm.getByRole("button", { name: "Start plan", exact: true }).click();
   await expect.poll(() => ended).toBe(true);
@@ -471,7 +471,7 @@ test("a cancelled trial explains its missing computer hours and offers renewal",
     access: true,
     trialAvailable: false,
     creditPurchasesEnabled: true,
-    byokPriceCents: 1000,
+    byokPriceCents: 5900,
     funding: "byok",
     balanceUsd: 0,
     monthlyAmountCents: null,
@@ -692,4 +692,36 @@ test("a no-card trial shows the countdown and the plan states the renewal", asyn
   await page.getByRole("button", { name: "Upgrade" }).click();
   await expect(page.getByTestId("plan-clarity")).toContainText("US dollars");
   await captureScreenshot(page, testInfo, "plan-renewal");
+});
+
+test("yearly billing shows the monthly computer reset separately from renewal", async ({
+  page,
+}, testInfo) => {
+  await signup(page, `annual-hours-${Date.now()}@rakazo.test`, "password12", "Demo Customer");
+  await completeOnboarding(page);
+  await page.route("**/api/auth/capabilities", async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ response, json: { ...(await response.json()), billing: true } });
+  });
+  await page.route("**/rpc/me", (route) => enableBilling(route, "me"));
+  await page.route("**/rpc/bootstrap", (route) => enableBilling(route, "bootstrap"));
+  const status = billingStatus({
+    access: true,
+    trialAvailable: false,
+    funding: "byok",
+    byokTier: "max",
+    byokPriceCents: 94800,
+    byokInterval: "year",
+    state: "active",
+    hasCustomer: true,
+    currentPeriodEndsAt: "2031-01-15T12:00:00.000Z",
+    computerHoursLeft: 180,
+    computerHoursResetAt: "2030-02-15T12:00:00.000Z",
+  });
+  await page.route("**/rpc/billing/status", (route) => route.fulfill({ json: { json: status } }));
+  await page.reload();
+  const settings = await openUserSettings(page, "billing");
+  await expect(settings.getByText("Resets Feb 15, 2030", { exact: true })).toBeVisible();
+  await expect(settings.getByText("Renews Jan 15, 2031", { exact: true })).toBeVisible();
+  await captureScreenshot(page, testInfo, "billing-annual-computer-reset");
 });

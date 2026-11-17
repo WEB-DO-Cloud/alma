@@ -17,6 +17,7 @@ import type { PrismaClient } from "@rakazo/db";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { RouterDeps } from "./router.js";
 import { createRouter as createRouterWith } from "./router.js";
+import type { RouterHandler } from "./router-test-support.js";
 import { appHandler, createRouter, handle } from "./router-test-support.js";
 
 describe("account preferences", () => {
@@ -550,71 +551,6 @@ describe("account preferences", () => {
       });
     },
   );
-
-  it("does not ask for a user model when the managed model is active", async () => {
-    const previousManaged = process.env.ALMA_MANAGED_MODEL;
-    const previousRuntime = process.env.AGENT_RUNTIME;
-    process.env.ALMA_MANAGED_MODEL = "1";
-    process.env.AGENT_RUNTIME = "pi";
-    try {
-      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
-      const me = await call(handler, actor, "me", null);
-      expect(me.status).toBe(200);
-      await expect(me.json()).resolves.toEqual({
-        json: expect.objectContaining({ needsModel: false, managedModel: true }),
-      });
-
-      const send = await call(handler, actor, "threads/send", { botId: "bot-1", text: "hello" });
-      const body = (await send.json()) as { json?: { message?: string } };
-      expect(body.json?.message).not.toBe("Connect a model to start a run.");
-    } finally {
-      if (previousManaged === undefined) delete process.env.ALMA_MANAGED_MODEL;
-      else process.env.ALMA_MANAGED_MODEL = previousManaged;
-      if (previousRuntime === undefined) delete process.env.AGENT_RUNTIME;
-      else process.env.AGENT_RUNTIME = previousRuntime;
-    }
-  });
-
-  it("names the configured ALMA model while the operator runtime is Pi", async () => {
-    const previous = {
-      managed: process.env.ALMA_MANAGED_MODEL,
-      runtime: process.env.AGENT_RUNTIME,
-      modelRuntime: process.env.ALMA_MODEL_RUNTIME,
-      provider: process.env.PI_DEFAULT_PROVIDER,
-      model: process.env.PI_DEFAULT_MODEL,
-      key: process.env.DEEPSEEK_API_KEY,
-    };
-    process.env.ALMA_MANAGED_MODEL = "1";
-    process.env.AGENT_RUNTIME = "pi";
-    process.env.ALMA_MODEL_RUNTIME = "pi";
-    process.env.PI_DEFAULT_PROVIDER = "deepseek";
-    process.env.PI_DEFAULT_MODEL = "deepseek-flash";
-    process.env.DEEPSEEK_API_KEY = "sk-deepseek-fixture";
-    try {
-      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
-      const me = await call(handler, actor, "me", null);
-      expect(me.status).toBe(200);
-      const body = (await me.json()) as { json?: Record<string, unknown> };
-      expect(body.json).toMatchObject({
-        managedModel: true,
-        needsModel: false,
-        defaultProvider: "deepseek",
-        defaultModel: "alma-flash",
-      });
-      expect(JSON.stringify(body)).not.toContain("sk-deepseek-fixture");
-    } finally {
-      const restore = (name: string, value: string | undefined) => {
-        if (value === undefined) delete process.env[name];
-        else process.env[name] = value;
-      };
-      restore("ALMA_MANAGED_MODEL", previous.managed);
-      restore("AGENT_RUNTIME", previous.runtime);
-      restore("ALMA_MODEL_RUNTIME", previous.modelRuntime);
-      restore("PI_DEFAULT_PROVIDER", previous.provider);
-      restore("PI_DEFAULT_MODEL", previous.model);
-      restore("DEEPSEEK_API_KEY", previous.key);
-    }
-  });
 
   it.each([false, true])("checks work-card support before a token exists (%s)", async (enabled) => {
     const { deps, actor } = preferencesDeps("robot");
@@ -1389,5 +1325,124 @@ describe("memory documents", () => {
     const foreign = memoryClient(null);
     await expect(foreign.client.memory.remove({ documentId: "doc-2" })).rejects.toBeTruthy();
     expect(foreign.memory.remove).not.toHaveBeenCalled();
+  });
+});
+
+describe("model setup gate", () => {
+  function modelGateDeps(options: { agentRuntime: string }) {
+    const prisma = {
+      user: {
+        findUniqueOrThrow: vi.fn().mockResolvedValue({
+          email: "user@example.test",
+          name: "Test User",
+          avatarStyle: "robot",
+          secrets: [],
+        }),
+      },
+      bot: {
+        findFirst: vi.fn().mockResolvedValue({ id: "bot-1", thread: { id: "thread-1" } }),
+        findMany: vi
+          .fn()
+          .mockResolvedValue([{ modelProvider: null, modelId: null, thinkingLevel: null }]),
+      },
+      userModelPreference: { findFirst: vi.fn().mockResolvedValue(null) },
+      deploymentSettings: { findUnique: vi.fn().mockResolvedValue(null) },
+    } as unknown as PrismaClient;
+    const deps = {
+      prisma,
+      env: {
+        agentRuntime: options.agentRuntime,
+        defaultProvider: "openrouter",
+        defaultModel: "test-model",
+        webOrigin: "http://127.0.0.1:5173",
+        screenProxySecret: "fake-test-secret",
+        sandboxProvider: "fake",
+      },
+      dataDir: "/tmp/alma-router-test",
+    } as unknown as RouterDeps;
+    const actor = {
+      spaceId: "workspace-1",
+      userId: "user-1",
+      email: "user@example.test",
+      isDeploymentOwner: true,
+    } satisfies Actor;
+    return { actor, handler: new RPCHandler(createRouter(deps)) };
+  }
+
+  async function call(handler: RouterHandler, actor: Actor, path: string, body: unknown) {
+    return handle(
+      handler,
+      new Request(`http://127.0.0.1/rpc/${path}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ json: body }),
+      }),
+      { prefix: "/rpc", context: { actor } },
+    );
+  }
+
+  it("does not ask for a user model when the managed model is active", async () => {
+    const previousManaged = process.env.ALMA_MANAGED_MODEL;
+    const previousRuntime = process.env.AGENT_RUNTIME;
+    process.env.ALMA_MANAGED_MODEL = "1";
+    process.env.AGENT_RUNTIME = "pi";
+    try {
+      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
+      const me = await call(handler, actor, "me", null);
+      expect(me.status).toBe(200);
+      await expect(me.json()).resolves.toEqual({
+        json: expect.objectContaining({ needsModel: false, managedModel: true }),
+      });
+
+      const send = await call(handler, actor, "threads/send", { botId: "bot-1", text: "hello" });
+      const body = (await send.json()) as { json?: { message?: string } };
+      expect(body.json?.message).not.toBe("Connect a model to start a run.");
+    } finally {
+      if (previousManaged === undefined) delete process.env.ALMA_MANAGED_MODEL;
+      else process.env.ALMA_MANAGED_MODEL = previousManaged;
+      if (previousRuntime === undefined) delete process.env.AGENT_RUNTIME;
+      else process.env.AGENT_RUNTIME = previousRuntime;
+    }
+  });
+
+  it("names the configured ALMA model while the operator runtime is Pi", async () => {
+    const previous = {
+      managed: process.env.ALMA_MANAGED_MODEL,
+      runtime: process.env.AGENT_RUNTIME,
+      modelRuntime: process.env.ALMA_MODEL_RUNTIME,
+      provider: process.env.PI_DEFAULT_PROVIDER,
+      model: process.env.PI_DEFAULT_MODEL,
+      key: process.env.DEEPSEEK_API_KEY,
+    };
+    process.env.ALMA_MANAGED_MODEL = "1";
+    process.env.AGENT_RUNTIME = "pi";
+    process.env.ALMA_MODEL_RUNTIME = "pi";
+    process.env.PI_DEFAULT_PROVIDER = "deepseek";
+    process.env.PI_DEFAULT_MODEL = "deepseek-flash";
+    process.env.DEEPSEEK_API_KEY = "sk-deepseek-fixture";
+    try {
+      const { actor, handler } = modelGateDeps({ agentRuntime: "pi" });
+      const me = await call(handler, actor, "me", null);
+      expect(me.status).toBe(200);
+      const body = (await me.json()) as { json?: Record<string, unknown> };
+      expect(body.json).toMatchObject({
+        managedModel: true,
+        needsModel: false,
+        defaultProvider: "deepseek",
+        defaultModel: "alma-flash",
+      });
+      expect(JSON.stringify(body)).not.toContain("sk-deepseek-fixture");
+    } finally {
+      const restore = (name: string, value: string | undefined) => {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      };
+      restore("ALMA_MANAGED_MODEL", previous.managed);
+      restore("AGENT_RUNTIME", previous.runtime);
+      restore("ALMA_MODEL_RUNTIME", previous.modelRuntime);
+      restore("PI_DEFAULT_PROVIDER", previous.provider);
+      restore("PI_DEFAULT_MODEL", previous.model);
+      restore("DEEPSEEK_API_KEY", previous.key);
+    }
   });
 });

@@ -15,7 +15,13 @@ import {
   resolveBotAvatarSet,
   SandboxKind,
 } from "@rakazo/contracts";
-import { displayName, phoneCallSettings, ringingCall } from "@rakazo/core";
+import {
+  displayName,
+  phoneCallSettings,
+  presentModelId,
+  resolveModelId,
+  ringingCall,
+} from "@rakazo/core";
 import { chooseBotAvatar } from "./bot-avatar-choice.js";
 import { botThreadPreviews } from "./bot-previews.js";
 import type { Prisma, PrismaClient } from "./client.js";
@@ -30,11 +36,6 @@ import { createThreadMessageInTransaction } from "./messages.js";
 import { withNewestThreadMessages } from "./preview-messages.js";
 import { isUniqueViolation } from "./prisma-errors.js";
 import { BotSectionNameConflictError, IsolationError } from "./scope.js";
-
-function provisionedComputerKind(kind: string): string | null {
-  return SandboxKind.safeParse(kind).success ? kind : null;
-}
-
 import { lockSpaceForContentCreation } from "./spaces.js";
 import {
   activeRunSelection,
@@ -45,6 +46,10 @@ import {
 } from "./thread-listing.js";
 import { readStateFor, snoozedUntilFor, unreadFor } from "./thread-reads.js";
 import { withTransactionRetry } from "./transaction-retry.js";
+
+function provisionedComputerKind(kind: string): string | null {
+  return SandboxKind.safeParse(kind).success ? kind : null;
+}
 
 function isBotCreateConflict(error: unknown, clientId?: string): boolean {
   if (!isUniqueViolation(error)) return false;
@@ -501,8 +506,7 @@ export function createRepos(
       const envKind = process.env.SANDBOX_PROVIDER ?? "docker";
       const requestedKind =
         envKind === "docker" && settings?.computerHost === "this-mac" ? "desktop" : envKind;
-      // No computer provider: skip the row. A kind of "none" is not in the status schema
-      // and used to fail every account's thread response with "Output validation failed".
+      // An empty provider name is not stored. "none" is a real kind and still gets a row.
       const kind = provisionedComputerKind(requestedKind);
       const inTransaction = <T>(run: (tx: Prisma.TransactionClient) => Promise<T>) =>
         input.isolationLevel
@@ -537,23 +541,26 @@ export function createRepos(
             input.color,
             { family: input.avatarFamily, avatarSet, id: input.id },
           );
-          const computer = await ensureComputerRecord(
-            tx,
-            computerMode === "dedicated"
-              ? {
-                  mode: computerMode,
-                  spaceId: actor.spaceId,
-                  userId: actor.userId,
-                  botId: avatar.id,
-                  kind,
-                }
-              : {
-                  mode: computerMode,
-                  spaceId: actor.spaceId,
-                  userId: await teamComputerUserId(tx, actor),
-                  kind,
-                },
-          );
+          const computer =
+            input.attachComputer === false || kind === null
+              ? null
+              : await ensureComputerRecord(
+                  tx,
+                  computerMode === "dedicated"
+                    ? {
+                        mode: computerMode,
+                        spaceId: actor.spaceId,
+                        userId: actor.userId,
+                        botId: avatar.id,
+                        kind,
+                      }
+                    : {
+                        mode: computerMode,
+                        spaceId: actor.spaceId,
+                        userId: await teamComputerUserId(tx, actor),
+                        kind,
+                      },
+                );
           const created = await tx.bot.create({
             data: {
               id: avatar.id,
@@ -573,7 +580,7 @@ export function createRepos(
               avatarSetPinned: input.avatarSetPinned ?? avatarSet !== defaultSet,
               position: input.position ?? (positions._max.position ?? -1) + 1,
               parentBotId: input.parentBotId ?? null,
-              computerId: computer.id,
+              computerId: computer?.id ?? null,
               spawnKey,
               modelProvider,
               modelId,

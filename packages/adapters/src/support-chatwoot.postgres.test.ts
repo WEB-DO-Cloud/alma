@@ -27,11 +27,10 @@ describePostgres("support chat round trip (PostgreSQL)", () => {
       await db.pool.end();
     };
     owner = await runAsSystem("test fixture", () =>
-      provisionMessagingIdentity(
-        prisma,
-        { provider: "sendblue", address: `+1666${stamp}` },
-        { signupsEnabled: undefined, signupAllowlist: undefined },
-      ),
+      provisionMessagingIdentity(prisma, {
+        provider: "sendblue",
+        address: `+1666${stamp}`,
+      }),
     );
     server = createServer((req, res) => {
       const url = req.url ?? "";

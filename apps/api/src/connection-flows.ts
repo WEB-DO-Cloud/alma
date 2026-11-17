@@ -6,14 +6,19 @@ import type {
   ManagedConnectorProvider,
 } from "@rakazo/adapter-kit";
 import { ConnectorAuthUnavailableError, connectionCleanupJob } from "@rakazo/adapter-kit";
+import type { GoogleOAuthRemote } from "@rakazo/adapters";
 import {
   authorizationInUse,
   CONNECTION_CLEANUP_BACKUP_MS,
   connectionCleanupRetryAt,
+  createGoogleOAuthStore,
   dropLeftover,
   dropLeftoverAuthorization,
+  GoogleOAuthService,
+  isGoogleToolkit,
   leftoverAuthorization,
   lockProviderConnectionScope,
+  ORGANIZATION_GOOGLE_CLIENT,
   PROVIDER_LOCK_TRANSACTION_MS,
   pickReusableConnection,
   prepareManagedConnectorForTransaction,
@@ -106,6 +111,62 @@ async function organizationGoogleAuthConfigs(
   );
 }
 
+/**
+ * Removes what a begin whose result was not saved left at the provider. The keyed backup job is
+ * the durable record: an attempt that failed, found the scope busy or could not decide yet hands
+ * over to it, and only a finished removal deletes it. The attempt itself takes the scope's
+ * provider lock and leaves alone what an active row has saved, as the job does, so it needs no
+ * answer to whether the begin's save landed: a row that holds the result keeps the authorization.
+ * Never rejects, so the caller's own error is the one reported.
+ */
+async function removeLeftoverAuthorization(
+  deps: Pick<RouterDeps, "prisma" | "jobs">,
+  connector: ManagedConnectorProvider,
+  leftover: BackgroundJobPayloads["connection.cleanup"],
+  backedUp: boolean,
+): Promise<void> {
+  const where = {
+    connectorId: leftover.connectorId,
+    provider: leftover.provider,
+    ...(leftover.ref ? { providerRef: leftover.ref } : {}),
+  };
+  let recorded = backedUp;
+  /** Records the backup job, or moves the recorded one; an earlier record survives a failure. */
+  const record = async (availableAt?: Date) => {
+    try {
+      await deps.jobs.enqueue(connectionCleanupJob(leftover, availableAt));
+      recorded = true;
+    } catch (error) {
+      getLogger().warn("connections.begin could not record its leftover cleanup", {
+        error,
+        ...where,
+      });
+    }
+  };
+  /** Leaves an unfinished removal to the job, and says so when nothing is left to retry it. */
+  const handOver = async (availableAt?: Date) => {
+    await record(availableAt);
+    if (recorded) return;
+    getLogger().error(
+      "connections.begin leftover cleanup has no backup job; remove the authorization at the provider by hand",
+      { spaceId: leftover.spaceId, userId: leftover.userId, ...where },
+    );
+  };
+  if (!recorded) await record(cleanupBackupAt());
+  try {
+    // Its own time budget, not the request signal: a caller that hangs up must not cut it short.
+    const outcome = await dropLeftoverAuthorization(deps, connector, leftover, "connections.begin");
+    if (outcome !== "done") await handOver(connectionCleanupRetryAt(outcome));
+  } catch (error) {
+    getLogger().warn("connections.begin leftover cleanup failed; retrying", { error, ...where });
+    await handOver();
+  }
+}
+
+function cleanupBackupAt(): Date {
+  return new Date(Date.now() + CONNECTION_CLEANUP_BACKUP_MS);
+}
+
 export async function beginConnection(
   deps: RouterDeps,
   context: { actor: Actor; signal?: AbortSignal },
@@ -189,7 +250,9 @@ export async function beginConnection(
     }
   };
   let auth: Awaited<ReturnType<ManagedConnectorProvider["begin"]>>;
+  let authConfigIds: Record<string, string> | undefined;
   try {
+    authConfigIds = await organizationGoogleAuthConfigs(deps, connector, context, input.provider);
     auth = await connector.begin(
       {
         provider: input.provider,
@@ -244,7 +307,11 @@ export async function beginConnection(
           data: {
             status: auth.authorizationUrl ? "pending" : "connected",
             providerRef: auth.state || null,
-            metadata: { state: auth.state, attempt },
+            metadata: {
+              state: auth.state,
+              attempt,
+              ...(authConfigIds ? { [ORGANIZATION_GOOGLE_CLIENT]: true } : {}),
+            },
           },
         });
         if (updated.count > 0) return true;

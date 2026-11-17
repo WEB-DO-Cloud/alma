@@ -78,7 +78,7 @@ export const RU_MESSAGES: Record<string, string> = {
   "Set up ALMA": "Настройка ALMA",
   "Quit ALMA": "Завершить ALMA",
   "Welcome to ALMA": "Добро пожаловать в ALMA",
-  "Choose where Rakazo runs.": "Выберите, где будет работать Rakazo.",
+  "Choose where ALMA runs.": "Выберите, где будет работать ALMA.",
   Instance: "Экземпляр",
   "This computer": "Этот компьютер",
   "Existing instance": "Существующий экземпляр",
@@ -194,15 +194,15 @@ export const RU_MESSAGES: Record<string, string> = {
   "Chat Details": "Сведения о чате",
   Help: "Справка",
   "Keyboard Shortcuts": "Сочетания клавиш",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Не удалось загрузить Rakazo. Проверьте подключение к интернету и повторите попытку.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "Не удалось загрузить ALMA. Проверьте подключение к интернету и повторите попытку.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Не удалось перенести данные из Docker. Посмотрите вывод ниже и повторите попытку.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "Уже запущенная среда выполнения компьютеров слишком старая. Обновите или закройте её, затем повторите попытку.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Ваши данные Rakazo находятся в другой среде выполнения компьютеров. Закройте запущенную среду, затем повторите попытку.",
-  "Run Rakazo without Docker?": "Запускать Rakazo без Docker?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "Ваши данные ALMA находятся в другой среде выполнения компьютеров. Закройте запущенную среду, затем повторите попытку.",
+  "Run ALMA without Docker?": "Запускать ALMA без Docker?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "Ваши боты и данные будут перенесены. Docker будет остановлен, но не удалён.",
   Move: "Перенести",
@@ -211,12 +211,12 @@ export const RU_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "Ваши данные остаются на этом компьютере.",
   "Connect to a server you or your team already run.":
     "Подключитесь к серверу, который уже работает у вас или вашей команды.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "Чтобы Rakazo работал на этом компьютере, нужен Docker Desktop.",
-  "Rakazo needs Docker to run on this computer.":
-    "Чтобы Rakazo работал на этом компьютере, нужен Docker.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop — бесплатное приложение, которое запускает Rakazo в фоне. Установите и один раз откройте его.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "Чтобы ALMA работал на этом компьютере, нужен Docker Desktop.",
+  "ALMA needs Docker to run on this computer.":
+    "Чтобы ALMA работал на этом компьютере, нужен Docker.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop — бесплатное приложение, которое запускает ALMA в фоне. Установите и один раз откройте его.",
   "Install Docker Engine and start it.": "Установите Docker Engine и запустите его.",
   "Download Docker Desktop": "Скачать Docker Desktop",
   "Install Docker": "Установить Docker",
@@ -225,6 +225,6 @@ export const RU_MESSAGES: Record<string, string> = {
   "Starting {app}…": "Запуск {app}…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker установлен, но не запущен. Запустите службу Docker, чтобы продолжить.",
-  "Rakazo stopped unexpectedly.": "Rakazo неожиданно остановился.",
+  "ALMA stopped unexpectedly.": "ALMA неожиданно остановился.",
   Reload: "Перезагрузить",
 };

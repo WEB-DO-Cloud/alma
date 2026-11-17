@@ -6,7 +6,7 @@ import type {
   ThreadMessage,
   VoiceStatus,
 } from "@rakazo/contracts";
-import { DEFAULT_NEW_BOT_AVATAR_SET, isSupportBot } from "@rakazo/contracts";
+import { DEFAULT_NEW_BOT_AVATAR_SET, hasLab, isSupportBot } from "@rakazo/contracts";
 import {
   activeThreadRuns,
   answerableAskMessageIds,
@@ -1285,7 +1285,11 @@ function SpaceShell() {
               enterToSend={enterToSend}
               sendColors={userBubble}
               modelPicker={
-                showComposerModel && active && !inGroup ? (
+                showComposerModel &&
+                active &&
+                !inGroup &&
+                !isSupportBot(active) &&
+                bootstrapMe?.managedModel !== true ? (
                   <ComposerModelPicker
                     bot={active}
                     disabled={Boolean(recordingSkill)}

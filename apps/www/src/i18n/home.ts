@@ -52,6 +52,8 @@ export type HomeCopy = {
     setupWithAgent: string;
     copiedForAgent: string;
     copyFailed: string;
+    downloadNote: string;
+    windowsUnsigned: string;
   };
   selfHost: {
     heading: string;
@@ -947,7 +949,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
     availableLanguage: "Polish",
     skipToContent: "Przejdź do treści",
     nav: {
-      home: "Strona głównan ALMA",
+      home: "Strona główna ALMA",
       primary: "Nawigacja główna",
       menu: "Menu",
       docs: "Dokumentacja",
@@ -975,6 +977,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Skonfiguruj ze swoim agentem",
       copiedForAgent: "Skopiowano dla agenta",
       copyFailed: "Nie udało się skopiować. Spróbuj ponownie.",
+      downloadNote: "Jeśli pobieranie się nie zacznie, aplikacja na komputer nie jest jeszcze opublikowana.",
+      windowsUnsigned: "Windows może powiedzieć, że nie rozpoznaje tego instalatora. Nie jest jeszcze podpisany.",
     },
     selfHost: {
       heading: "Na własnym serwerze",
@@ -1159,6 +1163,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Set up with your agent",
       copiedForAgent: "Copied for your agent",
       copyFailed: "Copy failed. Try again.",
+      downloadNote: "If the download does not start, the desktop app is not published yet.",
+      windowsUnsigned: "Windows may say it does not recognize this installer. It is not signed yet.",
     },
     selfHost: {
       heading: "Self-hosted",
@@ -1338,6 +1344,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Mit deinem Agenten einrichten",
       copiedForAgent: "Für deinen Agenten kopiert",
       copyFailed: "Kopieren fehlgeschlagen. Erneut versuchen.",
+      downloadNote: "Wenn der Download nicht startet, ist die Desktop-App noch nicht veröffentlicht.",
+      windowsUnsigned: "Windows kann melden, dass es dieses Installationsprogramm nicht erkennt. Es ist noch nicht signiert.",
     },
     selfHost: {
       heading: "Self-hosted",
@@ -1526,6 +1534,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "에이전트로 설정하기",
       copiedForAgent: "에이전트용으로 복사됨",
       copyFailed: "복사 실패. 다시 시도하세요.",
+      downloadNote: "다운로드가 시작되지 않으면 데스크톱 앱이 아직 게시되지 않은 것입니다.",
+      windowsUnsigned: "Windows에서 이 설치 프로그램을 인식하지 못한다고 표시할 수 있습니다. 아직 서명되지 않았습니다.",
     },
     selfHost: {
       heading: "셀프 호스트",
@@ -1697,6 +1707,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "用你的智能体安装",
       copiedForAgent: "已为你的智能体复制",
       copyFailed: "复制失败。请重试。",
+      downloadNote: "如果下载没有开始，说明桌面应用尚未发布。",
+      windowsUnsigned: "Windows 可能会提示无法识别此安装程序。它尚未签名。",
     },
     selfHost: {
       heading: "自托管",
@@ -1860,6 +1872,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "エージェントでセットアップ",
       copiedForAgent: "エージェント用にコピーしました",
       copyFailed: "コピーできませんでした。もう一度お試しください。",
+      downloadNote: "ダウンロードが始まらない場合、デスクトップアプリはまだ公開されていません。",
+      windowsUnsigned: "Windows はこのインストーラーを認識しないと表示することがあります。まだ署名されていません。",
     },
     selfHost: {
       heading: "セルフホスト",
@@ -2035,6 +2049,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Configurar con tu agente",
       copiedForAgent: "Copiado para tu agente",
       copyFailed: "No se pudo copiar. Inténtalo de nuevo.",
+      downloadNote: "Si la descarga no empieza, la app de escritorio todavía no está publicada.",
+      windowsUnsigned: "Windows puede avisar que no reconoce este instalador. Todavía no está firmado.",
     },
     selfHost: {
       heading: "Autoalojado",
@@ -2121,7 +2137,7 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
         {
           question: "¿Puedo usar mi suscripción a Claude Pro/Max o ChatGPT Plus/Pro?",
           answer:
-            "Sí. Inicia sesión con ChatGPT con un plan compatible. Para usar Claude Pro o Max, alojan ALMA desde el código fuente solo para ti y ejecútalo con la CLI oficial de Claude Code, con tu propia cuenta. También puedes conectar una clave de API. Consulta Model subscriptions en la documentación para más detalles.",
+            "Sí. Inicia sesión con ChatGPT con un plan compatible. Para usar Claude Pro o Max, aloja ALMA desde el código fuente solo para ti y ejecútalo con la CLI oficial de Claude Code, con tu propia cuenta. También puedes conectar una clave de API. Consulta Model subscriptions en la documentación para más detalles.",
         },
         {
           question: "¿Puedo usar un modelo local?",
@@ -2218,6 +2234,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Configurer avec votre agent",
       copiedForAgent: "Copié pour votre agent",
       copyFailed: "Échec de la copie. Réessayez.",
+      downloadNote: "Si le téléchargement ne démarre pas, l’application de bureau n’est pas encore publiée.",
+      windowsUnsigned: "Windows peut indiquer qu’il ne reconnaît pas cet installateur. Il n’est pas encore signé.",
     },
     selfHost: {
       heading: "Auto-hébergé",
@@ -2407,6 +2425,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Configurar com seu agente",
       copiedForAgent: "Copiado para seu agente",
       copyFailed: "Falha ao copiar. Tente novamente.",
+      downloadNote: "Se o download não começar, o app para computador ainda não foi publicado.",
+      windowsUnsigned: "O Windows pode dizer que não reconhece este instalador. Ele ainda não está assinado.",
     },
     selfHost: {
       heading: "Auto-hospedado",
@@ -2593,6 +2613,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Instellen met je agent",
       copiedForAgent: "Gekopieerd voor je agent",
       copyFailed: "Kopiëren mislukt. Probeer het opnieuw.",
+      downloadNote: "Als de download niet start, is de desktop-app nog niet gepubliceerd.",
+      windowsUnsigned: "Windows kan melden dat het dit installatieprogramma niet herkent. Het is nog niet ondertekend.",
     },
     selfHost: {
       heading: "Zelf gehost",
@@ -2776,6 +2798,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Настроить с помощью агента",
       copiedForAgent: "Скопировано для агента",
       copyFailed: "Не удалось скопировать. Попробуйте ещё раз.",
+      downloadNote: "Если загрузка не начинается, приложение для компьютера ещё не опубликовано.",
+      windowsUnsigned: "Windows может сообщить, что не распознаёт этот установщик. Он ещё не подписан.",
     },
     selfHost: {
       heading: "На своём сервере",
@@ -2959,6 +2983,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "Ajanınızla kurun",
       copiedForAgent: "Ajanınız için kopyalandı",
       copyFailed: "Kopyalanamadı. Tekrar deneyin.",
+      downloadNote: "İndirme başlamazsa, masaüstü uygulaması henüz yayımlanmamıştır.",
+      windowsUnsigned: "Windows bu yükleyiciyi tanımadığını söyleyebilir. Henüz imzalanmamıştır.",
     },
     selfHost: {
       heading: "Kendi sunucunuzda",
@@ -3141,6 +3167,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "הגדרה עם הסוכן שלך",
       copiedForAgent: "הועתק עבור הסוכן שלך",
       copyFailed: "ההעתקה נכשלה. אפשר לנסות שוב.",
+      downloadNote: "אם ההורדה לא מתחילה, אפליקציית המחשב עדיין לא פורסמה.",
+      windowsUnsigned: "Windows עשוי לומר שהוא לא מזהה את קובץ ההתקנה. הוא עדיין לא חתום.",
     },
     selfHost: {
       heading: "באירוח עצמי",
@@ -3317,6 +3345,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "अपने एजेंट से सेट अप करें",
       copiedForAgent: "आपके एजेंट के लिए कॉपी किया गया",
       copyFailed: "कॉपी नहीं हो सका। फिर से कोशिश करें।",
+      downloadNote: "अगर डाउनलोड शुरू नहीं होता, तो डेस्कटॉप ऐप अभी प्रकाशित नहीं हुआ है।",
+      windowsUnsigned: "Windows कह सकता है कि वह इस इंस्टॉलर को नहीं पहचानता। यह अभी हस्ताक्षरित नहीं है।",
     },
     selfHost: {
       heading: "सेल्फ़-होस्टेड",
@@ -3499,6 +3529,8 @@ const HOME_COPY: Record<Locale, HomeCopy> = {
       setupWithAgent: "用你的代理程式設定",
       copiedForAgent: "已為你的代理程式複製",
       copyFailed: "複製失敗，請重試。",
+      downloadNote: "如果下載沒有開始，表示桌面應用程式尚未發布。",
+      windowsUnsigned: "Windows 可能會提示無法辨識此安裝程式。它尚未簽署。",
     },
     selfHost: {
       heading: "自行託管",

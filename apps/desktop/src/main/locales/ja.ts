@@ -78,7 +78,7 @@ export const JA_MESSAGES: Record<string, string> = {
   "Set up ALMA": "ALMAを設定",
   "Quit ALMA": "ALMAを終了",
   "Welcome to ALMA": "ALMAへようこそ",
-  "Choose where Rakazo runs.": "Rakazoを動かす場所を選んでください。",
+  "Choose where ALMA runs.": "ALMAを動かす場所を選んでください。",
   Instance: "インスタンス",
   "This computer": "このコンピュータ",
   "Existing instance": "既存のインスタンス",
@@ -195,15 +195,15 @@ export const JA_MESSAGES: Record<string, string> = {
   "Chat Details": "チャットの詳細",
   Help: "ヘルプ",
   "Keyboard Shortcuts": "キーボードショートカット",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Rakazoをダウンロードできませんでした。インターネット接続を確認してから、もう一度お試しください。",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ALMAをダウンロードできませんでした。インターネット接続を確認してから、もう一度お試しください。",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Dockerからデータを移行できませんでした。下の出力を確認してから、もう一度お試しください。",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "すでに実行中のコンピューターランタイムが古すぎます。更新するか終了してから、もう一度お試しください。",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Rakazoのデータは別のコンピューターランタイムにあります。実行中のものを終了してから、もう一度お試しください。",
-  "Run Rakazo without Docker?": "DockerなしでRakazoを実行しますか？",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "ALMAのデータは別のコンピューターランタイムにあります。実行中のものを終了してから、もう一度お試しください。",
+  "Run ALMA without Docker?": "DockerなしでALMAを実行しますか？",
   "Your bots and data move over. Docker is stopped, not removed.":
     "ボットとデータは引き継がれます。Dockerは停止されますが、削除はされません。",
   Move: "移行",
@@ -212,12 +212,12 @@ export const JA_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "データはこのコンピュータに保存されます。",
   "Connect to a server you or your team already run.":
     "あなたやチームがすでに運用しているサーバーに接続します。",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "このコンピュータでRakazoを動かすにはDocker Desktopが必要です。",
-  "Rakazo needs Docker to run on this computer.":
-    "このコンピュータでRakazoを動かすにはDockerが必要です。",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktopは、Rakazoをバックグラウンドで動かす無料のアプリです。インストールして一度開いてください。",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "このコンピュータでALMAを動かすにはDocker Desktopが必要です。",
+  "ALMA needs Docker to run on this computer.":
+    "このコンピュータでALMAを動かすにはDockerが必要です。",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktopは、ALMAをバックグラウンドで動かす無料のアプリです。インストールして一度開いてください。",
   "Install Docker Engine and start it.": "Docker Engineをインストールして起動してください。",
   "Download Docker Desktop": "Docker Desktopをダウンロード",
   "Install Docker": "Dockerをインストール",
@@ -226,6 +226,6 @@ export const JA_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app}を起動しています…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Dockerはインストールされていますが、実行されていません。続行するにはDockerサービスを起動してください。",
-  "Rakazo stopped unexpectedly.": "Rakazo が突然停止しました。",
+  "ALMA stopped unexpectedly.": "ALMA が突然停止しました。",
   Reload: "再読み込み",
 };

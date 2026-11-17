@@ -76,14 +76,20 @@ export const TR_MESSAGES: Record<string, string> = {
     "Bir plan seçmezsen kayıtlı bilgisayar dosyaların {date} tarihinde silinecek.",
   "{inviter} invited you to {organization} on ALMA":
     "{inviter} sizi ALMA'da {organization} kuruluşuna davet etti",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna davet etti",
   "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna katılmaya davet etti.",
+  "{inviter} invited you to join {organization} on Rakazo.":
     "{inviter} sizi ALMA'da {organization} kuruluşuna katılmaya davet etti.",
   "Join {organization}": "{organization} kuruluşuna katıl",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "Bu davetin süresi 7 gün içinde dolar. Kabul etmek için bu e-posta adresiyle oturum açın.",
-  "{inviter} invited you to {space} on ALMA":
-    "{inviter} sizi ALMA'da {space} alanına davet etti",
+  "{inviter} invited you to {space} on ALMA": "{inviter} sizi ALMA'da {space} alanına davet etti",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} sizi ALMA'da {space} alanına davet etti",
   "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} sizi ALMA'da {space} alanına katılmaya davet etti.",
+  "{inviter} invited you to join {space} on Rakazo.":
     "{inviter} sizi ALMA'da {space} alanına katılmaya davet etti.",
   "Join {space}": "{space} alanına katıl",
   "This invitation expires in 7 days.": "Bu davetin süresi 7 gün içinde dolar.",

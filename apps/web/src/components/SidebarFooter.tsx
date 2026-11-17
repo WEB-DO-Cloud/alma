@@ -85,7 +85,7 @@ type Props = {
   onSetup?: () => void;
   /** How much of the member's allowance is used; the Usage row shows only with one. */
   usage?: string | null;
-  onUsage: () => void;
+  onUsage?: () => void;
   onInvite?: () => void;
   onLogOut: () => void;
   signingOut: boolean;

@@ -340,6 +340,20 @@ export default function SignIn() {
                     </Text>
                   </Pressable>
                 ) : null}
+                {showLogo ? (
+                  <Image
+                    accessibilityLabel="ALMA"
+                    source={require("../assets/alma-logo-black.png")}
+                    resizeMode="contain"
+                    style={{
+                      width: logoWidth,
+                      height: Math.round((logoWidth * 67) / 259),
+                      alignSelf: "center",
+                      marginBottom: 28,
+                      tintColor: tokens.foreground,
+                    }}
+                  />
+                ) : null}
                 <Text
                   accessibilityRole="header"
                   style={{

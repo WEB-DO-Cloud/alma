@@ -77,7 +77,7 @@ export const TR_MESSAGES: Record<string, string> = {
   "Set up ALMA": "ALMA’yu Kur",
   "Quit ALMA": "ALMA’dan Çık",
   "Welcome to ALMA": "ALMA’ya hoş geldiniz",
-  "Choose where Rakazo runs.": "Rakazo'nun nerede çalışacağını seçin.",
+  "Choose where ALMA runs.": "ALMA'nun nerede çalışacağını seçin.",
   Instance: "Örnek",
   "This computer": "Bu bilgisayar",
   "Existing instance": "Mevcut örnek",
@@ -188,15 +188,15 @@ export const TR_MESSAGES: Record<string, string> = {
   "Chat Details": "Sohbet Ayrıntıları",
   Help: "Yardım",
   "Keyboard Shortcuts": "Klavye Kısayolları",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Rakazo indirilemedi. İnternet bağlantısını kontrol edip yeniden deneyin.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ALMA indirilemedi. İnternet bağlantısını kontrol edip yeniden deneyin.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Verileriniz Docker'dan taşınamadı. Aşağıdaki çıktıyı kontrol edip yeniden deneyin.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "Zaten çalışan bilgisayar çalışma ortamı çok eski. Güncelleyin veya kapatın, ardından yeniden deneyin.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Rakazo verileriniz farklı bir bilgisayar çalışma ortamında. Çalışanı kapatın, ardından yeniden deneyin.",
-  "Run Rakazo without Docker?": "Rakazo Docker olmadan çalıştırılsın mı?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "ALMA verileriniz farklı bir bilgisayar çalışma ortamında. Çalışanı kapatın, ardından yeniden deneyin.",
+  "Run ALMA without Docker?": "ALMA Docker olmadan çalıştırılsın mı?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "Botlarınız ve verileriniz taşınır. Docker durdurulur, kaldırılmaz.",
   Move: "Taşı",
@@ -205,12 +205,12 @@ export const TR_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "Verileriniz bu bilgisayarda kalır.",
   "Connect to a server you or your team already run.":
     "Sizin veya ekibinizin zaten çalıştırdığı bir sunucuya bağlanın.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "Rakazo'nun bu bilgisayarda çalışması için Docker Desktop gerekir.",
-  "Rakazo needs Docker to run on this computer.":
-    "Rakazo'nun bu bilgisayarda çalışması için Docker gerekir.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop, Rakazo'yu arka planda çalıştıran ücretsiz bir uygulamadır. Yükleyip bir kez açın.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "ALMA'nun bu bilgisayarda çalışması için Docker Desktop gerekir.",
+  "ALMA needs Docker to run on this computer.":
+    "ALMA'nun bu bilgisayarda çalışması için Docker gerekir.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop, ALMA'yu arka planda çalıştıran ücretsiz bir uygulamadır. Yükleyip bir kez açın.",
   "Install Docker Engine and start it.": "Docker Engine'i yükleyip başlatın.",
   "Download Docker Desktop": "Docker Desktop'ı indir",
   "Install Docker": "Docker'ı yükle",
@@ -219,6 +219,6 @@ export const TR_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app} başlatılıyor…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker yüklü ama çalışmıyor. Devam etmek için Docker hizmetini başlatın.",
-  "Rakazo stopped unexpectedly.": "Rakazo beklenmedik şekilde durdu.",
+  "ALMA stopped unexpectedly.": "ALMA beklenmedik şekilde durdu.",
   Reload: "Yeniden yükle",
 };

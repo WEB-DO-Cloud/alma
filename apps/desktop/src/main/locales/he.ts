@@ -75,7 +75,7 @@ export const HE_MESSAGES: Record<string, string> = {
   "Set up ALMA": "הגדרת ALMA",
   "Quit ALMA": "יציאה מ-ALMA",
   "Welcome to ALMA": "ברוכים הבאים ל-ALMA",
-  "Choose where Rakazo runs.": "בחרו איפה Rakazo יפעל.",
+  "Choose where ALMA runs.": "בחרו איפה ALMA יפעל.",
   Instance: "מופע",
   "This computer": "המחשב הזה",
   "Existing instance": "מופע קיים",
@@ -187,15 +187,15 @@ export const HE_MESSAGES: Record<string, string> = {
   "Chat Details": "פרטי הצ׳אט",
   Help: "עזרה",
   "Keyboard Shortcuts": "קיצורי מקלדת",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "ההורדה של Rakazo נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ההורדה של ALMA נכשלה. בדקו את החיבור לאינטרנט ונסו שוב.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "לא ניתן להעביר את הנתונים מ-Docker. בדקו את הפלט למטה ונסו שוב.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "סביבת ההרצה של המחשבים שכבר פועלת ישנה מדי. עדכנו או סגרו אותה ונסו שוב.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "הנתונים שלכם ב-Rakazo נמצאים בסביבת הרצה אחרת של המחשבים. סגרו את זו שפועלת ונסו שוב.",
-  "Run Rakazo without Docker?": "להפעיל את Rakazo בלי Docker?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "הנתונים שלכם ב-ALMA נמצאים בסביבת הרצה אחרת של המחשבים. סגרו את זו שפועלת ונסו שוב.",
+  "Run ALMA without Docker?": "להפעיל את ALMA בלי Docker?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "הבוטים והנתונים שלכם יועברו. Docker ייעצר, לא יוסר.",
   Move: "העברה",
@@ -204,11 +204,11 @@ export const HE_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "הנתונים שלכם נשארים במחשב הזה.",
   "Connect to a server you or your team already run.":
     "התחברות לשרת שאתם או הצוות שלכם כבר מפעילים.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "Rakazo צריך את Docker Desktop כדי לפעול במחשב הזה.",
-  "Rakazo needs Docker to run on this computer.": "Rakazo צריך את Docker כדי לפעול במחשב הזה.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop היא אפליקציה חינמית שמפעילה את Rakazo ברקע. מתקינים ופותחים אותה פעם אחת.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "ALMA צריך את Docker Desktop כדי לפעול במחשב הזה.",
+  "ALMA needs Docker to run on this computer.": "ALMA צריך את Docker כדי לפעול במחשב הזה.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop היא אפליקציה חינמית שמפעילה את ALMA ברקע. מתקינים ופותחים אותה פעם אחת.",
   "Install Docker Engine and start it.": "מתקינים את Docker Engine ומפעילים אותו.",
   "Download Docker Desktop": "הורדת Docker Desktop",
   "Install Docker": "התקנת Docker",
@@ -217,6 +217,6 @@ export const HE_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app} מופעל…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker מותקן אבל לא פועל. יש להפעיל את שירות Docker כדי להמשיך.",
-  "Rakazo stopped unexpectedly.": "Rakazo נעצר באופן בלתי צפוי.",
+  "ALMA stopped unexpectedly.": "ALMA נעצר באופן בלתי צפוי.",
   Reload: "טען מחדש",
 };

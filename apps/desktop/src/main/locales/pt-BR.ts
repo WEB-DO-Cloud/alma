@@ -77,7 +77,7 @@ export const PT_BR_MESSAGES: Record<string, string> = {
   "Set up ALMA": "Configurar o ALMA",
   "Quit ALMA": "Encerrar o ALMA",
   "Welcome to ALMA": "Boas-vindas ao ALMA",
-  "Choose where Rakazo runs.": "Escolha onde o Rakazo roda.",
+  "Choose where ALMA runs.": "Escolha onde o ALMA roda.",
   Instance: "Instância",
   "This computer": "Este computador",
   "Existing instance": "Instância existente",
@@ -193,15 +193,15 @@ export const PT_BR_MESSAGES: Record<string, string> = {
   "Chat Details": "Detalhes do chat",
   Help: "Ajuda",
   "Keyboard Shortcuts": "Atalhos de teclado",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Não foi possível baixar o Rakazo. Verifique a conexão com a internet e tente novamente.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "Não foi possível baixar o ALMA. Verifique a conexão com a internet e tente novamente.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Não foi possível mover seus dados do Docker. Confira a saída abaixo e tente novamente.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "O runtime de computadores que já está em execução é antigo demais. Atualize ou encerre-o e tente novamente.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Seus dados do Rakazo estão em outro runtime de computadores. Encerre o que está em execução e tente novamente.",
-  "Run Rakazo without Docker?": "Usar o Rakazo sem Docker?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "Seus dados do ALMA estão em outro runtime de computadores. Encerre o que está em execução e tente novamente.",
+  "Run ALMA without Docker?": "Usar o ALMA sem Docker?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "Seus bots e dados vêm junto. O Docker é parado, não removido.",
   Move: "Mover",
@@ -210,12 +210,12 @@ export const PT_BR_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "Seus dados ficam neste computador.",
   "Connect to a server you or your team already run.":
     "Conecte-se a um servidor que você ou sua equipe já executam.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "O Rakazo precisa do Docker Desktop para rodar neste computador.",
-  "Rakazo needs Docker to run on this computer.":
-    "O Rakazo precisa do Docker para rodar neste computador.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "O Docker Desktop é um app gratuito que roda o Rakazo em segundo plano. Instale e abra uma vez.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "O ALMA precisa do Docker Desktop para rodar neste computador.",
+  "ALMA needs Docker to run on this computer.":
+    "O ALMA precisa do Docker para rodar neste computador.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "O Docker Desktop é um app gratuito que roda o ALMA em segundo plano. Instale e abra uma vez.",
   "Install Docker Engine and start it.": "Instale o Docker Engine e inicie-o.",
   "Download Docker Desktop": "Baixar Docker Desktop",
   "Install Docker": "Instalar Docker",
@@ -224,6 +224,6 @@ export const PT_BR_MESSAGES: Record<string, string> = {
   "Starting {app}…": "Iniciando {app}…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "O Docker está instalado, mas não está em execução. Inicie o serviço do Docker para continuar.",
-  "Rakazo stopped unexpectedly.": "O Rakazo parou inesperadamente.",
+  "ALMA stopped unexpectedly.": "O ALMA parou inesperadamente.",
   Reload: "Recarregar",
 };

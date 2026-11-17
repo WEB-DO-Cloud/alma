@@ -95,9 +95,7 @@ test("narrow settings reveals the active section and offers scroll controls", as
   await expect(last).toHaveAttribute("aria-current", "page");
 });
 
-test("settings shell is two-pane and deep-links Models Memory Voice Usage", async ({
-  page,
-}, testInfo) => {
+test("settings shell is two-pane and deep-links Memory and Usage", async ({ page }, testInfo) => {
   const stamp = Date.now();
   const userName = `Settings shell ${stamp}`;
   await signup(page, `settings-shell-${stamp}@rakazo.test`, "password12", userName);
@@ -171,16 +169,7 @@ test("settings shell is two-pane and deep-links Models Memory Voice Usage", asyn
   await expect(memory.getByRole("button", { name: "Recall only" })).toBeVisible();
   await captureScreenshot(page, testInfo, "settings-shell-memory-serenity-advanced");
 
-  await settings.getByTestId("settings-nav-voice").click();
-  await expect(settings).toHaveAttribute("data-settings-section", "voice");
-  await expect(settings.getByTestId("voice-settings")).toBeVisible();
-  await captureScreenshot(page, testInfo, "settings-shell-voice");
-  const voice = settings.getByTestId("voice-settings");
-  await chooseOption(voice.getByLabel("Provider", { exact: true }), "xAI");
-  await expect(voice.getByLabel("API key", { exact: true })).toBeVisible();
-  await captureScreenshot(page, testInfo, "settings-shell-voice-xai");
-
-  await page.getByRole("button", { name: "Close voice settings" }).click();
+  await page.getByRole("button", { name: "Close memory settings" }).click();
   await expect(page.getByTestId("user-settings")).toHaveCount(0);
 
   await openUserSettings(page, "usage");
@@ -220,12 +209,10 @@ test("Honcho memory settings empty and filled", async ({ page }, testInfo) => {
   await expect(memory.getByRole("button", { name: "Connect", exact: true })).toBeDisabled();
   await captureScreenshot(page, testInfo, "memory-honcho-user-peer-reserved");
   await userPeer.fill("user-alex");
-  await expect(
-    memory.getByText("Recall from this peer; save to Rakazo’s own peers."),
-  ).toBeVisible();
+  await expect(memory.getByText("Recall from this peer; save to ALMA’s own peers.")).toBeVisible();
   await expect(memory.getByRole("button", { name: "Connect", exact: true })).toBeEnabled();
   await memory
-    .getByText("Recall from this peer; save to Rakazo’s own peers.")
+    .getByText("Recall from this peer; save to ALMA’s own peers.")
     .evaluate((element) => element.scrollIntoView({ block: "center" }));
   await captureScreenshot(page, testInfo, "memory-honcho-filled");
   await memory.getByRole("button", { name: "Self-hosted", exact: true }).click();

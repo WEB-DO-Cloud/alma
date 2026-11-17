@@ -1,5 +1,5 @@
 import { Trans, useLingui } from "@lingui/react/macro";
-import { BOT_COLOR_LIST, signInProviders } from "@rakazo/contracts";
+import { signInProviders } from "@rakazo/contracts";
 import {
   credentialIssue,
   MAX_PASSWORD_LENGTH,
@@ -7,15 +7,7 @@ import {
   signupRequiresEmailVerification,
   suggestEmailCorrection,
 } from "@rakazo/core";
-import {
-  Button,
-  Input,
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  Label,
-  LogoAvatar,
-} from "@rakazo/ui-web";
+import { Button, Input, InputOTP, InputOTPGroup, InputOTPSlot, Label } from "@rakazo/ui-web";
 import { ChevronLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -280,6 +272,7 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
     <AuthFrame
       onSubmit={submit}
       title={title}
+      logo={mode !== "forgot"}
       surface={presented}
       leading={
         presented && emailStep ? (
@@ -687,11 +680,25 @@ export function AuthFrame({
         >
           {leading ? <div className="mb-4 self-start">{leading}</div> : null}
           <div className={surface ? "flex w-full flex-col items-center" : "contents"}>
-            <LogoAvatar
-              size={74}
-              avatarValue={BOT_COLOR_LIST.find((color) => color.id === "orange")?.hex}
-              motion={false}
-            />
+            {logo ? (
+              <>
+                <img
+                  alt="ALMA"
+                  src="/alma-logo-black.svg"
+                  className="h-auto w-[min(45vw,13rem)] dark:hidden"
+                />
+                <img
+                  alt=""
+                  src="/alma-logo-white.svg"
+                  className="hidden h-auto w-[min(45vw,13rem)] dark:block"
+                />
+              </>
+            ) : (
+              <div className="flex h-[74px] w-[74px] items-center justify-center gap-[11px] rounded-full bg-muted">
+                <span className="h-5 w-[9px] rounded-full bg-primary" />
+                <span className="h-5 w-[9px] rounded-full bg-primary" />
+              </div>
+            )}
             <h1
               aria-live="polite"
               className={

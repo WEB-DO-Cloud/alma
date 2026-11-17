@@ -3,8 +3,8 @@ import { deferred, flush } from "@rakazo/core/test-async";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { hasSavedUnsentSends } from "./outbox-disk";
 import { rpc } from "./api";
+import { hasSavedUnsentSends } from "./outbox-disk";
 import { loadVerifiedIntegrationsScope, snapshotSessionToken } from "./session";
 import type { SendAttempt } from "./thread-feedback";
 import {

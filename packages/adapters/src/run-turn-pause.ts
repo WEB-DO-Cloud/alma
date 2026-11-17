@@ -93,7 +93,7 @@ export async function pauseForTakeover(ctx: RunContext, event: RuntimeEvent<"tak
     reply.pendingProgress = "";
   }
   // Give the user a full idle period to answer before the computer may suspend.
-  scheduleComputerSleep(deps.jobs, ctx.computer.stored.id);
+  if (ctx.computer.stored) scheduleComputerSleep(deps.jobs, ctx.computer.stored.id);
   await publishMessage(
     deps,
     run,

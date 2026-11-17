@@ -10,7 +10,6 @@ import type { TextInputInstance, TextInputProps } from "react-native";
 import { Modal, Platform, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { mobileTokens } from "../lib/appearance";
-import { cardAutofillTraits, noAutofillTraits } from "../lib/card-autofill";
 import type { MobileBot } from "../lib/mobile-types";
 import { useThemedStyles } from "../lib/native";
 import { useSecretSheetClose } from "../lib/secret-sheet-close";
@@ -365,7 +364,8 @@ export function VaultItemEditor({
                 slot: 0,
                 placeholder: item?.preview?.card ? `•••• ${item.preview.card.last4}` : undefined,
                 keyboardType: "number-pad",
-                ...cardAutofillTraits("number", Platform.OS),
+                textContentType: "creditCardNumber",
+                autoComplete: "cc-number",
                 importantForAutofill: "yes",
               })}
               {brand ? <Text style={styles.brand}>{brand}</Text> : null}
@@ -375,20 +375,25 @@ export function VaultItemEditor({
                   placeholder: "MM/YY",
                   keyboardType: "numbers-and-punctuation",
                   textContentType: "creditCardExpiration",
-                  ...cardAutofillTraits("expiry", Platform.OS),
+                  autoComplete: "cc-exp",
                   importantForAutofill: "yes",
                 }),
                 field(t`Security code`, draft.cvc, (cvc) => update({ cvc }), {
                   slot: 1,
                   secureTextEntry: true,
                   keyboardType: "number-pad",
-                  ...cardAutofillTraits("cvc", Platform.OS),
+                  autoComplete: "cc-csc",
+                  textContentType: "creditCardSecurityCode",
+                  importantForAutofill: "yes",
                 }),
               )}
               <View style={styles.separator} />
               {field(t`Name on card`, draft.cardName, (cardName) => update({ cardName }), {
                 autoCapitalize: "words",
-                ...cardAutofillTraits("name", Platform.OS),
+                // Android has no card-name hint and turns autofill off for one it doesn't know.
+                autoComplete: Platform.OS === "android" ? "name" : "cc-name",
+                textContentType: "creditCardName",
+                importantForAutofill: "yes",
               })}
               {contacts.length ? (
                 <>
@@ -535,14 +540,12 @@ export function VaultItemEditor({
                 {
                   placeholder: kind === "contact" ? t`Home` : item?.title,
                   autoCapitalize: "sentences",
-                  ...noAutofillTraits(),
                   ...noAutofill,
                 },
               )}
               <View style={styles.separator} />
               {field(t`When to use`, draft.note, (note) => update({ note }), {
                 autoCapitalize: "sentences",
-                ...noAutofillTraits(),
                 ...noAutofill,
               })}
             </View>

@@ -26,6 +26,7 @@ import {
   modelFallbackFailure,
 } from "@rakazo/core";
 import { getLogger } from "@rakazo/logging";
+import { almaAssistantCopy } from "./alma-assistant-copy.js";
 import {
   isTerminatingReplyResult,
   terminatingReplyText,
@@ -373,7 +374,9 @@ export class PiAgentRuntime implements AgentRuntime {
         const systemPrompt =
           restored?.systemPrompt ??
           (request.instructions ||
-            fallbackSystemPrompt(toolDefs.some((tool) => tool.name === "computer_observe")));
+            almaAssistantCopy(
+              fallbackSystemPrompt(toolDefs.some((tool) => tool.name === "computer_observe")),
+            ).replace(/\ba ALMA\b/g, "an ALMA"));
         const thinkingLevel = thinkingLevelFor(model, request.model.thinkingLevel);
         let piSession: PiSessionHandle | undefined;
         // Never write an unscoped transcript. Production requests carry userId;

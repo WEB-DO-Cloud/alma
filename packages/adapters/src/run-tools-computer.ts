@@ -158,8 +158,10 @@ async function screenBlocked(ctx: RunContext, look = false): Promise<string | un
     turn: ctx.state.screen.turn,
     look,
     readControl: async () => {
+      const stored = ctx.computer.stored;
+      if (!stored) return null;
       const computer = await ctx.deps.prisma.computer.findUnique({
-        where: { id: ctx.computer.stored.id },
+        where: { id: stored.id },
         select: {
           controlHolder: true,
           controlLeaseId: true,

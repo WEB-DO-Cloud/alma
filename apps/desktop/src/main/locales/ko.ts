@@ -77,7 +77,7 @@ export const KO_MESSAGES: Record<string, string> = {
   "Set up ALMA": "ALMA 설정",
   "Quit ALMA": "ALMA 종료",
   "Welcome to ALMA": "ALMA에 오신 것을 환영합니다",
-  "Choose where Rakazo runs.": "Rakazo를 실행할 위치를 선택하세요.",
+  "Choose where ALMA runs.": "ALMA를 실행할 위치를 선택하세요.",
   Instance: "인스턴스",
   "This computer": "이 컴퓨터",
   "Existing instance": "기존 인스턴스",
@@ -189,15 +189,15 @@ export const KO_MESSAGES: Record<string, string> = {
   "Chat Details": "채팅 세부정보",
   Help: "도움말",
   "Keyboard Shortcuts": "키보드 단축키",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Rakazo를 다운로드하지 못했습니다. 인터넷 연결을 확인한 다음 다시 시도하세요.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ALMA를 다운로드하지 못했습니다. 인터넷 연결을 확인한 다음 다시 시도하세요.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Docker에서 데이터를 옮기지 못했습니다. 아래 출력을 확인한 다음 다시 시도하세요.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "이미 실행 중인 컴퓨터 런타임이 너무 오래되었습니다. 업데이트하거나 종료한 다음 다시 시도하세요.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Rakazo 데이터가 다른 컴퓨터 런타임에 있습니다. 실행 중인 런타임을 종료한 다음 다시 시도하세요.",
-  "Run Rakazo without Docker?": "Docker 없이 Rakazo를 실행할까요?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "ALMA 데이터가 다른 컴퓨터 런타임에 있습니다. 실행 중인 런타임을 종료한 다음 다시 시도하세요.",
+  "Run ALMA without Docker?": "Docker 없이 ALMA를 실행할까요?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "봇과 데이터가 함께 옮겨집니다. Docker는 삭제되지 않고 중지됩니다.",
   Move: "옮기기",
@@ -206,12 +206,12 @@ export const KO_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "데이터가 이 컴퓨터에 보관됩니다.",
   "Connect to a server you or your team already run.":
     "나 또는 팀이 이미 운영 중인 서버에 연결합니다.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "이 컴퓨터에서 Rakazo를 실행하려면 Docker Desktop이 필요합니다.",
-  "Rakazo needs Docker to run on this computer.":
-    "이 컴퓨터에서 Rakazo를 실행하려면 Docker가 필요합니다.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop은 Rakazo를 백그라운드에서 실행하는 무료 앱입니다. 설치하고 한 번 여세요.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "이 컴퓨터에서 ALMA를 실행하려면 Docker Desktop이 필요합니다.",
+  "ALMA needs Docker to run on this computer.":
+    "이 컴퓨터에서 ALMA를 실행하려면 Docker가 필요합니다.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop은 ALMA를 백그라운드에서 실행하는 무료 앱입니다. 설치하고 한 번 여세요.",
   "Install Docker Engine and start it.": "Docker Engine을 설치하고 시작하세요.",
   "Download Docker Desktop": "Docker Desktop 다운로드",
   "Install Docker": "Docker 설치",
@@ -220,6 +220,6 @@ export const KO_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app} 시작 중…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker가 설치되어 있지만 실행 중이 아닙니다. 계속하려면 Docker 서비스를 시작하세요.",
-  "Rakazo stopped unexpectedly.": "Rakazo가 예기치 않게 중단되었습니다.",
+  "ALMA stopped unexpectedly.": "ALMA가 예기치 않게 중단되었습니다.",
   Reload: "다시 로드",
 };

@@ -2,8 +2,6 @@ import type { AdapterContext } from "@rakazo/adapter-kit";
 import { draftFromToolArgs, externalSendHold } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import { describe, expect, it } from "vitest";
-import { ComposioConnector } from "./composio-connector.js";
-import { FakeComposioClient } from "./composio-fake.js";
 import { GOOGLE_SCOPES, readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import {
   GOOGLE_RECONNECT_MESSAGE,
@@ -17,6 +15,8 @@ import {
   toolVisible,
   WORKSPACE_PREVIEW_MESSAGE,
 } from "./google-workspace.js";
+import { ComposioConnector } from "./providers/integration/composio/composio-connector.js";
+import { FakeComposioClient } from "./providers/integration/composio/composio-fake.js";
 import { EncryptedSecretStore } from "./secrets.js";
 
 const CLIENT_ID = "100-abc.apps.googleusercontent.com";

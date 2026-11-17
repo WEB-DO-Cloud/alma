@@ -71,13 +71,20 @@ export const HI_MESSAGES: Record<string, string> = {
     "आपकी सहेजी गई कंप्यूटर फ़ाइलें {date} को हटा दी जाएँगी, जब तक आप कोई प्लान नहीं चुनते।",
   "{inviter} invited you to {organization} on ALMA":
     "{inviter} ने आपको ALMA पर {organization} में आमंत्रित किया",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} ने आपको ALMA पर {organization} में आमंत्रित किया",
   "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} ने आपको ALMA पर {organization} से जुड़ने के लिए आमंत्रित किया है।",
+  "{inviter} invited you to join {organization} on Rakazo.":
     "{inviter} ने आपको ALMA पर {organization} से जुड़ने के लिए आमंत्रित किया है।",
   "Join {organization}": "{organization} से जुड़ें",
   "This invitation expires in 7 days. Sign in with this email address to accept it.":
     "यह आमंत्रण 7 दिनों में समाप्त हो जाएगा। इसे स्वीकार करने के लिए इसी ईमेल पते से साइन इन करें।",
   "{inviter} invited you to {space} on ALMA": "{inviter} ने आपको ALMA पर {space} में आमंत्रित किया",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} ने आपको ALMA पर {space} में आमंत्रित किया",
   "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} ने आपको ALMA पर {space} से जुड़ने के लिए आमंत्रित किया है।",
+  "{inviter} invited you to join {space} on Rakazo.":
     "{inviter} ने आपको ALMA पर {space} से जुड़ने के लिए आमंत्रित किया है।",
   "Join {space}": "{space} से जुड़ें",
   "This invitation expires in 7 days.": "यह आमंत्रण 7 दिनों में समाप्त हो जाएगा।",

@@ -9,7 +9,12 @@ import { desktop } from "./desktop-state.js";
 import { dockerDownloadUrl, isDesktopSetupLink } from "./docker-cli.js";
 import { desktopDirection, desktopLocale, desktopMessages, t } from "./i18n.js";
 import { handleIpc } from "./ipc.js";
-import { managedLocalOpenUrl, parseSetupInput, RAKAZO_CLOUD_URL } from "./setup-config.js";
+import {
+  managedLocalOpenUrl,
+  parseSetupInput,
+  RAKAZO_CLOUD_URL,
+  showLocalServerChoice,
+} from "./setup-config.js";
 import { writeSetup } from "./setup-store.js";
 import { setupWindowOptions } from "./window-options.js";
 
@@ -134,6 +139,10 @@ export function registerSetupIpc({
   handleIpc("desktop.setup.state", () => ({
     defaultLocalUrl: desktop.localStack.webUrl(),
     cloudUrl: RAKAZO_CLOUD_URL,
+    localServer: showLocalServerChoice({
+      packaged: app.isPackaged,
+      localServerEnv: process.env.ALMA_DESKTOP_LOCAL_SERVER,
+    }),
     saved: desktop.currentSetup,
     error: desktop.setupError ?? undefined,
   }));

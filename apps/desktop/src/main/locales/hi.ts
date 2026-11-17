@@ -76,7 +76,7 @@ export const HI_MESSAGES: Record<string, string> = {
   "Set up ALMA": "ALMA सेट अप करें",
   "Quit ALMA": "ALMA बंद करें",
   "Welcome to ALMA": "ALMA में आपका स्वागत है",
-  "Choose where Rakazo runs.": "चुनें कि Rakazo कहाँ चलेगा।",
+  "Choose where ALMA runs.": "चुनें कि ALMA कहाँ चलेगा।",
   Instance: "इंस्टेंस",
   "This computer": "यह कंप्यूटर",
   "Existing instance": "मौजूदा इंस्टेंस",
@@ -186,15 +186,15 @@ export const HI_MESSAGES: Record<string, string> = {
   "Chat Details": "चैट विवरण",
   Help: "सहायता",
   "Keyboard Shortcuts": "कीबोर्ड शॉर्टकट",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Rakazo डाउनलोड नहीं हो सका। इंटरनेट कनेक्शन जाँचें, फिर दोबारा कोशिश करें।",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ALMA डाउनलोड नहीं हो सका। इंटरनेट कनेक्शन जाँचें, फिर दोबारा कोशिश करें।",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Docker से आपका डेटा नहीं ले जाया जा सका। नीचे का आउटपुट देखें, फिर दोबारा कोशिश करें।",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "पहले से चल रहा कंप्यूटर रनटाइम बहुत पुराना है। इसे अपडेट करें या बंद करें, फिर दोबारा कोशिश करें।",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "आपका Rakazo डेटा किसी दूसरे कंप्यूटर रनटाइम में है। चल रहे रनटाइम को बंद करें, फिर दोबारा कोशिश करें।",
-  "Run Rakazo without Docker?": "Rakazo को Docker के बिना चलाएँ?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "आपका ALMA डेटा किसी दूसरे कंप्यूटर रनटाइम में है। चल रहे रनटाइम को बंद करें, फिर दोबारा कोशिश करें।",
+  "Run ALMA without Docker?": "ALMA को Docker के बिना चलाएँ?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "आपके बॉट और डेटा साथ आ जाएँगे। Docker रोका जाएगा, हटाया नहीं जाएगा।",
   Move: "ले जाएँ",
@@ -203,11 +203,11 @@ export const HI_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "आपका डेटा इसी कंप्यूटर पर रहता है।",
   "Connect to a server you or your team already run.":
     "उस सर्वर से कनेक्ट करें जिसे आप या आपकी टीम पहले से चलाते हैं।",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "इस कंप्यूटर पर चलने के लिए Rakazo को Docker Desktop चाहिए।",
-  "Rakazo needs Docker to run on this computer.": "इस कंप्यूटर पर चलने के लिए Rakazo को Docker चाहिए।",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop एक मुफ़्त ऐप है जो Rakazo को बैकग्राउंड में चलाता है। इसे इंस्टॉल करें और एक बार खोलें।",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "इस कंप्यूटर पर चलने के लिए ALMA को Docker Desktop चाहिए।",
+  "ALMA needs Docker to run on this computer.": "इस कंप्यूटर पर चलने के लिए ALMA को Docker चाहिए।",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop एक मुफ़्त ऐप है जो ALMA को बैकग्राउंड में चलाता है। इसे इंस्टॉल करें और एक बार खोलें।",
   "Install Docker Engine and start it.": "Docker Engine इंस्टॉल करके शुरू करें।",
   "Download Docker Desktop": "Docker Desktop डाउनलोड करें",
   "Install Docker": "Docker इंस्टॉल करें",
@@ -216,6 +216,6 @@ export const HI_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app} शुरू हो रहा है…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker इंस्टॉल है लेकिन चल नहीं रहा। जारी रखने के लिए Docker सेवा शुरू करें।",
-  "Rakazo stopped unexpectedly.": "Rakazo अप्रत्याशित रूप से रुक गया।",
+  "ALMA stopped unexpectedly.": "ALMA अप्रत्याशित रूप से रुक गया।",
   Reload: "फिर से लोड करें",
 };

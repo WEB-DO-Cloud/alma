@@ -71,7 +71,7 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Set up ALMA": "設定 ALMA",
   "Quit ALMA": "結束 ALMA",
   "Welcome to ALMA": "歡迎使用 ALMA",
-  "Choose where Rakazo runs.": "選擇 Rakazo 的執行位置。",
+  "Choose where ALMA runs.": "選擇 ALMA 的執行位置。",
   Instance: "執行個體",
   "This computer": "這台電腦",
   "Existing instance": "現有執行個體",
@@ -177,15 +177,15 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Chat Details": "聊天詳細資料",
   Help: "說明",
   "Keyboard Shortcuts": "鍵盤快速鍵",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "無法下載 Rakazo。請檢查網路連線，然後再試一次。",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "無法下載 ALMA。請檢查網路連線，然後再試一次。",
   "Could not move your data from Docker. Check the output below, then retry.":
     "無法從 Docker 移轉你的資料。請查看下方輸出，然後再試一次。",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "已在執行的電腦執行環境版本過舊。請更新或結束它，然後再試一次。",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "你的 Rakazo 資料位於另一個電腦執行環境中。請結束正在執行的那個，然後再試一次。",
-  "Run Rakazo without Docker?": "不使用 Docker 執行 Rakazo？",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "你的 ALMA 資料位於另一個電腦執行環境中。請結束正在執行的那個，然後再試一次。",
+  "Run ALMA without Docker?": "不使用 Docker 執行 ALMA？",
   "Your bots and data move over. Docker is stopped, not removed.":
     "你的機器人和資料會一併移轉。Docker 只會停止，不會移除。",
   Move: "移轉",
@@ -193,11 +193,11 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Nothing to install.": "無需安裝。",
   "Your data stays on this computer.": "你的資料保留在這台電腦上。",
   "Connect to a server you or your team already run.": "連線到你或你的團隊已在執行的伺服器。",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "Rakazo 需要 Docker Desktop 才能在這台電腦上執行。",
-  "Rakazo needs Docker to run on this computer.": "Rakazo 需要 Docker 才能在這台電腦上執行。",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop 是一款免費應用程式，可在背景執行 Rakazo。安裝並開啟一次即可。",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "ALMA 需要 Docker Desktop 才能在這台電腦上執行。",
+  "ALMA needs Docker to run on this computer.": "ALMA 需要 Docker 才能在這台電腦上執行。",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop 是一款免費應用程式，可在背景執行 ALMA。安裝並開啟一次即可。",
   "Install Docker Engine and start it.": "安裝並啟動 Docker Engine。",
   "Download Docker Desktop": "下載 Docker Desktop",
   "Install Docker": "安裝 Docker",
@@ -206,6 +206,6 @@ export const ZH_TW_MESSAGES: Record<string, string> = {
   "Starting {app}…": "正在啟動 {app}…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker 已安裝但未執行。請啟動 Docker 服務以繼續。",
-  "Rakazo stopped unexpectedly.": "Rakazo 意外停止。",
+  "ALMA stopped unexpectedly.": "ALMA 意外停止。",
   Reload: "重新載入",
 };

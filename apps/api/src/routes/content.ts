@@ -5,6 +5,7 @@ import { attachmentMaxBytes, resolveBotAvatarSet } from "@rakazo/contracts";
 import {
   AttachmentValidationError,
   ClientError,
+  presentUsageIdentity,
   validTimezoneOrUtc,
   wallClock,
   zonedDateTime,

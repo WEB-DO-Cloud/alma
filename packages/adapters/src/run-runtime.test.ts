@@ -1,20 +1,24 @@
+import type { AdapterContext, SecretStore } from "@rakazo/adapter-kit";
 import { phoneCallSettings, uploadSizeFromEnv } from "@rakazo/core";
 import { resolveEncryptionKey } from "@rakazo/core/node/secrets-guard";
+import type { PrismaClient, ThreadEvents } from "@rakazo/db";
 import { describe, expect, it } from "vitest";
-import { ComposioConnector } from "./composio-connector.js";
-import { FakeComposioClient } from "./composio-fake.js";
 import { resolveDeploymentModel } from "./deployment-model.js";
 import { EmailImapConnector } from "./email-imap-connector.js";
 import { deploymentGoogleClientId } from "./google-oauth.js";
 import { readGooglePickerEnv, readGoogleScopeMode } from "./google-scope-mode.js";
 import { GoogleWorkspaceConnector } from "./google-workspace.js";
+import { deploymentLabsFromEnv } from "./labs-env.js";
 import { mcpStdioOptionsFromEnv } from "./mcp-connector.js";
 import { parseMcpOAuthPresetClients } from "./mcp-oauth-presets.js";
+import { ComposioConnector } from "./providers/integration/composio/composio-connector.js";
+import { FakeComposioClient } from "./providers/integration/composio/composio-fake.js";
 import {
   createConnectorRuntime,
   omitWorkspaceFromComposioCatalog,
   runRuntimeEnvFromProcess,
 } from "./run-runtime.js";
+import type { SecretCleanupDeps } from "./secret-cleanup.js";
 
 // What the worker read inline before it shared the runtime builder with the API.
 function previousWorkerValues(source: NodeJS.ProcessEnv) {
@@ -113,6 +117,7 @@ const runtimeDeps = {
   prisma: {} as PrismaClient,
   secrets: {} as SecretStore,
   events: {} as ThreadEvents,
+  jobs: {} as SecretCleanupDeps["jobs"],
 };
 
 const catalogContext: AdapterContext = {

@@ -193,7 +193,9 @@ export function MemorySettingsOverlay({
                 <ScopePicker
                   value={defaultScope}
                   disabled={busy}
-                  onChange={(scope) => void updateDefaultScope(scope)}
+                  onChange={(scope) => {
+                    if (scope !== defaultScope) change.run({ kind: "scope", scope });
+                  }}
                 />
               </div>
             </section>

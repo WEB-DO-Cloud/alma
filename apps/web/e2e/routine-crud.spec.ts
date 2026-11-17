@@ -7,8 +7,8 @@ import {
   chooseOption,
   completeOnboarding,
   openBotPanel,
-  refocus,
   readRouteJson,
+  refocus,
   rpc,
   signup,
 } from "./helpers";

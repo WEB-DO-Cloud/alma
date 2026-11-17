@@ -7,8 +7,7 @@ import {
   selectCompatibleModelCredential,
   usableModelId,
 } from "@rakazo/contracts";
-import { MODEL_UNPRICED_FOR_CREDITS_ERROR } from "@rakazo/core";
-import { resolveModelId } from "@rakazo/core";
+import { MODEL_UNPRICED_FOR_CREDITS_ERROR, resolveModelId } from "@rakazo/core";
 import type { PrismaClient } from "@rakazo/db";
 import {
   chooseModelCredential,
@@ -174,7 +173,7 @@ export type SpaceCatalogAuth = {
   modelSettingsBySecretId?: Partial<Record<string, Record<string, ModelSettings>>>;
 };
 
-/** Whether this space would run the model on Rakazo credits rather than a member's own connection. */
+/** Whether this space would run the model on ALMA credits rather than a member's own connection. */
 export function runsOnHostedCredits(
   auth: SpaceCatalogAuth,
   entry: { provider: string; id: string },

@@ -1,5 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { captureScreenshot, completeOnboarding, readRouteJson, signup } from "./helpers";
+import { deferred } from "@rakazo/core/test-async";
+import {
+  captureScreenshot,
+  chooseOption,
+  completeOnboarding,
+  readRouteJson,
+  signup,
+} from "./helpers";
 
 test.afterEach(async ({ page }) => {
   // Polling can leave a route.fetch response in use when the assertions finish.

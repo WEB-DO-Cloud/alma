@@ -117,10 +117,6 @@ function LaunchOfferCopy({
   );
 }
 
-function SubscribeForMonth({ price }: { price: string }) {
-  return <Trans>Subscribe for {price} / month</Trans>;
-}
-
 /** Monthly or yearly own-key plan, with what the yearly plan saves. */
 function ByokIntervalToggle({
   monthlyCents,
@@ -464,7 +460,6 @@ export function CreditChoice({
   const tiers = status.planLayout === "tiers" ? (status.byokTiers ?? []) : [];
   const [amount, setAmount] = useState<CreditAmount>(DEFAULT_MONTHLY_CREDIT_AMOUNT);
   const [interval, setByokInterval] = useState<ByokInterval>("month");
-  const launch = monthlyLaunchOffer(status, interval, i18n.locale);
   const credit = formatBillingAmount(amount, "usd", i18n.locale);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -8,6 +8,7 @@ import type {
 } from "@rakazo/contracts";
 import { BOT_NAME_MAX_LENGTH, isBuiltinToolName, resolveBotAvatarSet } from "@rakazo/contracts";
 import {
+  catalogModelLabel,
   credentialForModel,
   modelOptionKey,
   modelThinkingLevels,
@@ -281,29 +282,21 @@ export function BotSettings({
     setSavedAdvanced(JSON.stringify(next));
   }, [bot]);
 
-  const connectedOptions = connectedModelChoices(credentials, catalog);
-  const storedModel = modelKey ? parseModelOptionKey(modelKey) : null;
-  const selectedModel = storedModel
-    ? {
-        provider: storedModel.provider,
-        modelId: resolveSelectableModelId(catalog, storedModel.provider, storedModel.modelId),
-      }
-    : null;
-  const selectedModelKey = selectedModel
-    ? modelOptionKey(selectedModel.provider, selectedModel.modelId)
-    : "";
-
-  const defaultEntry = me?.defaultModel
-    ? catalogEntry(catalog, me.defaultProvider, me.defaultModel)
-    : undefined;
-  const managedLabel = me?.managedModel
-    ? catalogModelLabel(catalog, me.defaultProvider, me.defaultModel)
-    : null;
-  const modelChoices = chatModelChoices(
-    connectedOptions,
+  const {
+    selectedModel,
     selectedModelKey,
     choices: modelChoices,
-  } = botModelChoices({ credentials, catalog, me, modelKey, spaceDefaultLabel: t`Space default` });
+  } = botModelChoices({
+    credentials,
+    catalog,
+    me,
+    modelKey,
+    spaceDefaultLabel: t`Space default`,
+  });
+  const managedModel = me?.managedModel === true;
+  const managedLabel = managedModel
+    ? catalogModelLabel(catalog, me?.defaultProvider, me?.defaultModel)
+    : null;
 
   const effectiveProvider = selectedModel?.provider ?? me?.defaultProvider ?? null;
   const effectiveModelId = selectedModel?.modelId ?? me?.defaultModel ?? null;
@@ -702,20 +695,31 @@ export function BotSettings({
           {/* Stays mounted so an instructions or description draft survives folding it away. */}
           <div id={`${ids}-settings`} hidden={!settingsOpen} className="space-y-6 pt-2">
             <SettingsCard>
-              <ModelRow
-                ids={ids}
-                containerRef={modelRef}
-                choices={modelChoices}
-                value={selectedModelKey}
-                onModelChange={(key) => {
-                  setModelKey(key);
-                  setThinkingLevel("");
-                }}
-                thinkingOptions={thinkingOptions}
-                thinkingLevel={thinkingLevel}
-                defaultThinkingLevel={defaultThinkingLevel}
-                onThinkingLevelChange={setThinkingLevel}
-              />
+              {managedModel ? (
+                <div ref={modelRef}>
+                  <p className="text-label font-medium text-muted-foreground">
+                    <Trans>Model</Trans>
+                  </p>
+                  <p id={`${ids}-model`} className="text-body text-foreground">
+                    {managedLabel}
+                  </p>
+                </div>
+              ) : (
+                <ModelRow
+                  ids={ids}
+                  containerRef={modelRef}
+                  choices={modelChoices}
+                  value={selectedModelKey}
+                  onModelChange={(key) => {
+                    setModelKey(key);
+                    setThinkingLevel("");
+                  }}
+                  thinkingOptions={thinkingOptions}
+                  thinkingLevel={thinkingLevel}
+                  defaultThinkingLevel={defaultThinkingLevel}
+                  onThinkingLevelChange={setThinkingLevel}
+                />
+              )}
               <SwitchRow
                 id={`${ids}-notify-finish`}
                 label={<Trans>Notifications</Trans>}

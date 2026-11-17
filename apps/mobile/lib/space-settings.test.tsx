@@ -192,7 +192,7 @@ it("follows the account until a setting is customized, then opens the same scree
     expect(control(`Customize ${name}`)?.checked).toBe(false);
   expect(container.querySelector("button")).toBeNull();
 
-  await press(control("Customize Models")!);
+  await press(control("Customize Approvals")!);
   expect(state.rpc).toHaveBeenCalledWith(
     "spaceSettings/setOverride",
     { setting: "confirmations", enabled: true },
@@ -201,14 +201,7 @@ it("follows the account until a setting is customized, then opens the same scree
   expect(state.push).not.toHaveBeenCalled();
   expect(control("Customize Approvals")?.checked).toBe(true);
 
-  state.push.mockReset();
-  await act(async () => container.querySelector("button")!.click());
-  expect(state.push).toHaveBeenCalledWith({
-    pathname: "/models",
-    params: { spaceId: "space-other" },
-  });
-
-  await press(control("Customize Models")!);
+  await press(control("Customize Approvals")!);
   expect(state.rpc).toHaveBeenLastCalledWith(
     "spaceSettings/setOverride",
     { setting: "confirmations", enabled: false },
@@ -243,7 +236,7 @@ it("shows the Space's approval mode and rules right here once approvals are cust
   });
 
   await press(control("Customize Approvals")!);
-  expect(rows()).toEqual(["Models", "Voice", "Approvals", "Vault"]);
+  expect(rows()).toEqual(["Approvals", "Vault"]);
 });
 
 it("holds the Approvals switch while the Space's mode is saving", async () => {
@@ -315,7 +308,7 @@ it("turns approvals off without asking", async () => {
   state.overrides = ["confirmations"];
   state.focusCount += 1;
   await render();
-  await press(control("Customize Voice")!);
+  await press(control("Customize Approvals")!);
   expect(state.alert).not.toHaveBeenCalled();
   expect(control("Customize Approvals")?.checked).toBe(false);
 });
@@ -339,8 +332,8 @@ it("offers a retry when the overrides fail to load, then enables the switches", 
 
   await act(async () => retry()!.click());
   await act(flush);
-  expect(control("Customize Voice")?.disabled).toBe(false);
-  expect(control("Customize Voice")?.checked).toBe(true);
+  expect(control("Customize Approvals")?.disabled).toBe(false);
+  expect(control("Customize Approvals")?.checked).toBe(true);
   expect(retry()).toBeUndefined();
   expect(container.textContent).not.toContain("Something went wrong. Try again.");
 });
@@ -359,7 +352,7 @@ it("keeps a failed save's error when a read that was pending then succeeds", asy
   state.focusCount += 1;
   await render();
 
-  await press(control("Customize Models")!);
+  await press(control("Customize Approvals")!);
   expect(container.textContent).toContain("Could not save that preference");
 
   await act(async () => finishRead.resolve());
@@ -367,8 +360,8 @@ it("keeps a failed save's error when a read that was pending then succeeds", asy
 });
 
 it("keeps a saved setting, with no save error, when the next read fails", async () => {
-  await press(control("Customize Voice")!);
-  expect(control("Customize Voice")?.checked).toBe(true);
+  await press(control("Customize Approvals")!);
+  expect(control("Customize Approvals")?.checked).toBe(true);
 
   const base = state.rpc.getMockImplementation()!;
   state.rpc.mockImplementation(async (proc: string, input?: Record<string, unknown>) => {
@@ -377,8 +370,8 @@ it("keeps a saved setting, with no save error, when the next read fails", async 
   });
   state.focusCount += 1;
   await render();
-  expect(control("Customize Voice")?.checked).toBe(true);
-  expect(control("Customize Voice")?.disabled).toBe(false);
+  expect(control("Customize Approvals")?.checked).toBe(true);
+  expect(control("Customize Approvals")?.disabled).toBe(false);
   expect(container.textContent).toContain("Something went wrong. Try again.");
   expect(container.textContent).not.toContain("Could not save that preference");
 });
@@ -401,43 +394,43 @@ function holdSave() {
 
 it("does not start a second save while one runs", async () => {
   const save = holdSave();
-  await press(control("Customize Models")!);
-  for (const name of ["Models", "Voice", "Approvals", "Vault"]) {
+  await press(control("Customize Approvals")!);
+  for (const name of ["Approvals", "Vault"]) {
     expect(control(`Customize ${name}`)?.disabled).toBe(true);
     await press(control(`Customize ${name}`)!);
   }
   expect(save.saves()).toBe(1);
 
   await act(async () => save.finish());
-  expect(control("Customize Models")?.checked).toBe(true);
-  expect(control("Customize Voice")?.disabled).toBe(false);
+  expect(control("Customize Approvals")?.checked).toBe(true);
+  expect(control("Customize Vault")?.disabled).toBe(false);
 });
 
 it("opens nothing when the save ends after the screen has gone", async () => {
   const save = holdSave();
-  await press(control("Customize Models")!);
+  await press(control("Customize Vault")!);
   await act(async () => root.render(createElement("div")));
   await act(async () => save.finish());
   expect(state.push).not.toHaveBeenCalled();
 
   // The Space's list is its own, so the answer is still kept for the next visit.
   await render();
-  expect(control("Customize Models")?.checked).toBe(true);
+  expect(control("Customize Vault")?.checked).toBe(true);
 });
 
 it("runs one save, and opens its screen, when two switches are tapped in the same tick", async () => {
   const save = holdSave();
   await act(async () => {
-    control("Customize Models")!.click();
-    control("Customize Voice")!.click();
+    control("Customize Vault")!.click();
+    control("Customize Approvals")!.click();
   });
   expect(save.saves()).toBe(1);
   await act(async () => save.finish());
   expect(state.push.mock.calls).toEqual([
-    [{ pathname: "/models", params: { spaceId: "space-other" } }],
+    [{ pathname: "/vault", params: { spaceId: "space-other" } }],
   ]);
-  expect(control("Customize Models")?.checked).toBe(true);
-  expect(control("Customize Voice")?.checked).toBe(false);
+  expect(control("Customize Vault")?.checked).toBe(true);
+  expect(control("Customize Approvals")?.checked).toBe(false);
 });
 
 it.each([
@@ -447,23 +440,23 @@ it.each([
   "holds the switches for a save that %s after another space was selected, and shows how it ended",
   async (_how, outcome) => {
     const save = holdSave();
-    await press(control("Customize Models")!);
+    await press(control("Customize Vault")!);
     state.selectedSpace = "space-elsewhere";
     await render();
-    for (const name of ["Models", "Voice", "Approvals", "Vault"]) {
+    for (const name of ["Approvals", "Vault"]) {
       expect(control(`Customize ${name}`)?.disabled).toBe(true);
       await press(control(`Customize ${name}`)!);
     }
     expect(save.saves()).toBe(1);
 
     await act(async () => save.finish(outcome));
-    expect(control("Customize Voice")?.disabled).toBe(false);
+    expect(control("Customize Approvals")?.disabled).toBe(false);
     if (outcome) {
       expect(container.textContent).toContain("Could not save that preference");
       expect(state.push).not.toHaveBeenCalled();
     } else {
       expect(state.push.mock.calls).toEqual([
-        [{ pathname: "/models", params: { spaceId: "space-other" } }],
+        [{ pathname: "/vault", params: { spaceId: "space-other" } }],
       ]);
     }
   },

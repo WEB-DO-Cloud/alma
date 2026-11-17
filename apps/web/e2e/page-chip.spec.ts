@@ -4,7 +4,6 @@ import {
   captureScreenshot,
   completeOnboarding,
   openUserSettings,
-  readRouteJson,
   signup,
 } from "./helpers";
 
@@ -41,10 +40,8 @@ test("a page chip in a right-to-left chat keeps its icon gap on the text side", 
     };
   };
   await page.route(/\/rpc\/(bootstrap|threads\/get)$/, async (route) => {
-    const fetched = await readRouteJson(route);
-    if (!fetched) return;
-    const response = fetched.response;
-    const parsed = fetched.body as { json?: Record<string, unknown> };
+    const response = await route.fetch();
+    const parsed = (await response.json()) as { json?: Record<string, unknown> };
     let json = parsed.json;
     if (!json) {
       await route.fulfill({ response });

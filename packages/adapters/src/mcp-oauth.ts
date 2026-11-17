@@ -1282,16 +1282,29 @@ function summarize(material: OAuthMaterial): McpOAuthSummary {
 
 export class McpOAuthBroker {
   private readonly pending = new Map<string, Pending>();
+  private readonly presets: readonly McpOAuthPreset[];
+  /** The queue that retries removing a store entry a failed refresh left behind. */
+  private readonly cleanupJobs?: SecretCleanupDeps["jobs"];
 
   constructor(
     private readonly prisma: PrismaClient,
     private readonly secrets: SecretStore,
     private readonly network: RemoteTransportDependencies = {},
     private readonly allowPrivateEndpoint = false,
-    private readonly presets: readonly McpOAuthPreset[] = [],
-    /** The queue that retries removing a store entry a failed refresh left behind. */
-    private readonly cleanupJobs?: SecretCleanupDeps["jobs"],
-  ) {}
+    /**
+     * Preset clients, or the cleanup queue. Callers pass either, or both in either order:
+     * an array is presets, and a job publisher is the cleanup queue.
+     */
+    presetsOrJobs?: readonly McpOAuthPreset[] | SecretCleanupDeps["jobs"],
+    jobsOrPresets?: readonly McpOAuthPreset[] | SecretCleanupDeps["jobs"],
+  ) {
+    const slots = [presetsOrJobs, jobsOrPresets];
+    this.presets =
+      slots.find((value): value is readonly McpOAuthPreset[] => Array.isArray(value)) ?? [];
+    this.cleanupJobs = slots.find(
+      (value): value is SecretCleanupDeps["jobs"] => value != null && !Array.isArray(value),
+    );
+  }
 
   async statusFor(server: ServerRef, context: ActorRef): Promise<McpOAuthSummary["status"]> {
     return (await this.summaryFor(server, context)).status;

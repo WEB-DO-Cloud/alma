@@ -34,6 +34,7 @@ import { NativeSegmentedControl } from "../components/native-segmented-control";
 import { NativeSymbol } from "../components/native-symbol";
 import { useOrganizationMenuAction } from "../components/organization-menu";
 import { FORM_COLUMN_WIDTH } from "../lib/adaptive-layout";
+import { rpc } from "../lib/api";
 import { signOut } from "../lib/api-auth";
 import { replaceWithSignIn } from "../lib/auth-routing";
 import type { Plan } from "../lib/billing";
@@ -110,11 +111,6 @@ export default function Paywall() {
     return () => setPaywallShown(false);
   }, []);
 
-  useEffect(() => {
-    if (!status?.planClarity) return;
-    void rpc("onboarding/event", { name: "plan_viewed" }).catch(() => undefined);
-  }, [status?.planClarity]);
-
   // Android's back button would otherwise leave the paywall for an app that cannot run.
   useEffect(() => {
     if (dismissible) return;
@@ -127,6 +123,11 @@ export default function Paywall() {
   const statusQuery = useScreenQuery(statusRead);
   const status = (statusQuery.isFetchedAfterMount && statusQuery.data) || null;
   const loadFailed = Boolean(statusQuery.error) && !statusQuery.isFetching;
+
+  useEffect(() => {
+    if (!status?.planClarity) return;
+    void rpc("onboarding/event", { name: "plan_viewed" }).catch(() => undefined);
+  }, [status?.planClarity]);
   const { refetch } = statusQuery;
   const load = () => void refetch();
   useEffect(() => {

@@ -215,6 +215,7 @@ export function createConnectorRuntime(
     network,
     env.mcpAllowPrivateEndpoint,
     env.mcpOAuthPresets,
+    deps.jobs,
   );
   const mcp = new McpConnector(
     prisma,
@@ -263,7 +264,20 @@ export function createConnectorRuntime(
     ...(overrides.connectors ?? []),
   ]);
   integrationSettings.warmDirectories();
-  return { mcpOAuth, mcp, pipedream, installed, integrationSettings, stack, google };
+  const userCloudAgents = new T3CodeConnections(prisma, mcpOAuth, {
+    ...network,
+    allowPrivateEndpoint: env.mcpAllowPrivateEndpoint,
+  });
+  return {
+    mcpOAuth,
+    mcp,
+    pipedream,
+    installed,
+    integrationSettings,
+    stack,
+    google,
+    userCloudAgents,
+  };
 }
 
 export type ConnectorRuntime = ReturnType<typeof createConnectorRuntime>;

@@ -6,6 +6,7 @@ import {
   chooseOption,
   completeOnboarding,
   openUserSettings,
+  readRouteJson,
   signup,
 } from "./helpers";
 

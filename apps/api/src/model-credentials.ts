@@ -7,11 +7,11 @@ import {
   codexLiveListsModel,
   compatibleThinkingLevels,
   defaultCatalogModelId,
-  managedModelActive,
   enabledOpenAiCompatibleModelIds,
   keptModelSettings,
   listPiCatalog,
   liveCatalogEntry,
+  managedModelActive,
   modelCredentialDto,
   parseModelSecret,
   prepareAllowedThinkingLevels as prepareModelThinkingLevels,
@@ -38,7 +38,13 @@ import {
   storedPiProviderIds,
   usableModelId,
 } from "@rakazo/contracts";
-import { ALMA_UNAVAILABLE_MESSAGE, clampCatalogThinkingLevel } from "@rakazo/core";
+import {
+  ALMA_UNAVAILABLE_MESSAGE,
+  catalogEntryFor,
+  clampCatalogThinkingLevel,
+  modelSettingsDefaults,
+  sanitizeModelConnectionError,
+} from "@rakazo/core";
 import {
   deleteUnreferencedCredentialSecret,
   findNewestUserModelCredential,

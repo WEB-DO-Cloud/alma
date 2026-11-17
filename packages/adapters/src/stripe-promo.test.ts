@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { StripeBillingProvider, stripeBillingConfigFromEnv } from "./stripe-billing.js";
+import {
+  StripeBillingProvider,
+  stripeBillingConfigFromEnv,
+} from "./providers/billing/stripe/stripe-billing.js";
 import { StripeEmulator } from "./testing/stripe-emulator.js";
 
 const urls = { successUrl: "https://app.example/ok", cancelUrl: "https://app.example/no" };

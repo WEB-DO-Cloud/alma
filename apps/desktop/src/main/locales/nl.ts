@@ -78,7 +78,7 @@ export const NL_MESSAGES: Record<string, string> = {
   "Set up ALMA": "ALMA instellen",
   "Quit ALMA": "Stop ALMA",
   "Welcome to ALMA": "Welkom bij ALMA",
-  "Choose where Rakazo runs.": "Kies waar Rakazo draait.",
+  "Choose where ALMA runs.": "Kies waar ALMA draait.",
   Instance: "Instantie",
   "This computer": "Deze computer",
   "Existing instance": "Bestaande instantie",
@@ -196,15 +196,15 @@ export const NL_MESSAGES: Record<string, string> = {
   "Chat Details": "Chatdetails",
   Help: "Help",
   "Keyboard Shortcuts": "Sneltoetsen",
-  "Downloading Rakazo failed. Check the internet connection, then retry.":
-    "Rakazo downloaden is mislukt. Controleer de internetverbinding en probeer het opnieuw.",
+  "Downloading ALMA failed. Check the internet connection, then retry.":
+    "ALMA downloaden is mislukt. Controleer de internetverbinding en probeer het opnieuw.",
   "Could not move your data from Docker. Check the output below, then retry.":
     "Je gegevens konden niet uit Docker worden overgezet. Bekijk de uitvoer hieronder en probeer het opnieuw.",
   "The computer runtime already running is too old. Update or quit it, then retry.":
     "De computerruntime die al draait is te oud. Werk hem bij of sluit hem af en probeer het opnieuw.",
-  "Your Rakazo data is in a different computer runtime. Quit the one running, then retry.":
-    "Je Rakazo-gegevens staan in een andere computerruntime. Sluit de runtime die draait af en probeer het opnieuw.",
-  "Run Rakazo without Docker?": "Rakazo zonder Docker gebruiken?",
+  "Your ALMA data is in a different computer runtime. Quit the one running, then retry.":
+    "Je ALMA-gegevens staan in een andere computerruntime. Sluit de runtime die draait af en probeer het opnieuw.",
+  "Run ALMA without Docker?": "ALMA zonder Docker gebruiken?",
   "Your bots and data move over. Docker is stopped, not removed.":
     "Je bots en gegevens gaan mee. Docker wordt gestopt, niet verwijderd.",
   Move: "Overzetten",
@@ -213,12 +213,12 @@ export const NL_MESSAGES: Record<string, string> = {
   "Your data stays on this computer.": "Je gegevens blijven op deze computer.",
   "Connect to a server you or your team already run.":
     "Maak verbinding met een server die jij of je team al draait.",
-  "Rakazo needs Docker Desktop to run on this computer.":
-    "Rakazo heeft Docker Desktop nodig om op deze computer te draaien.",
-  "Rakazo needs Docker to run on this computer.":
-    "Rakazo heeft Docker nodig om op deze computer te draaien.",
-  "Docker Desktop is a free app that runs Rakazo in the background. Install it and open it once.":
-    "Docker Desktop is een gratis app die Rakazo op de achtergrond draait. Installeer en open het één keer.",
+  "ALMA needs Docker Desktop to run on this computer.":
+    "ALMA heeft Docker Desktop nodig om op deze computer te draaien.",
+  "ALMA needs Docker to run on this computer.":
+    "ALMA heeft Docker nodig om op deze computer te draaien.",
+  "Docker Desktop is a free app that runs ALMA in the background. Install it and open it once.":
+    "Docker Desktop is een gratis app die ALMA op de achtergrond draait. Installeer en open het één keer.",
   "Install Docker Engine and start it.": "Installeer Docker Engine en start het.",
   "Download Docker Desktop": "Docker Desktop downloaden",
   "Install Docker": "Docker installeren",
@@ -227,6 +227,6 @@ export const NL_MESSAGES: Record<string, string> = {
   "Starting {app}…": "{app} wordt gestart…",
   "Docker is installed but not running. Start the Docker service to continue.":
     "Docker is geïnstalleerd maar draait niet. Start de Docker-service om door te gaan.",
-  "Rakazo stopped unexpectedly.": "Rakazo is onverwacht gestopt.",
+  "ALMA stopped unexpectedly.": "ALMA is onverwacht gestopt.",
   Reload: "Opnieuw laden",
 };

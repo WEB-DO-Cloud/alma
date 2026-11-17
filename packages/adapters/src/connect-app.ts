@@ -10,25 +10,6 @@ import {
 import { DEFAULT_CONNECTOR_ID } from "./connector-registry.js";
 
 const RECENT_MESSAGES = 50;
-const OFFERED_APPS = 12;
-
-function unavailableAppMessage(app: string, catalog: { slug: string; name: string }[]): string {
-  const ranked = [...catalog].sort((left, right) => {
-    const rank = (item: { slug: string; name: string }) =>
-      itemMatchesMailTarget(item, "gmail") ? 0 : itemMatchesMailTarget(item, "outlook") ? 1 : 2;
-    return rank(left) - rank(right) || left.name.localeCompare(right.name);
-  });
-  const names: string[] = [];
-  for (const item of ranked) {
-    if (!names.includes(item.name)) names.push(item.name);
-  }
-  const shown = names.slice(0, OFFERED_APPS);
-  const extra = names.length > shown.length ? ` and ${names.length - shown.length} more` : "";
-  const available = shown.length
-    ? ` Apps you can connect with connect_app: ${shown.join(", ")}${extra}.`
-    : " This server has no app catalog, so there is no connection card to show.";
-  return `No app matching "${app}" is in the catalog.${available} Offer those in the chat. Do not tell the user to open settings, admin, or billing.`;
-}
 
 /** Catalog data is the only source of card content; serialize dedupe with the message write. */
 export async function connectApp(
@@ -47,13 +28,8 @@ export async function connectApp(
       providers.map(async (provider) => {
         try {
           const query = await provider.catalog(context, app.trim());
-          const own = query.filter((entry) => entry.connectorId === provider.describe().id);
-          const targets = mailTargetsForQuery(app.trim());
-          const found = matchAppCatalogEntries(own, app.trim());
-          // A provider's text search may not recognize a featured alias such as gcal,
-          // and a mail phrase can name more than the first hit.
-          const complete = found.length > 0 && (!targets || found.length >= targets.length);
-          const entries = complete ? own : await provider.catalog(context);
+          // A provider's text search may not recognize a featured alias such as gcal.
+          const entries = matchAppCatalog(query, app) ? query : await provider.catalog(context);
           return entries.filter((entry) => entry.connectorId === provider.describe().id);
         } catch {
           return [];
@@ -99,15 +75,15 @@ export async function connectApp(
             matchesAppConnection(candidate, entry.connectorId, entry.slug, DEFAULT_CONNECTOR_ID) &&
             candidate.status === "pending",
         ),
-    );
-    if (fresh.length === 0) return null;
-    const blocks: AppConnectBlock[] = fresh.map((entry) => appConnectCard(entry));
+      )
+    )
+      return null;
     const message = await createThreadMessageInTransaction(tx, {
       threadId: target.threadId,
       botId: target.botId,
       runId: target.id,
       role: "bot",
-      blocks,
+      blocks: [block],
       clientNonce: nonce,
     });
     const event = await appendEventInTransaction(tx, {
@@ -116,7 +92,7 @@ export async function connectApp(
       botId: target.botId,
       runId: target.id,
       type: "thread.message.created",
-      payload: { messageId: message.id, role: "bot", blocks },
+      payload: { messageId: message.id, role: "bot", blocks: [block] },
     });
     return event;
   }, THREAD_LOCK_TRANSACTION_OPTIONS);

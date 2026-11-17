@@ -246,7 +246,12 @@ export function createRouterContext(deps: RouterDeps) {
         deploymentPrimary = null;
       }
     }
-    return { ...settings, deploymentPrimary };
+    return {
+      ...settings,
+      primary: settings.primary ? presentModelChoice(settings.primary) : settings.primary,
+      backups: settings.backups.map(presentModelChoice),
+      deploymentPrimary: deploymentPrimary ? presentModelChoice(deploymentPrimary) : null,
+    };
   };
   /**
    * The main role also says whether its model reads images where runs use it, so settings

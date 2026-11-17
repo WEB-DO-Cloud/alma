@@ -9,7 +9,11 @@ import {
   recordMcpServerHealth,
 } from "@rakazo/adapters";
 import type { Actor, McpServer, McpServerConfigInput, McpServerHealth } from "@rakazo/contracts";
-import { MCP_OAUTH_CLIENT_REQUIRED, mcpOAuthEnvReferences } from "@rakazo/contracts";
+import {
+  ConnectionSetupError,
+  MCP_OAUTH_CLIENT_REQUIRED,
+  mcpOAuthEnvReferences,
+} from "@rakazo/contracts";
 import type { McpServer as McpServerRow, Prisma } from "@rakazo/db";
 import { itemSecretIn, spaceAvailability } from "@rakazo/db";
 import { getLogger } from "@rakazo/logging";

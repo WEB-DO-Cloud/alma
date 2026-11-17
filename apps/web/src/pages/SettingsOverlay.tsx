@@ -141,7 +141,8 @@ export function SettingsOverlay({
     (requestedSection === "wallet" && !paymentWalletProvider) ||
     (requestedSection === "updates" && !showUpdates) ||
     (requestedSection === "models" && hideModels) ||
-    (requestedSection === "voice" && hideVoice)
+    (requestedSection === "voice" && hideVoice) ||
+    (requestedSection === "labs" && labsAvailable.length === 0)
       ? "general"
       : requestedSection;
   const panelBusy = memoryBusy || voiceBusy;

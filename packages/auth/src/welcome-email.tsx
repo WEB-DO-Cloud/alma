@@ -23,30 +23,25 @@ export function welcomeEmail(
     say("Welcome to ALMA"),
     <>
       <Text>{greeting(say, user.name)}</Text>
-      <Text>
-        {say("Welcome to ALMA. The people who get the most out of it do three things:")}
-      </Text>
+      <Text>{say("Welcome to ALMA. The people who get the most out of it do three things:")}</Text>
       <Text style={stepStyle}>
         <strong>1. {say("Get the apps")}</strong>
       </Text>
       <Text style={{ marginTop: 0 }}>
-        {withNodes(
-          say("ALMA runs on {platforms}, so your bots can reach you wherever you are."),
-          {
-            // The language's own list ("A, B, and C", "A, B y C"), with each app a link.
-            platforms: new Intl.ListFormat(locale, { type: "conjunction" })
-              .formatToParts(Object.keys(APPS))
-              .map((part, index) =>
-                part.type === "element" ? (
-                  <Link key={part.value} href={APPS[part.value]} style={linkStyle}>
-                    {part.value}
-                  </Link>
-                ) : (
-                  <span key={`${index}${part.value}`}>{part.value}</span>
-                ),
+        {withNodes(say("ALMA runs on {platforms}, so your bots can reach you wherever you are."), {
+          // The language's own list ("A, B, and C", "A, B y C"), with each app a link.
+          platforms: new Intl.ListFormat(locale, { type: "conjunction" })
+            .formatToParts(Object.keys(APPS))
+            .map((part, index) =>
+              part.type === "element" ? (
+                <Link key={part.value} href={APPS[part.value]} style={linkStyle}>
+                  {part.value}
+                </Link>
+              ) : (
+                <span key={`${index}${part.value}`}>{part.value}</span>
               ),
-          },
-        )}
+            ),
+        })}
       </Text>
       <Text style={stepStyle}>
         <strong>2. {say("Join the community")}</strong>

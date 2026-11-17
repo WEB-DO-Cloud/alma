@@ -7,12 +7,12 @@ import type {
 } from "@rakazo/adapters";
 import {
   apnsVoipConfig,
-  deploymentLabsFromEnv,
   deploymentGoogleClientId,
+  deploymentLabsFromEnv,
   deploymentMemoryPublic,
   mcpStdioOptionsFromEnv,
-  parseMcpOAuthPresetClients,
   messagingEnvFromProcess,
+  parseMcpOAuthPresetClients,
   readGooglePickerEnv,
   readGoogleScopeMode,
   resolveCloudAgentProvider,
@@ -26,8 +26,9 @@ import { socialAuthFromFields } from "@rakazo/auth";
 import type { LabFeature, MinimumClientBuilds, NavLink } from "@rakazo/contracts";
 import { isPrivateNetworkHost, parseMinimumClientBuilds, parseNavLinks } from "@rakazo/contracts";
 import { parseCrispWebsiteId } from "@rakazo/contracts/content-security-policy";
-import { attachmentCountFromEnv, phoneCallSettings, uploadSizeFromEnv } from "@rakazo/core";
 import {
+  attachmentCountFromEnv,
+  phoneCallSettings,
   readDigestConfig,
   readMobileActionsConfig,
   readMonthlyReportConfig,
@@ -38,6 +39,9 @@ import {
   readSendUndoConfig,
   readUndoDispatchConfig,
   readVoiceNotesConfig,
+  uploadSizeFromEnv,
+} from "@rakazo/core";
+import {
   resolveAuthSecret,
   resolveContentEncryption,
   resolveEncryptionKey,

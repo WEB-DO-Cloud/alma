@@ -1,8 +1,8 @@
 import type { BillingStatus } from "@rakazo/contracts";
 import { MOBILE_BILLING_CALLBACK_URL } from "@rakazo/contracts";
 import { Linking } from "react-native";
-import type { SaveSend } from "./query";
 import { openAndroidBillingAuth } from "./billing-auth";
+import type { SaveSend } from "./query";
 
 export type Plan = "byok" | "credits";
 

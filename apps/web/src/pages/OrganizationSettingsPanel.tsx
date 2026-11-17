@@ -148,6 +148,7 @@ function OrganizationSettings({
           <Trans>Delete organization</Trans>
         </Button>
       ) : null}
+      <GoogleWorkspaceSettings organizationId={organization.id} />
       {confirmingDelete ? (
         <DeleteOrganizationDialog
           organization={organization}
