@@ -318,7 +318,6 @@ overlay apps/mobile/plugins/with-credential-versions.js
 overlay apps/mobile/plugins/with-credential-versions.test.js
 overlay apps/mobile/plugins/with-strip-foreground-services.js
 overlay apps/mobile/plugins/with-strip-foreground-services.test.js
-overlay apps/mobile/scripts/app-version.mjs
 overlay apps/mobile/scripts/bump-native.mjs
 overlay apps/mobile/scripts/fix-android-namespace.mjs
 overlay apps/mobile/scripts/generate-mark.mjs
@@ -964,5 +963,6 @@ overlay packages/ui-tokens/assets/README.md
 overlay packages/ui-tokens/assets/Rakazo.icon/Assets/orange-bot.png
 overlay packages/ui-tokens/scripts/export-brand.ts
 overlay packages/ui-web/src/bot-avatar.tsx
+overlay scripts/app-version.mjs
 overlay scripts/checks/app-version.test.mjs
 overlay scripts/sync-integrations-catalog.py

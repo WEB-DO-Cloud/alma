@@ -65,14 +65,14 @@ The desktop app reports the same version as the iOS and Android apps. The
 committed number is `expo.version` in `apps/mobile/app.json`.
 `apps/desktop/package.json` keeps that same number, and CI fails when the two
 differ. `desktop-mac`, `desktop-linux`, and `release-desktop` run
-`node apps/mobile/scripts/app-version.mjs sync` before electron-builder, which
+`node scripts/app-version.mjs sync` before electron-builder, which
 also copies `ALMA_VERSION` onto the desktop package when that variable is set.
 A mobile build reads `ALMA_VERSION` the same way, so one value reaches every
 installer, the update feeds, and Settings.
 
 To ship a new version, set `ALMA_VERSION` for the Bitrise builds and set
 `expo.version` to that number. Then run
-`node apps/mobile/scripts/app-version.mjs sync` and commit the desktop
+`node scripts/app-version.mjs sync` and commit the desktop
 `package.json` it writes.
 
 ## Cut a release

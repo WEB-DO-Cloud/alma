@@ -7,14 +7,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import {
-  readCommittedAppVersion,
-  resolveAppVersion,
-  syncDesktopVersion,
-} from "../../apps/mobile/scripts/app-version.mjs";
+import { readCommittedAppVersion, resolveAppVersion, syncDesktopVersion } from "../app-version.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const syncCommand = "node apps/mobile/scripts/app-version.mjs sync";
+const syncCommand = "node scripts/app-version.mjs sync";
 
 test("the committed desktop version is the committed mobile version", () => {
   const desktop = JSON.parse(readFileSync(path.join(root, "apps/desktop/package.json"), "utf8"));
@@ -77,5 +73,6 @@ test("desktop packaging applies the shared version before electron-builder", () 
   assert.ok(syncAt >= 0, "release-desktop syncs the app version");
   assert.ok(packAt > syncAt, "release-desktop syncs before electron-builder");
   const bump = readFileSync(path.join(root, "apps/mobile/scripts/bump-native.mjs"), "utf8");
-  assert.match(bump, /app\.expo\.version = resolveAppVersion\(/);
+  assert.match(bump, /scripts\/app-version\.mjs/);
+  assert.match(bump, /app\.expo\.version = version\.stdout\.trim\(\)/);
 });

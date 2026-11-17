@@ -43,7 +43,7 @@ and review account on a physical device.
 
 Bump `expo.version` in `apps/mobile/app.json` when native code changes (see
 Over-the-air updates below). That number is also the desktop version: run
-`node apps/mobile/scripts/app-version.mjs sync` and commit
+`node scripts/app-version.mjs sync` and commit
 `apps/desktop/package.json` with it. A Bitrise build with `ALMA_VERSION` set
 uses that value for the store apps and the desktop app together. Then run the
 `release-mobile` workflow from `main`

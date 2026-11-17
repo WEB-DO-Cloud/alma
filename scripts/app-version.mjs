@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const STABLE_VERSION = /^\d+\.\d+\.\d+$/;
 
 function requireStable(version, label) {
@@ -56,7 +56,7 @@ if (isMain) {
     const version = resolvedFromEnv();
     if (command === "sync") syncDesktopVersion(version);
     else if (command !== "print") {
-      console.error("Usage: node apps/mobile/scripts/app-version.mjs [print|sync]");
+      console.error("Usage: node scripts/app-version.mjs [print|sync]");
       process.exit(2);
     }
     console.log(version);
