@@ -88,4 +88,7 @@ export const HI_MESSAGES: Record<string, string> = {
     "{inviter} ने आपको ALMA पर {space} से जुड़ने के लिए आमंत्रित किया है।",
   "Join {space}": "{space} से जुड़ें",
   "This invitation expires in 7 days.": "यह आमंत्रण 7 दिनों में समाप्त हो जाएगा।",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

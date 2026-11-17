@@ -57,7 +57,9 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
   const baseDeps: ExecutorDeps = {
     ...executorDeps,
     events,
-    runtime: withAlmaProductCopy(executorDeps.runtime),
+    runtime: executorDeps.runtime
+      ? withAlmaProductCopy(executorDeps.runtime)
+      : executorDeps.runtime,
   };
   const services: RunExecutorServices = {
     executorDeps,
@@ -121,8 +123,7 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
 /** Product copy the model can repeat. Tool names and the request's other fields stay as given. */
 function withAlmaProductCopy(runtime: AgentRuntime): AgentRuntime {
   return {
-    describe: () => runtime.describe(),
-    abort: (runId) => runtime.abort(runId),
+    ...runtime,
     run: (request, context) => runtime.run(almaRunRequest(request), context),
   };
 }

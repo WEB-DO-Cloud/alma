@@ -92,4 +92,7 @@ export const RU_MESSAGES: Record<string, string> = {
     "{inviter} приглашает вас присоединиться к {space} в ALMA.",
   "Join {space}": "Присоединиться к {space}",
   "This invitation expires in 7 days.": "Приглашение действует 7 дней.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

@@ -93,4 +93,7 @@ export const TR_MESSAGES: Record<string, string> = {
     "{inviter} sizi ALMA'da {space} alanına katılmaya davet etti.",
   "Join {space}": "{space} alanına katıl",
   "This invitation expires in 7 days.": "Bu davetin süresi 7 gün içinde dolar.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

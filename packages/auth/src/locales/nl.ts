@@ -92,4 +92,7 @@ export const NL_MESSAGES: Record<string, string> = {
     "{inviter} heeft je uitgenodigd om lid te worden van {space} op ALMA.",
   "Join {space}": "Word lid van {space}",
   "This invitation expires in 7 days.": "Deze uitnodiging verloopt over 7 dagen.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

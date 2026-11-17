@@ -598,8 +598,8 @@ export class LocalStackController extends StackLifecycle {
         type: "docker-missing",
         message:
           this.deps.platform === "linux"
-            ? t("Rakazo needs Docker to run on this computer.")
-            : t("Rakazo needs Docker Desktop to run on this computer."),
+            ? t("ALMA needs Docker to run on this computer.")
+            : t("ALMA needs Docker Desktop to run on this computer."),
       });
       return;
     }

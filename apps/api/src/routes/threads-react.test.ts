@@ -30,6 +30,8 @@ function react() {
     prisma: {
       $queryRaw: vi.fn().mockResolvedValue([{ bypass: null }]),
       taughtSkill: { findFirst: teaching },
+      bot: { findFirst: vi.fn(async () => ({ kind: "standard" })) },
+      message: { findFirst: vi.fn(async () => null) },
     },
     env: { webOrigin: "http://localhost:5173", defaultProvider: "fake", defaultModel: "fake" },
     dataDir: "/tmp/thread-react-test",

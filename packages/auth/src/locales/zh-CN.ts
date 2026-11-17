@@ -82,4 +82,7 @@ export const ZH_CN_MESSAGES: Record<string, string> = {
   "{inviter} invited you to join {space} on Rakazo.": "{inviter} 邀请你加入 ALMA 上的 {space}。",
   "Join {space}": "加入 {space}",
   "This invitation expires in 7 days.": "此邀请将在 7 天后过期。",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

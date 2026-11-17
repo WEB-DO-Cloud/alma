@@ -91,4 +91,7 @@ export const KO_MESSAGES: Record<string, string> = {
     "{inviter}님이 ALMA의 {space}에 참여하도록 초대했습니다.",
   "Join {space}": "{space} 참여하기",
   "This invitation expires in 7 days.": "이 초대는 7일 후에 만료됩니다.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

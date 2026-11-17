@@ -92,4 +92,7 @@ export const JA_MESSAGES: Record<string, string> = {
     "{inviter}さんがALMAの{space}への参加にあなたを招待しました。",
   "Join {space}": "{space}に参加",
   "This invitation expires in 7 days.": "この招待は7日後に期限切れになります。",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

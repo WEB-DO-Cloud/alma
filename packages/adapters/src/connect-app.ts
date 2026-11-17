@@ -1,5 +1,12 @@
 import type { AdapterContext, ManagedConnectorProvider } from "@rakazo/adapter-kit";
-import { appConnectCard, matchAppCatalog, matchesAppConnection } from "@rakazo/core";
+import {
+  appConnectCard,
+  itemMatchesMailTarget,
+  mailTargetsForQuery,
+  matchAppCatalog,
+  matchAppCatalogEntries,
+  matchesAppConnection,
+} from "@rakazo/core";
 import type { PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
   appendEventInTransaction,
@@ -10,6 +17,25 @@ import {
 import { DEFAULT_CONNECTOR_ID } from "./connector-registry.js";
 
 const RECENT_MESSAGES = 50;
+const OFFERED_APPS = 12;
+
+function unavailableAppMessage(app: string, catalog: { slug: string; name: string }[]): string {
+  const ranked = [...catalog].sort((left, right) => {
+    const rank = (item: { slug: string; name: string }) =>
+      itemMatchesMailTarget(item, "gmail") ? 0 : itemMatchesMailTarget(item, "outlook") ? 1 : 2;
+    return rank(left) - rank(right) || left.name.localeCompare(right.name);
+  });
+  const names: string[] = [];
+  for (const item of ranked) {
+    if (!names.includes(item.name)) names.push(item.name);
+  }
+  const shown = names.slice(0, OFFERED_APPS);
+  const extra = names.length > shown.length ? ` and ${names.length - shown.length} more` : "";
+  const available = shown.length
+    ? ` Apps you can connect with connect_app: ${shown.join(", ")}${extra}.`
+    : " This server has no app catalog, so there is no connection card to show.";
+  return `No app matching "${app}" is in the catalog.${available} Offer those in the chat. Do not tell the user to open settings, admin, or billing.`;
+}
 
 /** Catalog data is the only source of card content; serialize dedupe with the message write. */
 export async function connectApp(
@@ -28,8 +54,13 @@ export async function connectApp(
       providers.map(async (provider) => {
         try {
           const query = await provider.catalog(context, app.trim());
-          // A provider's text search may not recognize a featured alias such as gcal.
-          const entries = matchAppCatalog(query, app) ? query : await provider.catalog(context);
+          const own = query.filter((entry) => entry.connectorId === provider.describe().id);
+          const targets = mailTargetsForQuery(app.trim());
+          const found = matchAppCatalogEntries(own, app.trim());
+          // A provider's text search may not recognize a featured alias such as gcal,
+          // and a mail phrase can name more than the first hit.
+          const complete = found.length > 0 && (!targets || found.length >= targets.length);
+          const entries = complete ? own : await provider.catalog(context);
           return entries.filter((entry) => entry.connectorId === provider.describe().id);
         } catch {
           return [];
@@ -37,22 +68,38 @@ export async function connectApp(
       }),
     )
   ).flat();
+  const query = app.trim();
+  const mailTargets = mailTargetsForQuery(query);
+  const mailEntries =
+    mailTargets && mailTargets.length > 1
+      ? catalog.filter(
+          (item) =>
+            !item.connected && mailTargets.some((target) => itemMatchesMailTarget(item, target)),
+        )
+      : [];
   // An app connected through any provider counts, even if another provider lists it first.
   const entry =
-    matchAppCatalog(
-      catalog.filter((item) => item.connected),
-      app,
-    ) ?? matchAppCatalog(catalog, app);
-  if (!entry) return { error: "No such app is available in the connector catalog." };
-  const provider = providers.find((provider) => provider.describe().id === entry.connectorId);
+    mailEntries.length > 0
+      ? null
+      : (matchAppCatalog(
+          catalog.filter((item) => item.connected),
+          app,
+        ) ?? matchAppCatalog(catalog, app));
+  if (!entry && mailEntries.length === 0) return { error: unavailableAppMessage(query, catalog) };
+  const provider = entry
+    ? providers.find((provider) => provider.describe().id === entry.connectorId)
+    : undefined;
   const reconnect =
-    entry.connected && ((await provider?.needsReconnect?.(context, entry.slug)) ?? false);
-  if (entry.connected && !reconnect)
+    entry?.connected && ((await provider?.needsReconnect?.(context, entry.slug)) ?? false);
+  if (entry?.connected && !reconnect)
     return {
       status: "connected",
       message: "This app is already connected and its tools are available.",
     };
-  const block = appConnectCard({ ...entry, connected: false });
+  const blocks =
+    mailEntries.length > 0
+      ? mailEntries.map((item) => appConnectCard({ ...item, connected: false }))
+      : [appConnectCard({ ...entry!, connected: false })];
   const committed = await deps.prisma.$transaction(async (tx) => {
     await tx.$executeRaw`SELECT id FROM threads WHERE id = ${target.threadId} FOR UPDATE`;
     const nonce = `connect-app:${effectId}`;
@@ -70,10 +117,12 @@ export async function connectApp(
     });
     if (
       recent.some((message) =>
-        storedMessageBlocks(message).some(
-          (candidate) =>
-            matchesAppConnection(candidate, entry.connectorId, entry.slug, DEFAULT_CONNECTOR_ID) &&
-            candidate.status === "pending",
+        storedMessageBlocks(message).some((candidate) =>
+          (entry ? [entry] : mailEntries).some((card) => {
+            if (!matchesAppConnection(candidate, card.connectorId, card.slug, DEFAULT_CONNECTOR_ID))
+              return false;
+            return candidate.status === "pending";
+          }),
         ),
       )
     )
@@ -83,7 +132,7 @@ export async function connectApp(
       botId: target.botId,
       runId: target.id,
       role: "bot",
-      blocks: [block],
+      blocks,
       clientNonce: nonce,
     });
     const event = await appendEventInTransaction(tx, {
@@ -92,7 +141,7 @@ export async function connectApp(
       botId: target.botId,
       runId: target.id,
       type: "thread.message.created",
-      payload: { messageId: message.id, role: "bot", blocks: [block] },
+      payload: { messageId: message.id, role: "bot", blocks },
     });
     return event;
   }, THREAD_LOCK_TRANSACTION_OPTIONS);

@@ -89,4 +89,7 @@ export const HE_MESSAGES: Record<string, string> = {
     "{inviter} הזמין/ה אותך להצטרף ל-{space} ב-ALMA.",
   "Join {space}": "הצטרפות ל-{space}",
   "This invitation expires in 7 days.": "ההזמנה תפוג בעוד 7 ימים.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };
