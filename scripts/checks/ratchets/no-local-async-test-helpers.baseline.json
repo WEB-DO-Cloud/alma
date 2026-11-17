@@ -8,6 +8,7 @@
   "apps/mobile/lib/unsent-send-warning.test.ts": 1,
   "apps/mobile/lib/vault-settings.test.tsx": 3,
   "apps/web/src/components/ComputerProviderSettings.test.tsx": 1,
+  "apps/web/src/components/SubscriptionGate.test.tsx": 2,
   "apps/web/src/lib/session-change.test.tsx": 1,
   "apps/web/src/lib/space-switch.test.ts": 1,
   "apps/web/src/pages/Artifacts.test.tsx": 1,

@@ -4,6 +4,7 @@
   "apps/mobile/app/(settings)/integrations.tsx": 17,
   "apps/mobile/app/(settings)/model-connection.tsx": 7,
   "apps/mobile/app/(settings)/profile.tsx": 2,
+  "apps/mobile/app/(settings)/queue.tsx": 8,
   "apps/mobile/app/(settings)/vault.tsx": 11,
   "apps/mobile/app/(settings)/voice.tsx": 6,
   "apps/mobile/app/_layout.tsx": 1,
@@ -13,7 +14,11 @@
   "apps/mobile/app/bot-settings.tsx": 14,
   "apps/mobile/app/computer.tsx": 7,
   "apps/mobile/app/pages.tsx": 1,
+  "apps/mobile/app/paywall.tsx": 1,
   "apps/mobile/app/routine.tsx": 1,
-  "apps/mobile/components/AppConnectCard.tsx": 3,
-  "apps/mobile/components/model-role-settings.tsx": 1
+  "apps/mobile/app/sector.tsx": 1,
+  "apps/mobile/components/AppConnectCard.tsx": 4,
+  "apps/mobile/components/email-imap-form.tsx": 3,
+  "apps/mobile/components/model-role-settings.tsx": 1,
+  "apps/mobile/components/thread/thread-screen.tsx": 1
 }

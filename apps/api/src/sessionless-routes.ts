@@ -47,6 +47,10 @@ export const SESSIONLESS_ROUTES: Readonly<Record<string, string>> = {
   "GET /api/devices/connect":
     "none: only says to upgrade; the socket is upgraded before the app, by the device's token",
   "GET /api/dev/emails": "public in development only: mail the loopback-only emulator captured",
+  "GET /docs": "public: the documentation index, the same for every caller",
+  "GET /docs.md": "public: the documentation index as markdown, the same for every caller",
+  "GET /docs/:file": "public: one documentation page, the same for every caller",
+  "POST /api/support/chatwoot/webhook/:secret": "the support desk's shared secret in the path",
   "GET /health": "public: liveness, a constant body",
   "GET /ready": "public: readiness, no deployment details",
   "GET /internal/health": "operators on the API port: 404 for a request the public proxy forwarded",

@@ -7,7 +7,8 @@ import {
   signup,
 } from "./helpers";
 
-test("a self-hosted voice connection offers a separate transcription server", async ({
+// ALMA does not show Voice in settings.
+test.skip("a self-hosted voice connection offers a separate transcription server", async ({
   page,
 }, testInfo) => {
   // The screenshot never submits the form or contacts a speech server.

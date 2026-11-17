@@ -648,6 +648,7 @@ export function CreditChoice({
           </Card>
         </div>
       )}
+      <PlanClarityCopy status={status} />
       {error ? (
         <p role="alert" className="text-body text-destructive">
           {error}

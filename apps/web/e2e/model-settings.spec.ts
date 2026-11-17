@@ -459,7 +459,8 @@ test.skip("a refused private model server names the setting that allows it", asy
   await captureScreenshot(page, testInfo, "openai-compatible-private-endpoint-refused");
 });
 
-test("project-scoped model connection keeps its routing after reopening", async ({
+// ALMA does not show Models in settings.
+test.skip("project-scoped model connection keeps its routing after reopening", async ({
   page,
 }, testInfo) => {
   await signup(page, `model-project-${Date.now()}@rakazo.test`, "password12", "Model Preview");

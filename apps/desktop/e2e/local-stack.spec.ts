@@ -246,7 +246,7 @@ test("without Docker the app offers the download and continues once Docker is in
   await setup.getByRole("button", { name: "Continue" }).click();
   const docker = process.platform === "linux" ? "Docker" : "Docker Desktop";
   await expect(setup.locator("#stack-phase")).toHaveText(
-    `Rakazo needs ${docker} to run on this computer.`,
+    `ALMA needs ${docker} to run on this computer.`,
   );
   // Installing Docker is a step, not a failure.
   await expect(setup.locator("#stack-phase")).not.toHaveAttribute("data-tone");

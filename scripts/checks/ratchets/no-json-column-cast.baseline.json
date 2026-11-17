@@ -4,6 +4,7 @@
   "packages/adapters/src/pi-oauth.ts": 2,
   "packages/adapters/src/providers/computer/incus/incus-sandbox.ts": 2,
   "packages/adapters/src/proxy-dispatcher.ts": 1,
+  "packages/adapters/src/support-chatwoot.ts": 2,
   "packages/db/src/events.ts": 1,
   "packages/db/src/teaching-recordings.ts": 1
 }
