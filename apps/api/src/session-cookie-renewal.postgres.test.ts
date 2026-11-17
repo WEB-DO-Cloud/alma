@@ -1,6 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { SESSION_EXPIRES_IN_SECONDS } from "@rakazo/auth";
 import { asSystem } from "@rakazo/db";
 import { expect, it } from "vitest";
 import { createApp } from "./app.js";
@@ -61,7 +62,7 @@ it.skipIf(!databaseUrl)(
       expect(renewed.status).toBe(200);
       const [sent] = sessionCookies(renewed);
       expect(sent).toContain(cookie.split("; ").find((part) => part.includes("session_token="))!);
-      expect(Number(/max-age=(\d+)/i.exec(sent ?? "")?.[1])).toBeGreaterThan(6 * 24 * 60 * 60);
+      expect(Number(/max-age=(\d+)/i.exec(sent ?? "")?.[1])).toBe(SESSION_EXPIRES_IN_SECONDS);
       const stored = await system.session.findFirstOrThrow({ where: { userId: user.id } });
       expect(stored.expiresAt.getTime()).toBeGreaterThan(aged.getTime() + DAY_MS);
 

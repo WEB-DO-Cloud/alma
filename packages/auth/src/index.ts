@@ -136,6 +136,16 @@ type AuthSession = { id: string; userId: string };
 const SEND_SIGN_IN_CODE_PATH = "/email-otp/send-verification-otp";
 const CODE_SIGN_IN_PATH = "/sign-in/email-otp";
 
+/**
+ * How long a session stays valid with no requests. Chromium drops a cookie after 400 days,
+ * so each use rolls a new one of this length. Web, the desktop app, and mobile share the row:
+ * the browser keeps the cookie, mobile keeps the same bearer in the device keychain.
+ * Logout, a password change, and an explicit revocation delete it sooner.
+ */
+export const SESSION_EXPIRES_IN_SECONDS = 400 * 24 * 60 * 60;
+/** Roll the cookie after a day of use so it does not sit near the browser's cap. */
+export const SESSION_UPDATE_AGE_SECONDS = 24 * 60 * 60;
+
 const CREDENTIAL_PATHS = [
   "/sign-in/email",
   "/sign-up/email",
@@ -317,6 +327,10 @@ export function createAuth(prisma: PrismaClient, env: AuthEnv) {
       },
     },
     rateLimit: authRateLimitOptions(),
+    session: {
+      expiresIn: SESSION_EXPIRES_IN_SECONDS,
+      updateAge: SESSION_UPDATE_AGE_SECONDS,
+    },
     advanced: { ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] } },
     socialProviders: {
       ...(google
