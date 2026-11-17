@@ -22,28 +22,28 @@ export const KO_MESSAGES: Record<string, string> = {
     "이 코드는 10분 후에 만료됩니다. 삭제를 요청하지 않았다면 이 이메일을 무시하세요.",
   "Your ALMA confirmation code": "ALMA 확인 코드",
   "Enter this code in ALMA to confirm it's you:":
-    "본인임을 확인하려면 ALMA에서 이 코드를 입력하세요:",
-  "Welcome to ALMA": "ALMA에 오신 것을 환영합니다",
-  "Thanks for signing up for ALMA.": "ALMA에 가입해 주셔서 감사합니다.",
-  "ALMA also has apps for": "ALMA는 다음 플랫폼용 앱도 제공합니다:",
-  "Questions or ideas?": "질문이나 아이디어가 있으신가요?",
-  "Join us on Discord": "Discord에 참여하세요",
-  "ALMA is open source. If you like it,": "ALMA는 오픈 소스입니다. 마음에 드신다면",
-  "a star on GitHub": "GitHub 스타",
-  "helps others find it.": "하나가 다른 사람들이 ALMA를 찾는 데 도움이 됩니다.",
-  "Want to run it on your own servers?": "직접 서버에서 운영하고 싶으신가요?",
-  "Self-host ALMA": "ALMA 셀프 호스팅",
-  "Have any questions? Reply to this email.": "궁금한 점이 있으신가요? 이 이메일에 답장하세요.",
+    "본인임을 확인하려면 Rakazo에서 이 코드를 입력하세요:",
+  "Welcome to ALMA": "Rakazo에 오신 것을 환영합니다",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "Rakazo에 오신 것을 환영합니다. Rakazo를 가장 잘 활용하는 사람들은 세 가지를 합니다.",
+  "Get the apps": "앱 받기",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "Rakazo는 {platforms}에서 실행되므로 봇이 어디서든 연락할 수 있습니다.",
+  "Join the community": "커뮤니티 참여하기",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "{discord}에서 다른 사람들이 만드는 것을 보고, 빠르게 도움을 받고, 다음에 만들 것을 알려 주세요.",
+  "Star us on GitHub": "GitHub에서 스타 누르기",
+  "ALMA is open source. {star} helps more people find it.":
+    "Rakazo는 오픈 소스입니다. {star}는 더 많은 사람이 Rakazo를 찾는 데 도움이 됩니다.",
+  "A star on GitHub": "GitHub 스타",
+  "Questions? Just reply. I read every one.":
+    "질문이 있으신가요? 답장만 보내 주세요. 모두 읽습니다.",
   Unsubscribe: "수신 거부",
   "Invite a friend": "친구 초대",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "친구를 ALMA에 초대하세요. 친구는 {weeks}주 동안 무료로 사용하고, 친구가 새 카드로 대상 구독을 시작하면 나는 한 달 무료를 받아요.",
   "Open ALMA": "ALMA를 열고",
   "and choose Invite friends for your link.": "친구 초대를 선택해 링크를 받으세요.",
-  "Have any questions? Just reply to this email.":
-    "궁금한 점이 있으신가요? 이 이메일에 답장만 하시면 됩니다.",
-  "If you're enjoying ALMA,": "ALMA가 마음에 드신다면",
-  "give us a star on GitHub": "GitHub에서 스타를 눌러 주세요",
   "We received your ALMA plugin": "ALMA 플러그인을 받았습니다",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "ALMA 마켓플레이스에 플러그인을 제출해 주셔서 감사합니다.",
@@ -72,6 +72,16 @@ export const KO_MESSAGES: Record<string, string> = {
     "다시 구독하지 않으면 저장된 컴퓨터 파일이 {date}에 삭제됩니다.",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "플랜을 선택하지 않으면 저장된 컴퓨터 파일이 {date}에 삭제됩니다.",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "친구를 ALMA에 초대하세요. 친구가 새 카드로 자격 요건을 충족하는 구독을 시작하면 한 달을 무료로 받을 수 있습니다.",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter}님이 Rakazo의 {organization}에 초대했습니다",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter}님이 Rakazo의 {organization}에 참여하도록 초대했습니다.",
+  "Join {organization}": "{organization} 참여하기",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "이 초대는 7일 후에 만료됩니다. 수락하려면 이 이메일 주소로 로그인하세요.",
+  "{inviter} invited you to {space} on ALMA": "{inviter}님이 Rakazo의 {space}에 초대했습니다",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter}님이 Rakazo의 {space}에 참여하도록 초대했습니다.",
+  "Join {space}": "{space} 참여하기",
+  "This invitation expires in 7 days.": "이 초대는 7일 후에 만료됩니다.",
 };

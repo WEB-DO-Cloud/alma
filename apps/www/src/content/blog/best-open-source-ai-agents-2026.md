@@ -7,6 +7,8 @@ author: "Elie Steinbock"
 category: "roundups"
 tldr: "There is no single best open source agent. ALMA, OpenClaw, Hermes Agent, OpenHands, and Goose are projects you can run. LangGraph and CrewAI are libraries for building your own. Dify's license is a modified Apache-2.0 with extra conditions. Pick the shape, then read that project's license."
 sources:
+  - label: "ALMA source"
+    href: "https://github.com/WEB-DO-Cloud/alma"
   - label: "OpenClaw"
     href: "https://docs.openclaw.ai/"
   - label: "Hermes Agent"
@@ -41,7 +43,7 @@ faq:
   - question: "Is this a ranking?"
     answer: "No. The title names the question people ask. The body says there is not a single best agent. Nothing here is sorted by stars, downloads, or a benchmark."
   - question: "Which of these is a chat app?"
-    answer: "ALMA AI is a web, desktop, and mobile chat app. OpenClaw is a gateway you message from other chat apps. Hermes Agent has a desktop app and a terminal UI. Goose has a desktop app, a CLI, and an API. OpenHands Agent Canvas is a developer control center. LangGraph and CrewAI are libraries."
+    answer: "ALMA is a web, desktop, and mobile chat app. OpenClaw is a gateway you message from other chat apps. Hermes Agent has a desktop app and a terminal UI. Goose has a desktop app, a CLI, and an API. OpenHands Agent Canvas is a developer control center. LangGraph and CrewAI are libraries."
   - question: "Are they all Apache-2.0?"
     answer: "No. ALMA and Goose use Apache-2.0. OpenClaw, Hermes Agent, OpenHands, LangGraph, and CrewAI use MIT on the license files checked for this page. Dify uses a modified Apache-2.0 with extra conditions on multi-tenant service and on its logo and copyright in the frontend."
   - question: "Do I still pay if the software is open source?"
@@ -107,7 +109,7 @@ Hosted products with no source you can run are outside this list. The [alternati
 
 ## ALMA
 
-ALMA AI is an open source platform for persistent AI teammates, licensed Apache-2.0. You run published Docker images or a source checkout. The web app, the Electron desktop app, and the Expo mobile app are clients of the same API. Hosted ALMA Cloud is in beta.
+ALMA is an open source platform for persistent AI teammates, licensed Apache-2.0. You run published Docker images or a source checkout. The web app, the Electron desktop app, and the Expo mobile app are clients of the same API. Hosted ALMA Cloud is in beta.
 
 A bot has conversations, memory, routines, and history. Routines are readable Markdown and can run on a schedule. Browser, terminal, files, and a graphical desktop are available. The default computer is local Docker. E2B, Daytona, CreateOS, and Boat are optional remote computers. You bring model credentials: OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, an OpenAI-compatible endpoint, or a local server such as Ollama, LM Studio, llama.cpp, or MLX. Each bot can use a different model.
 
@@ -115,7 +117,7 @@ A bot can pause for approval at a boundary you set. Actions are recorded in an a
 
 The day-to-day surface is chat. A new bot interviews you, and you manage it from that chat. Optional connectors for Slack, WhatsApp, Telegram, iMessage via Sendblue, and Feishu/Lark are extras.
 
-ALMA fits repeated operational work where you want the bot, the routine, and the approval in one app, and you are willing to run Docker. It is a poor fit if you want a library inside an existing service, or if you want the agent to live only inside Discord with no ALMA app. The [self-host page](/self-hosted-ai-agent/) is the install. The [OpenClaw](/openclaw-alternative/) and [Hermes](/hermes-alternative/) pages are the closest shape comparisons.
+ALMA fits repeated operational work where you want the bot, the routine, and the approval in one app, and you are willing to run Docker. It is a poor fit if you want a library inside an existing service, or if you want the agent to live only inside Discord with no ALMA app. The [self-hosted AI agent guide](/self-hosted-ai-agent/) is the install. The [OpenClaw](/openclaw-alternative/) and [Hermes](/hermes-alternative/) pages are the closest shape comparisons.
 
 ## OpenClaw
 

@@ -1,19 +1,13 @@
 import type { AdapterContext, ManagedConnectorProvider } from "@rakazo/adapter-kit";
-import type { MessageBlock } from "@rakazo/contracts";
-import type { AppConnectBlock } from "@rakazo/core";
-import {
-  appConnectCard,
-  itemMatchesMailTarget,
-  mailTargetsForQuery,
-  matchAppCatalogEntries,
-  matchesAppConnection,
-} from "@rakazo/core";
+import { appConnectCard, matchAppCatalog, matchesAppConnection } from "@rakazo/core";
 import type { PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
   appendEventInTransaction,
   createThreadMessageInTransaction,
+  storedMessageBlocks,
   THREAD_LOCK_TRANSACTION_OPTIONS,
 } from "@rakazo/db";
+import { DEFAULT_CONNECTOR_ID } from "./connector-registry.js";
 
 const RECENT_MESSAGES = 50;
 const OFFERED_APPS = 12;
@@ -68,16 +62,21 @@ export async function connectApp(
     )
   ).flat();
   // An app connected through any provider counts, even if another provider lists it first.
-  const matches = matchAppCatalogEntries(catalog, app.trim());
-  if (matches.length === 0) return { error: unavailableAppMessage(app.trim(), catalog) };
-  const pending = matches.filter((entry) => !entry.connected);
-  if (pending.length === 0) {
+  const entry =
+    matchAppCatalog(
+      catalog.filter((item) => item.connected),
+      app,
+    ) ?? matchAppCatalog(catalog, app);
+  if (!entry) return { error: "No such app is available in the connector catalog." };
+  const provider = providers.find((provider) => provider.describe().id === entry.connectorId);
+  const reconnect =
+    entry.connected && ((await provider?.needsReconnect?.(context, entry.slug)) ?? false);
+  if (entry.connected && !reconnect)
     return {
       status: "connected",
       message: "This app is already connected and its tools are available.",
     };
-  }
-  const connectedNames = matches.filter((entry) => entry.connected).map((entry) => entry.name);
+  const block = appConnectCard({ ...entry, connected: false });
   const committed = await deps.prisma.$transaction(async (tx) => {
     await tx.$executeRaw`SELECT id FROM threads WHERE id = ${target.threadId} FOR UPDATE`;
     const nonce = `connect-app:${effectId}`;
@@ -89,18 +88,16 @@ export async function connectApp(
     // Only recent cards count as already shown; an old one far up the chat should not block a new one.
     const recent = await tx.message.findMany({
       where: { threadId: target.threadId },
-      select: { blocks: true },
+      select: { id: true, blocks: true },
       orderBy: { createdAt: "desc" },
       take: RECENT_MESSAGES,
     });
-    const fresh = pending.filter(
-      (entry) =>
-        !recent.some((message) =>
-          (message.blocks as MessageBlock[]).some(
-            (candidate) =>
-              matchesAppConnection(candidate, entry.connectorId, entry.slug) &&
-              candidate.status === "pending",
-          ),
+    if (
+      recent.some((message) =>
+        storedMessageBlocks(message).some(
+          (candidate) =>
+            matchesAppConnection(candidate, entry.connectorId, entry.slug, DEFAULT_CONNECTOR_ID) &&
+            candidate.status === "pending",
         ),
     );
     if (fresh.length === 0) return null;
@@ -129,14 +126,11 @@ export async function connectApp(
       committed.seq,
       committed.firstResponse ? target.id : undefined,
     );
-  const already =
-    connectedNames.length > 0
-      ? `${connectedNames.join(" and ")} ${connectedNames.length === 1 ? "is" : "are"} already connected. `
-      : "";
+  const shown = committed ? "Connection card shown." : "Connection card already shown.";
   return {
     status: "pending",
-    message: committed
-      ? `${already}${pending.length === 1 ? "Connection card shown. Wait for the user to connect the app." : "Connection cards shown. Wait for the user to connect the apps."}`
-      : "Connection card already shown. Wait for the user to connect the app.",
+    message: reconnect
+      ? `${shown} The saved connection gives this app no tools, so the user must reconnect it. Wait for them to do so.`
+      : `${shown} Wait for the user to connect the app.`,
   };
 }

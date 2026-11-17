@@ -5,17 +5,17 @@ everything on your own computer.
 
 ## Install
 
-Download it from [alma.com.do](https://alma.com.do). The files are `ALMA-mac.dmg`,
-`ALMA-Setup.exe`, and `ALMA-linux.AppImage`. The Linux AppImage needs FUSE 2. Windows may say it
-does not recognize the installer. That build is not signed yet.
+Download it from [alma.com.do](https://alma.com.do). The Linux AppImage needs FUSE 2.
 
 ## Choose a server
 
 The first time it opens, the app asks which server to use:
 
 - **ALMA Cloud**: sign in to your account at app.alma.com.do.
-- **This computer**: run your own ALMA locally in Docker. If Docker isn't installed, the app links
-  to Docker Desktop, OrbStack and Docker Engine. Everything, including your bots' computers, then
+- **This computer**: run your own ALMA locally in Docker. If Docker isn't installed, the app offers
+  the Docker Desktop download (Docker Engine on Linux) and carries on by itself once Docker is
+  installed and open; if Docker is installed but stopped, the app opens it. Everything, including
+  your bots' computers, then
   runs on your machine. It is yours alone: once you create your account, it accepts no other.
 - **Existing instance**: connect to an ALMA server you or your team already run. Enter its
   **Server address** and choose **Check connection**.
@@ -25,7 +25,7 @@ Windows and Linux).
 
 > [!NOTE]
 > A local server keeps running after you quit the app, so routines still run. Choose
-> **Stop Local Stack** in the app menu to shut it down.
+> **Quit and Stop Bots** in the app menu to shut it down.
 
 ## Let bots use this computer
 
@@ -36,10 +36,11 @@ files.
   their own isolated computers, or **Use this Mac** (**Use this computer** on Windows and Linux) to
   let them work directly on yours. **Computer Access…** in the app menu changes this later, and
   **Revoke Local Computer Access** turns it off.
-- With any server, turn on **Let bots use this computer** in **Settings → General** under
-  **Computers**. Your computer then shows as **Connected** or **Offline** there. Access belongs to
-  the account that turned it on and ends when that account signs out, resets its password or signs
-  out everywhere. Signing back in to the same account restores it without asking again.
+- With any HTTPS server, or a loopback server, turn on **Let bots use this computer**
+  in **Settings → General** under **Computers**. Your computer then shows as **Connected** or
+  **Offline** there. Access belongs to the account that turned it on and ends when that account
+  signs out, resets its password or signs out everywhere. Signing back in to the same account
+  restores it without asking again.
 
 Either way, the app asks **Allow bots to use this computer?** before access is granted. See
 [The bot's computer](./computer.md#use-your-own-computer).

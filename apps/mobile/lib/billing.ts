@@ -1,7 +1,7 @@
 import type { BillingStatus } from "@rakazo/contracts";
 import { MOBILE_BILLING_CALLBACK_URL } from "@rakazo/contracts";
 import { Linking } from "react-native";
-import { rpc } from "./api";
+import type { SaveSend } from "./query";
 import { openAndroidBillingAuth } from "./billing-auth";
 
 export type Plan = "byok" | "credits";
@@ -96,7 +96,7 @@ export function isPaywallShown() {
  * provider returns to the app, then reads the result straight from the provider so the
  * app does not wait on the webhook.
  */
-export async function openBillingPage(url: string): Promise<BillingStatus> {
+export async function openBillingPage(url: string, send: SaveSend): Promise<BillingStatus> {
   // Android uses Chrome's Auth Tab, which closes when the page jumps back to the app.
   // Older binaries and browsers keep the in-app browser; the return page's button closes that.
   const opened = await openAndroidBillingAuth(url);
@@ -110,5 +110,5 @@ export async function openBillingPage(url: string): Promise<BillingStatus> {
       });
     else await Linking.openURL(url);
   }
-  return rpc("billing/refresh");
+  return send("billing/refresh", undefined);
 }

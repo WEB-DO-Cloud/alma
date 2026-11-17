@@ -1,30 +1,27 @@
+// Relative source path: the edge middleware bundles this file and cannot resolve workspace packages.
+import { ANDROID_APP_STORE_URL } from "../../../packages/contracts/src/client-build.js";
 import { ALTERNATIVES, alternativeMarkdown } from "./alternatives";
+import { BLOG_CATEGORIES } from "./blog/categories";
+import { DOCS_SLUGS } from "./docs";
+import { ENTERPRISE_MARKDOWN } from "./enterprise";
+import { GROK_ALTERNATIVE_MARKDOWN } from "./grok-alternative";
+import { OPENCLAW_MARKDOWN, SELF_HOST_MARKDOWN } from "./guide";
+import { getHomeCopy, HOME_CHANNELS, HOME_FEATURE_KINDS, HOME_MODEL_PROVIDERS } from "./i18n/home";
 import {
   INTEGRATION_PLATFORMS,
   integrationPlatformMarkdown,
   integrationPlatformPath,
   integrationPlatformsHubMarkdown,
 } from "./integration-platforms";
+import { roundupMarkdown } from "./roundup";
 import { SANDBOXES, sandboxesHubMarkdown, sandboxMarkdown, sandboxPath } from "./sandboxes";
+import { APP_URL, DESKTOP_DOWNLOADS, GITHUB_URL, IOS_APP_URL, PLUGIN_SUBMISSIONS_URL } from "./site";
 import {
   VOICE_PROVIDERS,
   voiceProviderMarkdown,
   voiceProviderPath,
   voiceProvidersHubMarkdown,
 } from "./voice-providers";
-import { ENTERPRISE_MARKDOWN } from "./enterprise";
-import { GROK_ALTERNATIVE_MARKDOWN } from "./grok-alternative";
-import { OPENCLAW_MARKDOWN, SELF_HOST_MARKDOWN } from "./guide";
-import {
-  HOME_CHANNELS,
-  HOME_FEATURE_KINDS,
-  HOME_MODEL_PROVIDERS,
-  getHomeCopy,
-} from "./i18n/home";
-import { roundupMarkdown } from "./roundup";
-// Relative source path: the edge middleware bundles this file and cannot resolve workspace packages.
-import { ANDROID_APP_STORE_URL } from "../../../packages/contracts/src/client-build.js";
-import { APP_URL, DESKTOP_DOWNLOADS, GITHUB_URL, IOS_APP_URL, PLUGIN_SUBMISSIONS_URL } from "./site";
 
 export const AGENT_DISCOVERY_LINKS =
   '</llms.txt>; rel="describedby"; type="text/plain", </.well-known/ai-catalog.json>; rel="ai-catalog"; type="application/ai-catalog+json"';
@@ -147,13 +144,13 @@ Hosted users can permanently delete their account and associated personal Space 
 
 export const PRIVACY_MARKDOWN = `# ALMA privacy
 
-Last updated: September 14, 2026
+Last updated: November 12, 2026
 
 ALMA processes account details, user-provided bot content, connection information, and technical records needed to operate and secure the service. Content comes from what you enter, upload, record, or authorize your bots to access. ALMA does not sell personal information or use ALMA content for third-party advertising.
 
-Before submitting content or starting AI work, the ALMA mobile app names the configured recipients, explains the data and purpose, and asks permission. Messages, relevant history, instructions, memories, attachments, screenshots, and connected-app content may be sent to model services for responses and tasks, including scheduled tasks. Recorded audio may be sent for transcription and text for speech generation. When this server's operator voice is [xAI](https://x.ai/legal/privacy-policy), recorded audio and text chosen for speech are sent to xAI. Conversation summaries, memories, queries, and bot and Space identifiers may be sent to a configured memory service.
+Before submitting content or starting AI work, the ALMA mobile app names the configured recipients, explains the data and purpose, and asks permission. Messages, relevant history, instructions, memories, attachments, screenshots, and connected-app content may be sent to model services for responses and tasks, including scheduled tasks. Recorded audio may be sent for transcription and text for speech generation. Conversations, names of people and bots, memories, queries, and bot and Space identifiers may be sent to a configured memory service.
 
-Supported connections include OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, Cursor, custom model servers, ElevenLabs, Cartesia, Fish Audio, xAI, and Supermemory. The mobile disclosure identifies the configured services. Gateways forward requests to model providers according to their routing settings and provider agreements. The mobile permission flow does not modify provider routing or promise zero retention.
+Supported connections include OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, Cursor, custom model servers, ElevenLabs, Cartesia, Fish Audio, xAI, Supermemory, and Hindsight. The mobile disclosure identifies the configured services. Gateways forward requests to model providers according to their routing settings and provider agreements. The mobile permission flow does not modify provider routing or promise zero retention.
 
 Permission records include the recipient, Space, disclosure version, and time. Choose Not now to decline, or withdraw permission in Account → AI data sharing for new mobile actions. Stop existing runs and disable routines separately. Withdrawal cannot recall data already sent. Web, desktop, and self-hosted server workflows do not use this mobile permission flow.
 
@@ -300,7 +297,10 @@ const MARKDOWN_DOCUMENTS = new Map<string, string>([
   ),
   ...INTEGRATION_PLATFORMS.map(
     (platform) =>
-      [integrationPlatformPath(platform.slug).slice(0, -1), integrationPlatformMarkdown(platform)] as const,
+      [
+        integrationPlatformPath(platform.slug).slice(0, -1),
+        integrationPlatformMarkdown(platform),
+      ] as const,
   ),
   ...SANDBOXES.map(
     (sandbox) => [sandboxPath(sandbox.slug).slice(0, -1), sandboxMarkdown(sandbox)] as const,
@@ -313,7 +313,7 @@ type MediaPreference = {
   specificity: number;
 };
 
-export type Representation = "html" | "markdown" | "not-acceptable";
+export type Representation = "html" | "markdown";
 
 function normalizePathname(pathname: string): string {
   if (pathname === "/") return pathname;
@@ -325,10 +325,7 @@ function preferenceFor(accept: string, desiredType: string): MediaPreference {
   let best: MediaPreference = { quality: 0, specificity: -1 };
 
   for (const rawRange of accept.split(",")) {
-    const [rawType = "", ...rawParameters] = rawRange
-      .trim()
-      .toLowerCase()
-      .split(";");
+    const [rawType = "", ...rawParameters] = rawRange.trim().toLowerCase().split(";");
     const [major, minor] = rawType.trim().split("/");
     if (!major || !minor) continue;
 
@@ -342,9 +339,7 @@ function preferenceFor(accept: string, desiredType: string): MediaPreference {
             : -1;
     if (specificity < 0) continue;
 
-    const qualityParameter = rawParameters.find((parameter) =>
-      parameter.trim().startsWith("q="),
-    );
+    const qualityParameter = rawParameters.find((parameter) => parameter.trim().startsWith("q="));
     const parsedQuality = qualityParameter
       ? Number.parseFloat(qualityParameter.trim().slice(2))
       : 1;
@@ -364,17 +359,15 @@ function preferenceFor(accept: string, desiredType: string): MediaPreference {
   return best;
 }
 
-export function negotiateRepresentation(
-  acceptHeader: string | null,
-): Representation {
+export function negotiateRepresentation(acceptHeader: string | null): Representation {
   if (!acceptHeader?.trim()) return "html";
 
   const markdown = preferenceFor(acceptHeader, "text/markdown");
   const html = preferenceFor(acceptHeader, "text/html");
 
-  if (markdown.quality <= 0 && html.quality <= 0) return "not-acceptable";
   if (markdown.quality > html.quality) return "markdown";
   if (
+    markdown.quality > 0 &&
     markdown.quality === html.quality &&
     markdown.specificity > html.specificity
   )
@@ -386,17 +379,34 @@ export function getMarkdownDocument(pathname: string): string | undefined {
   return MARKDOWN_DOCUMENTS.get(normalizePathname(pathname));
 }
 
+const STATIC_MARKDOWN_HUBS = new Set(["/blog", "/docs", "/integrations", "/pricing"]);
+const BLOG_CATEGORY_SET = new Set<string>(BLOG_CATEGORIES);
+const DOCS_DETAIL_SLUGS = new Set(DOCS_SLUGS.slice(1));
+
+/**
+ * Pages whose Markdown is only built as a static `.md` file: blog posts and docs come from content
+ * collections, integrations from the remote catalog, and pricing from workspace packages, none of
+ * which the edge middleware can bundle. The middleware rewrites to that file instead.
+ */
+export function getStaticMarkdownPath(pathname: string): string | undefined {
+  const normalizedPathname = normalizePathname(pathname);
+  if (STATIC_MARKDOWN_HUBS.has(normalizedPathname)) return `${normalizedPathname}.md`;
+  const [, section, slug, ...rest] = normalizedPathname.split("/");
+  if (!slug || rest.length > 0) return undefined;
+  const covered =
+    (section === "blog" && !BLOG_CATEGORY_SET.has(slug)) ||
+    (section === "docs" && DOCS_DETAIL_SLUGS.has(slug)) ||
+    section === "integrations";
+  return covered ? `${normalizedPathname}.md` : undefined;
+}
+
 export function getMarkdownAlternate(pathname: string): string | undefined {
   const normalizedPathname = normalizePathname(pathname);
-  if (!MARKDOWN_DOCUMENTS.has(normalizedPathname)) return undefined;
+  if (!MARKDOWN_DOCUMENTS.has(normalizedPathname)) return getStaticMarkdownPath(normalizedPathname);
   return normalizedPathname === "/" ? "/index.md" : `${normalizedPathname}.md`;
 }
 
-export function markdownResponse(
-  body: string,
-  method = "GET",
-  status = 200,
-): Response {
+export function markdownResponse(body: string, method = "GET", status = 200): Response {
   return new Response(method === "HEAD" ? null : body, {
     status,
     headers: {

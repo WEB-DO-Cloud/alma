@@ -3,8 +3,7 @@ import { CLAUDE_CHATGPT_SUBSCRIPTION_FAQ } from "./subscription-faq";
 
 export const GROK_ALTERNATIVE_PATH = "/grok-bot-alternative/";
 
-export const GROK_ALTERNATIVE_TITLE =
-  "Grok Bot alternatives (open source and hosted) – ALMA";
+export const GROK_ALTERNATIVE_TITLE = "Grok Bot alternatives (open source and hosted) – ALMA";
 
 export const GROK_ALTERNATIVE_DESCRIPTION =
   "Open source and hosted Grok Bot alternatives: ALMA, OpenClaw, Hermes Agent, Meta Muse, OpenAI Dots, Instinct, Hark Pro, and Claude Duet.";
@@ -188,7 +187,7 @@ export const GROK_ALTERNATIVE_FAQ = [
   {
     question: "Is Grok Bot open source?",
     answer:
-      "Grok Bot, the hosted teammate app, does not publish its source for you to run. xAI has open-sourced other software: Grok Build, the coding-agent CLI, is Apache-2.0, and the older Grok-1 model weights were released under Apache-2.0. Those projects are not the Grok Bot service. ALMA AI is Apache-2.0, and the application source is public on GitHub.",
+      "Grok Bot, the hosted teammate app, does not publish its source for you to run. xAI has open-sourced other software: Grok Build, the coding-agent CLI, is Apache-2.0, and the older Grok-1 model weights were released under Apache-2.0. Those projects are not the Grok Bot service. ALMA is Apache-2.0, and the application source is public on GitHub.",
   },
   {
     question: "Can I self-host Grok Bot?",
@@ -198,12 +197,12 @@ export const GROK_ALTERNATIVE_FAQ = [
   {
     question: "How is ALMA different from Grok Bot?",
     answer:
-      "Both are persistent bots that can use a computer, sign in to tools, keep context, and run routines. Grok Bot hosts that computer for you and comes with paid Cursor plans and SuperGrok subscriptions. ALMA AI is open source: you host it or use ALMA Cloud, in beta, you choose the model, and team computers and private computers stay separate.",
+      "Both are persistent bots that can use a computer, sign in to tools, keep context, and run routines. Grok Bot hosts that computer for you and comes with paid Cursor plans and SuperGrok subscriptions. ALMA is open source: you host it or use ALMA Cloud, in beta, you choose the model, and team computers and private computers stay separate.",
   },
   {
     question: "Is ALMA just chat, like Grok Bot?",
     answer:
-      "After the install, yes. You create an account, connect a model, and manage the bot from that chat. A new bot interviews you. Routines, memory, and approval boundaries stay with the bot. ALMA AI is that chat plus the computer you run. Grok Bot is also a chat for named bots. The difference is who hosts the service and who picks the model.",
+      "After the install, yes. You create an account, connect a model, and manage the bot from that chat. A new bot interviews you. Routines, memory, and approval boundaries stay with the bot. ALMA is that chat plus the computer you run. Grok Bot is also a chat for named bots. The difference is who hosts the service and who picks the model.",
   },
   CLAUDE_CHATGPT_SUBSCRIPTION_FAQ,
   {
@@ -213,48 +212,33 @@ export const GROK_ALTERNATIVE_FAQ = [
   },
 ] as const;
 
-export function grokAlternativeStructuredData(pageUrl: string) {
-  return {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": `${pageUrl}#webpage`,
-        url: pageUrl,
-        name: GROK_ALTERNATIVE_TITLE,
-        description: GROK_ALTERNATIVE_DESCRIPTION,
-        mainEntity: { "@id": `${pageUrl}#list` },
-      },
-      {
-        "@type": "ItemList",
-        "@id": `${pageUrl}#list`,
-        name: GROK_ALTERNATIVE_H1,
-        description: GROK_ALTERNATIVE_DESCRIPTION,
-        url: pageUrl,
-        itemListOrder: "https://schema.org/ItemListOrderAscending",
-        numberOfItems: GROK_ALTERNATIVES.length,
-        itemListElement: GROK_ALTERNATIVES.map((item, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: item.label,
-          url: absoluteHref(item.href),
-        })),
-      },
-      {
-        "@type": "FAQPage",
-        "@id": `${pageUrl}#faq`,
-        url: pageUrl,
-        mainEntity: GROK_ALTERNATIVE_FAQ.map((item) => ({
-          "@type": "Question",
-          name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
-        })),
-      },
-    ],
-  };
+/** The page and its list of alternatives, for the page's article graph. */
+export function grokAlternativeNodes(pageUrl: string) {
+  return [
+    {
+      "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: GROK_ALTERNATIVE_TITLE,
+      description: GROK_ALTERNATIVE_DESCRIPTION,
+      mainEntity: { "@id": `${pageUrl}#list` },
+    },
+    {
+      "@type": "ItemList",
+      "@id": `${pageUrl}#list`,
+      name: GROK_ALTERNATIVE_H1,
+      description: GROK_ALTERNATIVE_DESCRIPTION,
+      url: pageUrl,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      numberOfItems: GROK_ALTERNATIVES.length,
+      itemListElement: GROK_ALTERNATIVES.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.label,
+        url: absoluteHref(item.href),
+      })),
+    },
+  ];
 }
 
 function absoluteHref(href: string): string {
@@ -279,9 +263,7 @@ export function grokAlternativeMarkdown(): string {
     const caption = item.caption ? `\n\n${item.caption}` : "";
     return `### ${item.label}\n\n${image}${caption}\n\n${absoluteMarkdown(item.note)}`;
   }).join("\n\n");
-  const sources = GROK_SOURCES.map((source) => `- [${source.label}](${source.href})`).join(
-    "\n",
-  );
+  const sources = GROK_SOURCES.map((source) => `- [${source.label}](${source.href})`).join("\n");
   const faq = GROK_ALTERNATIVE_FAQ.map(
     (item) => `### ${item.question}\n\n${absoluteMarkdown(item.answer)}`,
   ).join("\n\n");

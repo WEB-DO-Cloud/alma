@@ -65,7 +65,7 @@ test("unavailable computers say so plainly and link setup help", async ({ page }
   );
   await page.reload();
 
-  await openBotPanelTab(page, "Computer");
+  await openBotPanel(page);
   const preview = page.getByTestId("computer-preview");
   const hint = preview.getByTestId("computers-unavailable-hint");
   await expect(hint.getByText("Computers are off on this server.", { exact: true })).toBeVisible();

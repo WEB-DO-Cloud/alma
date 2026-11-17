@@ -1,6 +1,5 @@
-import type { AdapterContext, SecretStore } from "@rakazo/adapter-kit";
-import { phoneCallSettings, resolveEncryptionKey, uploadSizeFromEnv } from "@rakazo/core";
-import type { PrismaClient, ThreadEvents } from "@rakazo/db";
+import { phoneCallSettings, uploadSizeFromEnv } from "@rakazo/core";
+import { resolveEncryptionKey } from "@rakazo/core/node/secrets-guard";
 import { describe, expect, it } from "vitest";
 import { ComposioConnector } from "./composio-connector.js";
 import { FakeComposioClient } from "./composio-fake.js";
@@ -19,7 +18,7 @@ import {
 
 // What the worker read inline before it shared the runtime builder with the API.
 function previousWorkerValues(source: NodeJS.ProcessEnv) {
-  const { key, configured } = resolveDeploymentModel(source);
+  const { key, configured, provider, model } = resolveDeploymentModel(source);
   return {
     dataDir: source.DATA_DIR ?? "./data",
     encryptionKey: resolveEncryptionKey(source),
@@ -34,6 +33,11 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     cursorApiKey: source.CURSOR_API_KEY,
     deploymentModelKey: key,
     deploymentModelConfigured: configured,
+    // The API's ambient team-chat judge settings, which the worker's jobs now use too.
+    defaultProvider: provider,
+    defaultModel: model,
+    teamChatJudgeProvider: source.TEAM_CHAT_JUDGE_PROVIDER?.trim() || undefined,
+    teamChatJudgeModel: source.TEAM_CHAT_JUDGE_MODEL?.trim() || undefined,
     mcpStdioEnabled: source.MCP_STDIO_ENABLED === "true",
     mcpStdioAllowedCommands: (source.MCP_STDIO_ALLOWED_COMMANDS ?? "")
       .split(",")
@@ -46,7 +50,7 @@ function previousWorkerValues(source: NodeJS.ProcessEnv) {
     pipedreamClientSecret: source.PIPEDREAM_CLIENT_SECRET,
     pipedreamProjectId: source.PIPEDREAM_PROJECT_ID,
     pipedreamEnvironment: source.PIPEDREAM_ENVIRONMENT,
-    ticketBoardEnabled: source.TICKET_BOARD_ENABLED === "true",
+    deploymentLabs: deploymentLabsFromEnv(source),
     ...phoneCallSettings(source),
     maxUploadSizeBytes: uploadSizeFromEnv(source),
     inboundEmailDomain: source.INBOUND_EMAIL_DOMAIN?.trim().toLowerCase() || undefined,
@@ -77,6 +81,8 @@ describe("runRuntimeEnvFromProcess", () => {
       PHONE_CALL_RING_SECONDS: "30",
       MAX_UPLOAD_SIZE_MB: "20",
       INBOUND_EMAIL_DOMAIN: " Bots.Example.Test ",
+      TEAM_CHAT_JUDGE_PROVIDER: " openrouter ",
+      TEAM_CHAT_JUDGE_MODEL: "small-model",
     },
     { NODE_ENV: "test", INBOUND_EMAIL_DOMAIN: "  ", PIPEDREAM_ENVIRONMENT: "staging" },
     { NODE_ENV: "test", ALMA_GOOGLE_BYO_OAUTH: "yes" },

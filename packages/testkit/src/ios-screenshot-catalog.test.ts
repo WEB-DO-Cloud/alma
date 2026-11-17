@@ -15,6 +15,7 @@ const UNCOVERED: Record<string, string> = {
   "integration-setup": "redirects to Integrations",
   queue: "shown only while Phase 2A is on, which the catalog leaves off",
   sector: "shown once before the inbox, which the catalog opens already signed in",
+  "model-settings": "opens only for a model the catalog cannot describe; the fixtures connect none",
   share: "Android only: iOS has no share extension yet",
 };
 

@@ -1,11 +1,10 @@
-import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import { PLUGIN_CATEGORIES } from "@rakazo/core";
 import type { PluginCategory } from "@rakazo/core";
+import { PLUGIN_CATEGORIES } from "@rakazo/core";
 import { z } from "zod";
-import { APP_URL, SITE_URL } from "./site";
+import { CATALOG_URL, INTEGRATION_CLAIMS_URL, SITE_URL } from "./site";
+import { breadcrumbNode } from "./structured-data";
+
 const IntegrationSchema = z.object({
   slug: z.string().regex(/^[a-z0-9_-]+$/),
   name: z.string(),
@@ -25,21 +24,6 @@ const CatalogSchema = z.object({
 
 export type Integration = z.infer<typeof IntegrationSchema>;
 
-/** Committed snapshot served at /integrations/catalog.json. `CATALOG_URL` overrides it. */
-function defaultCatalogPath(): string {
-  const here = dirname(fileURLToPath(import.meta.url));
-  // Astro compiles this module under dist/ before public files are copied beside it.
-  const candidates = [
-    join(here, "../public/integrations/catalog.json"),
-    join(here, "../../public/integrations/catalog.json"),
-    join(process.cwd(), "public/integrations/catalog.json"),
-    join(process.cwd(), "apps/www/public/integrations/catalog.json"),
-  ];
-  return candidates.find((path) => existsSync(path)) ?? candidates[0];
-}
-
-const DEFAULT_CATALOG = defaultCatalogPath();
-
 const ClaimsSchema = z.object({
   claims: z.array(
     z.object({
@@ -52,9 +36,8 @@ const ClaimsSchema = z.object({
 /** Owners' reviewed links to their sites, keyed by page URL slug. */
 async function loadClaims(): Promise<Map<string, z.infer<typeof ClaimsSchema>["claims"][number]>> {
   try {
-    const response = await fetch(`${APP_URL}/api/v1/integration-claims`, {
-      signal: AbortSignal.timeout(15_000),
-    });
+    // Optional, so a slow API never holds up the build.
+    const response = await fetch(INTEGRATION_CLAIMS_URL, { signal: AbortSignal.timeout(15_000) });
     if (!response.ok) throw new Error(`Claims fetch failed: ${response.status}`);
     const { claims } = ClaimsSchema.parse(await response.json());
     return new Map(claims.map((claim) => [claim.slug, claim]));
@@ -72,8 +55,9 @@ async function loadIntegrations(): Promise<Integration[]> {
   });
 }
 
+/** Published weekly by a private sync job. `CATALOG_URL` may point at another URL or a local file. */
 async function loadCatalog(): Promise<Integration[]> {
-  const source = process.env.CATALOG_URL?.trim() || DEFAULT_CATALOG;
+  const source = process.env.CATALOG_URL?.trim() || CATALOG_URL;
   try {
     const text = /^https?:\/\//.test(source)
       ? await fetch(source).then((response) => {
@@ -181,7 +165,12 @@ const SOURCE_CATEGORIES: Record<PluginCategory, readonly string[]> = {
   ],
   code: ["developer tools", "model context protocol", "app builder", "internet of things"],
   data: ["analytics", "business intelligence", "dashboards", "databases"],
-  ops: ["server monitoring", "it operations", "security & identity tools", "ai safety compliance detection"],
+  ops: [
+    "server monitoring",
+    "it operations",
+    "security & identity tools",
+    "ai safety compliance detection",
+  ],
 };
 
 const CATEGORY_BY_SOURCE = new Map(
@@ -227,7 +216,7 @@ const POPULAR_SLUGS = [
   "twitter",
 ];
 
-export const INTEGRATIONS: Integration[] = await loadIntegrations();
+export const INTEGRATIONS = await loadIntegrations();
 
 const BY_SLUG = new Map(INTEGRATIONS.map((integration) => [integration.slug, integration]));
 
@@ -249,7 +238,9 @@ export function integrationClaimPath(slug: string): string {
 /** Round down so the headline count stays true as the catalog shifts. */
 export function integrationCountLabel(): string {
   const count = INTEGRATIONS.length;
-  return count >= 1000 ? `${(Math.floor(count / 100) * 100).toLocaleString("en-US")}+` : String(count);
+  return count >= 1000
+    ? `${(Math.floor(count / 100) * 100).toLocaleString("en-US")}+`
+    : String(count);
 }
 
 export function relatedIntegrations(integration: Integration, limit = 6): Integration[] {
@@ -260,7 +251,8 @@ export function relatedIntegrations(integration: Integration, limit = 6): Integr
   )
     .toSorted(
       (a, b) =>
-        Number(popular.has(b.slug)) - Number(popular.has(a.slug)) || b.actions.length - a.actions.length,
+        Number(popular.has(b.slug)) - Number(popular.has(a.slug)) ||
+        b.actions.length - a.actions.length,
     )
     .slice(0, limit);
 }
@@ -274,18 +266,13 @@ export const CHAT_CHANNELS = [
 ] as const;
 
 export function integrationBreadcrumbs(integration: Integration) {
+  const path = integrationPath(integration.slug);
   return {
     "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Integrations", item: `${SITE_URL}${INTEGRATIONS_PATH}` },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: integration.name,
-        item: `${SITE_URL}${integrationPath(integration.slug)}`,
-      },
-    ],
+    ...breadcrumbNode(new URL(path, SITE_URL).toString(), [
+      { name: "Integrations", path: INTEGRATIONS_PATH },
+      { name: integration.name, path },
+    ]),
   };
 }
 
@@ -311,7 +298,8 @@ export function integrationMarkdown(integration: Integration): string {
 
 ${integration.description}
 
-Category: ${CATEGORY_LABELS[categoryOf(integration)]}. Connect from any ALMA bot at ${SITE_URL}${integrationPath(integration.slug)}.
+Category: ${CATEGORY_LABELS[categoryOf(integration)]}. Connect from any ALMA bot at ${SITE_URL}${integrationPath(integration.slug)}.${integration.website ? ` Website: ${integration.website}.` : ""}
+
 ## Actions
 
 ${actions.join("\n")}

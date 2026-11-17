@@ -1,10 +1,11 @@
 import * as z from "zod";
 import type { ComputerSize } from "./computer.js";
 import { ComputerSizeSchema } from "./computer.js";
+import { EXPERIMENTS } from "./experiments.js";
 
-export const MODEL_CREDIT_AMOUNTS = [1000, 2000, 3000, 5000, 10000, 20000] as const;
+export const MODEL_CREDIT_AMOUNTS = [2000, 3000, 5000, 10000, 20000] as const;
 /** Amounts no longer offered that existing purchases and subscriptions may still carry. */
-export const RETIRED_MODEL_CREDIT_AMOUNTS = [50000] as const;
+export const RETIRED_MODEL_CREDIT_AMOUNTS = [1000, 50000] as const;
 
 /**
  * What an hour of a billed computer counts against the allowance, $0.20, whatever its size: above
@@ -94,6 +95,12 @@ export function byokTierPriceCents(tier: ByokTier, interval: ByokInterval): numb
 export const INVITED_TRIAL_WEEKS = 2;
 /** Length of a new organization's free trial of the own-model plan, in days. */
 export const TRIAL_DAYS = 7;
+/**
+ * How the plan choice is laid out: the own-key plan beside credits, or its tiers first with
+ * credits below. Each organization keeps one, so its plans look the same everywhere.
+ */
+export const PlanLayoutSchema = z.enum(EXPERIMENTS["plan-layout"]);
+
 export const ByokIntervalSchema = z.enum(["month", "year"]);
 export type ByokInterval = z.infer<typeof ByokIntervalSchema>;
 export const DEFAULT_MONTHLY_CREDIT_AMOUNT = 3000;
@@ -166,6 +173,8 @@ export const BillingStatusSchema = z.object({
       }),
     )
     .optional(),
+  /** The plan choice's layout; absent from servers that only lay it out as cards. */
+  planLayout: PlanLayoutSchema.optional(),
   /** End of an unpaid own-key organization's free period. */
   byokFreeUntil: z.string().nullable().optional(),
   access: z.boolean(),
@@ -212,8 +221,10 @@ export const BillingStatusSchema = z.object({
     .optional(),
   /** Renewal and currency sentences on the plan page. Absent from older servers. */
   planClarity: z.boolean().optional(),
-  /** Computer hours left this calendar month; absent when computers have no limit. */
+  /** Computer hours left in the current allowance period; absent when computers have no limit. */
   computerHoursLeft: z.number().nonnegative().nullable().optional(),
+  /** Next allowance renewal, distinct from a yearly subscription payment. */
+  computerHoursResetAt: z.string().nullable().optional(),
   /** Present once the organization has subscribed: its invite link and free months earned. */
   referral: z
     .object({ url: z.string().url(), rewards: z.number().int().nonnegative() })

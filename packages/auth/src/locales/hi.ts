@@ -23,25 +23,25 @@ export const HI_MESSAGES: Record<string, string> = {
   "Enter this code in ALMA to confirm it's you:":
     "यह पुष्टि करने के लिए कि यह आप ही हैं, ALMA में यह कोड डालें:",
   "Welcome to ALMA": "ALMA में आपका स्वागत है",
-  "Thanks for signing up for ALMA.": "ALMA के लिए साइन अप करने के लिए धन्यवाद।",
-  "ALMA also has apps for": "ALMA के ऐप इनके लिए भी हैं:",
-  "Questions or ideas?": "सवाल या सुझाव?",
-  "Join us on Discord": "Discord पर हमसे जुड़ें",
-  "ALMA is open source. If you like it,": "ALMA ओपन सोर्स है। अगर आपको यह पसंद है, तो",
-  "a star on GitHub": "GitHub पर एक स्टार",
-  "helps others find it.": "दूसरों को इसे ढूँढने में मदद करता है।",
-  "Want to run it on your own servers?": "इसे अपने सर्वर पर चलाना चाहते हैं?",
-  "Self-host ALMA": "ALMA को खुद होस्ट करें",
-  "Have any questions? Reply to this email.": "कोई सवाल है? इस ईमेल का जवाब दें।",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "ALMA में आपका स्वागत है। जो लोग इसका सबसे ज़्यादा फ़ायदा उठाते हैं, वे तीन काम करते हैं:",
+  "Get the apps": "ऐप डाउनलोड करें",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA {platforms} पर चलता है, ताकि आपके बॉट आप तक कहीं भी पहुँच सकें।",
+  "Join the community": "कम्युनिटी से जुड़ें",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "देखें दूसरे क्या बना रहे हैं, जल्दी मदद पाएँ, और {discord} पर हमें बताएँ कि आगे क्या बनाएँ।",
+  "Star us on GitHub": "GitHub पर हमें स्टार दें",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA ओपन सोर्स है। {star} से ज़्यादा लोग इसे ढूँढ पाते हैं।",
+  "A star on GitHub": "GitHub पर एक स्टार",
+  "Questions? Just reply. I read every one.": "कोई सवाल? बस जवाब दें। मैं हर ईमेल पढ़ता हूँ।",
   Unsubscribe: "सदस्यता छोड़ें",
   "Invite a friend": "किसी दोस्त को आमंत्रित करें",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "किसी दोस्त को ALMA पर बुलाएँ: उन्हें {weeks} हफ़्ते मुफ़्त मिलते हैं, और जब वे नए कार्ड से योग्य सदस्यता शुरू करते हैं तो आपको एक महीना मुफ़्त मिलता है।",
   "Open ALMA": "ALMA खोलें",
   "and choose Invite friends for your link.": "और अपना लिंक पाने के लिए दोस्तों को आमंत्रित करें चुनें।",
-  "Have any questions? Just reply to this email.": "कोई सवाल है? बस इस ईमेल का जवाब दें।",
-  "If you're enjoying ALMA,": "अगर आपको ALMA पसंद आ रहा है,",
-  "give us a star on GitHub": "तो GitHub पर हमें एक स्टार दें",
   "We received your ALMA plugin": "हमें आपका ALMA प्लगइन मिल गया है",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "ALMA मार्केटप्लेस में प्लगइन भेजने के लिए धन्यवाद।",
@@ -69,6 +69,16 @@ export const HI_MESSAGES: Record<string, string> = {
     "आपकी सहेजी गई कंप्यूटर फ़ाइलें {date} को हटा दी जाएँगी, जब तक आप फिर से सदस्यता नहीं लेते।",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "आपकी सहेजी गई कंप्यूटर फ़ाइलें {date} को हटा दी जाएँगी, जब तक आप कोई प्लान नहीं चुनते।",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "किसी दोस्त को ALMA पर आमंत्रित करें और जब वह नए कार्ड से कोई योग्य सदस्यता शुरू करे, तो एक महीना मुफ़्त पाएँ।",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter} ने आपको ALMA पर {organization} में आमंत्रित किया",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} ने आपको ALMA पर {organization} से जुड़ने के लिए आमंत्रित किया है।",
+  "Join {organization}": "{organization} से जुड़ें",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "यह आमंत्रण 7 दिनों में समाप्त हो जाएगा। इसे स्वीकार करने के लिए इसी ईमेल पते से साइन इन करें।",
+  "{inviter} invited you to {space} on ALMA": "{inviter} ने आपको ALMA पर {space} में आमंत्रित किया",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} ने आपको ALMA पर {space} से जुड़ने के लिए आमंत्रित किया है।",
+  "Join {space}": "{space} से जुड़ें",
+  "This invitation expires in 7 days.": "यह आमंत्रण 7 दिनों में समाप्त हो जाएगा।",
 };

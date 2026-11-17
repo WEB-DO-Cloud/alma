@@ -45,13 +45,14 @@ test("a page chip in a right-to-left chat keeps its icon gap on the text side", 
     if (!fetched) return;
     const response = fetched.response;
     const parsed = fetched.body as { json?: Record<string, unknown> };
-    const json = parsed.json;
+    let json = parsed.json;
     if (!json) {
       await route.fulfill({ response });
       return;
     }
     const thread = json.thread as Record<string, unknown> | undefined;
     if (thread?.threadId) json.thread = withPageChipMessage(thread);
+    else if (json.threadId) json = withPageChipMessage(json);
     await route.fulfill({ contentType: "application/json", body: JSON.stringify({ json }) });
   });
 

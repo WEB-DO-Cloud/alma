@@ -24,25 +24,25 @@ export const NL_MESSAGES: Record<string, string> = {
   "Enter this code in ALMA to confirm it's you:":
     "Voer deze code in ALMA in om te bevestigen dat jij het bent:",
   "Welcome to ALMA": "Welkom bij ALMA",
-  "Thanks for signing up for ALMA.": "Bedankt voor je aanmelding bij ALMA.",
-  "ALMA also has apps for": "ALMA heeft ook apps voor",
-  "Questions or ideas?": "Vragen of ideeën?",
-  "Join us on Discord": "Kom erbij op Discord",
-  "ALMA is open source. If you like it,": "ALMA is open source. Vind je het fijn?",
-  "a star on GitHub": "Een ster op GitHub",
-  "helps others find it.": "helpt anderen het te vinden.",
-  "Want to run it on your own servers?": "Wil je het op je eigen servers draaien?",
-  "Self-host ALMA": "ALMA zelf hosten",
-  "Have any questions? Reply to this email.": "Vragen? Beantwoord deze e-mail.",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "Welkom bij ALMA. Wie er het meest uit haalt, doet drie dingen:",
+  "Get the apps": "Download de apps",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA werkt op {platforms}, zodat je bots je overal kunnen bereiken.",
+  "Join the community": "Word lid van de community",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "Zie wat anderen bouwen, krijg snel hulp en vertel ons op {discord} wat we hierna moeten bouwen.",
+  "Star us on GitHub": "Geef ons een ster op GitHub",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA is open source. {star} helpt meer mensen het te vinden.",
+  "A star on GitHub": "Een ster op GitHub",
+  "Questions? Just reply. I read every one.": "Vragen? Antwoord gewoon. Ik lees elk bericht.",
   Unsubscribe: "Afmelden",
   "Invite a friend": "Nodig een vriend uit",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "Nodig een vriend uit voor ALMA: die krijgt {weeks} weken gratis, en jij verdient een gratis maand zodra die met een nieuwe kaart een geldig abonnement start.",
   "Open ALMA": "Open ALMA",
   "and choose Invite friends for your link.": "en kies Vrienden uitnodigen voor je link.",
-  "Have any questions? Just reply to this email.": "Vragen? Beantwoord gewoon deze e-mail.",
-  "If you're enjoying ALMA,": "Vind je ALMA fijn?",
-  "give us a star on GitHub": "Geef ons een ster op GitHub",
   "We received your ALMA plugin": "We hebben je ALMA-plug-in ontvangen",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "Bedankt voor het insturen van een plug-in voor de ALMA-marketplace.",
@@ -72,6 +72,17 @@ export const NL_MESSAGES: Record<string, string> = {
     "Je opgeslagen computerbestanden worden op {date} verwijderd, tenzij je opnieuw een abonnement neemt.",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "Je opgeslagen computerbestanden worden op {date} verwijderd, tenzij je een abonnement kiest.",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "Nodig een vriend uit voor ALMA en krijg een gratis maand zodra die een geldig abonnement afsluit met een nieuwe kaart.",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter} heeft je uitgenodigd voor {organization} op ALMA",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} heeft je uitgenodigd om lid te worden van {organization} op ALMA.",
+  "Join {organization}": "Word lid van {organization}",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "Deze uitnodiging verloopt over 7 dagen. Log in met dit e-mailadres om haar te accepteren.",
+  "{inviter} invited you to {space} on ALMA":
+    "{inviter} heeft je uitgenodigd voor {space} op ALMA",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} heeft je uitgenodigd om lid te worden van {space} op ALMA.",
+  "Join {space}": "Word lid van {space}",
+  "This invitation expires in 7 days.": "Deze uitnodiging verloopt over 7 dagen.",
 };

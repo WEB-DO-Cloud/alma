@@ -26,12 +26,13 @@ export function createBotRemoval(deps: RouterDeps, repos: ReturnType<typeof crea
   ) => {
     const bot = await loadBotForRemoval(deps.prisma, repos, actor, botId);
     if (bot.kind === "support") throw new SupportBotLockedError();
-    await destroyBot(
+    return destroyBot(
       {
         prisma: deps.prisma,
         sandbox: deps.sandbox,
         home: deps.home,
         jobs: deps.jobs,
+        memoryProviders: deps.memoryProviders,
         artifacts: deps.artifacts,
         secretStore: deps.secrets,
         dataDir: deps.dataDir,
