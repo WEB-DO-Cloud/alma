@@ -299,6 +299,7 @@ workflows:
                 export CSC_KEY_PASSWORD="$DESKTOP_MAC_CSC_KEY_PASSWORD"
                 export APPLE_API_KEY="$key_dir/apple-api-key.p8"
                 export APPLE_API_KEY_ID APPLE_API_ISSUER
+                node apps/mobile/scripts/app-version.mjs sync
                 pnpm --filter @rakazo/desktop exec electron-builder \
                   --mac --universal --publish never -c.forceCodeSigning=true
       - script@1:
@@ -410,6 +411,7 @@ workflows:
                 DATABASE_URL="${DATABASE_URL:-postgres://rakazo:rakazo@127.0.0.1:5433/rakazo}" pnpm db:generate
                 RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/web build
                 RAKAZO_ALLOW_DEV_SECRETS=1 RAKAZO_DESKTOP_RELEASE=1 pnpm --filter @rakazo/desktop build
+                node apps/mobile/scripts/app-version.mjs sync
                 pnpm --filter @rakazo/desktop exec electron-builder --linux --x64 --publish never
                 config="$(find apps/desktop/out -name app-update.yml -print -quit)"
                 grep -Fqx "provider: github" "$config"
