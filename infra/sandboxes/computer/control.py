@@ -216,7 +216,7 @@ def allowed_control_argv(argv, display):
     command = argv[index]
     if index == 3:
         profile = argv[2].removeprefix("RAKAZO_BROWSER_PROFILE=")
-        if not re.fullmatch(r"/home/rakazo/\.browser-profiles/chromium-bot-[a-f0-9]{32}", profile):
+        if not re.fullmatch(r"/home/(?:alma|rakazo)/\.browser-profiles/chromium-bot-[a-f0-9]{32}", profile):
             return False
         if command not in ("xdg-open", "rakazo-browser", FOCUS_OR_LAUNCH):
             return False

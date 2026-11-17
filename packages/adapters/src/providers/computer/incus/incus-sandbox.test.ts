@@ -129,7 +129,7 @@ describe("IncusSandboxProvider", () => {
     });
     await providerFor(fake).provision({ botId: "bot-a", homePath: "/unused" }, context);
     expect(probes).toBe(2);
-    expect(fake.execs[0]?.body).toMatchObject({ user: 1000, group: 1000, cwd: "/home/rakazo" });
+    expect(fake.execs[0]?.body).toMatchObject({ user: 1000, group: 1000, cwd: "/home/alma" });
   });
 
   it("reconnects to a running instance of the same bot without creating one", async () => {
@@ -514,7 +514,7 @@ describe("IncusSandboxProvider", () => {
     // Setuid programs in the image cannot raise a bot command's privileges.
     expect(exec.command.slice(0, 3)).toEqual(["setpriv", "--no-new-privs", "--"]);
     expect(exec.command).toEqual(
-      expect.arrayContaining(["/home/rakazo/nested", "TEST_VALUE=value", "printf", "done"]),
+      expect.arrayContaining(["/home/alma/nested", "TEST_VALUE=value", "printf", "done"]),
     );
     // The input stream is closed so commands that read stdin see its end.
     expect(exec.inputClosed).toBe(true);

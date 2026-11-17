@@ -2,6 +2,12 @@ import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 import path from "node:path";
 import {
+  COMPUTER_HOME,
+  COMPUTER_HOME_LEGACY,
+  COMPUTER_LOGIN,
+  computerHomeEnvironment,
+} from "@rakazo/core/computer-home";
+import {
   COMPUTER_CACHE_ENV,
   MAX_DESKTOP_DISPLAY,
   screenPorts,
@@ -349,7 +355,7 @@ export function assertComputerMountSources(
  * Host directories mounted into every computer in every Space, from SANDBOX_COMPUTER_MOUNTS:
  * comma-separated `source:target[:option...]` entries with options ro (default), rw and rslave.
  * Both paths are absolute without `..`. A target sits below /mnt, /media or /srv: inside
- * /home/rakazo Docker would create the mount point root-owned in the bot's home, which then
+ * the computer home Docker would create the mount point root-owned in the bot's home, which then
  * fails the home ownership check, and system directories are not the operator's to replace.
  */
 export function resolveComputerMounts(
@@ -431,7 +437,10 @@ export function computerMountsMatch(
   desired: ComputerMount[],
 ) {
   const binds = (info.HostConfig.Mounts ?? []).filter(
-    (mount) => mount.Type === "bind" && mount.Target !== "/home/rakazo",
+    (mount) =>
+      mount.Type === "bind" &&
+      mount.Target !== COMPUTER_HOME &&
+      mount.Target !== COMPUTER_HOME_LEGACY,
   );
   const sources = labeledMountSources(info.Config.Labels);
   return (
@@ -586,19 +595,50 @@ export function assertVolumeSubpathSupport(apiVersion: string) {
   }
 }
 
+function reportedMountTargets(hostConfig: {
+  Binds?: string[] | null;
+  Mounts?: Array<{ Target?: string }> | null;
+}): string[] {
+  const targets: string[] = [];
+  for (const bind of hostConfig.Binds ?? []) {
+    const target = bind.split(":")[1];
+    if (target?.startsWith("/")) targets.push(target);
+  }
+  for (const mount of hostConfig.Mounts ?? []) {
+    if (mount.Target) targets.push(mount.Target);
+  }
+  return targets;
+}
+
+/**
+ * A computer that still reports only the previous home is replaced. One that
+ * reports no home mount is left alone: the inspect did not say where it is.
+ */
+export function computerHomeCurrent(hostConfig: {
+  Binds?: string[] | null;
+  Mounts?: Array<{ Target?: string }> | null;
+}): boolean {
+  const homes = reportedMountTargets(hostConfig).filter(
+    (target) => target === COMPUTER_HOME || target === COMPUTER_HOME_LEGACY,
+  );
+  return homes.length === 0 || homes.includes(COMPUTER_HOME);
+}
+
+/** Both homes: a computer mounted only at the previous path is replaced on its next start. */
 export function homeVolumeMatches(
   mounts: Docker.ContainerInspectInfo["HostConfig"]["Mounts"],
   volume: { name: string; subpath: string },
 ) {
-  return (
-    mounts?.some(
-      (mount) =>
-        mount.Target === "/home/rakazo" &&
-        mount.Type === "volume" &&
-        mount.Source === volume.name &&
-        mount.VolumeOptions?.Subpath === volume.subpath &&
-        !mount.ReadOnly,
-    ) ?? false
+  return [COMPUTER_HOME, COMPUTER_HOME_LEGACY].every(
+    (target) =>
+      mounts?.some(
+        (mount) =>
+          mount.Target === target &&
+          mount.Type === "volume" &&
+          mount.Source === volume.name &&
+          mount.VolumeOptions?.Subpath === volume.subpath &&
+          !mount.ReadOnly,
+      ) ?? false,
   );
 }
 
@@ -636,18 +676,28 @@ export type SandboxInput =
 export function containerCreateOptions(input: ComputerCreateInput) {
   const ports = computerPortBindings(input.publishControlPort);
   const extraMounts = (input.mounts ?? []).map(computerMountSettings);
+  const homeVolume = input.homeVolume;
+  const homeVolumeMount = (target: string): Docker.MountSettings =>
+    ({
+      Type: "volume",
+      Source: homeVolume?.name,
+      Target: target,
+      // Docker makes Labels and DriverConfig optional; dockerode's types do not.
+      VolumeOptions: {
+        NoCopy: true,
+        Subpath: homeVolume?.subpath,
+      },
+    }) as Docker.MountSettings;
   return {
     Image: input.image,
     name: input.name,
+    Hostname: COMPUTER_LOGIN,
     User: input.user ?? COMPUTER_USER,
     Tty: true,
     Env: [
       ...Object.entries(COMPUTER_CACHE_ENV).map(([key, value]) => `${key}=${value}`),
       "DISPLAY=:1",
-      "HOME=/home/rakazo",
-      "PATH=/home/rakazo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-      "NPM_CONFIG_PREFIX=/home/rakazo/.local",
-      "PIP_USER=1",
+      ...computerHomeEnvironment(),
       ...(input.controlToken ? [`RAKAZO_COMPUTER_CONTROL_TOKEN=${input.controlToken}`] : []),
       ...computerLocaleEnv(input.locale),
     ],
@@ -659,25 +709,20 @@ export function containerCreateOptions(input: ComputerCreateInput) {
     },
     ExposedPorts: ports.ExposedPorts,
     HostConfig: {
-      ...(input.homeVolume
+      ...(homeVolume
         ? {
             Binds: undefined,
             Mounts: [
-              {
-                Type: "volume" as const,
-                Source: input.homeVolume.name,
-                Target: "/home/rakazo",
-                // Docker makes Labels and DriverConfig optional; dockerode's types do not.
-                VolumeOptions: {
-                  NoCopy: true,
-                  Subpath: input.homeVolume.subpath,
-                } as Docker.MountSettings["VolumeOptions"],
-              },
+              homeVolumeMount(COMPUTER_HOME),
+              homeVolumeMount(COMPUTER_HOME_LEGACY),
               ...extraMounts,
             ],
           }
         : {
-            Binds: [`${input.homePath}:/home/rakazo`],
+            Binds: [
+              `${input.homePath}:${COMPUTER_HOME}`,
+              `${input.homePath}:${COMPUTER_HOME_LEGACY}`,
+            ],
             Mounts: extraMounts.length ? extraMounts : undefined,
           }),
       PortBindings: ports.PortBindings,
@@ -694,7 +739,7 @@ export function containerCreateOptions(input: ComputerCreateInput) {
         ? { DeviceRequests: [{ Count: input.computeGpus, Capabilities: [["gpu"]] }] }
         : {}),
     },
-    WorkingDir: "/home/rakazo",
+    WorkingDir: COMPUTER_HOME,
   };
 }
 

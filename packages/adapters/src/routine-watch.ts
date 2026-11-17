@@ -20,6 +20,7 @@ import {
   redactSecrets,
   watchToolRefusal,
 } from "@rakazo/core";
+import { canonicalizeComputerHome, COMPUTER_HOME as WORKSPACE } from "@rakazo/core/computer-home";
 import type { ComputerMode, PrismaClient, ThreadEvents } from "@rakazo/db";
 import {
   appendEventInTransaction,
@@ -53,7 +54,6 @@ import { fetchSafeHttpRequest } from "./web-ssrf.js";
  */
 
 /** Virtual root for validating watch paths; providers resolve the actual workspace. */
-const WORKSPACE = "/home/rakazo";
 const CHECK_TIMEOUT_MS = 60_000;
 /** Starting a stopped computer can take longer than a check; it gets its own budget. */
 const PROVISION_TIMEOUT_MS = 5 * 60_000;
@@ -499,7 +499,7 @@ exit "$status"`;
 /** Team file checks stay in this bot's folder, including absolute paths. */
 export function resolveWatchPath(mode: ComputerMode, botId: string, path: string): string {
   const folder = watchFolder(mode, botId);
-  const resolved = posix.resolve(folder, path);
+  const resolved = posix.resolve(folder, canonicalizeComputerHome(path));
   if (mode === "team" && resolved !== folder && !resolved.startsWith(`${folder}/`)) {
     throw new RoutineWatchError("The watched path must stay inside the bot's folder.");
   }

@@ -196,7 +196,7 @@ describe("host-aware sandbox", () => {
     let code = 1;
     for await (const event of desktop.execute(
       computer,
-      { argv: ["echo", "ok"], cwd: "/home/rakazo" },
+      { argv: ["echo", "ok"], cwd: "/home/alma" },
       ctx,
     )) {
       if (event.type === "exit") code = event.code;

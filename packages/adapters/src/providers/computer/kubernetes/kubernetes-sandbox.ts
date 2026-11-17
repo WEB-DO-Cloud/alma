@@ -11,6 +11,7 @@ import type {
   V1Status,
 } from "@kubernetes/client-node";
 import type { AdapterContext, ComputerRef } from "@rakazo/adapter-kit";
+import { COMPUTER_HOME_LEGACY, COMPUTER_LOGIN } from "@rakazo/core/computer-home";
 import { COMPUTER_CACHE_ENV } from "@rakazo/core/node/desktop-runtime";
 import type { RawExecEvent } from "../../../exec-computer.js";
 import { RawExecChannel, COMPUTER_IMAGE_WORKSPACE as WORKSPACE } from "../../../exec-computer.js";
@@ -249,6 +250,7 @@ export class KubernetesSandboxProvider extends ImageComputerSandbox {
         },
       },
       spec: {
+        hostname: COMPUTER_LOGIN,
         automountServiceAccountToken: false,
         enableServiceLinks: false,
         restartPolicy: "Never",
@@ -281,6 +283,11 @@ export class KubernetesSandboxProvider extends ImageComputerSandbox {
               ? {
                   volumeMounts: [
                     { name: HOME_VOLUME, mountPath: WORKSPACE, subPath: homeSubPath(botId) },
+                    {
+                      name: HOME_VOLUME,
+                      mountPath: COMPUTER_HOME_LEGACY,
+                      subPath: homeSubPath(botId),
+                    },
                   ],
                 }
               : {}),

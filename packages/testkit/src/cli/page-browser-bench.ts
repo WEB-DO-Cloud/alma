@@ -126,7 +126,7 @@ function driverRunner(exec: Exec, driverPath: string) {
     const env = [
       "DISPLAY=:1",
       "RAKAZO_CDP_PORT=9222",
-      "HOME=/home/rakazo",
+      "HOME=/home/alma",
       "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
       "RAKAZO_BROWSER_ARGS_STDIN=1",
     ];

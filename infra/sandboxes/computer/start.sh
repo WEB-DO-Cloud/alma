@@ -2,7 +2,7 @@
 set -uo pipefail
 source /usr/local/lib/rakazo-user-env.sh
 export DISPLAY="${DISPLAY:-:1}"
-export HOME="${HOME:-/home/rakazo}"
+export HOME="${HOME:-/home/alma}"
 AGENT_HOME="$HOME"
 mkdir -p "$AGENT_HOME" "$AGENT_HOME/.local/bin" "$AGENT_HOME/.config" /tmp/rakazo /tmp/.X11-unix /tmp/fluxbox-home
 # Login shells re-apply ~/.local/bin from /etc/profile.d/rakazo-local-bin.sh.

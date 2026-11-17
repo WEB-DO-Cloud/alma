@@ -9,6 +9,11 @@
       "development": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./computer-home": {
+      "types": "./src/computer-home.ts",
+      "development": "./src/computer-home.ts",
+      "default": "./src/computer-home.ts"
+    },
     "./user-error": {
       "types": "./src/user-error.ts",
       "development": "./src/user-error.ts",

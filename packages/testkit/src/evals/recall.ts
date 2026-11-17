@@ -339,7 +339,7 @@ const calibrationRecord = (earlier: Earlier) =>
     ),
   );
 
-const PROFILE = "/home/rakazo/.config/chromium/Default";
+const PROFILE = "/home/alma/.config/chromium/Default";
 const EXTENSIONS = `${PROFILE}/Extensions`;
 const MANIFEST = `${EXTENSIONS}/${EXTENSION_ID}/10.7.1_0/manifest.json`;
 const FIND = /\b(?:find|locate)\b[^;&|]*(?:Extensions|chromium|midnight|lizard|manifest)/i;
@@ -384,7 +384,7 @@ const ELSEWHERE = {
 };
 /** The home folder and config folder a bot lists while looking around. */
 const HOME = [
-  { match: /^\s*pwd\s*$/, output: "/home/rakazo" },
+  { match: /^\s*pwd\s*$/, output: "/home/alma" },
   // The home's other folders are empty.
   { match: /^\s*ls\b[^;&|]*~\/(?:Downloads|Desktop)\b/, output: "" },
   {
@@ -402,7 +402,7 @@ const HOME = [
   // `ls -d ~/.config/chromium*`: the profile folder itself.
   {
     match: /\bls\s+-\w*d\w*\b[^;&|]*\.config\/chromium\*/,
-    output: "/home/rakazo/.config/chromium",
+    output: "/home/alma/.config/chromium",
   },
 ];
 /** What any Chromium computer answers, extension or not: the running browser and its version. */
@@ -410,7 +410,7 @@ const CHROMIUM = [
   {
     match: /\b(?:ps|pgrep)\b/,
     output: [
-      "  812 /usr/lib/chromium/chromium --user-data-dir=/home/rakazo/.config/chromium --no-first-run https://example.com/",
+      "  812 /usr/lib/chromium/chromium --user-data-dir=/home/alma/.config/chromium --no-first-run https://example.com/",
       "  845 /usr/lib/chromium/chromium --type=renderer --lang=en-US",
     ].join("\n"),
   },
@@ -423,7 +423,7 @@ const CHROMIUM = [
   { match: /^\s*history\b/, output: "" },
   {
     match: /bash_history/,
-    output: "cat: /home/rakazo/.bash_history: No such file or directory",
+    output: "cat: /home/alma/.bash_history: No such file or directory",
     exitCode: 1,
   },
   DISK,

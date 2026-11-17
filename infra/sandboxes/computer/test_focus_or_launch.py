@@ -200,7 +200,7 @@ class MainTest(unittest.TestCase):
         )
 
 
-PROFILE = "/home/rakazo/.browser-profiles/chromium-bot-" + "a" * 32
+PROFILE = "/home/alma/.browser-profiles/chromium-bot-" + "a" * 32
 
 
 XLIB_H = """\
@@ -1015,8 +1015,8 @@ id() {
             result = self.run_user_env(root)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(result.stderr, "")
-            self.assertIn("rakazo-runtime:x:42424:42425:", (root / "passwd").read_text())
-            self.assertIn("rakazo-runtime:x:42425:", (root / "group").read_text())
+            self.assertIn("alma:x:42424:42425:Computer:/home/alma:", (root / "passwd").read_text())
+            self.assertIn("alma:x:42425:", (root / "group").read_text())
             for name in ("passwd", "group"):
                 self.assertEqual(stat.S_IMODE((root / name).stat().st_mode), 0o600)
 

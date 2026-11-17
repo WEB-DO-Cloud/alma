@@ -27,6 +27,7 @@ import {
   computerBridgeNameFor,
   computerComputeGpusMatch,
   computerDnsMatches,
+  computerHomeCurrent,
   computerHomeStorage,
   computerMountsMatch,
   computerNetworkCreateOptions,
@@ -123,11 +124,17 @@ describe("graphical computer spec", () => {
     expect(options.Image).not.toMatch(/alpine/);
     expect(options).not.toHaveProperty("Entrypoint");
     expect(JSON.stringify(options)).not.toMatch(/sleep/);
-    expect(options.HostConfig.Binds).toEqual(["/var/rakazo/homes/abc:/home/rakazo"]);
+    expect(options.Hostname).toBe("alma");
+    expect(options.WorkingDir).toBe("/home/alma");
+    expect(options.HostConfig.Binds).toEqual([
+      "/var/rakazo/homes/abc:/home/alma",
+      "/var/rakazo/homes/abc:/home/rakazo",
+    ]);
     expect(options.Env).toContain(
-      "PATH=/home/rakazo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "PATH=/home/alma/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     );
-    expect(options.Env).toContain("NPM_CONFIG_PREFIX=/home/rakazo/.local");
+    expect(options.Env).toContain("NPM_CONFIG_PREFIX=/home/alma/.local");
+    expect(options.Env).toContain("HOME=/home/alma");
     expect(options.Env?.join("\n")).not.toMatch(/AXIOM_|LOG_LEVEL|LOG_FORMAT/);
     expect(options.ExposedPorts).toEqual({ "6080/tcp": {} });
     // Browser debugging stays inside the computer trust boundary.
@@ -271,6 +278,7 @@ describe("graphical computer spec", () => {
       "srv/docs:/mnt/docs",
       "/srv/docs:mnt/docs",
       "/:/mnt/host",
+      "/srv/docs:/home/alma/docs",
       "/srv/docs:/home/rakazo/docs",
       "/srv/docs:/mnt",
       "/srv/docs:/usr/local/bin",
@@ -306,15 +314,16 @@ describe("graphical computer spec", () => {
     ];
     expect(containerCreateOptions(base).HostConfig.Mounts).toBeUndefined();
     const bound = containerCreateOptions({ ...base, mounts }).HostConfig;
-    expect(bound.Binds).toEqual(["/data/x:/home/rakazo"]);
+    expect(bound.Binds).toEqual(["/data/x:/home/alma", "/data/x:/home/rakazo"]);
     expect(bound.Mounts).toEqual(expected);
     const volume = containerCreateOptions({
       ...base,
       homeVolume: { name: "appdata", subpath: "homes/x" },
       mounts,
     }).HostConfig;
-    expect(volume.Mounts?.[0]).toMatchObject({ Type: "volume", Target: "/home/rakazo" });
-    expect(volume.Mounts?.slice(1)).toEqual(expected);
+    expect(volume.Mounts?.[0]).toMatchObject({ Type: "volume", Target: "/home/alma" });
+    expect(volume.Mounts?.[1]).toMatchObject({ Type: "volume", Target: "/home/rakazo" });
+    expect(volume.Mounts?.slice(2)).toEqual(expected);
   });
 
   it("matches a computer's host mounts to the configured ones", () => {
@@ -2349,6 +2358,23 @@ describe("computer resource limits", () => {
   });
 });
 
+describe("computer home mount", () => {
+  it("replaces a computer that only reports the previous home", () => {
+    expect(computerHomeCurrent({})).toBe(true);
+    expect(computerHomeCurrent({ Binds: ["/data/bot:/home/rakazo"] })).toBe(false);
+    expect(
+      computerHomeCurrent({
+        Binds: ["/data/bot:/home/alma", "/data/bot:/home/rakazo"],
+      }),
+    ).toBe(true);
+    expect(
+      computerHomeCurrent({
+        Mounts: [{ Target: "/home/alma" }, { Target: "/home/rakazo" }, { Target: "/mnt/docs" }],
+      }),
+    ).toBe(true);
+  });
+});
+
 describe("computer home storage", () => {
   const runtime = (mount: object) => ({ Mounts: [mount] }) as Docker.ContainerInspectInfo;
   it("keeps named volumes native and exposes only the bot subdirectory", () => {
@@ -2371,6 +2397,12 @@ describe("computer home storage", () => {
     });
     expect(options.HostConfig.Binds).toBeUndefined();
     expect(options.HostConfig.Mounts).toEqual([
+      {
+        Type: "volume",
+        Source: "example_appdata",
+        Target: "/home/alma",
+        VolumeOptions: { NoCopy: true, Subpath: "homes/bot" },
+      },
       {
         Type: "volume",
         Source: "example_appdata",

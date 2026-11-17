@@ -30,6 +30,7 @@ import type {
   WorkspaceDirectoryRequest,
 } from "@rakazo/adapter-kit";
 import { SandboxFileTooLargeError } from "@rakazo/adapter-kit";
+import { COMPUTER_HOME, COMPUTER_HOME_LEGACY } from "@rakazo/core/computer-home";
 import { boundedSandboxCommandTimeoutMs } from "@rakazo/core/node/sandbox-command";
 import {
   applyPlaceholderAction,
@@ -884,7 +885,13 @@ async function* walkDesktopWorkspace(
 }
 
 function resolveExecuteCwd(requestCwd: string | undefined, home: string) {
-  if (!requestCwd || requestCwd === "/home/rakazo" || requestCwd === "/home/user") return home;
+  if (
+    !requestCwd ||
+    requestCwd === COMPUTER_HOME ||
+    requestCwd === COMPUTER_HOME_LEGACY ||
+    requestCwd === "/home/user"
+  )
+    return home;
   return path.resolve(home, requestCwd);
 }
 

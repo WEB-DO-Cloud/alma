@@ -360,7 +360,10 @@ describe("KubernetesSandboxProvider", () => {
         },
         containers: [
           {
-            volumeMounts: [{ name: "home", mountPath: "/home/rakazo", subPath: "homes/team-ab12" }],
+            volumeMounts: [
+              { name: "home", mountPath: "/home/alma", subPath: "homes/team-ab12" },
+              { name: "home", mountPath: "/home/rakazo", subPath: "homes/team-ab12" },
+            ],
           },
         ],
       });
@@ -423,7 +426,7 @@ describe("KubernetesSandboxProvider", () => {
                     : [
                         {
                           name: "home",
-                          mountPath: kind === "wrong-path" ? "/other" : "/home/rakazo",
+                          mountPath: kind === "wrong-path" ? "/other" : "/home/alma",
                           subPath: kind === "wrong-home" ? "homes/other" : "homes/bot-a",
                         },
                       ],
@@ -449,7 +452,7 @@ describe("KubernetesSandboxProvider", () => {
           containers: [
             {
               name: "computer",
-              volumeMounts: [{ name: "home", mountPath: "/home/rakazo", subPath: "homes/bot-a" }],
+              volumeMounts: [{ name: "home", mountPath: "/home/alma", subPath: "homes/bot-a" }],
             },
           ],
         },
@@ -471,7 +474,7 @@ describe("KubernetesSandboxProvider", () => {
           containers: [
             {
               name: "computer",
-              volumeMounts: [{ name: "home", mountPath: "/home/rakazo", subPath: "homes/bot-a" }],
+              volumeMounts: [{ name: "home", mountPath: "/home/alma", subPath: "homes/bot-a" }],
             },
           ],
         },
@@ -706,7 +709,7 @@ describe("KubernetesSandboxProvider", () => {
       /* consume */
     }
     const command = exec.mock.calls[0]?.[3];
-    expect(command).toContain("/home/rakazo/nested/dir");
+    expect(command).toContain("/home/alma/nested/dir");
     expect(command).toContain("OK_1=yes");
     expect(command).toContain("2s");
     const invalid = provider
@@ -1108,7 +1111,7 @@ describe("KubernetesSandboxProvider", () => {
               args[4]?.write(
                 execFileSync("bash", [
                   "-c",
-                  script.replace(`cd ${shellQuote("/home/rakazo")}`, `cd ${shellQuote(root)}`),
+                  script.replace(`cd ${shellQuote("/home/alma")}`, `cd ${shellQuote(root)}`),
                 ]),
               );
             } else if (args[6]) {
