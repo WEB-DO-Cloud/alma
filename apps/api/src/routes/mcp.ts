@@ -1,13 +1,14 @@
 import { ORPCError } from "@orpc/server";
-import { runContinueJob } from "@rakazo/adapter-kit";
 import {
   GoogleWorkspaceConnector,
   lockMcpOAuthMaterial,
   McpOAuthClientRequiredError,
   persistPreparedSecret,
   recordMcpServerHealth,
+  wakeRun,
 } from "@rakazo/adapters";
 import { MCP_OAUTH_REDIRECT_MISMATCH } from "@rakazo/contracts";
+import { ClientError } from "@rakazo/core";
 import type { Prisma } from "@rakazo/db";
 import {
   AVAILABILITY_SELECT,
@@ -96,11 +97,8 @@ export function mcpRoutes(ctx: RouterContext) {
             )
             .catch((error: unknown) => {
               // The slug comes from the name, so this is a second server with the same name.
-              if (isUniqueViolation(error)) {
-                throw new ORPCError("CONFLICT", {
-                  message: "An MCP server with that name already exists.",
-                });
-              }
+              if (isUniqueViolation(error))
+                throw new ClientError("CONFLICT", "An MCP server with that name already exists.");
               throw error;
             });
           return announceMcpServer(row, context.actor);
@@ -493,10 +491,7 @@ export function mcpRoutes(ctx: RouterContext) {
           );
           if (!row) throw new IsolationError();
           if (row.runId) {
-            // The queued run is durable; a missed wake is repaired by the reconciler.
-            await deps.jobs.enqueue(runContinueJob(row.runId)).catch((error) => {
-              getLogger().error("mcp connected enqueue", error);
-            });
+            await wakeRun(deps.jobs, row.runId);
           }
           return mcpAssignmentDto(row.assignment);
         }),
@@ -588,15 +583,16 @@ export function mcpRoutes(ctx: RouterContext) {
       },
       oauth: {
         begin: authed.mcp.oauth.begin.handler(async ({ context, input }) => {
+          const expectedRedirect = new URL("/mcp/oauth/callback", deps.env.webOrigin).toString();
+          // Native clients omit the redirect; the registered web callback is always used.
+          if (input.redirectUri && new URL(input.redirectUri).toString() !== expectedRedirect) {
+            throw new ClientError(
+              "BAD_REQUEST",
+              "The sign-in address does not match this server's configuration.",
+              MCP_OAUTH_REDIRECT_MISMATCH,
+            );
+          }
           try {
-            const expectedRedirect = new URL("/mcp/oauth/callback", deps.env.webOrigin).toString();
-            // Native clients omit the redirect; the registered web callback is always used.
-            if (input.redirectUri && new URL(input.redirectUri).toString() !== expectedRedirect) {
-              throw new ORPCError(MCP_OAUTH_REDIRECT_MISMATCH, {
-                status: 400,
-                message: "The sign-in address does not match this server's configuration.",
-              });
-            }
             return await mcpOAuth.begin({
               ...input,
               redirectUri: expectedRedirect,
@@ -604,66 +600,55 @@ export function mcpRoutes(ctx: RouterContext) {
               userId: context.actor.userId,
             });
           } catch (error) {
-            if (error instanceof ORPCError) throw error;
-            if (error instanceof McpOAuthClientRequiredError) {
+            if (error instanceof McpOAuthClientRequiredError)
               await recordMcpServerHealth(
                 deps.prisma,
                 input.serverId,
                 { status: "error", message: error.message },
                 error.revision,
               );
-              throw new ORPCError(error.code, { status: 400, message: error.message });
-            }
-            throw new ORPCError("BAD_REQUEST", {
-              message: error instanceof Error ? error.message : "Could not start MCP OAuth",
-            });
+            throw error;
           }
         }),
         complete: authed.mcp.oauth.complete.handler(async ({ context, input }) => {
-          try {
-            // Router tests build a partial deps object with no connector registry.
-            const google = deps.connectors?.managed("google");
-            if (google instanceof GoogleWorkspaceConnector) {
-              const finished = await google.finishCallback({
-                state: input.state,
-                code: input.code,
-                spaceId: context.actor.spaceId,
-                userId: context.actor.userId,
-                signal: context.signal ?? new AbortController().signal,
-              });
-              if (finished) return { ok: true as const };
-            }
-            const { serverId, revision } = await mcpOAuth.complete({
-              ...input,
+          // Router tests build a partial deps object with no connector registry.
+          const google = deps.connectors?.managed("google");
+          if (google instanceof GoogleWorkspaceConnector) {
+            const finished = await google.finishCallback({
+              state: input.state,
+              code: input.code,
               spaceId: context.actor.spaceId,
               userId: context.actor.userId,
+              signal: context.signal ?? new AbortController().signal,
             });
-            // A check from before the sign-in would otherwise still read as failing. Only this
-            // sign-in's revision: an edit since then has its own health and its own check.
-            await recordMcpServerHealth(
-              deps.prisma,
-              serverId,
-              { status: "unknown", message: null },
-              revision,
-            );
-            // The account is connected now: check the server so it shows ok/error.
-            void (async () => {
-              const server = await deps.prisma.mcpServer.findFirst({
-                where: { id: serverId, revision, ...availableInSpace(context.actor) },
-              });
-              if (server)
-                await beginMcpProbe(
-                  server,
-                  context.actor,
-                  await mcpOAuth.summaryFor(server, context.actor),
-                );
-            })().catch((error) => getLogger().error("mcp server probe after oauth failed", error));
-            return { ok: true as const };
-          } catch (error) {
-            throw new ORPCError("BAD_REQUEST", {
-              message: error instanceof Error ? error.message : "Could not complete MCP OAuth",
-            });
+            if (finished) return { ok: true as const };
           }
+          const { serverId, revision } = await mcpOAuth.complete({
+            ...input,
+            spaceId: context.actor.spaceId,
+            userId: context.actor.userId,
+          });
+          // A check from before the sign-in would otherwise still read as failing. Only this
+          // sign-in's revision: an edit since then has its own health and its own check.
+          await recordMcpServerHealth(
+            deps.prisma,
+            serverId,
+            { status: "unknown", message: null },
+            revision,
+          );
+          // The account is connected now: check the server so it shows ok/error.
+          void (async () => {
+            const server = await deps.prisma.mcpServer.findFirst({
+              where: { id: serverId, revision, ...availableInSpace(context.actor) },
+            });
+            if (server)
+              await beginMcpProbe(
+                server,
+                context.actor,
+                await mcpOAuth.summaryFor(server, context.actor),
+              );
+          })().catch((error) => getLogger().error("mcp server probe after oauth failed", error));
+          return { ok: true as const };
         }),
         disconnect: authed.mcp.oauth.disconnect.handler(async ({ context, input }) => {
           const revision = await mcpOAuth.disconnect({

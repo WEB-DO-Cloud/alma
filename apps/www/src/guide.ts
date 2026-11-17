@@ -3,6 +3,9 @@ import {
   GITHUB_URL,
   OPENCLAW_ALTERNATIVE_PATH,
   SELF_HOST_GUIDE_PATH,
+  SELF_HOST_RESTRICTED_URL,
+  SELF_HOST_SECRETS_URL,
+  SETUP_PROMPT_URL,
   SITE_URL,
 } from "./site";
 
@@ -12,9 +15,17 @@ export const OPENCLAW_FEATURES_URL = "https://docs.openclaw.ai/concepts/features
 export const OPENCLAW_SANDBOX_URL = "https://docs.openclaw.ai/gateway/sandboxing";
 export const OPENCLAW_GITHUB_URL = "https://github.com/openclaw/openclaw";
 
+export const PUBLISHED_IMAGES_INSTALL = `mkdir -p alma && cd alma &&
+curl -fsSLO https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh &&
+bash install-images.sh`;
+
 export const PUBLISHED_IMAGES_SERVER = `bash install-images.sh --prepare-only
 # Edit .env, then:
 bash install-images.sh`;
+
+export const SOURCE_CHECKOUT = `git clone https://github.com/WEB-DO-Cloud/alma.git
+cd alma
+cp .env.example .env`;
 
 export const SOURCE_DEV = `docker compose --env-file .env \\
   -f infra/compose/docker-compose.yml \\
@@ -31,7 +42,7 @@ export const CADDY_SNIPPET = `app.example.com {
 }`;
 
 export const RUN_ON_YOUR_MAC =
-  "The installed desktop app opens ALMA Cloud, or Existing instance for a server you already run. It does not install a server on that Mac. Self-host with Docker.";
+  "Run on your Mac with the desktop app. This computer installs ALMA on that Mac. A Mac Mini can stay on as the always-on box.";
 
 export type FaqItem = {
   question: string;
@@ -46,7 +57,87 @@ export type ComparisonRow = {
 
 export const SELF_HOST_TITLE = "Self-Hosted AI Agent (Open Source) – ALMA";
 export const SELF_HOST_DESCRIPTION =
-  "Run ALMA yourself: an open source AI agent with your data, your model, and your costs. Requirements and the setup steps for Docker or a source checkout.";
+  "A self-hosted AI agent runs its app, data, and tools on a machine you control. Run ALMA, an open source one, with Docker: your data, your model, your costs.";
+
+export const SELF_HOST_DEFINITION =
+  "A self-hosted AI agent is an AI agent whose app, data, and tools run on a machine you control, such as a laptop, a home server, or a VPS, instead of on a vendor's cloud. It still needs a model: a hosted one through your own API key, or a local one on your hardware.";
+
+export const SELF_HOST_MODEL_PARAGRAPHS = [
+  "Self-hosting the agent does not self-host the model. With a hosted provider, the prompts and context a bot sends go to that provider. To keep them on your hardware, point the bot at a local model server such as Ollama, LM Studio, llama.cpp, or MLX, use a local approval model too, and keep the default local Docker computer.",
+  "A model server answers prompts. It is not an agent on its own. The agent is the part that keeps conversations, memory, and schedules, uses a browser and a shell, and asks before crossing a boundary you set.",
+] as const;
+
+export const SELF_HOST_HARDWARE =
+  "A machine that runs Docker, on amd64 or arm64. Each bot computer is capped at 2 GB of memory and 2 CPU cores by default (`RAKAZO_COMPUTER_MEMORY`, `RAKAZO_COMPUTER_CPUS`). The production Compose file sizes Postgres for an 8 GB host. You need a GPU only for a local model or for GPU work inside a bot computer.";
+
+export const SELF_HOST_OPTIONS_CHECKED = "November 16, 2026";
+
+export type SelfHostOption = {
+  name: string;
+  href: string;
+  license: string;
+  run: string;
+  fit: string;
+};
+
+export const SELF_HOST_OPTIONS: readonly SelfHostOption[] = [
+  {
+    name: "ALMA",
+    href: GITHUB_URL,
+    license: "Apache-2.0",
+    run: "Docker images, then the web, desktop, and mobile apps",
+    fit: "Persistent bots with routines, approvals, and an audit log",
+  },
+  {
+    name: "OpenClaw",
+    href: OPENCLAW_GITHUB_URL,
+    license: "MIT",
+    run: "A Gateway on your computer or server",
+    fit: "An assistant in the chat apps you already use",
+  },
+  {
+    name: "Hermes Agent",
+    href: "https://github.com/NousResearch/hermes-agent",
+    license: "MIT",
+    run: "A CLI, plus a gateway process for chat apps",
+    fit: "A personal agent in the terminal and in chat apps",
+  },
+  {
+    name: "OpenHands Agent Canvas",
+    href: "https://github.com/OpenHands/OpenHands",
+    license: "MIT",
+    run: "A self-hosted control center",
+    fit: "Coding agents and automations",
+  },
+  {
+    name: "Goose",
+    href: "https://github.com/aaif-goose/goose",
+    license: "Apache-2.0",
+    run: "A desktop app, a CLI, or an API",
+    fit: "A general agent on your own machine",
+  },
+  {
+    name: "n8n",
+    href: "https://github.com/n8n-io/n8n",
+    license: "Sustainable Use License (fair-code)",
+    run: "Self-hosted, or n8n's cloud",
+    fit: "Visual workflows that include AI agents",
+  },
+  {
+    name: "LangGraph",
+    href: "https://github.com/langchain-ai/langgraph",
+    license: "MIT",
+    run: "A library inside a program you write",
+    fit: "Stateful agents you build",
+  },
+  {
+    name: "CrewAI",
+    href: "https://github.com/crewAIInc/crewAI",
+    license: "MIT",
+    run: "A Python framework inside a program you write",
+    fit: "Multi-agent workflows you build",
+  },
+];
 
 export const OPENCLAW_H1 = "Open source OpenClaw alternative";
 export const OPENCLAW_TITLE = "Open Source OpenClaw Alternative – ALMA";
@@ -72,18 +163,32 @@ export const SELF_HOST_FAQS: readonly FaqItem[] = [
   },
   {
     question: "Is hosted ALMA available?",
-    answer:
-      "Yes. ALMA Cloud is in beta at app.alma.com.do. Self-hosting is available too.",
+    answer: "Yes. ALMA Cloud is in beta at app.alma.com.do. Self-hosting is available too.",
   },
   {
     question: "How does this compare with OpenClaw?",
     answer:
-      "Both are open source and run on hardware you control. After a Docker or desktop install, ALMA AI is a chat for persistent teammates. OpenClaw's getting-started guide adds a wizard, a Gateway you run in the terminal or install as a background service, and a separate step to connect a chat app.",
+      "Both are open source and run on hardware you control. After a Docker or desktop install, ALMA is a chat for persistent teammates. OpenClaw's getting-started guide adds a wizard, a Gateway you run in the terminal or install as a background service, and a separate step to connect a chat app.",
+  },
+  {
+    question: "Can a self-hosted AI agent run entirely on my own hardware?",
+    answer:
+      "Yes, when every model it uses is local. ALMA with local models, including the approval model, and the default local Docker computer keeps prompts, data, and tool work on your machines. Tools that browse the web or call an integration still reach those sites.",
+  },
+  {
+    question: "Should I self-host or use a hosted AI agent?",
+    answer:
+      "Self-host when you want the data on your machines, your own model, and features that are self-host only. A hosted agent saves you upgrades, backups, and TLS. ALMA Cloud is the hosted version of the same product, in beta.",
+  },
+  {
+    question: "How do I build my own AI agent?",
+    answer:
+      "Write one with a library such as LangGraph or CrewAI and host the program yourself, or run an agent app. In ALMA, a new bot interviews you about the job, then keeps its routines as Markdown you can edit.",
   },
 ];
 
 export const OPENCLAW_SETUP_PARAGRAPHS = [
-  "ALMA's self-host path is the published Docker installer. The desktop app connects to that server, or to ALMA Cloud. It does not install a local server. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
+  "ALMA's self-host path is the published Docker installer, or the desktop app starting that stack on this computer. You create an account and connect a model. From there it is just chat, on the web, desktop, and mobile apps. A new bot interviews you about the work, and you manage the bot from that chat. Routines are readable Markdown.",
   "OpenClaw's getting-started guide installs the CLI, then runs a wizard. Quick start is the short path when a Claude Code or Codex login, or an API key, is already on the machine. Custom setup walks through the full flow, and `openclaw onboard --classic` is the step-by-step wizard. Quick start leaves the Gateway in that terminal until you stop it, so you can chat before installing a service. `openclaw gateway install` is the later step that keeps it in the background: a LaunchAgent on macOS, a systemd user unit on Linux, or a Scheduled Task on Windows. You check `openclaw gateway status` (the guide says port 18789) and open `openclaw dashboard`. Messaging from a phone, such as Telegram, is a separate Channels step.",
 ] as const;
 
@@ -96,7 +201,7 @@ export const OPENCLAW_FAQS: readonly FaqItem[] = [
   {
     question: "Is ALMA simpler to set up than OpenClaw?",
     answer:
-      "The documented paths are different. ALMA's self-host guide is a Docker installer, then an account and a model. The desktop app connects to that server. After that ALMA AI is just chat, and you manage the bot from that chat. OpenClaw's getting-started guide is an installer and a wizard (Quick start or Custom setup). You can chat while the Gateway runs in that terminal. `openclaw gateway install` keeps it running in the background, then `openclaw gateway status` and `openclaw dashboard`. Connecting a chat app is another step. OpenClaw can be short when a model login is already detected. The ongoing surface is still the Gateway and the config file.",
+      "The documented paths are different. ALMA's self-host guide is a Docker installer, or the desktop app starting that stack, then an account and a model. After that ALMA is just chat, and you manage the bot from that chat. OpenClaw's getting-started guide is an installer and a wizard (Quick start or Custom setup). You can chat while the Gateway runs in that terminal. `openclaw gateway install` keeps it running in the background, then `openclaw gateway status` and `openclaw dashboard`. Connecting a chat app is another step. OpenClaw can be short when a model login is already detected. The ongoing surface is still the Gateway and the config file.",
   },
   {
     question: "Can I chat with OpenClaw before installing a background service?",
@@ -121,7 +226,7 @@ export const OPENCLAW_FAQS: readonly FaqItem[] = [
   {
     question: "How do the licenses differ?",
     answer:
-      "ALMA AI is released under the Apache-2.0 license. OpenClaw is released under the MIT license and is stewarded by the OpenClaw Foundation, an independent 501(c)(3).",
+      "ALMA is released under the Apache-2.0 license. OpenClaw is released under the MIT license and is stewarded by the OpenClaw Foundation, an independent 501(c)(3).",
   },
   {
     question: "Do both keep data on my machine?",
@@ -136,7 +241,7 @@ export const OPENCLAW_FAQS: readonly FaqItem[] = [
   {
     question: "Does either project charge for the software?",
     answer:
-      "ALMA AI is free to self-host. Hosted ALMA Cloud is in beta. OpenClaw's documentation says the project has no paid tier and no hosted service. You still pay for models, machines, and any optional computer providers you use.",
+      "ALMA is free to self-host. Hosted ALMA Cloud is in beta. OpenClaw's documentation says the project has no paid tier and no hosted service. You still pay for models, machines, and any optional computer providers you use.",
   },
 ];
 
@@ -144,7 +249,7 @@ export const COMPARISON_ROWS: readonly ComparisonRow[] = [
   {
     aspect: "Setup",
     rakazo:
-      "Docker installer, then an account and a model. The desktop app connects to that server or to ALMA Cloud. After that ALMA AI is just chat: a new bot interviews you, and you manage it from the chat.",
+      "Docker installer or the desktop app's local stack, then an account and a model. After that ALMA is just chat: a new bot interviews you, and you manage it from the chat.",
     openclaw:
       "CLI install, then Quick start or Custom setup. The Gateway can stay in that terminal for a first chat. `openclaw gateway install` is the background service (LaunchAgent, systemd user unit, or Windows Scheduled Task). Then `openclaw gateway status` and `openclaw dashboard`. A phone channel is a separate step.",
   },
@@ -215,45 +320,49 @@ export const COMPARISON_ROWS: readonly ComparisonRow[] = [
   },
   {
     aspect: "Software cost",
-    rakazo: "No seat fee for the open source software. You pay the models and infrastructure you use.",
+    rakazo:
+      "No seat fee for the open source software. You pay the models and infrastructure you use.",
     openclaw: "The docs say there is no paid tier. You pay the models and the machine you run.",
   },
 ];
-
-export function faqPageStructuredData(items: readonly FaqItem[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-}
 
 function faqMarkdown(items: readonly FaqItem[]): string {
   return items.map((item) => `### ${item.question}\n\n${item.answer}`).join("\n\n");
 }
 
-function comparisonMarkdown(): string {
-  const header = "| | ALMA | OpenClaw |\n| --- | --- | --- |";
-  const rows = COMPARISON_ROWS.map(
-    (row) => `| ${row.aspect} | ${row.rakazo} | ${row.openclaw} |`,
+function selfHostOptionsMarkdown(): string {
+  const header = "| Project | License | What you run | Built for |\n| --- | --- | --- | --- |";
+  const rows = SELF_HOST_OPTIONS.map(
+    (option) =>
+      `| [${option.name}](${option.href}) | ${option.license} | ${option.run} | ${option.fit} |`,
   );
   return [header, ...rows].join("\n");
 }
+
+function comparisonMarkdown(): string {
+  const header = "| | ALMA | OpenClaw |\n| --- | --- | --- |";
+  const rows = COMPARISON_ROWS.map((row) => `| ${row.aspect} | ${row.rakazo} | ${row.openclaw} |`);
+  return [header, ...rows].join("\n");
+}
+
+export const BEST_OPEN_SOURCE_AGENTS_PATH = "/blog/best-open-source-ai-agents-2026/";
+
+export const SELF_HOST_RELATED = [
+  { href: BEST_OPEN_SOURCE_AGENTS_PATH, label: "Best open source AI agents in 2026" },
+  { href: "/blog/self-host-an-ai-agent/", label: "How to self-host an AI agent with Docker" },
+  { href: "/blog/openclaw-vs-hermes-vs-rakazo/", label: "OpenClaw vs Hermes Agent vs ALMA" },
+  { href: "/alternatives/", label: "All comparisons" },
+] as const;
 
 export const SELF_HOST_MARKDOWN = `# Self-hosted AI agent
 
 > Open source AI agent you run on a machine you control. Your keys, your model, your data.
 
-ALMA AI is an open source AI agent for persistent teammates. Each bot can use a browser and a shell, keep routines as Markdown, and pause for approval when work crosses a boundary you set. Self-hosting means that stack runs on infrastructure you operate.
+${SELF_HOST_DEFINITION}
 
-The software is [Apache-2.0](${GITHUB_URL}/blob/main/LICENSE). Hosted ALMA Cloud is in beta. This page is the essential setup.
+ALMA is an open source AI agent for persistent teammates. Each bot can use a browser and a shell, keep routines as Markdown, and pause for approval when work crosses a boundary you set. Self-hosting means that stack runs on infrastructure you operate.
+
+The software is [Apache-2.0](${GITHUB_URL}/blob/main/LICENSE). Hosted ALMA Cloud is in beta. This page is the essential setup. The [full self-hosting guide](${DOCS_URL}) on GitHub covers backups, upgrades, secrets, restricted networks, and production Compose.
 
 ## What self-hosting gives you
 
@@ -269,6 +378,10 @@ Connect OpenAI, Anthropic, Google, OpenRouter, or Vercel AI Gateway. You can als
 
 There is no seat fee for the open source software. You pay the model provider you connect and any remote computer provider you choose. Local Docker computers are the default, so a single machine does not need an E2B, Daytona, CreateOS, or Boat account.
 
+## Local or hosted model
+
+${SELF_HOST_MODEL_PARAGRAPHS.join("\n\n")}
+
 ## Self-host only, for now
 
 These work on your own deployment and are not yet on ALMA Cloud. Each turns on from \`.env\`.
@@ -277,10 +390,17 @@ These work on your own deployment and are not yet on ALMA Cloud. Each turns on f
 - **Image and video generation.** \`MEDIA_GENERATION_PROVIDER=fal\`, \`MEDIA_GENERATION_API_KEY\`, and an image or video model (\`MEDIA_GENERATION_IMAGE_MODEL\`, \`MEDIA_GENERATION_VIDEO_MODEL\`).
 - **Purchases with Stripe Link.** \`PAYMENT_WALLET_PROVIDER=link\`. Each purchase waits for your approval in Link.
 - **Cursor cloud agents.** \`CLOUD_AGENT_PROVIDER=cursor\`, \`CURSOR_API_KEY\`, and \`CLOUD_AGENT_SPACE_ID\`.
-- **Ticket board.** \`TICKET_BOARD_ENABLED=true\`.
 - **Local models and local MCP servers.** \`RAKAZO_LOCAL_MODELS\`, and \`MCP_STDIO_ENABLED\` with \`MCP_STDIO_ALLOWED_COMMANDS\`.
 
 The [full guide](${DOCS_URL}) lists every setting for each one.
+
+## Other self-hosted AI agents
+
+Licenses from each project's repository on ${SELF_HOST_OPTIONS_CHECKED}. Not a ranking.
+
+${selfHostOptionsMarkdown()}
+
+More detail is in [Best open source AI agents in 2026](${SITE_URL}${BEST_OPEN_SOURCE_AGENTS_PATH}). The [OpenClaw comparison](${SITE_URL}${OPENCLAW_ALTERNATIVE_PATH}) goes deeper on the closest one.
 
 ## Requirements
 
@@ -288,11 +408,19 @@ Published images need Docker Engine 26 or newer (API 1.45 or newer, for bot home
 
 A source checkout needs Node.js 24.15.0 or newer on the 24.x line, or Node.js 26 or newer, plus pnpm 12 and Docker. Node.js 25.x is not supported.
 
+Hardware: ${SELF_HOST_HARDWARE}
+
 ## Install with published images
+
+\`\`\`bash
+${PUBLISHED_IMAGES_INSTALL}
+\`\`\`
 
 The installer downloads the Compose file and \`.env.images.example\`, creates \`.env\` with random secrets, and starts ALMA. It keeps an existing \`.env\` when you run it again. The default image tag is \`edge\` (builds from the main branch, \`linux/amd64\` and \`linux/arm64\`).
 
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173) and create an account. The first registered user becomes the deployment owner. Connect a model in the app, or set \`OPENROUTER_API_KEY\` before startup. Local Docker computers are on by default.
+
+For an agent-assisted install, use the [setup prompt](${SETUP_PROMPT_URL}).
 
 ## Run it on a server
 
@@ -308,9 +436,15 @@ Before the second command, set \`RAKAZO_HOST\` to the hostname and set \`BETTER_
 ${CADDY_SNIPPET}
 \`\`\`
 
-Replace \`app.example.com\` with your host. Desktop clients should use **Existing instance** with the \`https://\` address.
+Replace \`app.example.com\` with your host. Desktop clients should use **Existing instance** with the \`https://\` address. The [public single-VM section](${DOCS_URL}#public-single-vm-deployment) covers production Compose, host hardening, signup allowlists, and SMTP.
+
+If downloads are blocked, use the [restricted-network guide](${SELF_HOST_RESTRICTED_URL}). Secret names and recovery are in the [secrets checklist](${SELF_HOST_SECRETS_URL}).
 
 ## Install from source
+
+\`\`\`bash
+${SOURCE_CHECKOUT}
+\`\`\`
 
 Set \`POSTGRES_PASSWORD\` and \`POSTGRES_APP_PASSWORD\` to two URI-safe random values (for example \`openssl rand -hex 16\`) and put them in \`DATABASE_MIGRATION_URL\` and \`DATABASE_URL\`. Set \`BETTER_AUTH_SECRET\`, \`ENCRYPTION_KEY\`, and \`SCREEN_PROXY_SECRET\` to independent long random values. Docker sandboxes also need a dedicated \`SANDBOX_SUPERVISOR_TOKEN\`. Keep these in \`.env\`, not in git.
 
@@ -324,11 +458,19 @@ The Postgres overlay publishes loopback \`127.0.0.1:5433\` for host-side tools. 
 
 ## Desktop and mobile
 
-With a server already running, the Electron app's **Existing instance** option takes its \`https://\` address (HTTP is accepted only for loopback and private LAN addresses). The installed app does not install that server itself.
+With a server already running, the Electron app's **Existing instance** option takes its \`https://\` address (HTTP is accepted only for loopback and private LAN addresses). **This computer** installs the published images with Docker Compose on that machine.
 
 ${RUN_ON_YOUR_MAC}
 
 In the mobile app, tap **Use a custom server** on the sign-in screen and enter the same HTTPS origin as \`WEB_ORIGIN\`.
+
+## Full reference
+
+- [Self-hosting guide](${DOCS_URL})
+- [Secrets checklist](${SELF_HOST_SECRETS_URL})
+- [Restricted networks](${SELF_HOST_RESTRICTED_URL})
+- [Setup prompt](${SETUP_PROMPT_URL})
+- [Source](${GITHUB_URL})
 
 ## FAQ
 
@@ -338,6 +480,7 @@ ${faqMarkdown(SELF_HOST_FAQS)}
 
 - [Home](${SITE_URL}/)
 - [OpenClaw comparison](${SITE_URL}${OPENCLAW_ALTERNATIVE_PATH})
+${SELF_HOST_RELATED.map((item) => `- [${item.label}](${SITE_URL}${item.href})`).join("\n")}
 `;
 
 export const OPENCLAW_RELATED = [
@@ -357,7 +500,7 @@ Updated ${OPENCLAW_UPDATED}.
 
 > A fair comparison of ALMA and OpenClaw, two open source ways to run an AI agent you control.
 
-The main difference is simplicity. Like Grok Bot, ALMA AI is just chat: you set up the bot and manage it from that chat. OpenClaw is also open source and self-hosted. Its [getting-started guide](${OPENCLAW_GETTING_STARTED_URL}) is a longer path: a CLI installer, an onboarding wizard, a Gateway you run in the terminal or install as a background service, and a config file.
+The main difference is simplicity. Like Grok Bot, ALMA is just chat: you set up the bot and manage it from that chat. OpenClaw is also open source and self-hosted. Its [getting-started guide](${OPENCLAW_GETTING_STARTED_URL}) is a longer path: a CLI installer, an onboarding wizard, a Gateway you run in the terminal or install as a background service, and a config file.
 
 They are not the same product, and ALMA does not import an OpenClaw setup. This comparison follows [OpenClaw's documentation](${OPENCLAW_DOCS_URL}) and this repository. Details change. Those docs are the full source for OpenClaw.
 
@@ -375,13 +518,13 @@ ${comparisonMarkdown()}
 
 ## Key differences
 
-ALMA AI is a web, desktop, and mobile app for persistent teammates: a bot has a job, a computer, and routines saved as Markdown. OpenClaw is a Gateway you message from chat apps, with a browser Control UI and mobile nodes.
+ALMA is a web, desktop, and mobile app for persistent teammates: a bot has a job, a computer, and routines saved as Markdown. OpenClaw is a Gateway you message from chat apps, with a browser Control UI and mobile nodes.
 
 ALMA runs bot work on a computer. Local Docker is the default. OpenClaw can sandbox tool execution, and its docs say sandboxing is off by default. The Gateway process stays on the host.
 
-Both let you bring a model provider, including a server you run. Neither charges a seat fee for the software. OpenClaw's docs say it has no paid tier and no hosted service. ALMA AI is free to self-host. Hosted ALMA Cloud is in beta.
+Both let you bring a model provider, including a server you run. Neither charges a seat fee for the software. OpenClaw's docs say it has no paid tier and no hosted service. ALMA is free to self-host. Hosted ALMA Cloud is in beta.
 
-ALMA AI is Apache-2.0, maintained by ALMA INTELIGENCIA, S.R.L. OpenClaw is MIT, stewarded by the OpenClaw Foundation.
+ALMA is Apache-2.0, maintained by ALMA INTELIGENCIA, S.R.L. OpenClaw is MIT, stewarded by the OpenClaw Foundation.
 
 ## Which shape fits
 
@@ -397,6 +540,7 @@ Choose OpenClaw when the assistant should live in chat apps you already use, wit
 - [OpenClaw sandboxing](${OPENCLAW_SANDBOX_URL})
 - [OpenClaw source](${OPENCLAW_GITHUB_URL})
 - [ALMA self-host guide](${SITE_URL}${SELF_HOST_GUIDE_PATH})
+- [ALMA source](${GITHUB_URL})
 
 ## FAQ
 

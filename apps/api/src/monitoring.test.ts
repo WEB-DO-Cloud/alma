@@ -35,6 +35,7 @@ describe("monitoring routes", () => {
       "https://host.example.com/prefix/api/12/envelope/",
     );
     expect(parseDsn("https://errors.example.com/8")).toBeUndefined();
+    expect(parseDsn("http://key@host.example.com/1")).toBeUndefined();
     expect(parseDsn("ftp://key@host.example.com/1")).toBeUndefined();
     expect(parseDsn("https://key@o123.ingest.sentry.io/8")).toBeUndefined();
     expect(parseDsn("https://key@sentry.io/8")).toBeUndefined();

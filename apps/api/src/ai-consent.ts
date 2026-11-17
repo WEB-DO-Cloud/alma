@@ -2,7 +2,9 @@ import { createHash } from "node:crypto";
 import { ORPCError } from "@orpc/server";
 import {
   aiRecipient,
+  cloudAgentForActor,
   cloudAgentsEnabled,
+  cloudAgentsForActor,
   managedChatModel,
   managedModelActive,
   parseModelSecret,
@@ -260,15 +262,26 @@ export async function aiConsentStatus(
   }
   for (const voice of voices) {
     // A self-hosted server is disclosed by its own origin, like a custom model endpoint.
-    const endpoint = (await voiceCredentialServer(deps, actor, voice.credential))?.endpoint;
+    const server = await voiceCredentialServer(deps, actor, voice.credential);
+    const voiceAccepted = operatorAcceptedVoice(voice.credential.provider);
     add(
       aiRecipient({
         provider: voice.credential.provider,
         use: "voice",
-        ...(endpoint ? { baseUrl: endpoint } : {}),
+        ...(server?.endpoint ? { baseUrl: server.endpoint } : {}),
       }),
-      operatorAcceptedVoice(voice.credential.provider),
+      voiceAccepted,
     );
+    if (server?.sttEndpoint) {
+      add(
+        aiRecipient({
+          provider: voice.credential.provider,
+          use: "voice",
+          baseUrl: server.sttEndpoint,
+        }),
+        voiceAccepted,
+      );
+    }
   }
   if (memory)
     add(
@@ -279,13 +292,29 @@ export async function aiConsentStatus(
       }),
       operatorAcceptedMemory(deps.env.deploymentMemory, memory.provider),
     );
-  if (
-    uses.includes("model") &&
-    deps.cloudAgent &&
-    cloudAgentsEnabled(deps.cloudAgent, actor.spaceId) &&
-    !deps.cloudAgent.provider.describe().capabilities.offline
-  ) {
-    add(aiRecipient({ provider: deps.cloudAgent.provider.describe().id, use: "model" }));
+  // Each target agent's own connection and the deployment's, which takes over once that one
+  // stops answering; without a target, every one any agent may use, so allowing what a
+  // targeted check showed always finds it.
+  const owner = { spaceId: actor.spaceId, userId: actor.userId };
+  const cloudAgents = !uses.includes("model")
+    ? []
+    : botIds
+      ? [
+          ...(await Promise.all(
+            botIds.map((botId) => cloudAgentForActor(deps, { ...owner, botIds: [botId] })),
+          )),
+          cloudAgentsEnabled(deps.cloudAgent, actor.spaceId) ? deps.cloudAgent : null,
+        ]
+      : await cloudAgentsForActor(deps, owner);
+  for (const cloudAgent of cloudAgents) {
+    if (!cloudAgent || cloudAgent.provider.describe().capabilities.offline) continue;
+    add(
+      aiRecipient({
+        provider: cloudAgent.provider.describe().id,
+        use: "model",
+        baseUrl: cloudAgent.baseUrl,
+      }),
+    );
   }
   return {
     scope: createHash("sha256")

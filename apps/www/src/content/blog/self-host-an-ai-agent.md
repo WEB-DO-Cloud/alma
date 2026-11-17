@@ -1,14 +1,19 @@
 ---
-title: "How to self-host an AI agent in 10 minutes"
+title: "How to self-host an AI agent with Docker"
+ogTitle: "How to self-host an AI agent"
 description: "Install ALMA with the published Docker images, create an account, connect a model, and keep the database on your machine. Image pulls vary, and a public server takes longer."
 published: "2026-10-07"
-updated: "2026-10-07"
+updated: "2026-11-15"
 author: "Elie Steinbock"
 category: "guides"
 tldr: "The published-image installer is a short script: Docker, Compose, curl, and OpenSSL, then an account and a model. Pull time depends on your connection. A public hostname, TLS, and a secrets review are a longer job than the first local chat."
 sources:
+  - label: "ALMA self-hosting guide"
+    href: "https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host.md"
   - label: "Self-hosted AI agent"
     href: "https://alma.com.do/self-hosted-ai-agent/"
+  - label: "Self-host secrets checklist"
+    href: "https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host-secrets.md"
 related:
   - href: "/self-hosted-ai-agent/"
     title: "Self-hosted AI agent"
@@ -26,7 +31,7 @@ related:
     title: "Open source alternatives"
     description: "The rest of the comparison pages."
 faq:
-  - question: "Does the installer take ten minutes?"
+  - question: "How long does the install take?"
     answer: "The commands are short. Docker has to pull the app image, the computer image, and Postgres, and that wait depends on the machine and the network. This guide does not report a measured time."
   - question: "Do I need Node.js for the published images?"
     answer: "No. The published-image path needs Docker Engine 26 or newer, the Compose plugin, curl, and OpenSSL. Node.js is for a source checkout."
@@ -44,7 +49,7 @@ comparison:
     - topic: "Published images"
       cells:
         - "One installer in an empty directory, then an account and a model."
-        - "A measured ten-minute promise. Image pulls vary."
+        - "A promise of a fixed install time. Image pulls vary."
     - topic: "This computer"
       cells:
         - "The desktop app can start the same published images locally."
@@ -61,7 +66,7 @@ comparison:
 
 The title is the shape of the local install, not a stopwatch result. ALMA's published images start from one script. Docker then downloads the images, and that download is the part that varies. When the app is up, you create an account, connect a model, and the first chat is the product. A hostname on the public internet, TLS, and a review of secrets are a separate piece of work.
 
-This page follows the [self-hosted AI agent page](/self-hosted-ai-agent/). That stays the reference if a command changes.
+This page follows the [self-hosting guide](https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host.md) and the [self-hosted AI agent page](/self-hosted-ai-agent/). Those stay the reference if a command changes.
 
 ## What you are running
 
@@ -84,6 +89,14 @@ A source checkout is different. It wants Node.js 24.15.0 or newer on the 24.x li
 
 ## Install the published images
 
+From an empty directory on the machine that should run ALMA:
+
+```bash
+mkdir -p alma && cd alma &&
+curl -fsSLO https://raw.githubusercontent.com/WEB-DO-Cloud/alma/main/infra/compose/install-images.sh &&
+bash install-images.sh
+```
+
 The installer downloads the Compose file and `.env.images.example`, creates `.env` with random secrets, and starts ALMA. Run it again and it keeps an existing `.env`. The default image tag is `edge`, which tracks builds from the main branch for `linux/amd64` and `linux/arm64`. Do not assume a `latest` tag until a stable release exists.
 
 If you want to set the public URL, the image tag, or an optional provider before the first start, run `bash install-images.sh --prepare-only`, edit `.env`, then run `bash install-images.sh` again. The flags `--prepare-only` and `--local` can be combined.
@@ -92,7 +105,7 @@ If you want to set the public URL, the image tag, or an optional provider before
 
 Open `http://127.0.0.1:5173`. The first registered user becomes the deployment owner. Connect a model in the app, or set `OPENROUTER_API_KEY` before startup. Local Docker computers are on by default.
 
-The image pull is the variable part. A fast link and a warm cache finish sooner than a laptop on a slow network pulling the app, the computer image, and Postgres for the first time. Treat "10 minutes" as a description of how small the installer is, then look at your own pull.
+The image pull is the variable part. A fast link and a warm cache finish sooner than a laptop on a slow network pulling the app, the computer image, and Postgres for the first time.
 
 ## Create a bot
 
@@ -150,7 +163,7 @@ A minimal Caddy site is a reverse proxy to `127.0.0.1:5173`. Replace the example
 
 In the mobile app, tap **Use a custom server** on the sign-in screen and enter the same HTTPS origin as `WEB_ORIGIN`.
 
-This server path is why a public install is not the same job as the local script. You are choosing a hostname, a TLS terminator, who may sign up, and where secrets live.
+This server path is why a public install is not the same job as the local script. You are choosing a hostname, a TLS terminator, who may sign up, and where secrets live. The [secrets checklist](https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host-secrets.md) names the values and how to recover them. The [restricted-network guide](https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host-restricted-network.md) covers mirrors when the installer or the image pull is blocked.
 
 ## Install from source only if you are developing
 

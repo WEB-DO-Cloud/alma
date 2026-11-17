@@ -1,10 +1,10 @@
 import type { SecretStore } from "@rakazo/adapter-kit";
 import type { PrismaClient } from "@rakazo/db";
-import type { HonchoReasoningLevel } from "./honcho-client.js";
-import { HONCHO_REASONING_LEVELS } from "./honcho-client.js";
-import { createHonchoProvider } from "./honcho-memory-provider.js";
 import type { MemoryProviderResolver } from "./memory-provider-factory.js";
 import { SpaceMemoryProviderResolver, toStringRecord } from "./memory-provider-factory.js";
+import type { HonchoReasoningLevel } from "./providers/memory/honcho/honcho-client.js";
+import { HONCHO_REASONING_LEVELS } from "./providers/memory/honcho/honcho-client.js";
+import { createHonchoProvider } from "./providers/memory/honcho/honcho-memory-provider.js";
 
 /** Scope saved while the server provider is on. It is not a user connection. */
 export const DEPLOYMENT_MEMORY_SCOPE_SOURCE = "deployment-scope";

@@ -1,0 +1,10 @@
+{
+  "apps/api/src/alma-onboarding.ts": 1,
+  "apps/api/src/billing.ts": 6,
+  "apps/api/src/computer-provider-config.ts": 1,
+  "apps/api/src/memory-provider-config.ts": 3,
+  "apps/api/src/model-credentials.ts": 1,
+  "apps/api/src/routes/email-imap.ts": 1,
+  "apps/api/src/routes/payment-wallet.ts": 1,
+  "apps/api/src/voice.ts": 2
+}

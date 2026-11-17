@@ -22,20 +22,17 @@ describePostgres("support bot (PostgreSQL)", () => {
       await db.prisma.$disconnect();
       await db.pool.end();
     };
-    const signup = { signupsEnabled: undefined, signupAllowlist: undefined };
     owner = await runAsSystem("test fixture", () =>
-      provisionMessagingIdentity(
-        prisma,
-        { provider: "sendblue", address: `+1555${stamp.slice(-6)}` },
-        signup,
-      ),
+      provisionMessagingIdentity(prisma, {
+        provider: "sendblue",
+        address: `+1555${stamp.slice(-6)}`,
+      }),
     );
     second = await runAsSystem("test fixture", () =>
-      provisionMessagingIdentity(
-        prisma,
-        { provider: "sendblue", address: `+1556${stamp.slice(-6)}` },
-        signup,
-      ),
+      provisionMessagingIdentity(prisma, {
+        provider: "sendblue",
+        address: `+1556${stamp.slice(-6)}`,
+      }),
     );
   });
 

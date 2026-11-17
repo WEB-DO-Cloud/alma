@@ -147,7 +147,13 @@ for (const app of ["web", "www"]) {
 
 await mkdir(path("apps/www/public/brand"), { recursive: true });
 await pngFile(plate, "apps/www/public/brand/alma-mark.png", 256);
+// The site header shows the mark at 36px; 72px covers 2x screens.
+await sharp(plate)
+  .resize(72, 72)
+  .webp({ quality: 90 })
+  .toFile(path("apps/www/public/brand/alma-mark-72.webp"));
 await rm(path("apps/www/public/brand/rakazo-mark.png"), { force: true });
+await rm(path("apps/www/public/brand/rakazo-mark-72.webp"), { force: true });
 
 await pngFile(plate, "apps/mobile/assets/icon.png", 1024);
 await pngFile(spark, "apps/mobile/assets/adaptive-icon.png", 1024);

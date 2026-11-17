@@ -4,6 +4,7 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { APP_URL, DESKTOP_DOWNLOADS, IOS_APP_URL, SELF_HOST_GUIDE_PATH } from "../site";
+import { downloadStructuredData } from "../structured-data";
 
 const DESKTOP_NAMES = { mac: "macOS", windows: "Windows", linux: "Linux" } as const;
 const platforms = [
@@ -12,14 +13,32 @@ const platforms = [
     action: "Download",
     href: DESKTOP_DOWNLOADS[platform],
     attr: platform,
+    operatingSystem: DESKTOP_NAMES[platform],
   })),
-  { name: "iPhone, iPhone Duo, and iPad", action: "App Store", href: IOS_APP_URL, attr: "ios" },
-  { name: "Android", action: "Google Play", href: ANDROID_APP_STORE_URL, attr: "android" },
+  {
+    name: "iPhone, iPhone Duo, and iPad",
+    action: "App Store",
+    href: IOS_APP_URL,
+    attr: "ios",
+    operatingSystem: "iOS, iPadOS",
+  },
+  {
+    name: "Android",
+    action: "Google Play",
+    href: ANDROID_APP_STORE_URL,
+    attr: "android",
+    operatingSystem: "Android",
+  },
   { name: "Web", action: "Open", href: APP_URL, attr: "web" },
 ];
+const structuredData = downloadStructuredData(
+  platforms.flatMap((platform) =>
+    platform.operatingSystem ? [{ operatingSystem: platform.operatingSystem, href: platform.href }] : [],
+  ),
+);
 ---
 
-<BaseLayout title="Download · ALMA" description="Get ALMA for macOS, Windows, Linux, iPhone, Android, and the web.">
+<BaseLayout {structuredData} title="Download · ALMA" description="Get ALMA for macOS, Windows, Linux, iPhone, iPhone Duo, iPad, Android, and the web.">
   <div class="container">
     <Header />
     <main id="main" class="privacy-copy">

@@ -116,7 +116,8 @@
       "./plugins/with-android-no-gwp-asan",
       "./plugins/with-agent-notifications",
       "./plugins/with-app-intents",
-      "./plugins/with-credential-versions"
+      "./plugins/with-credential-versions",
+      "expo-apple-authentication"
     ],
     "locales": {
       "es": "./locales/es.json",

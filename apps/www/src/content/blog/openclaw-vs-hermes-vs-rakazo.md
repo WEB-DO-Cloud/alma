@@ -1,11 +1,12 @@
 ---
 title: "OpenClaw vs Hermes Agent vs ALMA: which is simplest to run?"
+ogTitle: "OpenClaw vs Hermes Agent vs ALMA"
 description: "ALMA, OpenClaw, and Hermes Agent are open source and can run on your hardware. The simplest one is the product shape you actually want: chat, a gateway, or a desktop agent."
 published: "2026-10-07"
 updated: "2026-10-07"
 author: "Elie Steinbock"
 category: "comparisons"
-tldr: "ALMA AI is a chat app you install with Docker, then an account and a model. OpenClaw is a gateway for the chat apps you already use, with onboarding and a config file. Hermes Agent has a desktop app that can reach a first message without the CLI, and a separate CLI plus a messaging gateway. Simplest depends on which of those you want."
+tldr: "ALMA is a chat app you install with Docker, then an account and a model. OpenClaw is a gateway for the chat apps you already use, with onboarding and a config file. Hermes Agent has a desktop app that can reach a first message without the CLI, and a separate CLI plus a messaging gateway. Simplest depends on which of those you want."
 sources:
   - label: "OpenClaw install docs"
     href: "https://docs.openclaw.ai/install"
@@ -15,6 +16,8 @@ sources:
     href: "https://hermes-agent.nousresearch.com/docs/getting-started/quickstart"
   - label: "Hermes Agent desktop"
     href: "https://hermes-agent.nousresearch.com/docs/user-guide/desktop"
+  - label: "ALMA self-hosting guide"
+    href: "https://github.com/WEB-DO-Cloud/alma/blob/main/docs/self-host.md"
 related:
   - href: "/openclaw-alternative/"
     title: "Open source OpenClaw alternative"
@@ -35,7 +38,7 @@ faq:
   - question: "Is ALMA always fewer steps than Hermes Desktop?"
     answer: "No. The Hermes desktop guide says first-run onboarding can reach a first message in seconds, and that Choose provider later skips provider setup. ALMA's published images still need Docker to pull and start, then an account and a model. Pick the install that matches the app you want to live in."
   - question: "Do any of these charge for the software?"
-    answer: "ALMA AI is free to self-host. Hosted ALMA Cloud is in beta. OpenClaw's docs say there is no paid tier and no hosted service. Hermes Agent is MIT-licensed and also documents optional Nous Portal credits and cloud hosting. You still pay for models, machines, and any optional computer provider."
+    answer: "ALMA is free to self-host. Hosted ALMA Cloud is in beta. OpenClaw's docs say there is no paid tier and no hosted service. Hermes Agent is MIT-licensed and also documents optional Nous Portal credits and cloud hosting. You still pay for models, machines, and any optional computer provider."
   - question: "Can I message all three from Telegram or Slack?"
     answer: "OpenClaw's main surface is chat apps, through its Gateway. Hermes uses a messaging gateway that the desktop guide describes as a separate process from the app's local backend. ALMA's optional connectors can attach Slack, WhatsApp, Telegram, iMessage via Sendblue, and Feishu/Lark. Those connectors are extras. The ALMA apps do not require them."
   - question: "Where do the details on this page come from?"
@@ -75,12 +78,12 @@ comparison:
         - "A local backend in the desktop app"
 ---
 
-People ask which of these is simplest. The honest answer is that they are not three installers for the same product. ALMA AI is a chat application for persistent bots. OpenClaw is a gateway that connects chat apps to an assistant on your machine. Hermes Agent is a desktop app and a command-line agent that share a config directory, with a messaging gateway you start when you want Telegram, Discord, Slack, and the rest.
+People ask which of these is simplest. The honest answer is that they are not three installers for the same product. ALMA is a chat application for persistent bots. OpenClaw is a gateway that connects chat apps to an assistant on your machine. Hermes Agent is a desktop app and a command-line agent that share a config directory, with a messaging gateway you start when you want Telegram, Discord, Slack, and the rest.
 
 All three can run on hardware you control. All three send prompts to the model provider you configure. None of this page is a timed benchmark. The steps below are the ones each project documents.
 
 <figure class="post-figure">
-  <img src="/graphics/setup-steps.svg" width="1200" height="720" alt="Setup steps for ALMA, OpenClaw, and Hermes Agent. ALMA AI is a Docker installer, an account, and a model, then chat. OpenClaw is an installer, onboarding, a Gateway service, and a config file. Hermes is a desktop or CLI installer, a provider choice, config under the home directory, and a separate gateway only when messaging apps are used." />
+  <img src="/graphics/setup-steps.svg" width="1200" height="720" alt="Setup steps for ALMA, OpenClaw, and Hermes Agent. ALMA is a Docker installer, an account, and a model, then chat. OpenClaw is an installer, onboarding, a Gateway service, and a config file. Hermes is a desktop or CLI installer, a provider choice, config under the home directory, and a separate gateway only when messaging apps are used." />
   <figcaption>Setup paths from each project's public install docs. Download time is extra, and this is not a timed benchmark.</figcaption>
 </figure>
 
@@ -88,7 +91,7 @@ All three can run on hardware you control. All three send prompts to the model p
 
 A short command is not the same as a simple week. The useful question is where you will manage the agent after the first reply.
 
-If you want a bot with a name, a computer, and routines you can read, and you want that bot in a web, desktop, and mobile app, ALMA AI is the smaller ongoing surface. The install is Docker, then chat.
+If you want a bot with a name, a computer, and routines you can read, and you want that bot in a web, desktop, and mobile app, ALMA is the smaller ongoing surface. The install is Docker, then chat.
 
 If you already live in Discord, Telegram, WhatsApp, Slack, Signal, or iMessage and you want one process on your machine to sit behind those apps, OpenClaw's Gateway is the thing the project is built around. The cost of that shape is onboarding, a background service, and a config file.
 
@@ -96,7 +99,7 @@ If you want a native desktop agent, Hermes Desktop is documented as a first-run 
 
 ## ALMA
 
-ALMA AI is Apache-2.0. You run the published Docker images, or a source checkout, on a machine you control. The desktop app can start that stack locally or connect to a server you already run. Hosted ALMA Cloud is in beta.
+ALMA is Apache-2.0. You run the published Docker images, or a source checkout, on a machine you control. The desktop app can start that stack locally or connect to a server you already run. Hosted ALMA Cloud is in beta.
 
 The published-image installer is one script in an empty directory. It writes `.env` with random secrets, pulls the images, and starts the API, the worker, Postgres, and a Docker computer. You open the app, create an account, and connect a model. The first registered user is the deployment owner. From there the product is chat. A new bot interviews you. Routines are Markdown. A bot can pause for approval, and actions land in an audit log you keep.
 
@@ -104,7 +107,7 @@ Models include OpenAI, Anthropic, Google, OpenRouter, Vercel AI Gateway, an Open
 
 Optional connectors exist for Slack, WhatsApp, Telegram, iMessage via Sendblue, and Feishu/Lark. They are not how you talk to the bot. The web, Electron, and Expo apps are.
 
-There is no seat fee for the software. You pay for models, machines, and any remote computer you enable. Image pull time is not a fixed number. The [self-host guide](/self-hosted-ai-agent/) is the command list, and the [longer install note](/blog/self-host-an-ai-agent/) says what the ten-minute title does and does not mean.
+There is no seat fee for the software. You pay for models, machines, and any remote computer you enable. Image pull time is not a fixed number. The [self-hosted AI agent guide](/self-hosted-ai-agent/) is the command list, and the [longer install note](/blog/self-host-an-ai-agent/) covers what the short install does and does not include.
 
 ## OpenClaw
 

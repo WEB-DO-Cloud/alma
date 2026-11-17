@@ -31,7 +31,7 @@ export function parseDsn(dsn: string): DsnTarget | undefined {
   } catch {
     return undefined;
   }
-  if (url.protocol !== "https:" && url.protocol !== "http:") return undefined;
+  if (url.protocol !== "https:") return undefined;
   if (isVendorSentryHost(url.hostname)) return undefined;
   const segments = url.pathname.split("/").filter(Boolean);
   const projectId = segments.pop();

@@ -4,8 +4,8 @@ import {
   assistantFacingTools,
   assistantTurnText,
 } from "./alma-assistant-copy.js";
-import { builtinAgentTools } from "./builtin-tools.js";
-import { userTurnInstructions } from "./run-instructions.js";
+import { builtinAgentTools } from "./builtin.tool-definition.js";
+import { userTurnInstructions } from "./run-instructions.prompt.js";
 
 const BOT_INSTRUCTIONS = "Keep the name Rakazo in my private job notes.";
 

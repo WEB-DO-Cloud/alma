@@ -212,7 +212,7 @@ export function connectionsRoutes(ctx: RouterContext) {
         });
         if (!row) return [];
         try {
-          const tools = await connector.discoverTools({
+          const adapterContext = {
             ...connectionContext(context.actor, "connections.tools", context.signal),
             connectedConnections: [
               {
@@ -224,7 +224,10 @@ export function connectionsRoutes(ctx: RouterContext) {
               },
             ],
             connectedProviders: [input.provider],
-          });
+          };
+          const tools = connector.listAppTools
+            ? await connector.listAppTools(adapterContext, input.provider)
+            : await connector.discoverTools(adapterContext);
           return tools.map((tool) => ({
             name: tool.name,
             description: tool.description,

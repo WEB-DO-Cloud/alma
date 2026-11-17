@@ -1,6 +1,5 @@
 import type { AdapterContext, SecretStore } from "@rakazo/adapter-kit";
 import { describe, expect, it } from "vitest";
-import { ComposioConnector } from "./composio-connector.js";
 import type { GoogleOAuthRemote, GoogleOAuthRow, GoogleOAuthStore } from "./google-oauth.js";
 import {
   clientIdLast4,
@@ -14,6 +13,7 @@ import {
   splitScopes,
 } from "./google-oauth.js";
 import { authorizationAccepted, scopesFromToolkit } from "./google-oauth-remote.js";
+import { ComposioConnector } from "./providers/integration/composio/composio-connector.js";
 import { EncryptedSecretStore } from "./secrets.js";
 
 const CLIENT_ID = "100000000000-abc123def456.apps.googleusercontent.com";

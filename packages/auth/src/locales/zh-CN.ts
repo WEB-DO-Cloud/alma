@@ -22,25 +22,25 @@ export const ZH_CN_MESSAGES: Record<string, string> = {
   "Your ALMA confirmation code": "你的 ALMA 确认码",
   "Enter this code in ALMA to confirm it's you:": "在 ALMA 中输入此验证码以确认是你本人：",
   "Welcome to ALMA": "欢迎使用 ALMA",
-  "Thanks for signing up for ALMA.": "感谢你注册 ALMA。",
-  "ALMA also has apps for": "ALMA 还提供以下平台的应用：",
-  "Questions or ideas?": "有问题或想法？",
-  "Join us on Discord": "加入我们的 Discord",
-  "ALMA is open source. If you like it,": "ALMA 是开源项目。如果你喜欢它，",
-  "a star on GitHub": "在 GitHub 上点个星标",
-  "helps others find it.": "可以帮助更多人发现它。",
-  "Want to run it on your own servers?": "想在自己的服务器上运行？",
-  "Self-host ALMA": "自行托管 ALMA",
-  "Have any questions? Reply to this email.": "有任何问题？请回复此邮件。",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "欢迎使用 ALMA。用得最好的人都会做三件事：",
+  "Get the apps": "下载应用",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA 支持 {platforms}，让你的机器人随时随地都能联系到你。",
+  "Join the community": "加入社区",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "在 {discord} 上看看别人在构建什么，快速获得帮助，并告诉我们接下来该做什么。",
+  "Star us on GitHub": "在 GitHub 上给我们加星",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA 是开源的。{star}能帮助更多人发现它。",
+  "A star on GitHub": "在 GitHub 上加星",
+  "Questions? Just reply. I read every one.": "有问题？直接回复即可。每封我都会看。",
   Unsubscribe: "退订",
   "Invite a friend": "邀请好友",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "邀请朋友加入 ALMA：对方可免费使用 {weeks} 周；当对方用新卡开始符合条件的订阅时，你将获得一个月免费。",
   "Open ALMA": "打开 ALMA",
   "and choose Invite friends for your link.": "并选择“邀请好友”获取你的链接。",
-  "Have any questions? Just reply to this email.": "有任何问题？直接回复此邮件即可。",
-  "If you're enjoying ALMA,": "如果你喜欢 ALMA，",
-  "give us a star on GitHub": "欢迎在 GitHub 上给我们点个星标",
   "We received your ALMA plugin": "我们已收到你的 ALMA 插件",
   "Thanks for submitting a plugin to the ALMA marketplace.": "感谢你向 ALMA 插件市场提交插件。",
   "We review every submission and will email you when it's done.":
@@ -65,6 +65,24 @@ export const ZH_CN_MESSAGES: Record<string, string> = {
     "除非你重新订阅，否则你保存的电脑文件将于 {date} 被删除。",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "除非你选择一个套餐，否则你保存的电脑文件将于 {date} 被删除。",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "邀请好友加入 ALMA，当对方使用新卡开始符合条件的订阅时，你将获得一个月免费使用。",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter} 邀请你加入 ALMA 上的 {organization}",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} 邀请你加入 ALMA 上的 {organization}",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} 邀请你加入 ALMA 上的 {organization}。",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter} 邀请你加入 ALMA 上的 {organization}。",
+  "Join {organization}": "加入 {organization}",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "此邀请将在 7 天后过期。请使用此邮箱地址登录以接受邀请。",
+  "{inviter} invited you to {space} on ALMA": "{inviter} 邀请你加入 ALMA 上的 {space}",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} 邀请你加入 ALMA 上的 {space}",
+  "{inviter} invited you to join {space} on ALMA.": "{inviter} 邀请你加入 ALMA 上的 {space}。",
+  "{inviter} invited you to join {space} on Rakazo.": "{inviter} 邀请你加入 ALMA 上的 {space}。",
+  "Join {space}": "加入 {space}",
+  "This invitation expires in 7 days.": "此邀请将在 7 天后过期。",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

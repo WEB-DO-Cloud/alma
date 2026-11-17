@@ -7,15 +7,7 @@ import {
   parseEmailImapAddress,
   parseEmailImapCredentials,
 } from "@rakazo/contracts";
-import {
-  Button,
-  Field,
-  FieldDescription,
-  FieldLabel,
-  Input,
-  NativeSelect,
-  NativeSelectOption,
-} from "@rakazo/ui-web";
+import { Button, Field, FieldDescription, FieldLabel, Input, OptionSelect } from "@rakazo/ui-web";
 import { useState } from "react";
 import { rpc } from "../../lib/rpc";
 import { ViewTitle } from "./parts";
@@ -286,19 +278,15 @@ function ServerFields({
         </Field>
         <Field>
           <FieldLabel htmlFor={`${id}-security`}>{securityLabel}</FieldLabel>
-          <NativeSelect
+          <OptionSelect
             id={`${id}-security`}
             value={value.security}
-            onChange={(event) =>
-              onChange({
-                ...value,
-                security: event.target.value === "starttls" ? "starttls" : "ssl",
-              })
-            }
-          >
-            <NativeSelectOption value="ssl">SSL</NativeSelectOption>
-            <NativeSelectOption value="starttls">STARTTLS</NativeSelectOption>
-          </NativeSelect>
+            options={[
+              { value: "ssl", label: "SSL" },
+              { value: "starttls", label: "STARTTLS" },
+            ]}
+            onValueChange={(security) => onChange({ ...value, security })}
+          />
         </Field>
       </div>
     </div>

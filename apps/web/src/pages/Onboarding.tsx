@@ -36,8 +36,14 @@ export function OnboardingPage() {
   const { signingOut, logOut } = useSignOut("/sign-in", setError);
 
   useEffect(() => {
-    void Promise.all([rpc.me(), rpc.models.list().catch(() => [])])
+    const leaving = new AbortController();
+    const { signal } = leaving;
+    void Promise.all([
+      rpc.me(undefined, { signal }),
+      rpc.models.list(undefined, { signal }).catch(() => []),
+    ])
       .then(([me, models]) => {
+        if (signal.aborted) return;
         setBillingEnabled(me.billingEnabled);
         setCatalog(models);
         const next = me.managedModel || !me.needsModel ? "bot" : "model";
@@ -52,10 +58,12 @@ export function OnboardingPage() {
         }
       })
       .catch(() => {
+        if (signal.aborted) return;
         setAfterSurvey("bot");
         if (!linkedStep) goTo("bot");
       });
     return () => {
+      leaving.abort();
       modelProbe.invalidate();
     };
   }, []);

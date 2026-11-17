@@ -9,14 +9,14 @@ import {
   ModelCreditAmountSchema,
 } from "@rakazo/contracts";
 import { canDeleteOrganization } from "@rakazo/core";
+import { writeSaved } from "@rakazo/core/query";
 import { botColors, botEyeColor, typeScale } from "@rakazo/ui-tokens";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import type { ComponentProps, ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  AppState,
   BackHandler,
   Linking,
   Pressable,
@@ -50,6 +50,7 @@ import {
 } from "../lib/billing";
 import { endCallBeforeSessionEnd } from "../lib/call-session";
 import { translucentColor } from "../lib/color";
+import { useContentBottomInset } from "../lib/content-bottom-inset";
 import { dateLocaleForUi, useUiLocale } from "../lib/i18n";
 import { useMobileTokens } from "../lib/native";
 import {
@@ -57,6 +58,8 @@ import {
   organizationSwitchActions,
   useOrganizations,
 } from "../lib/organizations";
+import { formRead, queryClient, rpcQuery, useSave } from "../lib/query";
+import { useScreenQuery } from "../lib/screen-query";
 import { confirmUnsentSendLoss } from "../lib/unsent-send-warning";
 import { errorText } from "../lib/user-error";
 
@@ -83,13 +86,12 @@ export default function Paywall() {
   const locale = useUiLocale();
   const tokens = useMobileTokens();
   const insets = useSafeAreaInsets();
+  const contentBottomInset = useContentBottomInset();
   const router = useRouter();
   const dismissible = useLocalSearchParams<{ dismissible?: string }>().dismissible === "1";
-  const [status, setStatus] = useState<BillingStatus | null>(null);
   const [plan, setPlan] = useState<Plan>("byok");
   const [amount, setAmount] = useState<Amount>(DEFAULT_MONTHLY_CREDIT_AMOUNT);
   const [interval, setByokInterval] = useState<ByokInterval>("month");
-  const [pending, setPending] = useState(false);
   const leaving = useRef(false);
   const deletion = useAccountDeletion();
   const organizations = useOrganizations(!dismissible).data;
@@ -102,18 +104,12 @@ export default function Paywall() {
     if (deletion.error) Alert.alert(deletion.error);
   }, [deletion.error]);
   const [started, setStarted] = useState<Plan | null>(null);
-  const [loadFailed, setLoadFailed] = useState(false);
   const planPicked = useRef(false);
 
   useEffect(() => {
     setPaywallShown(true);
     return () => setPaywallShown(false);
   }, []);
-
-  useEffect(() => {
-    if (!status?.planClarity) return;
-    void rpc("onboarding/event", { name: "plan_viewed" }).catch(() => undefined);
-  }, [status?.planClarity]);
 
   // Android's back button would otherwise leave the paywall for an app that cannot run.
   useEffect(() => {
@@ -122,61 +118,68 @@ export default function Paywall() {
     return () => subscription.remove();
   }, [dismissible]);
 
-  const load = useCallback(() => {
-    setLoadFailed(false);
-    rpc("billing/status")
-      .then((next) => {
-        // Changing plans from Billing starts on the plan the organization is not on yet.
-        if (!planPicked.current) {
-          planPicked.current = true;
-          if (
-            dismissible &&
-            currentPlan(next) === "byok" &&
-            !next.byokFreeUntil &&
-            next.creditPurchasesEnabled !== false
-          )
-            setPlan("credits");
-        }
-        setStatus(next);
-        // Only the required paywall gives way once access lands (e.g. a Safari checkout);
-        // from Billing, an organization that already has access is here to change plans.
-        if (next.access && !dismissible)
-          setStarted((current) => current ?? (next.funding === "credits" ? "credits" : "byok"));
-      })
-      .catch(() => setLoadFailed(true));
-  }, [dismissible]);
+  // Older binaries finish checkout in Safari, so this reads again when the app comes back.
+  const statusRead = formRead(rpcQuery("billing/status"));
+  const statusQuery = useScreenQuery(statusRead);
+  const status = (statusQuery.isFetchedAfterMount && statusQuery.data) || null;
+  const loadFailed = Boolean(statusQuery.error) && !statusQuery.isFetching;
 
-  // Older binaries finish checkout in Safari, so look again when the app comes back.
   useEffect(() => {
-    load();
-    const subscription = AppState.addEventListener("change", (state) => {
-      if (state === "active") load();
-    });
-    return () => subscription.remove();
-  }, [load]);
+    if (!status?.planClarity) return;
+    void rpc("onboarding/event", { name: "plan_viewed" }).catch(() => undefined);
+  }, [status?.planClarity]);
+  const { refetch } = statusQuery;
+  const load = () => void refetch();
+  useEffect(() => {
+    if (!status) return;
+    // Changing plans from Billing starts on the plan the organization is not on yet.
+    if (!planPicked.current) {
+      planPicked.current = true;
+      if (
+        dismissible &&
+        currentPlan(status) === "byok" &&
+        !status.byokFreeUntil &&
+        status.creditPurchasesEnabled !== false
+      )
+        setPlan("credits");
+    }
+    // Only the required paywall gives way once access lands (e.g. a Safari checkout);
+    // from Billing, an organization that already has access is here to change plans.
+    if (status.access && !dismissible)
+      setStarted((current) => current ?? (status.funding === "credits" ? "credits" : "byok"));
+  }, [status, dismissible]);
 
-  async function choose() {
-    if (!status || pending) return;
-    setPending(true);
-    try {
+  const checkout = useSave({
+    save: async (
+      input: { before: BillingStatus; plan: Plan; amount: Amount; interval: ByokInterval },
+      send,
+    ) => {
+      const { before, plan, amount, interval } = input;
       const { url } =
         plan === "credits"
-          ? await rpc("billing/purchaseCredits", {
+          ? await send("billing/purchaseCredits", {
               amountCents: amount,
               monthly: true,
               client: "mobile",
             })
-          : status.byokFreeUntil
-            ? await rpc("billing/checkout", { client: "mobile", interval })
-            : await rpc("billing/selectFunding", { funding: "byok", client: "mobile", interval });
-      const next = url ? await openBillingPage(url) : await rpc("billing/refresh");
-      setStatus(next);
-      if (purchaseCompleted(status, next)) setStarted(plan);
-    } catch (err) {
-      Alert.alert(errorText(err, t`Could not open billing`));
-    } finally {
-      setPending(false);
-    }
+          : before.byokFreeUntil
+            ? await send("billing/checkout", { client: "mobile", interval })
+            : await send("billing/selectFunding", { funding: "byok", client: "mobile", interval });
+      const next = url
+        ? await openBillingPage(url, send)
+        : await send("billing/refresh", undefined);
+      await writeSaved(queryClient, statusRead.queryKey, () => next);
+      return next;
+    },
+    onSaved: (next, input) => {
+      if (purchaseCompleted(input.before, next)) setStarted(input.plan);
+    },
+    onFailed: (err) => Alert.alert(errorText(err, t`Could not open billing`)),
+  });
+  const pending = checkout.pending;
+
+  function choose() {
+    if (status) checkout.run({ before: status, plan, amount, interval });
   }
 
   async function leave() {
@@ -285,7 +288,10 @@ export default function Paywall() {
         style={[
           styles.screen,
           styles.center,
-          { backgroundColor: tokens.background, paddingBottom: insets.bottom + 16 },
+          {
+            backgroundColor: tokens.background,
+            paddingBottom: contentBottomInset + 16,
+          },
         ]}
       >
         <View style={styles.done}>
@@ -560,7 +566,7 @@ export default function Paywall() {
           {
             backgroundColor: tokens.background,
             borderTopColor: tokens.border,
-            paddingBottom: insets.bottom + 8,
+            paddingBottom: contentBottomInset + 8,
           },
         ]}
       >
@@ -571,7 +577,7 @@ export default function Paywall() {
                 label={cta}
                 busy={pending}
                 disabled={plan === subscribed}
-                onPress={() => void choose()}
+                onPress={choose}
               />
               {terms && plan !== subscribed ? (
                 <Text style={[styles.terms, { color: tokens.mutedForeground }]}>{terms}</Text>

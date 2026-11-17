@@ -24,26 +24,26 @@ export const JA_MESSAGES: Record<string, string> = {
   "Enter this code in ALMA to confirm it's you:":
     "ご本人であることを確認するには、ALMAで次のコードを入力してください:",
   "Welcome to ALMA": "ALMAへようこそ",
-  "Thanks for signing up for ALMA.": "ALMAにご登録いただきありがとうございます。",
-  "ALMA also has apps for": "ALMAには次のアプリもあります:",
-  "Questions or ideas?": "ご質問やアイデアはありますか？",
-  "Join us on Discord": "Discordに参加する",
-  "ALMA is open source. If you like it,": "ALMAはオープンソースです。気に入っていただけたら、",
-  "a star on GitHub": "GitHubでのスター",
-  "helps others find it.": "が、ほかの人に見つけてもらう助けになります。",
-  "Want to run it on your own servers?": "自分のサーバで動かしたいですか？",
-  "Self-host ALMA": "ALMAをセルフホストする",
-  "Have any questions? Reply to this email.": "ご質問があれば、このメールに返信してください。",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "ALMA へようこそ。ALMA を最大限に活用している人は、次の 3 つをしています。",
+  "Get the apps": "アプリを入手する",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA は {platforms} で使えるので、ボットはどこにいてもあなたに連絡できます。",
+  "Join the community": "コミュニティに参加する",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "{discord} で、ほかの人が作っているものを見たり、すぐに助けを得たり、次に作ってほしいものを教えてください。",
+  "Star us on GitHub": "GitHub でスターを付ける",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA はオープンソースです。{star} は、より多くの人が ALMA を見つける助けになります。",
+  "A star on GitHub": "GitHub のスター",
+  "Questions? Just reply. I read every one.":
+    "質問があれば、このメールに返信してください。すべて読んでいます。",
   Unsubscribe: "配信停止",
   "Invite a friend": "友だちを招待",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "友だちをALMAに招待しましょう。友だちは{weeks}週間無料で使え、新しいカードで対象のサブスクリプションを始めると、あなたは1か月無料になります。",
   "Open ALMA": "ALMAを開き",
   "and choose Invite friends for your link.": "「友だちを招待」を選ぶとリンクを取得できます。",
-  "Have any questions? Just reply to this email.":
-    "ご質問があれば、このメールに返信するだけでOKです。",
-  "If you're enjoying ALMA,": "ALMAを気に入っていただけたら、",
-  "give us a star on GitHub": "GitHubでスターをお願いします",
   "We received your ALMA plugin": "ALMAプラグインを受け付けました",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "ALMAマーケットプレイスにプラグインを申請いただきありがとうございます。",
@@ -72,6 +72,27 @@ export const JA_MESSAGES: Record<string, string> = {
     "再登録しない場合、保存されたコンピューターのファイルは{date}に削除されます。",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "プランを選択しない場合、保存されたコンピューターのファイルは{date}に削除されます。",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "友だちをALMAに招待しましょう。友だちが新しいカードで対象のサブスクリプションを始めると、1か月分が無料になります。",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter}さんがALMAの{organization}にあなたを招待しました",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter}さんがALMAの{organization}にあなたを招待しました",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter}さんがALMAの{organization}への参加にあなたを招待しました。",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter}さんがALMAの{organization}への参加にあなたを招待しました。",
+  "Join {organization}": "{organization}に参加",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "この招待は7日後に期限切れになります。承諾するには、このメールアドレスでサインインしてください。",
+  "{inviter} invited you to {space} on ALMA": "{inviter}さんがALMAの{space}にあなたを招待しました",
+  "{inviter} invited you to {space} on Rakazo":
+    "{inviter}さんがALMAの{space}にあなたを招待しました",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter}さんがALMAの{space}への参加にあなたを招待しました。",
+  "{inviter} invited you to join {space} on Rakazo.":
+    "{inviter}さんがALMAの{space}への参加にあなたを招待しました。",
+  "Join {space}": "{space}に参加",
+  "This invitation expires in 7 days.": "この招待は7日後に期限切れになります。",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

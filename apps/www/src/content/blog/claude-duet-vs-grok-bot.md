@@ -1,5 +1,6 @@
 ---
 title: "Claude Duet vs Grok Bot, and an open source alternative"
+ogTitle: "Claude Duet vs Grok Bot"
 description: "Anthropic released Claude Duet on October 21, 2026. How it compares with xAI's Grok Bot, and with ALMA, the open source option you run yourself."
 published: "2026-10-24"
 updated: "2026-10-24"
@@ -23,6 +24,8 @@ sources:
     href: "https://docs.x.ai/grok-bot/faq"
   - label: "xAI pricing"
     href: "https://x.ai/pricing"
+  - label: "ALMA source"
+    href: "https://github.com/WEB-DO-Cloud/alma"
 related:
   - href: "/claude-duet-alternative/"
     title: "Open source Claude Duet alternative"
@@ -42,7 +45,7 @@ faq:
   - question: "Can I pick the model in Claude Duet or Grok Bot?"
     answer: "No. Duet runs on Claude Opus 5.5, and the help center says you cannot choose a model. The Grok Bot docs do not describe connecting your own provider. ALMA lets each bot use a different model, including Claude through your Pro or Max sign-in."
   - question: "Can I self-host Claude Duet or Grok Bot?"
-    answer: "Neither product's pages describe a self-hosted install. Duet runs on a cloud computer Anthropic operates. Grok Bot uses a cloud computer on your account, with an optional local computer for approved commands. ALMA AI is Apache-2.0 and runs on hardware you control."
+    answer: "Neither product's pages describe a self-hosted install. Duet runs on a cloud computer Anthropic operates. Grok Bot uses a cloud computer on your account, with an optional local computer for approved commands. ALMA is Apache-2.0 and runs on hardware you control."
   - question: "Where do these details come from?"
     answer: "Anthropic's Duet announcement, product page, help center article, and safety post, xAI's Grok Bot docs and pricing page, and this project's source. They were read on October 24, 2026. Duet is a research preview, so check those pages before you rely on a detail."
 comparison:
@@ -111,11 +114,11 @@ Price follows a plan in both cases. Duet comes with Claude Pro at $20 a month an
 
 ## Where ALMA fits
 
-ALMA AI is the open source version of this shape. It is Apache-2.0, and it is in beta. You run it with the published Docker images or the desktop app, or use ALMA Cloud, in beta. The clients are the web app, the Electron desktop app, and the Expo mobile app.
+ALMA is the open source version of this shape. It is Apache-2.0, and it is in beta. You run it with the published Docker images or the desktop app, or use ALMA Cloud, in beta. The clients are the web app, the Electron desktop app, and the Expo mobile app.
 
 Like Grok Bot, it is just chat once it is running. You create named bots and manage each one from its conversation. Each bot keeps memory, routines, and history. Routines are readable Markdown and can run on a schedule, so a morning brief is a routine you write, not a fixed feature. A bot can pause for approval at a boundary you set, and actions are recorded in an audit log.
 
-The model is yours. You can sign in with an eligible ChatGPT plan, bring an API key for OpenAI, Anthropic, Google, or OpenRouter, or connect a local server such as Ollama. Each bot can use a different model. For Claude models, use an Anthropic API key; a Claude subscription does not include API credit. See [Model subscriptions](/docs/model-subscriptions/) for provider restrictions.
+The model is yours. You can sign in with an eligible ChatGPT plan, bring an API key for OpenAI, Anthropic, Google, or OpenRouter, or connect a local server such as Ollama. Each bot can use a different model. To use a Claude Pro or Max plan, self-host ALMA from a source checkout for yourself and run it through the official Claude Code CLI, signed in with your account. Otherwise use an Anthropic API key. See [Model subscriptions](/docs/model-subscriptions/) for details.
 
 The computer is yours too. Local Docker is the default. E2B, Daytona, CreateOS, and Boat are optional. Team computers are shared, and private computers are isolated. Connector credentials are encrypted on your server and are never returned by the API.
 

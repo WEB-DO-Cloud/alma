@@ -4,8 +4,6 @@ import {
   EMAIL_IMAP_BODY_MAX_CHARS,
   EMAIL_IMAP_MESSAGE_MAX_BYTES,
 } from "@rakazo/contracts";
-import PostalMime from "postal-mime";
-
 export type MailAttachment = {
   filename: string;
   contentType: string;
@@ -87,6 +85,7 @@ export async function summarizeMessage(raw: Uint8Array): Promise<MailSummary> {
   if (raw.byteLength > EMAIL_IMAP_MESSAGE_MAX_BYTES) {
     throw Object.assign(new Error("too_large"), { code: "too_large" });
   }
+  const { default: PostalMime } = await import("postal-mime");
   const parsed = await PostalMime.parse(raw);
   const textSource = parsed.text?.trim() ? parsed.text : htmlToText(parsed.html ?? "");
   const text = textSource.slice(0, EMAIL_IMAP_BODY_MAX_CHARS);

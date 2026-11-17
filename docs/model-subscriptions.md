@@ -15,13 +15,23 @@ See the [official OpenAI authentication documentation](https://learn.chatgpt.com
 
 ## Claude
 
-**Use an Anthropic API key for ALMA's bot models.** Claude Pro and Max subscriptions do not
-include API credit. Although ALMA currently exposes a Claude sign-in option, Anthropic's
-published rules prohibit third-party apps from offering Claude account login or routing their own
-requests through consumer subscription credentials. We do not recommend that path.
+**Yes, through the official Claude Code CLI when you self-host from a source checkout for yourself.**
+Sign in to Claude Code with your own account. Run ALMA's API and worker on the same machine as
+the CLI, as the same OS user. The official Docker images and desktop app's local stack do not
+support this integration. See [Claude Code CLI](./self-host-models.md#claude-code-cli) for setup.
 
-Using your subscription in the unmodified Claude Code app is a separate case. It does not authorize
-ALMA's model connection. See Anthropic's [authentication and credential rules](https://code.claude.com/docs/en/legal-and-compliance#authentication-and-credential-use).
+ALMA invokes the installed CLI without reading or storing your Claude credentials. CLI usage
+counts against your subscription limits. Anthropic confirms this in its
+[subscription usage guidance](https://support.claude.com/en/articles/15036540-use-the-claude-agent-sdk-with-your-claude-plan).
+
+**For ALMA's hosted plan and shared servers, use an Anthropic API key.** ALMA currently limits
+its CLI integration to a server with one account and no model-usage billing. This is an ALMA
+restriction; it does not mean Anthropic prohibits every hosted Claude Code setup.
+
+ALMA's separate in-app Claude sign-in option is not this CLI integration. Anthropic prohibits
+third-party apps from collecting Claude credentials or offering their own Claude account login.
+Sign in through the official CLI instead. Your use remains subject to Anthropic's
+[authentication and credential rules](https://code.claude.com/docs/en/legal-and-compliance#authentication-and-credential-use).
 
 ## OpenCode
 

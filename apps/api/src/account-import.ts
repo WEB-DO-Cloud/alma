@@ -37,7 +37,7 @@ import {
   runAsTenant,
   SpaceLimitError,
 } from "@rakazo/db";
-import { getLogger } from "@rakazo/logging";
+import { bestEffort, getLogger } from "@rakazo/logging";
 import { pageViewerCode } from "@rakazo/page-kit/compile";
 import { checkPageSource } from "@rakazo/page-kit/validate";
 import type { Hono } from "hono";
@@ -156,8 +156,8 @@ async function spoolBody(
       await handle.write(chunk);
     }
   } catch (error) {
-    await handle.close().catch(() => undefined);
-    await rm(spoolPath, { force: true }).catch(() => undefined);
+    await bestEffort("close import spool file", handle.close());
+    await bestEffort("delete import spool file", rm(spoolPath, { force: true }));
     throw error;
   }
   return { handle, path: spoolPath };
@@ -240,8 +240,8 @@ export async function readArchive(
       } catch (error) {
         failure ??= error;
       } finally {
-        await spill.close().catch(() => undefined);
-        await rm(spillPath, { force: true }).catch(() => undefined);
+        await bestEffort("close import spill file", spill.close());
+        await bestEffort("delete import spill file", rm(spillPath, { force: true }));
       }
       if (failure) throw failure;
     }
@@ -250,8 +250,8 @@ export async function readArchive(
     if (error instanceof ZipFormatError) throw unreadable();
     throw error;
   } finally {
-    await spool.handle.close().catch(() => undefined);
-    await rm(spool.path, { force: true }).catch(() => undefined);
+    await bestEffort("close import spool file", spool.handle.close());
+    await bestEffort("delete import spool file", rm(spool.path, { force: true }));
   }
 }
 
@@ -491,7 +491,10 @@ class AccountImporter implements ArchiveSink {
             : [],
         ),
       );
-      await rm(space.tempDir, { recursive: true, force: true }).catch(() => undefined);
+      await bestEffort(
+        "delete import temp directory",
+        rm(space.tempDir, { recursive: true, force: true }),
+      );
     }
     for (const created of [...this.created].reverse()) {
       const owner = { spaceId: this.actor.spaceId, userId: this.actor.userId };

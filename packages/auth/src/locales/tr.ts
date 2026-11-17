@@ -24,16 +24,20 @@ export const TR_MESSAGES: Record<string, string> = {
   "Enter this code in ALMA to confirm it's you:":
     "Siz olduğunuzu onaylamak için bu kodu ALMA’ya girin:",
   "Welcome to ALMA": "ALMA’ya hoş geldiniz",
-  "Thanks for signing up for ALMA.": "ALMA’ya kaydolduğunuz için teşekkürler.",
-  "ALMA also has apps for": "ALMA’nun şu platformlar için de uygulamaları var:",
-  "Questions or ideas?": "Sorularınız veya fikirleriniz mi var?",
-  "Join us on Discord": "Discord’da bize katılın",
-  "ALMA is open source. If you like it,": "ALMA açık kaynaklıdır. Beğendiyseniz",
-  "a star on GitHub": "GitHub’da vereceğiniz bir yıldız",
-  "helps others find it.": "başkalarının da onu bulmasına yardımcı olur.",
-  "Want to run it on your own servers?": "Kendi sunucularınızda çalıştırmak mı istiyorsunuz?",
-  "Self-host ALMA": "ALMA’yu kendiniz barındırın",
-  "Have any questions? Reply to this email.": "Sorunuz mu var? Bu e-postayı yanıtlayın.",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "ALMA'ya hoş geldiniz. ALMA'dan en çok verimi alanlar üç şey yapıyor:",
+  "Get the apps": "Uygulamaları indirin",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA {platforms} üzerinde çalışır; böylece botlarınız size her yerde ulaşabilir.",
+  "Join the community": "Topluluğa katılın",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "Başkalarının neler yaptığını görün, hızlıca yardım alın ve sırada ne yapmamız gerektiğini {discord} üzerinden bize söyleyin.",
+  "Star us on GitHub": "GitHub'da bize yıldız verin",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA açık kaynaklıdır. {star} daha fazla kişinin onu bulmasına yardımcı olur.",
+  "A star on GitHub": "GitHub'da bir yıldız",
+  "Questions? Just reply. I read every one.":
+    "Sorunuz mu var? Yanıtlamanız yeterli. Her birini okuyorum.",
   Unsubscribe: "Abonelikten çık",
   "Invite a friend": "Bir arkadaşını davet et",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
@@ -41,10 +45,6 @@ export const TR_MESSAGES: Record<string, string> = {
   "Open ALMA": "ALMA’yu açın",
   "and choose Invite friends for your link.":
     "ve bağlantınızı almak için Arkadaşlarını davet et’i seçin.",
-  "Have any questions? Just reply to this email.":
-    "Sorunuz mu var? Bu e-postayı yanıtlamanız yeterli.",
-  "If you're enjoying ALMA,": "ALMA’yu beğeniyorsanız",
-  "give us a star on GitHub": "GitHub’da bize bir yıldız verin",
   "We received your ALMA plugin": "ALMA eklentinizi aldık",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "ALMA pazaryerine eklenti gönderdiğiniz için teşekkürler.",
@@ -74,6 +74,26 @@ export const TR_MESSAGES: Record<string, string> = {
     "Yeniden abone olmazsan kayıtlı bilgisayar dosyaların {date} tarihinde silinecek.",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "Bir plan seçmezsen kayıtlı bilgisayar dosyaların {date} tarihinde silinecek.",
-  "Invite a friend to ALMA and earn a free month when they start a qualifying subscription with a new card.":
-    "Bir arkadaşınızı ALMA’ya davet edin; arkadaşınız yeni bir kartla uygun bir aboneliğe başladığında bir ay ücretsiz kazanın.",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna davet etti",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna davet etti",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna katılmaya davet etti.",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter} sizi ALMA'da {organization} kuruluşuna katılmaya davet etti.",
+  "Join {organization}": "{organization} kuruluşuna katıl",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "Bu davetin süresi 7 gün içinde dolar. Kabul etmek için bu e-posta adresiyle oturum açın.",
+  "{inviter} invited you to {space} on ALMA": "{inviter} sizi ALMA'da {space} alanına davet etti",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} sizi ALMA'da {space} alanına davet etti",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} sizi ALMA'da {space} alanına katılmaya davet etti.",
+  "{inviter} invited you to join {space} on Rakazo.":
+    "{inviter} sizi ALMA'da {space} alanına katılmaya davet etti.",
+  "Join {space}": "{space} alanına katıl",
+  "This invitation expires in 7 days.": "Bu davetin süresi 7 gün içinde dolar.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };

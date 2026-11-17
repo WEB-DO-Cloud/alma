@@ -23,26 +23,26 @@ export const PL_MESSAGES: Record<string, string> = {
   "Enter this code in ALMA to confirm it's you:":
     "Wpisz ten kod w ALMA, aby potwierdzić tożsamość:",
   "Welcome to ALMA": "Witaj w ALMA",
-  "Thanks for signing up for ALMA.": "Dziękujemy za rejestrację w ALMA.",
-  "ALMA also has apps for": "Aplikacje ALMA są też dostępne na platformach:",
-  "Questions or ideas?": "Masz pytania lub pomysły?",
-  "Join us on Discord": "Dołącz do nas na Discordzie",
-  "ALMA is open source. If you like it,": "ALMA ma otwarty kod. Jeśli Ci się podoba,",
-  "a star on GitHub": "gwiazdka na GitHub",
-  "helps others find it.": "pomoże innym je znaleźć.",
-  "Want to run it on your own servers?": "Chcesz uruchomić je na własnych serwerach?",
-  "Self-host ALMA": "Uruchom ALMA na własnym serwerze",
-  "Have any questions? Reply to this email.": "Masz pytania? Odpowiedz na tę wiadomość.",
+  "Welcome to ALMA. The people who get the most out of it do three things:":
+    "Witamy w ALMA. Osoby, które korzystają z niego najlepiej, robią trzy rzeczy:",
+  "Get the apps": "Pobierz aplikacje",
+  "ALMA runs on {platforms}, so your bots can reach you wherever you are.":
+    "ALMA działa na {platforms}, więc Twoje boty mogą skontaktować się z Tobą wszędzie.",
+  "Join the community": "Dołącz do społeczności",
+  "See what others are building, get help fast, and tell us what to build next on {discord}.":
+    "Zobacz, co budują inni, szybko uzyskaj pomoc i powiedz nam na {discord}, co zbudować dalej.",
+  "Star us on GitHub": "Daj nam gwiazdkę na GitHubie",
+  "ALMA is open source. {star} helps more people find it.":
+    "ALMA jest open source. {star} pomaga innym go znaleźć.",
+  "A star on GitHub": "Gwiazdka na GitHubie",
+  "Questions? Just reply. I read every one.":
+    "Masz pytania? Po prostu odpowiedz. Czytam każdą wiadomość.",
   Unsubscribe: "Zrezygnuj z otrzymywania wiadomości",
   "Invite a friend": "Zaproś znajomego",
   "Invite a friend to ALMA: they get {weeks} weeks free, and you earn a free month when they start a qualifying subscription with a new card.":
     "Zaproś znajomego do ALMA: otrzyma {weeks} tyg. za darmo, a Ty zyskasz bezpłatny miesiąc, gdy rozpocznie subskrypcję spełniającą warunki z użyciem nowej karty.",
   "Open ALMA": "Otwórz ALMA",
   "and choose Invite friends for your link.": "i wybierz Zaproś znajomych, aby otrzymać swój link.",
-  "Have any questions? Just reply to this email.":
-    "Masz pytania? Po prostu odpowiedz na tę wiadomość.",
-  "If you're enjoying ALMA,": "Jeśli lubisz korzystać z ALMA,",
-  "give us a star on GitHub": "daj nam gwiazdkę na GitHub",
   "We received your ALMA plugin": "Otrzymaliśmy Twoją wtyczkę do ALMA",
   "Thanks for submitting a plugin to the ALMA marketplace.":
     "Dziękujemy za zgłoszenie wtyczki do katalogu ALMA.",
@@ -72,4 +72,26 @@ export const PL_MESSAGES: Record<string, string> = {
     "Zapisane pliki komputera zostaną usunięte {date}, jeśli nie wznowisz subskrypcji.",
   "Your saved computer files will be deleted on {date} unless you choose a plan.":
     "Zapisane pliki komputera zostaną usunięte {date}, jeśli nie wybierzesz planu.",
+  "{inviter} invited you to {organization} on ALMA":
+    "{inviter} zaprasza Cię do {organization} w ALMA",
+  "{inviter} invited you to {organization} on Rakazo":
+    "{inviter} zaprasza Cię do {organization} w ALMA",
+  "{inviter} invited you to join {organization} on ALMA.":
+    "{inviter} zaprasza Cię do dołączenia do {organization} w ALMA.",
+  "{inviter} invited you to join {organization} on Rakazo.":
+    "{inviter} zaprasza Cię do dołączenia do {organization} w ALMA.",
+  "Join {organization}": "Dołącz do {organization}",
+  "This invitation expires in 7 days. Sign in with this email address to accept it.":
+    "To zaproszenie wygaśnie za 7 dni. Aby je przyjąć, zaloguj się tym adresem e-mail.",
+  "{inviter} invited you to {space} on ALMA": "{inviter} zaprasza Cię do {space} w ALMA",
+  "{inviter} invited you to {space} on Rakazo": "{inviter} zaprasza Cię do {space} w ALMA",
+  "{inviter} invited you to join {space} on ALMA.":
+    "{inviter} zaprasza Cię do dołączenia do {space} w ALMA.",
+  "{inviter} invited you to join {space} on Rakazo.":
+    "{inviter} zaprasza Cię do dołączenia do {space} w ALMA.",
+  "Join {space}": "Dołącz do {space}",
+  "This invitation expires in 7 days.": "To zaproszenie wygaśnie za 7 dni.",
+  "Have any questions? Reply to this email.": "Have any questions? Reply to this email.",
+  "Self-host ALMA": "Self-host ALMA",
+  "Want to run it on your own servers?": "Want to run it on your own servers?",
 };
