@@ -172,6 +172,7 @@ async function runRoutine(
     },
     attempt: {
       create: vi.fn(async () => ({ id: "attempt-1" })),
+      findFirst: vi.fn(async () => null),
       findMany: vi.fn(async () =>
         Array.from({ length: options.priorSetupFailures ?? 0 }, () => ({
           status: "setup_failed",

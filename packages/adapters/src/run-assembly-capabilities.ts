@@ -236,7 +236,40 @@ export async function prepareRunComputer(
   const { context, runAbortController } = parts.connected;
   const { currentTurnMessage, history, historyMessages, turnBlocks } = parts.turnContext;
   const { resolved, runModelId, runModelProvider } = parts.model;
-  if (!bot.computer) throw new Error("Bot has no computer");
+  // A deployment with no computer, and a support bot, still run. A standard bot that lost its
+  // computer cannot: setup retries, then fails.
+  if (!bot.computer) {
+    if (deps.sandbox.describe().id !== "none" && bot.kind !== "support") {
+      throw new Error("Bot has no computer");
+    }
+    const earlierFiles = createEarlierFileQueue();
+    const runComputer = lazyRunComputer(
+      async () => {
+        throw new Error("Bot has no computer");
+      },
+      () => runAbortController?.abort(),
+    );
+    return {
+      storedComputer: null,
+      computerMode: parseComputerMode("dedicated"),
+      earlierFiles,
+      runComputer,
+      computerKind: "none",
+      workspaceCheckpoint: createRunWorkspaceCheckpoint(
+        async () => undefined,
+        { id: bot.id, kind: "none" },
+        context.signal,
+      ),
+      pendingTurnFiles: [turnBlocks ?? []],
+      getRunComputer: async () => {
+        throw new Error("Bot has no computer");
+      },
+      currentTurnFiles: [],
+      attachedFilesPrompt: "",
+      graphical: false,
+      modelSeesImages: modelAcceptsImageInput(runModelProvider, runModelId, resolved.acceptsImages),
+    };
+  }
   const storedComputer = bot.computer;
   const computerMode = parseComputerMode(storedComputer.scope);
   const artifacts = deps.artifacts;
@@ -680,9 +713,29 @@ export async function selectRunTools(
       messagingChannelRun: nonOwnerChatRun,
       voiceCall,
       // Every member already got a message that names nobody, so a handoff only repeats it.
-      disabledBuiltinTools: groupReplyOptional
-        ? [...(bot.disabledBuiltinTools ?? []), "handoff_to_bot"]
-        : bot.disabledBuiltinTools,
+      disabledBuiltinTools: [
+        ...(groupReplyOptional
+          ? [...(bot.disabledBuiltinTools ?? []), "handoff_to_bot"]
+          : (bot.disabledBuiltinTools ?? [])),
+        // Nothing to drive: a support bot, or a deployment that has no computer.
+        ...(bot.computer
+          ? []
+          : [
+              "shell",
+              "list_files",
+              "read_file",
+              "write_file",
+              "attach_file",
+              "computer_act",
+              "computer_observe",
+              "request_takeover",
+              "browser_navigate",
+              "browser_snapshot",
+              "browser_act",
+              "open_path",
+              "launch_app",
+            ]),
+      ],
       fleetManagement: bot.fleetManagement,
       followUpFromUser: sourceMessage?.role === "user",
       userComputer: userComputerShell,
@@ -783,6 +836,13 @@ export async function loadComputerInstructions(
   const { bot } = parts.records;
   const { context } = parts.connected;
   const { computerKind, computerMode, graphical, runComputer, storedComputer } = parts.computer;
+  if (!storedComputer) {
+    return {
+      hostEnvironment: undefined,
+      computerInstruction: "This deployment has no computer.",
+      workspaceInstruction: "",
+    };
+  }
   const { disabledBuiltinTools, graphicalToolsAllowed } = parts.capabilities;
   const { tools } = parts.tools;
   const baseComputerInstruction = persistentComputerInstruction({

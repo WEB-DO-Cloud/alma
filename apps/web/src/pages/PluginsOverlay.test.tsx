@@ -34,6 +34,7 @@ vi.mock("@lingui/react/macro", () => ({
   Plural: () => null,
   Trans: ({ children }: { children: ReactNode }) => children,
   useLingui: () => ({
+    i18n: { locale: "en" },
     t: (parts: TemplateStringsArray, ...values: unknown[]) =>
       parts.reduce((text, part, i) => text + (i ? String(values[i - 1]) : "") + part, ""),
   }),

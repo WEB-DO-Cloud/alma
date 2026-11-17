@@ -68,24 +68,27 @@ dbTests("plan choice funnel", () => {
 
   it("lays out the plan choice the same way on every read", async () => {
     const first = await service.status(actor);
-    expect(first.planLayout).toBe(experiments.variant("plan-layout", organizationId));
-    await expect(service.status(actor)).resolves.toMatchObject({ planLayout: first.planLayout });
+    // One offered plan, so the layout experiment stays off and every read agrees.
+    expect(first.planLayout).toBeUndefined();
+    expect((await service.status(actor)).planLayout).toBeUndefined();
   });
 
   it("reports the chosen tier from checkout through the end of its trial, once each", async () => {
+    const amountCents = BYOK_TIERS.standard.monthlyPriceCents;
+    if (amountCents === null) throw new Error("standard plan is not offered");
     await service.purchaseCredits(actor, { amountCents: 3000, monthly: true });
-    await service.selectFunding(actor, "byok", undefined, "year", "pro");
+    await service.selectFunding(actor, "byok", undefined, "month", "standard");
     const customer = (await billingAccountForOrganization(prisma, organizationId))!.customerId;
     expect(provider.byokCheckouts.get(customer)).toMatchObject({
-      tier: "pro",
-      interval: "year",
+      tier: "standard",
+      interval: "month",
       trialDays: TRIAL_DAYS,
     });
     const terms = {
       plan: "own_key",
-      tier: "pro",
-      interval: "year",
-      amountCents: BYOK_TIERS.pro.annualPriceCents,
+      tier: "standard",
+      interval: "month",
+      amountCents,
     } as const;
     const subscriptionId = provider.completeByokCheckout(customer);
     // The first payment is still pending when the checkout returns.

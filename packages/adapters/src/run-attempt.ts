@@ -161,9 +161,13 @@ async function startClaimedAttempt(
       computer: { select: { scope: true } },
     },
   });
-  if (!leaseTarget.computerId) throw new Error("Bot has no computer");
+  // A bot with no computer still runs. Only a takeover that needs the machine now cannot start.
+  if (!leaseTarget.computerId && (heldForTakeover || takeoverResume)) {
+    throw new Error("Bot has no computer");
+  }
   // Only takeover resumes need the computer before model work starts.
-  const needsComputerNow = heldForTakeover || Boolean(takeoverResume);
+  const needsComputerNow =
+    Boolean(leaseTarget.computerId) && (heldForTakeover || Boolean(takeoverResume));
   if (leaseTarget.computerSwitching) {
     await requeueComputerRun(deps, runId, workerId, fence, resumeCheckpoint, heldForTakeover);
     return;
@@ -190,16 +194,22 @@ async function startClaimedAttempt(
   }
   let computerLease: ComputerExecutionLease | null = null;
   try {
-    computerLease = !needsComputerNow
-      ? null
-      : await acquireComputerExecutionLease(deps.prisma, {
-          computerId: leaseTarget.computerId,
-          runId,
-          botId: run.botId,
-          workerId,
-          runFence: fence,
-        });
-    if (!computerLease && needsComputerNow && leaseTarget.computer?.scope === "dedicated") {
+    computerLease =
+      !needsComputerNow || !leaseTarget.computerId
+        ? null
+        : await acquireComputerExecutionLease(deps.prisma, {
+            computerId: leaseTarget.computerId,
+            runId,
+            botId: run.botId,
+            workerId,
+            runFence: fence,
+          });
+    if (
+      !computerLease &&
+      needsComputerNow &&
+      leaseTarget.computerId &&
+      leaseTarget.computer?.scope === "dedicated"
+    ) {
       computerLease = await acquireDedicatedScreenLeaseFence(deps.prisma, {
         computerId: leaseTarget.computerId,
         runId,
@@ -209,7 +219,7 @@ async function startClaimedAttempt(
       });
     }
   } catch (error) {
-    if (!(error instanceof ComputerBusyError)) throw error;
+    if (!(error instanceof ComputerBusyError) || !leaseTarget.computerId) throw error;
     // Maintenance or suspension sends no release, so only a held lease waits for one.
     const heldByAnotherRun = await deps.prisma.computerExecutionLease.findFirst({
       where: {

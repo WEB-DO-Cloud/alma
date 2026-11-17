@@ -122,8 +122,11 @@ export function createRunExecutor(executorDeps: ExecutorDeps) {
 
 /** Product copy the model can repeat. Tool names and the request's other fields stay as given. */
 function withAlmaProductCopy(runtime: AgentRuntime): AgentRuntime {
+  // Class methods live on the prototype, so a spread would drop describe and abort.
   return {
-    ...runtime,
+    describe:
+      typeof runtime.describe === "function" ? runtime.describe.bind(runtime) : runtime.describe,
+    abort: typeof runtime.abort === "function" ? runtime.abort.bind(runtime) : runtime.abort,
     run: (request, context) => runtime.run(almaRunRequest(request), context),
   };
 }

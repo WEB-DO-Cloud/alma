@@ -35,6 +35,7 @@ vi.mock("@rakazo/chat-ui/web", () => ({
 }));
 vi.mock("@lingui/react/macro", () => ({
   useLingui: () => ({
+    i18n: { locale: "en" },
     t: (parts: TemplateStringsArray, ...values: unknown[]) => String.raw({ raw: parts }, ...values),
   }),
   Trans: ({ children }: { children: ReactNode }) => children,

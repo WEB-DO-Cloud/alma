@@ -17,10 +17,11 @@ const mocks = vi.hoisted(() => ({
   openAuthSessionAsync: vi.fn(async () => ({ type: "dismiss" })),
 }));
 vi.mock("./side-insets", () => ({ useSideInsets: () => ({}) }));
-vi.mock("./i18n", () => ({ dateLocaleForUi: () => "en-US" }));
+vi.mock("./i18n", () => ({ dateLocaleForUi: () => "en-US", useUiLocale: () => "en" }));
 vi.mock("./referral", () => ({ rememberReferral: vi.fn() }));
 vi.mock("./settings-sheet", () => ({ openFromSettingsSheet: vi.fn() }));
 vi.mock("expo-web-browser", () => ({ openAuthSessionAsync: mocks.openAuthSessionAsync }));
+vi.mock("./billing-auth", () => ({ openAndroidBillingAuth: vi.fn(async () => false) }));
 vi.mock("expo-router", () => ({
   useRouter: () => ({ replace: vi.fn() }),
   useIsFocused: () => mocks.focused,

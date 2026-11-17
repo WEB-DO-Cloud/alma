@@ -8,6 +8,7 @@ const alerts = vi.hoisted(
   () => [] as Array<{ title: string; buttons: Array<{ text: string; onPress?: () => void }> }>,
 );
 
+vi.mock("expo-router", () => ({ router: { push: () => {} } }));
 vi.mock("expo-secure-store", () => ({
   getItemAsync: async (key: string) => store.get(key) ?? null,
   setItemAsync: async (key: string, value: string) => {
@@ -19,8 +20,11 @@ vi.mock("expo-secure-store", () => ({
 }));
 vi.mock("react-native", () => ({
   Alert: {
-    alert: (title: string, _message: string, buttons: (typeof alerts)[number]["buttons"]) =>
-      alerts.push({ title, buttons }),
+    alert: (
+      title: string,
+      _message: string,
+      buttons: Array<{ text: string; onPress?: () => void }>,
+    ) => alerts.push({ title, buttons }),
   },
   AppState: { addEventListener: () => ({ remove() {} }) },
 }));

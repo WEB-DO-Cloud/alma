@@ -30,6 +30,7 @@ vi.mock("../lib/rpc", async (original) => {
         return organizations.rename(input);
       },
     },
+    googleOAuth: { get: vi.fn(async () => null) },
   });
   return {
     ...((await original()) as object),
