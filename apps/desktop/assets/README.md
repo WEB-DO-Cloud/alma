@@ -1,15 +1,20 @@
 # Desktop icons
 
-The shared spark is `brand/alma-icon.svg`: a white star on `#002D62`.
-Run `pnpm --filter @rakazo/ui-tokens export:brand` to refresh these files.
+`brand/alma-icon.svg` is the square spark: a white star on `#002D62`.
+`brand/alma-icon-macos.png` is the macOS icon: an 824px `#002D62` squircle
+centered on a 1024px canvas, so the padding is 100px, with the same white star
+and a soft drop shadow. macOS draws that file as-is.
 
-`icon.icns` is the macOS app icon. `icon.png` is the Linux icon and
-`icon.ico` is the Windows icon. `icon-macos.png` is the Dock icon for
-unpackaged launches. All four are the same full-bleed square. macOS, Windows,
-and Linux apply their own rounded mask, and the star keeps the phone icon's
-padding. It sits 8 points below the phone spark. The installed Mac icon was
-90 points below that spark, so this is 82 pixels (8% of 1024) higher. The
-phone icons are unchanged.
+`icon-macos.png` is that PNG, the Dock icon for unpackaged launches.
+`icon.icns` is the same artwork at the standard sizes from 16 through 512@2x.
+`icon.png` is the Linux icon and `icon.ico` is the Windows icon. Those two
+stay full-bleed squares, and Linux and Windows apply their own mask. The star
+on the square sits 8 points below the phone spark, 82 pixels (8% of 1024)
+higher than the previous installed Mac icon. Phone icons are unchanged.
+
+Run `pnpm --filter @rakazo/ui-tokens export:brand` to refresh these files.
+The export copies `brand/alma-icon-macos.png` into `icon-macos.png` and
+`icon.icns`, and rebuilds the Linux and Windows icons from the square spark.
 
 `background.png` (660×400) and `background@2x.png` (1320×800) are the DMG
 window: plain white, with the arrow in `#002D62`. Finder draws "ALMA" and

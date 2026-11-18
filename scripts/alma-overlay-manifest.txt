@@ -99,6 +99,7 @@ overlay apps/api/src/welcome-email.postgres.test.ts
 overlay apps/desktop/assets/README.md
 overlay apps/desktop/assets/es.lproj/InfoPlist.strings
 overlay apps/desktop/assets/icon-macos.png
+overlay apps/desktop/assets/icon.icns
 overlay apps/desktop/assets/icon.ico
 overlay apps/desktop/assets/icon.png
 overlay apps/desktop/e2e/local-stack.spec.ts
@@ -115,6 +116,7 @@ overlay apps/desktop/src/browser-auth.ts
 overlay apps/desktop/src/host-screen.ts
 overlay apps/desktop/src/host-screen.windows.test.ts
 overlay apps/desktop/src/i18n.test.ts
+overlay apps/desktop/src/install-artwork.test.ts
 overlay apps/desktop/src/linux-update-signature.test.ts
 overlay apps/desktop/src/linux-update-signature.ts
 overlay apps/desktop/src/local-stack.test.ts
@@ -591,6 +593,7 @@ overlay apps/www/src/voice-providers/shared.ts
 overlay apps/www/src/vs-points.ts
 overlay apps/www/vercel.json
 overlay bitrise.yml
+overlay brand/alma-icon-macos.png
 overlay brand/alma-icon.svg
 overlay brand/alma-logo-white.svg
 overlay brand/alma-logo.svg

@@ -41,7 +41,7 @@ async function ico(input: Buffer, name: string, sizes: number[]) {
   await writeFile(path(name), Buffer.concat([header, ...frames]));
 }
 
-/** PNG-backed icns sizes. The OS applies the rounded-square mask. */
+/** PNG-backed icns sizes, from 16 through 512@2x. */
 const ICNS_TYPES: ReadonlyArray<readonly [string, number]> = [
   ["icp4", 16],
   ["icp5", 32],
@@ -224,9 +224,11 @@ await sharp({ create: { width: 1200, height: 630, channels: 3, background: NAVY 
 
 const desktop = await desktopIcon(spark);
 await sharp(desktop).toFile(path("apps/desktop/assets/icon.png"));
-await sharp(desktop).toFile(path("apps/desktop/assets/icon-macos.png"));
 await ico(desktop, "apps/desktop/assets/icon.ico", [16, 32, 48, 64, 128, 256]);
-await icns(desktop, "apps/desktop/assets/icon.icns");
+// macOS draws this file as-is. The committed PNG is the padded squircle.
+const macIcon = await readFile(path("brand/alma-icon-macos.png"));
+await writeFile(path("apps/desktop/assets/icon-macos.png"), macIcon);
+await icns(macIcon, "apps/desktop/assets/icon.icns");
 await sharp(Buffer.from(dmgBackgroundSvg(1)))
   .png()
   .toFile(path("apps/desktop/assets/background.png"));
