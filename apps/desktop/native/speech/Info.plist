@@ -6,7 +6,7 @@
     <key>CFBundleIdentifier</key>
     <string>dev.rakazo.desktop.speech</string>
     <key>CFBundleName</key>
-    <string>Rakazo</string>
+    <string>ALMA</string>
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>ALMA turns what you say into text for dictation and voice calls with your bots.</string>
     <key>NSMicrophoneUsageDescription</key>

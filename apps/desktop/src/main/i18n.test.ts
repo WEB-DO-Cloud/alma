@@ -27,7 +27,7 @@ const UNTRANSLATED = new Set([
   "Docker Desktop",
   "OrbStack",
   "Docker Engine",
-  "https://rakazo.example.com",
+  "https://app.alma.com.do",
 ]);
 
 /** Literal `t("…")` ids; the formatter keeps every string double-quoted. */
@@ -59,6 +59,25 @@ afterEach(() => {
 });
 
 describe("desktop language", () => {
+  it("keeps rakazo out of copy a person can read", () => {
+    const visible = [
+      readFileSync(path.join(srcDir, "setup-renderer/setup.html"), "utf8"),
+      ...setupPageStrings(),
+      ...Object.values(CATALOGS).flatMap((messages) => Object.values(messages)),
+    ];
+    const assets = path.resolve(srcDir, "../assets");
+    for (const entry of readdirSync(assets, { recursive: true, encoding: "utf8" })) {
+      if (entry.endsWith(".strings")) visible.push(readFileSync(path.join(assets, entry), "utf8"));
+    }
+    const speech = readFileSync(
+      path.resolve(srcDir, "../native/speech/Info.plist"),
+      "utf8",
+    ).replaceAll("dev.rakazo.desktop.speech", "");
+    visible.push(speech);
+    const leaked = visible.filter((text) => /rakazo/i.test(text));
+    expect(leaked).toEqual([]);
+  });
+
   it.each([
     ["es", "en-US", "es"],
     ["en", "es-CL", "en"],
