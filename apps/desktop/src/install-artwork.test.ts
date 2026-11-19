@@ -138,11 +138,9 @@ describe("desktop install artwork", () => {
     expect(packageJson.build.dmg.window).toEqual({ width: 660, height: 400 });
   });
 
-  it("lifts only the desktop star and keeps the ALMA blue plate", () => {
+  it("lifts only the square desktop star and keeps the ALMA blue plate", () => {
     const desktop = readPng(path.join(assets, "icon.png"));
-    const dock = readPng(path.join(assets, "icon-macos.png"));
     const phone = readPng(mobileIcon);
-    expect(desktop).toEqual(dock);
     expect(pixel(desktop, 0, 0)).toEqual([0, 45, 98]);
     expect(pixel(phone, 0, 0)).toEqual([0, 45, 98]);
     const desktopMark = whiteCentroid(desktop);
@@ -162,12 +160,35 @@ describe("desktop install artwork", () => {
     expect(composer.groups[0]?.translucency.enabled).toBe(false);
   });
 
-  it("embeds the same 1024 plate in the macOS and Windows icon files", () => {
-    const desktop = readPng(path.join(assets, "icon.png"));
+  it("uses the padded squircle for the Dock icon and the macOS icon set", () => {
+    const source = readPng(path.resolve(import.meta.dirname, "../../../brand/alma-icon-macos.png"));
+    const dock = readPng(path.join(assets, "icon-macos.png"));
+    expect(dock.width).toBe(1024);
+    expect(dock.height).toBe(1024);
+    expect(dock.pixels.equals(source.pixels)).toBe(true);
+    const rgba = (image: Raster, x: number, y: number) => {
+      const index = (y * image.width + x) * 4;
+      return [
+        image.pixels[index],
+        image.pixels[index + 1],
+        image.pixels[index + 2],
+        image.pixels[index + 3],
+      ];
+    };
+    expect(rgba(dock, 0, 0)).toEqual([0, 0, 0, 0]);
+    expect(rgba(dock, 100, 512)).toEqual([0, 45, 98, 255]);
+    expect(rgba(dock, 200, 200)).toEqual([0, 45, 98, 255]);
+    expect(rgba(dock, 512, 512)).toEqual([255, 255, 255, 255]);
     const icns = readFileSync(path.join(assets, "icon.icns"));
     expect(icns.subarray(0, 4).toString("ascii")).toBe("icns");
-    const largest = pngsInIcns(icns).find((image) => image.width === 1024);
-    expect(largest?.pixels.equals(desktop.pixels)).toBe(true);
+    const images = pngsInIcns(icns);
+    expect(images.map((image) => image.width).sort((a, b) => a - b)).toEqual([
+      16, 32, 32, 64, 64, 128, 256, 256, 512, 512, 1024,
+    ]);
+    expect(images.find((image) => image.width === 1024)?.pixels.equals(dock.pixels)).toBe(true);
+  });
+
+  it("embeds a Windows icon beside the square Linux plate", () => {
     const ico = readFileSync(path.join(assets, "icon.ico"));
     expect(ico.readUInt16LE(2)).toBe(1);
     expect(ico.readUInt16LE(4)).toBeGreaterThanOrEqual(6);

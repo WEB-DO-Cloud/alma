@@ -108,6 +108,8 @@ jobs:
         run: pnpm db:generate
         env:
           DATABASE_URL: postgres://rakazo:rakazo@127.0.0.1:5433/rakazo
+      - name: Apply the mobile version to the desktop app
+        run: node scripts/app-version.mjs sync
       - name: Build renderer and Electron main process
         run: pnpm --filter @rakazo/web build && pnpm --filter @rakazo/desktop build
         env:
