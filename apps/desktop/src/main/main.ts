@@ -43,6 +43,8 @@ import { DesktopUpdateController } from "./auto-update.js";
 import { createBadgeHandler } from "./badge.js";
 import { openBrowserAuth } from "./browser-auth.js";
 import { createClipboardHandler } from "./clipboard.js";
+import type { CookieStore } from "./cookie-store.js";
+import { flushCookieStores, installCookieFlush } from "./cookie-store.js";
 import { appWindowTargets, desktop, permissionTarget } from "./desktop-state.js";
 import { launchDockerApp, resolveDockerBinary, runDocker } from "./docker-cli.js";
 import type { StackChoice } from "./docker-move.js";
@@ -65,6 +67,7 @@ import {
 import { createLocaleHandler, errorDetail, startDesktopLocale, t, withDetail } from "./i18n.js";
 import type { IpcCaller } from "./ipc.js";
 import { handleIpc, sentFrom } from "./ipc.js";
+import { adoptLegacyDesktopProfile, legacyDesktopUserDataDirs } from "./legacy-profile.js";
 import { verifyDownloadedLinuxUpdate } from "./linux-update-signature.js";
 import { createLocalComputerChoice, saveLocalComputerHost } from "./local-settings.js";
 import {
@@ -100,6 +103,7 @@ import {
   managedLocalOpenUrl,
   maySendDesktopStackToken,
   normalizeServerUrl,
+  packagedUserDataDir,
   probeFailureMessage,
   readProbeJson,
   resolveStartupTarget,
@@ -132,19 +136,30 @@ const updaterEnvironment = {
   disabled: process.env.RAKAZO_DISABLE_AUTO_UPDATE === "1",
 };
 let requestingComputerAccess = false;
+const persistedCookieStores = new Set<CookieStore>();
 let hostScreen: HostScreen | undefined;
 markOnce("rk:main:module-evaluated");
 if (PERFORMANCE_USER_DATA) {
   app.setPath("userData", PERFORMANCE_USER_DATA);
   app.setPath("sessionData", path.join(PERFORMANCE_USER_DATA, "session"));
 } else {
-  applyPackagedUserData((name, dir) => app.setPath(name, dir), {
+  const profile = {
     packaged: app.isPackaged,
     platform: process.platform,
     home: homedir(),
     appData: process.env.APPDATA,
     xdgConfigHome: process.env.XDG_CONFIG_HOME,
-  });
+  };
+  applyPackagedUserData((name, dir) => app.setPath(name, dir), profile);
+  const userDataDir = packagedUserDataDir(profile);
+  // Before any session opens, or Chromium creates an empty cookie store first.
+  if (userDataDir !== null) {
+    try {
+      adoptLegacyDesktopProfile(userDataDir, legacyDesktopUserDataDirs(profile));
+    } catch (error) {
+      reportDesktopError(error, "desktop.startup");
+    }
+  }
 }
 
 const localServerChoice = showLocalServerChoice({
@@ -359,6 +374,8 @@ async function openAppOnce(targetUrl: string, switching: boolean) {
     desktop.currentSetup?.mode === "new" && targetUrl === desktop.localStack.webUrl(),
   );
   const target = await resolveSessionForTarget(targetUrl);
+  installCookieFlush(target.value.cookies);
+  persistedCookieStores.add(target.value.cookies);
   configureHeaderSession(target.value);
   // A failed switch must leave telemetry with the window that remains selected.
   if (desktop.mainWindow === null) activateDesktopMonitoring(targetUrl, target.value);
@@ -1020,12 +1037,20 @@ app.on("window-all-closed", () => {
 app.on("quit", (_event, exitCode) => {
   if (exitCode === 0) desktop.desktopUpdater?.installOnQuit();
 });
+let cookiesFlushed = false;
 app.on("before-quit", (event) => {
   desktop.quitting = true;
   // Server processes this app runs itself stop with it; quit again once they have.
   if (desktop.localStack instanceof NativeStackController && desktop.localStack.hasProcesses()) {
     event.preventDefault();
     void desktop.localStack.stop().finally(() => app.quit());
+    return;
+  }
+  // A second quit, after the flush below, is the one that actually exits.
+  if (!cookiesFlushed && persistedCookieStores.size > 0) {
+    cookiesFlushed = true;
+    event.preventDefault();
+    void flushCookieStores(persistedCookieStores).finally(() => app.quit());
     return;
   }
   clearTimeout(desktop.warmWindowTimer);
