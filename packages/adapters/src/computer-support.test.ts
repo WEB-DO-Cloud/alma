@@ -14,7 +14,7 @@ describe("workspaceCwd", () => {
   const root = "/home/user/rakazo-home";
 
   it("maps empty, '.', '/', the root and home aliases to the root", () => {
-    for (const cwd of [undefined, "", ".", "/", root, "/home/rakazo", "/home/user"]) {
+    for (const cwd of [undefined, "", ".", "/", root, "/home/alma", "/home/rakazo", "/home/user"]) {
       expect(workspaceCwd(root, cwd, ["/home/user"])).toBe(root);
     }
   });
@@ -22,6 +22,10 @@ describe("workspaceCwd", () => {
   it("keeps paths inside the root, a home alias or the bot-visible home", () => {
     expect(workspaceCwd(root, `${root}/notes/a`, ["/home/user"])).toBe(`${root}/notes/a`);
     expect(workspaceCwd(root, "/home/rakazo/notes", ["/home/user"])).toBe(`${root}/notes`);
+    expect(workspaceCwd(root, "/home/alma/notes", ["/home/user"])).toBe(`${root}/notes`);
+    expect(workspaceCwd("/home/alma", "/home/rakazo/bots/bot-1/flyer")).toBe(
+      "/home/alma/bots/bot-1/flyer",
+    );
     expect(workspaceCwd(root, "/home/user/notes", ["/home/user"])).toBe(`${root}/notes`);
     expect(workspaceCwd(root, "notes/a")).toBe(`${root}/notes/a`);
     expect(workspaceCwd(root, "/etc")).toBe(`${root}/etc`);
@@ -116,6 +120,17 @@ describe("Team Computer bot folders", () => {
 
   it("keeps root paths for a listing requested under ~", () => {
     expect(displayBotWorkspacePath("team", "bot-1", "~/bots", "bots/bot-1")).toBe("bots/bot-1");
+  });
+
+  it("treats a leading /home/alma as the workspace root", () => {
+    expect(resolveBotWorkspacePath("team", "bot-1", "/home/alma")).toBe("");
+    expect(resolveBotWorkspacePath("team", "bot-1", "/home/alma/notes/x.md")).toBe("notes/x.md");
+    expect(resolveBotWorkspacePath("team", "bot-1", "/home/almatest/file.txt")).toBe(
+      "home/almatest/file.txt",
+    );
+    expect(resolveBotWorkspacePath("dedicated", "bot-1", "/home/alma/notes/x.md")).toBe(
+      "/notes/x.md",
+    );
   });
 
   it("treats a leading /home/rakazo as the workspace root", () => {

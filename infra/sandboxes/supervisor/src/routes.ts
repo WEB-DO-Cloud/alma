@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
+import { COMPUTER_HOME, canonicalizeComputerHome } from "@rakazo/core/computer-home";
 import { boundedSandboxCommandTimeoutMs } from "@rakazo/core/node/sandbox-command";
 import { getLogger } from "@rakazo/logging";
 import { requestLogging } from "@rakazo/logging/hono";
@@ -24,6 +25,7 @@ import {
   computerBridgeNameFor,
   computerComputeGpusMatch,
   computerDnsMatches,
+  computerHomeCurrent,
   computerHomeStorage,
   computerMountsMatch,
   computerNetworkNameFor,
@@ -263,6 +265,7 @@ app.post("/computers", async (c) => {
           // So are the owner's time zone and language.
           computerLocaleMatches(info.Config.Env, locale) &&
           controlPublishOk &&
+          computerHomeCurrent(info.HostConfig) &&
           (!storage.homeVolume || homeVolumeMatches(info.HostConfig.Mounts, storage.homeVolume)) &&
           // A computer that cannot rejoin its network is replaced below instead.
           (!reconnect ||
@@ -465,7 +468,7 @@ app.post("/computers/:id/exec", async (c) => {
           container,
           body.argv.length ? body.argv : ["/bin/echo", "ready"],
           {
-            workingDir: body.cwd ?? "/home/rakazo",
+            workingDir: canonicalizeComputerHome(body.cwd ?? COMPUTER_HOME),
             env: [
               ...computerCommandEnv(layout),
               ...Object.entries(body.env ?? {}).map(([k, v]) => `${k}=${v}`),
@@ -654,7 +657,7 @@ app.post("/computers/:id/browser", async (c) => {
         env: [
           `DISPLAY=${layout.display}`,
           `RAKAZO_CDP_PORT=${layout.debugPort}`,
-          "HOME=/home/rakazo",
+          `HOME=${COMPUTER_HOME}`,
           "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
           "RAKAZO_BROWSER_WATCH_STDIN=1",
           "RAKAZO_BROWSER_ARGS_STDIN=1",

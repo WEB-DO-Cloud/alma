@@ -299,7 +299,7 @@ describe("recall outcome grading", () => {
     expect(
       scriptedShell(computer, 'grep -ril "midnight" ~/.config/chromium/Default/Preferences')
         ?.stdout,
-    ).toBe("/home/rakazo/.config/chromium/Default/Preferences");
+    ).toBe("/home/alma/.config/chromium/Default/Preferences");
     expect(
       scriptedShell(
         computer,
@@ -318,7 +318,7 @@ describe("recall outcome grading", () => {
     expect(
       scriptedShell(computer, "ls -d ~/.config/chromium* ~/.config/google-chrome* 2>/dev/null")
         ?.stdout,
-    ).toBe("/home/rakazo/.config/chromium");
+    ).toBe("/home/alma/.config/chromium");
     // A find too shallow to reach the manifest finds nothing, piped or not.
     expect(scriptedShell(computer, "find ~ -maxdepth 6 -name manifest.json")?.stdout).toBe("");
     expect(
@@ -337,7 +337,7 @@ describe("recall outcome grading", () => {
         computer,
         "find ~ -maxdepth 6 -name Preferences 2>/dev/null | xargs grep -l -i lizard 2>/dev/null | head",
       )?.stdout,
-    ).toBe("/home/rakazo/.config/chromium/Default/Preferences");
+    ).toBe("/home/alma/.config/chromium/Default/Preferences");
     // A grep -l of Preferences for something it doesn't hold lists nothing.
     expect(
       scriptedShell(computer, "grep -l -i firefox ~/.config/chromium/Default/Preferences")?.stdout,
@@ -351,7 +351,7 @@ describe("recall outcome grading", () => {
         ?.stdout,
     ).toContain("Extensions/pbnhgcfkmdlhnoeajihcmpgkglmbjblb");
     expect(scriptedShell(computer, "ls -la ../../shared 2>/dev/null; pwd")?.stdout).toBe(
-      "/home/rakazo",
+      "/home/alma",
     );
     // A probe for several browsers still finds the Chromium the computer has.
     expect(

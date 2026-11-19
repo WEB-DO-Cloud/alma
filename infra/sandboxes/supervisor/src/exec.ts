@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { COMPUTER_HOME } from "@rakazo/core/computer-home";
 import type Docker from "dockerode";
 import type { z } from "zod";
 import type { computerActionSchema } from "./supervisor-logic.js";
@@ -40,10 +41,10 @@ export async function runContainerCommand(
     AttachStdout: true,
     AttachStderr: true,
     ...(options.signal ? { AttachStdin: true } : {}),
-    WorkingDir: options.workingDir ?? "/home/rakazo",
+    WorkingDir: options.workingDir ?? COMPUTER_HOME,
     Env: options.env ?? [
       "DISPLAY=:1",
-      "HOME=/home/rakazo",
+      `HOME=${COMPUTER_HOME}`,
       "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     ],
   });
@@ -168,8 +169,8 @@ export async function writeContainerFile(
     AttachStdin: true,
     AttachStdout: true,
     AttachStderr: true,
-    WorkingDir: "/home/rakazo",
-    Env: ["HOME=/home/rakazo"],
+    WorkingDir: COMPUTER_HOME,
+    Env: [`HOME=${COMPUTER_HOME}`],
   });
   const stream = await exec.start({ hijack: true, stdin: true });
   const chunks: Buffer[] = [];

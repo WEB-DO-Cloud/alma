@@ -26,9 +26,9 @@ type Result = { code: number; stdout: string; stderr?: string };
 function host(result: Result | ((command: string) => Result), commands: string[] = []) {
   return {
     environment: async () => ({
-      homeDir: "/home/rakazo",
-      workspaceDir: "/home/rakazo",
-      browserProfilesDir: "/home/rakazo/.browser-profiles",
+      homeDir: "/home/alma",
+      workspaceDir: "/home/alma",
+      browserProfilesDir: "/home/alma/.browser-profiles",
       displayStart: 1,
     }),
     run: async (_computer: ComputerRef, command: string) => {

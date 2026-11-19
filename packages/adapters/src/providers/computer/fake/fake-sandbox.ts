@@ -14,6 +14,7 @@ import type {
   TerminalRequest,
 } from "@rakazo/adapter-kit";
 import { SandboxFileTooLargeError } from "@rakazo/adapter-kit";
+import { COMPUTER_HOME } from "@rakazo/core/computer-home";
 import { canReleaseScreenLease, canTakeScreenLease } from "@rakazo/core/node/screen-lease";
 import { ComputerScreenUnavailableError, screenSessionKey } from "../../../computer-screens.js";
 import {
@@ -153,7 +154,7 @@ export class FakeSandboxProvider implements SandboxProvider {
       url: await this.terminals.open(
         computer.id,
         request.controlToken,
-        workspacePath("/home/rakazo", request.cwd ?? ""),
+        workspacePath(COMPUTER_HOME, request.cwd ?? ""),
       ),
     };
   }

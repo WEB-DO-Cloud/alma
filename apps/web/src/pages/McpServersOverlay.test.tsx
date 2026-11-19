@@ -789,7 +789,7 @@ it("links callback mismatches in MCP settings to the shared recovery guide", asy
     await vi.waitFor(() => expect(connectButton()).toBeDefined());
     await act(async () => connectButton()?.click());
     expect(host.querySelector('[role="alert"] a')?.getAttribute("href")).toBe(
-      "https://rakazo.com/docs/troubleshooting/#mcp-oauth-redirect-mismatch",
+      "https://app.alma.com.do/docs/troubleshooting/#mcp-oauth-redirect-mismatch",
     );
     expect(connectButton()?.disabled).toBe(false);
   } finally {

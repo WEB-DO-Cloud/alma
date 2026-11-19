@@ -1270,7 +1270,7 @@ describe("tickRoutineWatch on a computer", () => {
         argv: ["powershell.exe", "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", command],
       },
       {
-        shell: { platform: "linux", shell: "/bin/bash", home: "/home/rakazo" },
+        shell: { platform: "linux", shell: "/bin/bash", home: "/home/alma" },
         argv: ["/bin/bash", "-lc", command],
       },
     ];
@@ -1368,7 +1368,7 @@ describe("tickRoutineWatch on a computer", () => {
     const { deps, routine, updateMany } = setupComputer(
       { kind: "files", paths: ["a", "b"] },
       {
-        stdout: "/home/rakazo/bots/bot-1/b/x.txt\t1\t5.25\n",
+        stdout: "/home/alma/bots/bot-1/b/x.txt\t1\t5.25\n",
         stderr: "find: a: Permission denied",
         code: 1,
       },
@@ -1395,7 +1395,7 @@ describe("tickRoutineWatch on a computer", () => {
     });
     const { deps, routine, updateMany } = setupComputer(
       { kind: "files", paths: ["a"] },
-      { stdout: "/home/rakazo/bots/bot-1/a/x.txt\t1\t5.25\n" },
+      { stdout: "/home/alma/bots/bot-1/a/x.txt\t1\t5.25\n" },
     );
     routine.watchState = {
       checkedAt: "x",
@@ -1550,8 +1550,8 @@ describe("tickRoutineWatch on a computer", () => {
 describe("watchFolder", () => {
   // A team computer refuses "." as a bot path, which failed every files watch live.
   it("is the bot's own folder on a team computer and the workspace on a private one", () => {
-    expect(watchFolder("team", "bot-1")).toBe("/home/rakazo/bots/bot-1");
-    expect(watchFolder("dedicated", "bot-1")).toBe("/home/rakazo");
+    expect(watchFolder("team", "bot-1")).toBe("/home/alma/bots/bot-1");
+    expect(watchFolder("dedicated", "bot-1")).toBe("/home/alma");
   });
 });
 
@@ -1596,10 +1596,13 @@ describe("toolResultText", () => {
 
 describe("file watch boundaries", () => {
   it("allows normalized team paths inside the bot folder", () => {
-    expect(resolveWatchPath("team", "bot-1", "/home/rakazo/bots/bot-1/inbox/../notes")).toBe(
-      "/home/rakazo/bots/bot-1/notes",
+    expect(resolveWatchPath("team", "bot-1", "/home/alma/bots/bot-1/inbox/../notes")).toBe(
+      "/home/alma/bots/bot-1/notes",
     );
-    expect(resolveWatchPath("team", "bot-1", "notes")).toBe("/home/rakazo/bots/bot-1/notes");
+    expect(resolveWatchPath("team", "bot-1", "/home/rakazo/bots/bot-1/inbox/../notes")).toBe(
+      "/home/alma/bots/bot-1/notes",
+    );
+    expect(resolveWatchPath("team", "bot-1", "notes")).toBe("/home/alma/bots/bot-1/notes");
   });
   it.each(["/etc", "../bot-2", "/home/rakazo/bots/bot-1/../../shared", "shared/../../other"])(
     "refuses team escape %s",

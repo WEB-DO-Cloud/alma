@@ -529,6 +529,12 @@
           serverHeadersSection.open = true;
         }
       }
+      // No saved server of their own: the field offers ALMA Cloud, which they can replace.
+      const savedOwnServer =
+        state.saved !== null &&
+        state.saved.mode === "existing" &&
+        state.saved.serverUrl !== cloudUrl;
+      if (!savedOwnServer) serverUrl.value = cloudUrl;
       // A relaunch with the stack down starts it before this window opens; show that
       // attempt instead of the saved mode, and follow it while it is still running.
       const stack = await bridge.stack.state();

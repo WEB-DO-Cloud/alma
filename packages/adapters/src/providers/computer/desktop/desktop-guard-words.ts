@@ -1,14 +1,16 @@
+import { COMPUTER_HOME, COMPUTER_LOGIN } from "@rakazo/core/computer-home";
+
 export const SHELL_INTERPRETER_NAMES = /^(?:bash|sh|dash|zsh|ksh|fish)$/;
 
 export const STATIC_SHELL_EXPANSIONS: Readonly<Record<string, string>> = {
-  HOME: "/home/rakazo",
-  LOGNAME: "rakazo",
-  PATH: "/home/rakazo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-  PWD: "/home/rakazo",
+  HOME: COMPUTER_HOME,
+  LOGNAME: COMPUTER_LOGIN,
+  PATH: `${COMPUTER_HOME}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin`,
+  PWD: COMPUTER_HOME,
   TMPDIR: "/tmp",
-  USER: "rakazo",
-  WORKSPACE: "/home/rakazo/workspace",
-  XDG_CONFIG_HOME: "/home/rakazo/.config",
+  USER: COMPUTER_LOGIN,
+  WORKSPACE: `${COMPUTER_HOME}/workspace`,
+  XDG_CONFIG_HOME: `${COMPUTER_HOME}/.config`,
 };
 
 export const SAFE_SHELL_CONTROL_OPS = new Set([

@@ -108,8 +108,9 @@ RUN apt-get update && apt-get upgrade -y --no-install-recommends && apt-get inst
   && ffmpeg -version \
   && ffprobe -version \
   && ffmpeg -hide_banner -encoders | grep -q libx264 \
-  && groupadd --gid 1000 rakazo \
-  && useradd --uid 1000 --gid rakazo --create-home --shell /bin/bash rakazo \
+  && groupadd --gid 1000 alma \
+  && useradd --uid 1000 --gid alma --create-home --shell /bin/bash alma \
+  && ln -sfn /home/alma /home/rakazo \
   && mkdir -p /etc/rakazo/fluxbox /etc/chromium/policies/managed /etc/brave/policies/managed /etc/opt/chrome/policies/managed \
   && printf '%s\n' '#!/bin/sh' 'exec xsetroot -solid "#111113" "$@"' > /usr/bin/fbsetbg \
   && chmod +x /usr/bin/fbsetbg \
@@ -213,26 +214,26 @@ ENV HYPERFRAMES_BROWSER_PATH=/usr/local/bin/hyperframes-browser \
     NPM_CONFIG_UPDATE_NOTIFIER=false
 # The computer user has no root. Prove ffmpeg and `npx hyperframes --help` as
 # uid 1000. The download goes to a throwaway cache this layer deletes: the home
-# volume hides /home/rakazo, and checkpoints skip .npm, so a live computer
+# volume hides /home/alma, and checkpoints skip .npm, so a live computer
 # fetches the CLI again the first time it is used.
 RUN set -eux; \
-  su -s /bin/bash rakazo -c 'export HOME=/tmp/hf-home NPM_CONFIG_CACHE=/tmp/hf-home/npm NPM_CONFIG_YES=true PATH="/usr/local/bin:$PATH"; mkdir -p "$HOME"; test "$(id -u)" = 1000; node --version; ffmpeg -version; ffprobe -version; test -x "$HYPERFRAMES_BROWSER_PATH"; npx hyperframes --help'; \
+  su -s /bin/bash alma -c 'export HOME=/tmp/hf-home NPM_CONFIG_CACHE=/tmp/hf-home/npm NPM_CONFIG_YES=true PATH="/usr/local/bin:$PATH"; mkdir -p "$HOME"; test "$(id -u)" = 1000; node --version; ffmpeg -version; ffprobe -version; test -x "$HYPERFRAMES_BROWSER_PATH"; npx hyperframes --help'; \
   rm -rf /tmp/hf-home
 # The page browser drives the visible Chromium through agent-browser, pinned and checked by sha256.
 COPY --chmod=755 install-agent-browser.sh /tmp/install-agent-browser.sh
 RUN /tmp/install-agent-browser.sh /usr/local/bin && rm /tmp/install-agent-browser.sh \
   && mkdir -p /usr/local/lib/rakazo
 ENV DISPLAY=:1
-ENV HOME=/home/rakazo
+ENV HOME=/home/alma
 # Keep UTF-8 explicit (an empty LANG broke non-ASCII file handling in the
 # file chooser for CJK-market users) and generate zh_CN.UTF-8 so deployments
 # that override the computer environment can opt in to a Chinese locale.
 RUN sed -i 's/^# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG=C.UTF-8
-ENV UV_TOOL_DIR=/home/rakazo/.local/share/uv/tools \
-    UV_TOOL_BIN_DIR=/home/rakazo/.local/bin \
-    UV_PYTHON_INSTALL_DIR=/home/rakazo/.local/share/uv/python
-WORKDIR /home/rakazo
+ENV UV_TOOL_DIR=/home/alma/.local/share/uv/tools \
+    UV_TOOL_BIN_DIR=/home/alma/.local/bin \
+    UV_PYTHON_INSTALL_DIR=/home/alma/.local/share/uv/python
+WORKDIR /home/alma
 # --chmod normalizes modes: a restrictive host umask (e.g. 077 on hardened hosts) would
 # otherwise leave these files unreadable to USER 1000 at runtime.
 COPY --chmod=755 start.sh /usr/local/bin/rakazo-computer

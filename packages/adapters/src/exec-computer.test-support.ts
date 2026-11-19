@@ -36,7 +36,7 @@ export function execComputerShell() {
     if (command.includes("find") || command.some((arg) => arg.includes("find . -regextype"))) {
       const directory = command.includes("find")
         ? command[command.indexOf("find") + 1]!
-        : "/home/rakazo";
+        : "/home/alma";
       let stdout = "";
       for (const [name, file] of files) {
         if (!name.startsWith(`${directory}/`)) continue;
@@ -49,7 +49,7 @@ export function execComputerShell() {
     }
     if (command.includes("tar")) {
       const chunks = exportedNames.flatMap((name) => {
-        const file = files.get(`/home/rakazo/${name}`)!;
+        const file = files.get(`/home/alma/${name}`)!;
         return [...encodeTarEntry(name, file.content, file.executable)];
       });
       return { stdout: Buffer.concat([...chunks, Buffer.alloc(1024)]) };

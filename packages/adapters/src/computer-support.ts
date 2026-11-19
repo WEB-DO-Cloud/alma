@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import type { ComputerAction, ComputerObservation, ComputerRef } from "@rakazo/adapter-kit";
 import type { ComputerMode } from "@rakazo/contracts";
+import { COMPUTER_HOME, COMPUTER_HOME_LEGACY } from "@rakazo/core/computer-home";
 
 export function toComputerRef(computer: {
   homeKey: string;
@@ -87,8 +88,11 @@ export function workspacePath(root: string, relative: string): string {
   return normalized ? path.posix.join(root, normalized) : root;
 }
 
-/** The workspace path bots see on every computer. */
-const VIRTUAL_HOME = "/home/rakazo";
+/** Workspace paths a bot may say. The legacy home is the account from before the rename. */
+const VIRTUAL_HOMES = [COMPUTER_HOME, COMPUTER_HOME_LEGACY];
+const VIRTUAL_HOME_PATTERN = new RegExp(
+  `^(?:~|[\\\\/]home[\\\\/](?:${VIRTUAL_HOMES.map((home) => home.slice(home.lastIndexOf("/") + 1)).join("|")}))([\\\\/]|$)`,
+);
 
 /**
  * The directory a command runs in. Empty, ".", "/", the workspace root and any home alias
@@ -101,7 +105,7 @@ export function workspaceCwd(
   homes: readonly string[] = [],
 ): string {
   if (!cwd || cwd === "." || cwd === "/") return root;
-  for (const prefix of [root, VIRTUAL_HOME, ...homes]) {
+  for (const prefix of [root, ...VIRTUAL_HOMES, ...homes]) {
     if (cwd === prefix) return root;
     if (cwd.startsWith(`${prefix}/`)) return workspacePath(root, cwd.slice(prefix.length + 1));
   }
@@ -192,12 +196,9 @@ function isTeamRootPath(value: string): boolean {
   );
 }
 
-// A leading ~ or /home/rakazo means the workspace root, the same as a leading /.
+// A leading ~ or either computer home means the workspace root, the same as a leading /.
 function expandHomePrefix(value: string): string {
-  return value.replace(
-    /^(?:~|[\\/]home[\\/]rakazo)([\\/]|$)/,
-    (_, separator: string) => separator || "/",
-  );
+  return value.replace(VIRTUAL_HOME_PATTERN, (_, separator: string) => separator || "/");
 }
 
 function stripVirtualWorkspaceRoot(value: string): string | null {

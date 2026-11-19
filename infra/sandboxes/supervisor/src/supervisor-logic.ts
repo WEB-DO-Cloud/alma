@@ -1,3 +1,4 @@
+import { COMPUTER_HOME, computerHomeEnvironment } from "@rakazo/core/computer-home";
 import type { DesktopEnvironment } from "@rakazo/core/node/desktop-runtime";
 import {
   ensureScreenCommand as coreEnsureScreenCommand,
@@ -590,7 +591,7 @@ export function normalizeWorkspaceRelative(value: string) {
 }
 
 export function workspaceTarget(relative: string) {
-  return relative ? path.posix.join("/home/rakazo", relative) : "/home/rakazo";
+  return relative ? path.posix.join(COMPUTER_HOME, relative) : COMPUTER_HOME;
 }
 
 export function sandboxTimeoutCommand(argv: string[], timeoutMs: number, completionMarker: string) {
@@ -764,13 +765,7 @@ export function demuxDockerStream(buffer: Buffer): { stdout: string; stderr: str
  * it. Neither exec sets a Docker `User`, so both run as the container's workspace user.
  */
 export function computerCommandEnv(layout: { display: string }) {
-  return [
-    `DISPLAY=${layout.display}`,
-    "HOME=/home/rakazo",
-    "PATH=/home/rakazo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-    "NPM_CONFIG_PREFIX=/home/rakazo/.local",
-    "PIP_USER=1",
-  ];
+  return [`DISPLAY=${layout.display}`, ...computerHomeEnvironment()];
 }
 
 /** Resolve the inspected ID before removing, so a changed name cannot target another container. */

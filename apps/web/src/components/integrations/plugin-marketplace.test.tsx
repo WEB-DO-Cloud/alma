@@ -219,7 +219,7 @@ describe("plugin detail", () => {
     await click("Sign in");
     const alert = container.querySelector('[role="alert"]');
     expect(alert?.querySelector("a")?.getAttribute("href")).toBe(
-      "https://rakazo.com/docs/troubleshooting/#mcp-oauth-redirect-mismatch",
+      "https://app.alma.com.do/docs/troubleshooting/#mcp-oauth-redirect-mismatch",
     );
     api.connect.mockRejectedValue(new Error("Could not sign in"));
     await click("Sign in");

@@ -10,6 +10,7 @@ import type {
   ProcessEvent,
 } from "@rakazo/adapter-kit";
 import { SandboxFileTooLargeError } from "@rakazo/adapter-kit";
+import { COMPUTER_HOME } from "@rakazo/core/computer-home";
 import { COMPUTER_CACHE_ENV } from "@rakazo/core/node/desktop-runtime";
 import { boundedSandboxCommandTimeoutMs } from "@rakazo/core/node/sandbox-command";
 import {
@@ -26,7 +27,7 @@ import {
 } from "./workspace-save-policy.js";
 
 /** The published computer image's user home, which is also the portable workspace. */
-export const COMPUTER_IMAGE_WORKSPACE = "/home/rakazo";
+export const COMPUTER_IMAGE_WORKSPACE = COMPUTER_HOME;
 const WORKSPACE = COMPUTER_IMAGE_WORKSPACE;
 const MAX_FILE_BYTES = 64 * 1024 * 1024;
 /** How long the `timeout` wrapper waits after SIGTERM before it kills the command's process group. */

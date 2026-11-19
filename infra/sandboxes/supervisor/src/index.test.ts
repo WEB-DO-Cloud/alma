@@ -418,13 +418,13 @@ describe("sandbox supervisor input containment", () => {
     });
   });
 
-  it.each([undefined, "/home/rakazo/.browser-profiles/bot-test"])(
+  it.each([undefined, "/home/alma/.browser-profiles/bot-test"])(
     "opens workspace files in the assigned browser (profile=%s)",
     (profile) => {
       for (const [file, url] of [
-        ["screenshots/it's #1%.png", "file:///home/rakazo/screenshots/it's%20%231%25.png"],
-        ["/image.png", "file:///home/rakazo/image.png"],
-        ["screenshots/back\\slash.png", "file:///home/rakazo/screenshots/back/slash.png"],
+        ["screenshots/it's #1%.png", "file:///home/alma/screenshots/it's%20%231%25.png"],
+        ["/image.png", "file:///home/alma/image.png"],
+        ["screenshots/back\\slash.png", "file:///home/alma/screenshots/back/slash.png"],
       ] as const) {
         expect(containerActionStep({ kind: "open", path: file }, ":2", profile)).toEqual({
           argv: [
@@ -773,12 +773,12 @@ describe("sandbox supervisor input containment", () => {
     expect(command).toContain(writer);
     expect(ensureScreenCommand(3, "writer", "view-token")).toContain(writer);
     expect(ensureScreenCommand(0, "researcher", "view-token")).toContain(researcher);
-    expect(command).not.toContain("/home/rakazo/.browser-profiles/chromium/.");
+    expect(command).not.toContain("/home/alma/.browser-profiles/chromium/.");
     expect(command).not.toContain(".rakazo-base-generation");
     expect(command).toContain("browser-pid-");
     expect(command).toContain("tr '\\0' '\\n' <\"/proc/$1/cmdline\"");
     expect(browserProfilePathForScreen("../../writer")).toMatch(
-      /^\/home\/rakazo\/\.browser-profiles\/chromium-bot-[0-9a-f]+$/,
+      /^\/home\/alma\/\.browser-profiles\/chromium-bot-[0-9a-f]+$/,
     );
   });
 
@@ -1270,9 +1270,9 @@ describe("computer command identity", () => {
   it("gives commands the workspace user's home, PATH and package prefixes on the screen's display", () => {
     expect(computerCommandEnv({ display: ":2" })).toEqual([
       "DISPLAY=:2",
-      "HOME=/home/rakazo",
-      "PATH=/home/rakazo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-      "NPM_CONFIG_PREFIX=/home/rakazo/.local",
+      "HOME=/home/alma",
+      "PATH=/home/alma/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "NPM_CONFIG_PREFIX=/home/alma/.local",
       "PIP_USER=1",
     ]);
   });

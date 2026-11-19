@@ -17,6 +17,7 @@ import type {
 } from "@rakazo/adapter-kit";
 import { SandboxFileTooLargeError } from "@rakazo/adapter-kit";
 import { anySignal } from "@rakazo/core";
+import { COMPUTER_HOME as WORKSPACE } from "@rakazo/core/computer-home";
 import { COMPUTER_CACHE_ENV } from "@rakazo/core/node/desktop-runtime";
 import { boundedSandboxCommandTimeoutMs } from "@rakazo/core/node/sandbox-command";
 import type * as Railway from "railway";
@@ -48,7 +49,6 @@ import {
 } from "../../../workspace-save-policy.js";
 
 const DISPLAY_START = 1;
-const WORKSPACE = "/home/rakazo";
 const SCREEN_PORT = 6080;
 const RAILWAY_API = "https://backboard.railway.com/graphql/v2";
 const MAX_RESPONSE_BYTES = 16 * 1024 * 1024;

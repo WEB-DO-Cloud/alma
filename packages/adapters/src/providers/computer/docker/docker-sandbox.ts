@@ -25,6 +25,7 @@ import {
 } from "@rakazo/adapter-kit";
 import { COMPUTER_UNRESPONSIVE_ERROR } from "@rakazo/contracts";
 import { cancelResponseBody, ResponseTooLargeError, requestDeadline } from "@rakazo/core";
+import { COMPUTER_HOME } from "@rakazo/core/computer-home";
 import { boundedSandboxCommandTimeoutMs } from "@rakazo/core/node/sandbox-command";
 import { resolveSupervisorToken } from "@rakazo/core/node/secrets-guard";
 import { outgoingCorrelationHeaders } from "@rakazo/logging";
@@ -290,7 +291,7 @@ export class DockerSandboxProvider implements SandboxProvider {
       body: JSON.stringify({
         ...request,
         argv: sandboxCommandArgv(request),
-        cwd: workspaceCwd("/home/rakazo", request.cwd),
+        cwd: workspaceCwd(COMPUTER_HOME, request.cwd),
         timeoutMs,
       }),
       signal: streamSignal,

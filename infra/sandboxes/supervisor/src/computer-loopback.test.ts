@@ -401,7 +401,10 @@ describe("computer loopback provision lifecycle", () => {
       expect(options.HostConfig.PortBindings["7070/tcp"]).toEqual(
         enabled ? [{ HostIp: "127.0.0.1", HostPort: "0" }] : undefined,
       );
-      expect(options.HostConfig.Binds).toEqual([`${homePath}:/home/rakazo`]);
+      expect(options.HostConfig.Binds).toEqual([
+        `${homePath}:/home/alma`,
+        `${homePath}:/home/rakazo`,
+      ]);
       expect(options.Env).toContainEqual(
         expect.stringMatching(/^RAKAZO_COMPUTER_CONTROL_TOKEN=.+/),
       );
@@ -470,6 +473,12 @@ describe("provisioning network rollback", () => {
             User: "1000:1000",
             HostConfig: expect.objectContaining({
               Mounts: [
+                expect.objectContaining({
+                  Type: "volume",
+                  Source: "example_appdata",
+                  Target: "/home/alma",
+                  VolumeOptions: { NoCopy: true, Subpath: "homes/bot" },
+                }),
                 expect.objectContaining({
                   Type: "volume",
                   Source: "example_appdata",

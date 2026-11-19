@@ -80,9 +80,9 @@ async function focusCommand(action: ComputerAction) {
   const runs: string[] = [];
   const desktop = new LinuxDesktop({
     environment: async () => ({
-      homeDir: "/home/rakazo",
+      homeDir: "/home/alma",
       workspaceDir: workspace,
-      browserProfilesDir: "/home/rakazo/.browser-profiles",
+      browserProfilesDir: "/home/alma/.browser-profiles",
       displayStart: 1,
     }),
     run: async (_computer, command) => {
@@ -243,9 +243,9 @@ describe("provider focus command", () => {
     "raises the browser window for this screen's profile",
     async () => {
       const env = {
-        homeDir: "/home/rakazo",
+        homeDir: "/home/alma",
         workspaceDir: workspace,
-        browserProfilesDir: "/home/rakazo/.browser-profiles",
+        browserProfilesDir: "/home/alma/.browser-profiles",
         displayStart: 1,
       };
       const mine = browserProfilePathForScreen("bot-1", env);

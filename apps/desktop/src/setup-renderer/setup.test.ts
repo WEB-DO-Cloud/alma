@@ -193,6 +193,18 @@ async function boot(
 }
 
 describe("setup", () => {
+  it("offers ALMA Cloud in the server address before a server is saved", async () => {
+    await boot(null);
+    const field = element<HTMLInputElement>("server-url");
+    expect(field.value).toBe(CLOUD_URL);
+    expect(field.placeholder).toBe(CLOUD_URL);
+  });
+
+  it("keeps a saved server instead of replacing it with ALMA Cloud", async () => {
+    await boot({ mode: "existing", serverUrl: "https://one.example" });
+    expect(element<HTMLInputElement>("server-url").value).toBe("https://one.example");
+  });
+
   afterEach(() => {
     vi.useRealTimers();
     document.body.innerHTML = "";

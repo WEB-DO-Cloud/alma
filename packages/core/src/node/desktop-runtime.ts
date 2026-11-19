@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { isIPv4 } from "node:net";
 import path from "node:path";
+import { COMPUTER_HOME } from "../computer-home.js";
 import { TERMINAL_SERVER_PROGRAM } from "./terminal-server.js";
 // Each live Chrome needs a private debugger port. This is the TCP address-space
 // boundary, not a product limit on bots or saved browser profiles.
@@ -27,9 +28,9 @@ export interface DesktopEnvironment {
   bindHost?: string;
 }
 export const DEFAULT_DESKTOP_ENV: DesktopEnvironment = {
-  homeDir: "/home/rakazo",
-  workspaceDir: "/home/rakazo",
-  browserProfilesDir: "/home/rakazo/.browser-profiles",
+  homeDir: COMPUTER_HOME,
+  workspaceDir: COMPUTER_HOME,
+  browserProfilesDir: `${COMPUTER_HOME}/.browser-profiles`,
   displayStart: 1,
   bindHost: "127.0.0.1",
   preservePrimaryDisplay: true,
